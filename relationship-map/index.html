@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>我们一起去过的地方｜Relationship Map</title>
+<meta name="description" content="一张用地图呈现共同旅行、日常陪伴、照护与筑巢记忆的关系地图。" />
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://tile.openstreetmap.org">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<style>
+:root {
+  --bg:#f7f0e8;
+  --card:#fffaf4;
+  --ink:#2d2520;
+  --muted:#766a62;
+  --line:#e6d8cd;
+  --red:#e85d75;
+  --purple:#7457d9;
+  --green:#2c9a6b;
+  --blue:#2878b8;
+  --orange:#f1a02f;
+  --daily:#df6f75;
+  --nest:#9a6b3f;
+  --care:#e9962f;
+  --culture:#7457d9;
+  --nature:#2c9a6b;
+  --peak:#2878b8;
+}
+* { box-sizing:border-box; }
+html, body {
+  margin:0; height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+  color:var(--ink); background:var(--bg);
+}
+.app {
+  min-height:100dvh;
+  display:grid;
+  grid-template-columns:380px minmax(0,1fr);
+}
+.panel {
+  z-index:1000;
+  background:rgba(255,250,244,.96);
+  border-right:1px solid var(--line);
+  padding:20px;
+  overflow:auto;
+  max-height:100dvh;
+  box-shadow:14px 0 35px rgba(55,38,24,.10);
+}
+.brand {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:14px;
+}
+.brand-mark {
+  width:36px;height:36px;border-radius:12px;
+  background:linear-gradient(135deg,var(--red),#f0b16b);
+  display:grid;place-items:center;color:white;font-weight:900;
+  box-shadow:0 8px 18px rgba(200,76,87,.26);
+}
+h1 {
+  font-size:28px; line-height:1.15; margin:0;
+  letter-spacing:.01em;
+}
+.subtitle {
+  margin:7px 0 16px; color:var(--muted); font-size:13px; line-height:1.55;
+}
+.stats {
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  margin:14px 0 16px;
+}
+.stat {
+  border:1px solid var(--line); border-radius:18px;
+  background:#fff; padding:12px;
+}
+.stat b { display:block; color:#c84c57; font-size:24px; line-height:1.05; }
+.stat span { display:block; color:var(--muted); font-size:12px; margin-top:5px; }
+.section-title {
+  margin:18px 0 9px; font-weight:850; font-size:15px;
+}
+.toggle-grid {
+  display:grid; gap:8px;
+}
+.filter-btn {
+  border:1px solid var(--line); background:#fff; color:#4b413b;
+  border-radius:14px; min-height:38px; padding:8px 10px; font-size:13px;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  cursor:pointer; text-align:left;
+}
+.filter-btn.active {
+  background:#2d2520; color:#fff; border-color:#2d2520;
+}
+.filter-dot { width:12px; height:12px; border-radius:50%; display:inline-block; flex:0 0 auto; }
+.filter-left { display:flex; align-items:center; gap:8px; }
+.controls {
+  display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;
+}
+button.action {
+  border:1px solid var(--line); background:#fff; color:#4b413b;
+  border-radius:14px; min-height:38px; padding:8px 9px; font-size:13px; cursor:pointer;
+}
+button.action:hover,.filter-btn:hover { background:#fff4e8; }
+.insight {
+  background:#fff7ef; border-left:4px solid #e3a15e;
+  border-radius:16px; padding:12px; font-size:13px; line-height:1.7; color:#4b413b;
+}
+.cluster-list { display:grid; gap:8px; }
+.cluster-card {
+  border:1px solid var(--line); border-radius:16px; background:#fff;
+  padding:11px; cursor:pointer;
+}
+.cluster-card b { display:block; font-size:13px; }
+.cluster-card p { margin:4px 0 0; color:var(--muted); line-height:1.45; font-size:12px; }
+.timeline {
+  position:relative; padding-left:8px; display:grid; gap:7px;
+}
+.month {
+  border:1px solid var(--line); background:#fff; border-radius:14px;
+  padding:9px 10px; display:flex; align-items:center; justify-content:space-between;
+  font-size:12px; cursor:pointer;
+}
+.month b { color:#a34751; }
+.month span { color:var(--muted); }
+.footer-note {
+  color:var(--muted); font-size:12px; line-height:1.55; margin-top:16px;
+}
+.map-shell { position:relative; min-height:100dvh; }
+#map { position:absolute; inset:0; min-height:100dvh; background:#e9e2d9; }
+.topbar {
+  position:absolute; z-index:900; top:16px; left:16px; right:16px;
+  display:flex; justify-content:space-between; align-items:flex-start; gap:12px; pointer-events:none;
+}
+.map-title-card {
+  background:rgba(255,250,244,.92); backdrop-filter:blur(12px);
+  border:1px solid var(--line); border-radius:18px; padding:12px 14px;
+  box-shadow:0 10px 30px rgba(45,37,32,.13);
+}
+.map-title-card b { display:block; font-size:16px; }
+.map-title-card span { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
+.mode-card {
+  background:rgba(255,250,244,.92); backdrop-filter:blur(12px);
+  border:1px solid var(--line); border-radius:999px; padding:10px 12px;
+  color:#4b413b; font-size:12px; white-space:nowrap;
+  box-shadow:0 10px 30px rgba(45,37,32,.12);
+}
+.leaflet-popup-content-wrapper {
+  border-radius:18px;
+  box-shadow:0 12px 32px rgba(45,37,32,.18);
+}
+.popup-title { font-weight:850; font-size:14px; line-height:1.35; margin-bottom:5px; }
+.popup-meta { color:var(--muted); font-size:12px; margin-bottom:8px; }
+.popup-pill {
+  display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px;
+  color:white; font-size:12px; margin-right:5px; margin-top:4px;
+}
+.marker {
+  width:28px; height:28px; border-radius:999px;
+  display:grid; place-items:center; color:#fff; font-size:12px; font-weight:900;
+  border:3px solid #fff; box-shadow:0 4px 12px rgba(40,30,20,.28);
+}
+.marker.core {
+  width:34px; height:34px; font-size:13px;
+}
+.halo-label {
+  background:rgba(255,250,244,.88);
+  border:1px solid rgba(230,216,205,.9);
+  border-radius:999px; padding:6px 10px;
+  color:#4b413b; font-size:12px; font-weight:800;
+  box-shadow:0 6px 18px rgba(45,37,32,.12);
+}
+.mobile-toggle { display:none; }
+@media (max-width:860px) {
+  .app { display:block; }
+  .map-shell { min-height:100dvh; }
+  .panel {
+    position:fixed; left:10px; right:10px; bottom:10px; z-index:1200;
+    max-height:48dvh; border:1px solid var(--line); border-radius:24px;
+    padding:14px; transform:translateY(calc(100% - 86px));
+    transition:transform .25s ease; box-shadow:0 -12px 35px rgba(55,38,24,.20);
+  }
+  .panel.open { transform:translateY(0); }
+  .mobile-toggle {
+    display:block; position:absolute; right:14px; top:14px;
+    width:36px; height:36px; border:0; border-radius:999px;
+    background:#2d2520; color:white; font-size:18px;
+  }
+  h1 { font-size:19px; padding-right:44px; }
+  .subtitle { font-size:12px; margin-bottom:10px; }
+  .stats { grid-template-columns:repeat(4,1fr); gap:6px; }
+  .stat { padding:7px 4px; border-radius:13px; text-align:center; }
+  .stat b { font-size:16px; }
+  .stat span { font-size:10px; line-height:1.2; }
+  .section-title { margin:12px 0 8px; }
+  .filter-btn, button.action { min-height:34px; font-size:12px; padding:7px 8px; }
+  .toggle-grid { grid-template-columns:1fr 1fr; gap:6px; }
+  .controls { grid-template-columns:repeat(3,1fr); gap:6px; }
+  .insight { font-size:12px; padding:10px; }
+  .cluster-list { display:none; }
+  .timeline { display:none; }
+  .topbar { top:12px; left:12px; right:12px; }
+  .map-title-card { padding:10px 12px; border-radius:16px; }
+  .map-title-card b { font-size:14px; }
+  .map-title-card span { font-size:11px; }
+  .mode-card { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="panel" id="panel">
+    <button class="mobile-toggle" id="mobileToggle">⌃</button>
+    <div class="brand">
+      <div class="brand-mark">❤</div>
+      <div>
+        <h1>我们一起去过的地方</h1>
+        <div class="subtitle">Relationship Map｜2025.07—2026.05｜54 条共同体验</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>54</b><span>共同体验</span></div>
+      <div class="stat"><b>≈5天</b><span>一次记录</span></div>
+      <div class="stat"><b>深港</b><span>双核心</span></div>
+      <div class="stat"><b>4段</b><span>旅行簇</span></div>
+    </div>
+
+    <div class="section-title">关系功能筛选</div>
+    <div class="toggle-grid" id="filters"></div>
+
+    <div class="section-title">地图视图</div>
+    <div class="controls">
+      <button class="action" onclick="fitAll()">全局</button>
+      <button class="action" onclick="focusBay()">深港</button>
+      <button class="action" onclick="focusTrips()">远行</button>
+      <button class="action" onclick="toggleClusters()">旅行簇</button>
+      <button class="action" onclick="toggleDailyFlow()">深港流线</button>
+      <button class="action" onclick="resetFilters()">重置</button>
+    </div>
+
+    <div class="section-title">读图方式</div>
+    <div class="insight">
+      这不是普通旅行打卡图。深港是你们关系的生活半径；远行是关系的高光章节；看房、搬家、选床垫、陪诊这些点，是从“约会”进入“共同生活”的证据。
+    </div>
+
+    <div class="section-title">高光旅行簇</div>
+    <div class="cluster-list" id="clusterList"></div>
+
+    <div class="section-title">月度时间轴</div>
+    <div class="timeline" id="timeline"></div>
+
+    <div class="footer-note">
+      技术说明：此版本使用 Leaflet + OpenStreetMap 在线底图，适合部署在 GitHub Pages / Netlify / Vercel 打开，不再依赖 ChatGPT 手机预览。
+    </div>
+  </aside>
+
+  <main class="map-shell">
+    <div id="map"></div>
+    <div class="topbar">
+      <div class="map-title-card">
+        <b>从“一起出去玩”到“一起生活”</b>
+        <span>点位可点开；颜色代表关系功能；路线只保留旅行簇与深港生活流线。</span>
+      </div>
+      <div class="mode-card">高级互动版 · GitHub Pages</div>
+    </div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+const DATA = {
+  "records": [
+    {
+      "id": 1,
+      "date": "2025-07-26",
+      "title": "深圳看临终电影-艾豪丽披萨🎬🍕",
+      "place": "深圳",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2025-07"
+    },
+    {
+      "id": 2,
+      "date": "2025-08-01",
+      "title": "台州希尔顿-新荣记🏨🍽️",
+      "place": "台州",
+      "geoType": "国内远行",
+      "lat": 28.6564,
+      "lng": 121.4208,
+      "relType": "峰值旅行",
+      "month": "2025-08"
+    },
+    {
+      "id": 3,
+      "date": "2025-08-16",
+      "title": "上海浦东美术馆",
+      "place": "上海",
+      "geoType": "国内远行",
+      "lat": 31.2304,
+      "lng": 121.4737,
+      "relType": "审美记忆",
+      "month": "2025-08"
+    },
+    {
+      "id": 4,
+      "date": "2025-08-30",
+      "title": "深圳番薯粥-新加坡30周年晚宴🥣🍽️",
+      "place": "深圳",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2025-08"
+    },
+    {
+      "id": 5,
+      "date": "2025-08-31",
+      "title": "深圳南头古城-彬妈糖水",
+      "place": "深圳·南头古城",
+      "geoType": "深圳日常",
+      "lat": 22.539,
+      "lng": 113.925,
+      "relType": "日常陪伴",
+      "month": "2025-08"
+    },
+    {
+      "id": 6,
+      "date": "2025-09-13",
+      "title": "景德镇欧记大排档-博物馆🥵",
+      "place": "景德镇",
+      "geoType": "国内远行",
+      "lat": 29.2688,
+      "lng": 117.1784,
+      "relType": "审美记忆",
+      "month": "2025-09"
+    },
+    {
+      "id": 7,
+      "date": "2025-09-14",
+      "title": "景德镇小黄鱼-永生花&陶瓷体验🌹",
+      "place": "景德镇",
+      "geoType": "国内远行",
+      "lat": 29.2688,
+      "lng": 117.1784,
+      "relType": "峰值旅行",
+      "month": "2025-09"
+    },
+    {
+      "id": 8,
+      "date": "2025-09-27",
+      "title": "深圳金色印象💆🍽️",
+      "place": "深圳",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2025-09"
+    },
+    {
+      "id": 9,
+      "date": "2025-09-29",
+      "title": "越南岘港网球-冲浪🎾🏄",
+      "place": "越南·岘港",
+      "geoType": "海外旅行",
+      "lat": 16.0544,
+      "lng": 108.2022,
+      "relType": "自然恢复",
+      "month": "2025-09"
+    },
+    {
+      "id": 10,
+      "date": "2025-10-01",
+      "title": "越南会安香蕉船-夜游花灯",
+      "place": "越南·会安",
+      "geoType": "海外旅行",
+      "lat": 15.8801,
+      "lng": 108.338,
+      "relType": "自然恢复",
+      "month": "2025-10"
+    },
+    {
+      "id": 11,
+      "date": "2025-10-02",
+      "title": "越南会安SPA-咖啡🧖‍♂️☕️",
+      "place": "越南·会安",
+      "geoType": "海外旅行",
+      "lat": 15.8801,
+      "lng": 108.338,
+      "relType": "峰值旅行",
+      "month": "2025-10"
+    },
+    {
+      "id": 12,
+      "date": "2025-10-06",
+      "title": "上海ATP-上财-五角场🥵🎤",
+      "place": "上海",
+      "geoType": "国内远行",
+      "lat": 31.2304,
+      "lng": 121.4737,
+      "relType": "审美记忆",
+      "month": "2025-10"
+    },
+    {
+      "id": 13,
+      "date": "2025-10-08",
+      "title": "嘉兴南湖🍽️🚢",
+      "place": "嘉兴",
+      "geoType": "国内远行",
+      "lat": 30.7461,
+      "lng": 120.7555,
+      "relType": "自然恢复",
+      "month": "2025-10"
+    },
+    {
+      "id": 14,
+      "date": "2025-10-13",
+      "title": "上海远程庆祝宝宝生日🎂🎉",
+      "place": "上海",
+      "geoType": "国内远行",
+      "lat": 31.2304,
+      "lng": 121.4737,
+      "relType": "峰值旅行",
+      "month": "2025-10"
+    },
+    {
+      "id": 15,
+      "date": "2025-10-18",
+      "title": "香港红磡-北角看房🏠🔍",
+      "place": "香港·红磡/北角",
+      "geoType": "香港时光",
+      "lat": 22.291,
+      "lng": 114.2,
+      "relType": "共同筑巢",
+      "month": "2025-10"
+    },
+    {
+      "id": 16,
+      "date": "2025-10-19",
+      "title": "深圳湾万象城🥬",
+      "place": "深圳·深圳湾",
+      "geoType": "深圳日常",
+      "lat": 22.5176,
+      "lng": 113.9443,
+      "relType": "日常陪伴",
+      "month": "2025-10"
+    },
+    {
+      "id": 17,
+      "date": "2025-11-01",
+      "title": "香港何文田搬家✈️🏠",
+      "place": "香港·何文田",
+      "geoType": "香港时光",
+      "lat": 22.3193,
+      "lng": 114.1815,
+      "relType": "共同筑巢",
+      "month": "2025-11"
+    },
+    {
+      "id": 18,
+      "date": "2025-11-08",
+      "title": "香港龙脊-鹤咀⛰️🌊",
+      "place": "香港·龙脊/鹤咀",
+      "geoType": "香港时光",
+      "lat": 22.232,
+      "lng": 114.245,
+      "relType": "自然恢复",
+      "month": "2025-11"
+    },
+    {
+      "id": 19,
+      "date": "2025-11-09",
+      "title": "香港M+博物馆🔍",
+      "place": "香港·M+",
+      "geoType": "香港时光",
+      "lat": 22.3027,
+      "lng": 114.1594,
+      "relType": "审美记忆",
+      "month": "2025-11"
+    },
+    {
+      "id": 20,
+      "date": "2025-11-15",
+      "title": "深圳冬阴功-配眼镜🍽️🤓",
+      "place": "深圳",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2025-11"
+    },
+    {
+      "id": 21,
+      "date": "2025-11-16",
+      "title": "深圳港中深毕业典礼 🎓🏫",
+      "place": "深圳·港中深",
+      "geoType": "深圳日常",
+      "lat": 22.684,
+      "lng": 114.219,
+      "relType": "审美记忆",
+      "month": "2025-11"
+    },
+    {
+      "id": 22,
+      "date": "2025-11-22",
+      "title": "香港迪士尼 盖瑞🎢🐍",
+      "place": "香港·迪士尼",
+      "geoType": "香港时光",
+      "lat": 22.3129,
+      "lng": 114.0413,
+      "relType": "日常陪伴",
+      "month": "2025-11"
+    },
+    {
+      "id": 23,
+      "date": "2025-11-29",
+      "title": "香港迪士尼 奥乐米拉🐢",
+      "place": "香港·迪士尼",
+      "geoType": "香港时光",
+      "lat": 22.3129,
+      "lng": 114.0413,
+      "relType": "日常陪伴",
+      "month": "2025-11"
+    },
+    {
+      "id": 24,
+      "date": "2025-12-06",
+      "title": "深圳港中深校友日 小天Jeff🧑‍🤝‍🧑🏫",
+      "place": "深圳·港中深",
+      "geoType": "深圳日常",
+      "lat": 22.684,
+      "lng": 114.219,
+      "relType": "审美记忆",
+      "month": "2025-12"
+    },
+    {
+      "id": 25,
+      "date": "2025-12-14",
+      "title": "深圳香蜜公园🍓🌰",
+      "place": "深圳·香蜜公园",
+      "geoType": "深圳日常",
+      "lat": 22.55,
+      "lng": 114.031,
+      "relType": "自然恢复",
+      "month": "2025-12"
+    },
+    {
+      "id": 26,
+      "date": "2025-12-20",
+      "title": "香港宝马山-维港夜景⛰️🌊",
+      "place": "香港·宝马山",
+      "geoType": "香港时光",
+      "lat": 22.283,
+      "lng": 114.2,
+      "relType": "自然恢复",
+      "month": "2025-12"
+    },
+    {
+      "id": 27,
+      "date": "2025-12-21",
+      "title": "香港深井烧鹅-荃湾海边🏖️",
+      "place": "香港·深井/荃湾",
+      "geoType": "香港时光",
+      "lat": 22.368,
+      "lng": 114.063,
+      "relType": "自然恢复",
+      "month": "2025-12"
+    },
+    {
+      "id": 28,
+      "date": "2025-12-29",
+      "title": "深圳盐田凯悦-梧桐山水库🏨⛰️",
+      "place": "深圳·盐田/梧桐山",
+      "geoType": "深圳日常",
+      "lat": 22.585,
+      "lng": 114.245,
+      "relType": "自然恢复",
+      "month": "2025-12"
+    },
+    {
+      "id": 29,
+      "date": "2025-12-31",
+      "title": "香港迪士尼跨年🎉",
+      "place": "香港·迪士尼",
+      "geoType": "香港时光",
+      "lat": 22.3129,
+      "lng": 114.0413,
+      "relType": "日常陪伴",
+      "month": "2025-12"
+    },
+    {
+      "id": 30,
+      "date": "2026-01-11",
+      "title": "深圳东海朗逸畅吃-深圳湾公园🍽️⛲️",
+      "place": "深圳·深圳湾",
+      "geoType": "深圳日常",
+      "lat": 22.5176,
+      "lng": 113.9443,
+      "relType": "自然恢复",
+      "month": "2026-01"
+    },
+    {
+      "id": 31,
+      "date": "2026-01-18",
+      "title": "香港太平山顶-坚尼地城🚠🏝️",
+      "place": "香港·山顶/坚尼地城",
+      "geoType": "香港时光",
+      "lat": 22.2783,
+      "lng": 114.1366,
+      "relType": "自然恢复",
+      "month": "2026-01"
+    },
+    {
+      "id": 32,
+      "date": "2026-01-25",
+      "title": "杭州良渚温泉-西湖散步♨️",
+      "place": "杭州",
+      "geoType": "国内远行",
+      "lat": 30.2741,
+      "lng": 120.1551,
+      "relType": "自然恢复",
+      "month": "2026-01"
+    },
+    {
+      "id": 33,
+      "date": "2026-01-31",
+      "title": "香港故宫博物院",
+      "place": "香港·故宫文化博物馆",
+      "geoType": "香港时光",
+      "lat": 22.3024,
+      "lng": 114.1574,
+      "relType": "审美记忆",
+      "month": "2026-01"
+    },
+    {
+      "id": 34,
+      "date": "2026-02-06",
+      "title": "深圳JW万豪 逐本 四季椰林🍵😋",
+      "place": "深圳·福田",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2026-02"
+    },
+    {
+      "id": 35,
+      "date": "2026-02-15",
+      "title": "深圳买年货啦😆",
+      "place": "深圳",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "共同筑巢",
+      "month": "2026-02"
+    },
+    {
+      "id": 36,
+      "date": "2026-02-19",
+      "title": "南宁过年找旭姐玩☕️🎤",
+      "place": "南宁",
+      "geoType": "国内远行",
+      "lat": 22.817,
+      "lng": 108.3669,
+      "relType": "峰值旅行",
+      "month": "2026-02"
+    },
+    {
+      "id": 37,
+      "date": "2026-02-22",
+      "title": "香港浅水湾看日落🏝️🌄",
+      "place": "香港·浅水湾",
+      "geoType": "香港时光",
+      "lat": 22.2363,
+      "lng": 114.1973,
+      "relType": "自然恢复",
+      "month": "2026-02"
+    },
+    {
+      "id": 38,
+      "date": "2026-02-28",
+      "title": "深圳和Aria喝酒🍷🦞",
+      "place": "深圳",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2026-02"
+    },
+    {
+      "id": 39,
+      "date": "2026-03-07",
+      "title": "深圳陪宝宝看颌面🦷",
+      "place": "深圳",
+      "geoType": "照护陪伴",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "照护时刻",
+      "month": "2026-03"
+    },
+    {
+      "id": 40,
+      "date": "2026-03-14",
+      "title": "香港宜家选床垫🛏️🍴",
+      "place": "香港·宜家",
+      "geoType": "香港时光",
+      "lat": 22.28,
+      "lng": 114.18,
+      "relType": "共同筑巢",
+      "month": "2026-03"
+    },
+    {
+      "id": 41,
+      "date": "2026-03-15",
+      "title": "香港孙燕姿演唱会🌄🎤",
+      "place": "香港",
+      "geoType": "香港时光",
+      "lat": 22.3193,
+      "lng": 114.1694,
+      "relType": "审美记忆",
+      "month": "2026-03"
+    },
+    {
+      "id": 42,
+      "date": "2026-03-22",
+      "title": "深圳陪宝宝拔智齿🦷",
+      "place": "深圳",
+      "geoType": "照护陪伴",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "照护时刻",
+      "month": "2026-03"
+    },
+    {
+      "id": 43,
+      "date": "2026-03-26",
+      "title": "成都广汉三星堆博物馆",
+      "place": "广汉·三星堆",
+      "geoType": "国内远行",
+      "lat": 30.999,
+      "lng": 104.195,
+      "relType": "审美记忆",
+      "month": "2026-03"
+    },
+    {
+      "id": 44,
+      "date": "2026-03-28",
+      "title": "九寨沟风景区😍💦",
+      "place": "九寨沟",
+      "geoType": "国内远行",
+      "lat": 33.26,
+      "lng": 103.918,
+      "relType": "自然恢复",
+      "month": "2026-03"
+    },
+    {
+      "id": 45,
+      "date": "2026-03-29",
+      "title": "成都君悦 春熙路🏨🏬",
+      "place": "成都",
+      "geoType": "国内远行",
+      "lat": 30.5728,
+      "lng": 104.0668,
+      "relType": "峰值旅行",
+      "month": "2026-03"
+    },
+    {
+      "id": 46,
+      "date": "2026-04-05",
+      "title": "深圳文华东方过生日🎂🎉",
+      "place": "深圳·文华东方",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2026-04"
+    },
+    {
+      "id": 47,
+      "date": "2026-04-11",
+      "title": "香港LEONE 植物学家酒吧🍷",
+      "place": "香港",
+      "geoType": "香港时光",
+      "lat": 22.3193,
+      "lng": 114.1694,
+      "relType": "日常陪伴",
+      "month": "2026-04"
+    },
+    {
+      "id": 48,
+      "date": "2026-04-19",
+      "title": "深圳六福菜馆 仙湖植物园🍴🌳",
+      "place": "深圳·仙湖植物园",
+      "geoType": "深圳日常",
+      "lat": 22.58,
+      "lng": 114.166,
+      "relType": "自然恢复",
+      "month": "2026-04"
+    },
+    {
+      "id": 49,
+      "date": "2026-04-25",
+      "title": "香港艺术馆 PO8🎨🎤",
+      "place": "香港·艺术馆",
+      "geoType": "香港时光",
+      "lat": 22.294,
+      "lng": 114.171,
+      "relType": "审美记忆",
+      "month": "2026-04"
+    },
+    {
+      "id": 50,
+      "date": "2026-04-30",
+      "title": "深圳寿司郎 优衣库🍣👔",
+      "place": "深圳",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2026-04"
+    },
+    {
+      "id": 51,
+      "date": "2026-05-01",
+      "title": "深圳茶颜悦色 迪卡侬🍵🏊",
+      "place": "深圳",
+      "geoType": "深圳日常",
+      "lat": 22.5431,
+      "lng": 114.0579,
+      "relType": "日常陪伴",
+      "month": "2026-05"
+    },
+    {
+      "id": 52,
+      "date": "2026-05-02",
+      "title": "香港将军澳钓墨鱼🦑",
+      "place": "香港·将军澳",
+      "geoType": "香港时光",
+      "lat": 22.308,
+      "lng": 114.26,
+      "relType": "自然恢复",
+      "month": "2026-05"
+    },
+    {
+      "id": 53,
+      "date": "2026-05-04",
+      "title": "普吉考拉斯米兰岛🏝️🍾",
+      "place": "泰国·普吉/斯米兰",
+      "geoType": "海外旅行",
+      "lat": 7.9519,
+      "lng": 98.3381,
+      "relType": "自然恢复",
+      "month": "2026-05"
+    },
+    {
+      "id": 54,
+      "date": "2026-05-07",
+      "title": "曼谷君悦 学做泰国菜🏨🍳",
+      "place": "泰国·曼谷",
+      "geoType": "海外旅行",
+      "lat": 13.7563,
+      "lng": 100.5018,
+      "relType": "峰值旅行",
+      "month": "2026-05"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "vietnam",
+      "name": "越南簇｜岘港—会安",
+      "ids": [
+        9,
+        10,
+        11
+      ],
+      "type": "海外峰值",
+      "note": "运动、海边、花灯、SPA，把关系从城市日常拉到度假模式。"
+    },
+    {
+      "id": "shanghai_jiaxing",
+      "name": "沪嘉簇｜ATP—南湖—生日",
+      "ids": [
+        12,
+        13,
+        14
+      ],
+      "type": "国内刷新",
+      "note": "看比赛、城市移动和远程庆生，形成异地协调的记忆。"
+    },
+    {
+      "id": "chengdu_jiuzhai",
+      "name": "川西簇｜三星堆—九寨沟—成都",
+      "ids": [
+        43,
+        44,
+        45
+      ],
+      "type": "自然峰值",
+      "note": "博物馆、山水和酒店恢复，是一次高浓度关系升级。"
+    },
+    {
+      "id": "thailand",
+      "name": "泰国簇｜普吉—曼谷",
+      "ids": [
+        53,
+        54
+      ],
+      "type": "海外峰值",
+      "note": "海岛和城市舒适体验，兼具放松与共同学习。"
+    }
+  ]
+};
+
+const relColors = {
+  "日常陪伴":"#df6f75",
+  "共同筑巢":"#9a6b3f",
+  "照护时刻":"#f1a02f",
+  "审美记忆":"#7457d9",
+  "自然恢复":"#2c9a6b",
+  "峰值旅行":"#2878b8"
+};
+
+const relLabels = {
+  "日常陪伴":"普通日子也值得记录",
+  "共同筑巢":"看房 / 搬家 / 家具",
+  "照护时刻":"脆弱时在场",
+  "审美记忆":"看展 / 博物馆 / 演出",
+  "自然恢复":"山海 / 公园 / 温泉",
+  "峰值旅行":"远方高光记忆"
+};
+
+let activeTypes = new Set(Object.keys(relColors));
+let clusterVisible = true;
+let dailyFlowVisible = true;
+
+const map = L.map('map', {
+  zoomControl: true,
+  preferCanvas: true
+}).setView([22.9, 114.2], 5);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 18,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+const markerCluster = L.markerClusterGroup({
+  showCoverageOnHover:false,
+  maxClusterRadius:42,
+  spiderfyOnMaxZoom:true
+});
+
+const markerRefs = new Map();
+
+function markerIcon(r) {
+  const isCore = r.geoType === "深圳日常" || r.geoType === "香港时光" || r.geoType === "照护陪伴";
+  return L.divIcon({
+    html:`<div class="marker ${isCore?'core':''}" style="background:${relColors[r.relType]}">${r.id}</div>`,
+    className:'',
+    iconSize:[isCore?34:28,isCore?34:28],
+    iconAnchor:[isCore?17:14,isCore?17:14]
+  });
+}
+
+function popupHtml(r) {
+  return `
+    <div class="popup-title">${r.id}. ${r.title}</div>
+    <div class="popup-meta">${r.date}｜${r.place}</div>
+    <span class="popup-pill" style="background:${relColors[r.relType]}">${r.relType}</span>
+    <span class="popup-pill" style="background:#6f625a">${r.geoType}</span>
+  `;
+}
+
+DATA.records.forEach(r => {
+  const m = L.marker([r.lat, r.lng], {icon:markerIcon(r)});
+  m.bindPopup(popupHtml(r));
+  m._relType = r.relType;
+  markerRefs.set(r.id, m);
+  markerCluster.addLayer(m);
+});
+map.addLayer(markerCluster);
+
+// Soft halos for Shenzhen and Hong Kong core
+const shenzhenHalo = L.circle([22.5431,114.0579], {
+  radius: 36000, color:'#e85d75', weight:2, opacity:.35,
+  fillColor:'#e85d75', fillOpacity:.08
+}).addTo(map);
+const hongkongHalo = L.circle([22.3193,114.1694], {
+  radius: 30000, color:'#7457d9', weight:2, opacity:.35,
+  fillColor:'#7457d9', fillOpacity:.08
+}).addTo(map);
+
+L.marker([22.74,114.06], {
+  icon:L.divIcon({html:'<div class="halo-label">深圳｜日常与照护</div>', className:'', iconSize:[150,28], iconAnchor:[75,14]})
+}).addTo(map);
+L.marker([22.08,114.17], {
+  icon:L.divIcon({html:'<div class="halo-label">香港｜未来生活与仪式</div>', className:'', iconSize:[180,28], iconAnchor:[90,14]})
+}).addTo(map);
+
+// Relationship flow between Shenzhen and HK
+const dailyFlow = L.polyline([[22.5431,114.0579],[22.3193,114.1694]], {
+  color:'#8b6f5a', weight:6, opacity:.32, dashArray:'10 14'
+}).addTo(map);
+
+// Cluster routes only
+const clusterLayer = L.layerGroup().addTo(map);
+function drawClusters() {
+  clusterLayer.clearLayers();
+  DATA.clusters.forEach(c => {
+    const pts = c.ids.map(id => {
+      const r = DATA.records.find(x => x.id === id);
+      return [r.lat,r.lng];
+    });
+    const color = c.type.includes('海外') ? '#2878b8' : c.type.includes('自然') ? '#2c9a6b' : '#7457d9';
+    L.polyline(pts, {color, weight:4, opacity:.78, dashArray:'2 10'}).addTo(clusterLayer);
+    const mid = pts[Math.floor(pts.length/2)];
+    L.marker(mid, {
+      icon:L.divIcon({
+        html:`<div class="halo-label">${c.name}</div>`,
+        className:'',
+        iconSize:[180,28],
+        iconAnchor:[90,14]
+      })
+    }).addTo(clusterLayer);
+  });
+}
+drawClusters();
+
+function buildFilters() {
+  const box = document.getElementById('filters');
+  Object.keys(relColors).forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn active';
+    btn.dataset.type = t;
+    btn.innerHTML = `
+      <span class="filter-left"><i class="filter-dot" style="background:${relColors[t]}"></i>${t}</span>
+      <span>${DATA.records.filter(r=>r.relType===t).length}</span>
+    `;
+    btn.addEventListener('click', () => {
+      if (activeTypes.has(t)) activeTypes.delete(t);
+      else activeTypes.add(t);
+      btn.classList.toggle('active', activeTypes.has(t));
+      applyFilters();
+    });
+    box.appendChild(btn);
+  });
+}
+
+function applyFilters() {
+  markerCluster.clearLayers();
+  DATA.records.forEach(r => {
+    if (activeTypes.has(r.relType)) markerCluster.addLayer(markerRefs.get(r.id));
+  });
+}
+
+function resetFilters() {
+  activeTypes = new Set(Object.keys(relColors));
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.add('active'));
+  applyFilters();
+}
+
+function fitAll() {
+  const group = L.featureGroup(Array.from(markerRefs.values()));
+  map.fitBounds(group.getBounds().pad(0.16));
+}
+
+function focusBay() {
+  map.fitBounds([[22.12,113.82],[22.78,114.36]]);
+}
+
+function focusTrips() {
+  map.fitBounds([[7.3,98.0],[33.6,122.2]]);
+}
+
+function toggleClusters() {
+  clusterVisible = !clusterVisible;
+  if (clusterVisible) map.addLayer(clusterLayer); else map.removeLayer(clusterLayer);
+}
+
+function toggleDailyFlow() {
+  dailyFlowVisible = !dailyFlowVisible;
+  if (dailyFlowVisible) map.addLayer(dailyFlow); else map.removeLayer(dailyFlow);
+}
+
+function buildClusterList() {
+  const box = document.getElementById('clusterList');
+  DATA.clusters.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cluster-card';
+    el.innerHTML = `<b>${c.name}</b><p>${c.note}</p>`;
+    el.addEventListener('click', () => {
+      const pts = c.ids.map(id => {
+        const r = DATA.records.find(x => x.id === id);
+        return [r.lat,r.lng];
+      });
+      map.fitBounds(pts, {padding:[40,40]});
+    });
+    box.appendChild(el);
+  });
+}
+
+function buildTimeline() {
+  const months = {};
+  DATA.records.forEach(r => {
+    months[r.month] = months[r.month] || [];
+    months[r.month].push(r);
+  });
+  const box = document.getElementById('timeline');
+  Object.keys(months).sort().forEach(m => {
+    const el = document.createElement('div');
+    el.className = 'month';
+    el.innerHTML = `<b>${m}</b><span>${months[m].length} 条</span>`;
+    el.addEventListener('click', () => {
+      const pts = months[m].map(r => [r.lat,r.lng]);
+      map.fitBounds(pts, {padding:[45,45], maxZoom:11});
+    });
+    box.appendChild(el);
+  });
+}
+
+const panel = document.getElementById('panel');
+const mobileToggle = document.getElementById('mobileToggle');
+mobileToggle.addEventListener('click', () => {
+  panel.classList.toggle('open');
+  mobileToggle.textContent = panel.classList.contains('open') ? '⌄' : '⌃';
+});
+
+buildFilters();
+buildClusterList();
+buildTimeline();
+setTimeout(fitAll, 200);
+</script>
+</body>
+</html>
