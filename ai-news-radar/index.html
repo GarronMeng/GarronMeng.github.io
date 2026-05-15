@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Garron AI News Radar</title>
+  <style>
+    :root { color-scheme: light dark; --bg: #f6f7fb; --panel: #fff; --text: #172033; --muted: #667085; --line: #e5e7eb; --accent: #2454ff; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #0b1020; --panel: #131a2a; --text: #eef2ff; --muted: #98a2b3; --line: #263044; --accent: #8ea2ff; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); }
+    header { padding: 42px 18px 26px; background: radial-gradient(circle at top left, rgba(36,84,255,.18), transparent 36%), var(--panel); border-bottom: 1px solid var(--line); }
+    .wrap { max-width: 1080px; margin: 0 auto; }
+    h1 { margin: 0 0 10px; font-size: clamp(32px, 8vw, 64px); letter-spacing: -0.055em; }
+    .subtitle { color: var(--muted); line-height: 1.7; max-width: 780px; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
+    .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
+    .stat b { display: block; font-size: 28px; margin-bottom: 4px; }
+    main { padding: 22px 18px 56px; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 18px; }
+    .pill { border: 1px solid var(--line); background: var(--panel); color: var(--muted); border-radius: 999px; padding: 8px 12px; font-size: 13px; }
+    .section-title { margin: 28px 0 14px; display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+    .section-title h2 { margin: 0; font-size: 22px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; box-shadow: 0 10px 30px rgba(15,23,42,.04); }
+    .card h3 { margin: 10px 0 8px; font-size: 18px; line-height: 1.45; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 12px; }
+    .meta span, .meta strong, .tags span { border: 1px solid var(--line); border-radius: 999px; padding: 4px 8px; }
+    .summary { color: var(--muted); line-height: 1.65; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; color: var(--muted); font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 18px; overflow: hidden; border: 1px solid var(--line); }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px; vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    .ok { color: #059669; font-weight: 700; } .err { color: #dc2626; font-weight: 700; }
+    .error { padding: 18px; border: 1px solid #fecaca; background: #fef2f2; color: #991b1b; border-radius: 18px; line-height: 1.7; }
+    @media (max-width: 760px) { .stats, .grid { grid-template-columns: 1fr; } .section-title { display:block; } table { display:block; overflow-x:auto; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>AI News Radar</h1>
+      <p class="subtitle">自动聚合 OpenAI、Anthropic、Claude、Codex、GitHub Copilot 与 AI Agent 相关更新。数据来自 <code>GarronMeng/trending</code>，页面会读取最新 JSON 自动渲染。</p>
+      <div class="stats" id="stats">
+        <div class="stat"><b>--</b><span>条目</span></div>
+        <div class="stat"><b>--</b><span>官方源</span></div>
+        <div class="stat"><b>--</b><span>聚合源</span></div>
+        <div class="stat"><b>--</b><span>健康信源</span></div>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="toolbar" id="toolbar"><span class="pill">正在加载最新数据...</span></div>
+    <section>
+      <div class="section-title"><h2>高信号更新</h2><p id="generated" class="subtitle"></p></div>
+      <div class="grid" id="items"></div>
+    </section>
+    <section>
+      <div class="section-title"><h2>信源健康状态</h2><p class="subtitle">用于判断下一轮要增删哪些源。</p></div>
+      <div id="health"></div>
+    </section>
+  </main>
+
+  <script>
+    const DATA_URL = 'https://raw.githubusercontent.com/GarronMeng/trending/master/data/ai-news-radar.json';
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+    function statBox(value, label) {
+      return `<div class="stat"><b>${esc(value)}</b><span>${esc(label)}</span></div>`;
+    }
+
+    function renderStats(payload) {
+      const groups = payload.groups || {};
+      document.getElementById('stats').innerHTML = [
+        statBox(payload.item_count ?? 0, '高信号条目'),
+        statBox(groups.official?.count ?? 0, '官方源条目'),
+        statBox(groups.aggregate?.count ?? 0, '聚合源条目'),
+        statBox(`${payload.healthy_source_count ?? 0}/${payload.source_count ?? 0}`, '健康信源'),
+      ].join('');
+    }
+
+    function renderToolbar(payload) {
+      const groups = payload.groups || {};
+      const chips = [
+        `生成：${payload.generated_at || 'unknown'}`,
+        `窗口：${payload.window_hours || 24}h`,
+        ...Object.entries(groups).map(([name, g]) => `${name}: ${g.count || 0}`),
+      ];
+      document.getElementById('toolbar').innerHTML = chips.map(x => `<span class="pill">${esc(x)}</span>`).join('');
+      document.getElementById('generated').textContent = `生成时间：${payload.generated_at || ''}`;
+    }
+
+    function renderItems(payload) {
+      const items = payload.items || [];
+      const html = items.map(item => {
+        const reasons = (item.relevance_reasons || []).slice(0, 5).map(r => `<span>${esc(r)}</span>`).join('');
+        const summary = item.summary ? `<p class="summary">${esc(item.summary)}</p>` : '';
+        return `<article class="card">
+          <div class="meta"><span>${esc(item.source_name)}</span><span>${esc(item.source_group)}</span><span>${esc(item.published_at || 'unknown')}</span><strong>Score ${esc(item.relevance_score)}</strong></div>
+          <h3><a href="${esc(item.url)}" target="_blank" rel="noreferrer">${esc(item.title)}</a></h3>
+          ${summary}
+          <div class="tags">${reasons}</div>
+        </article>`;
+      }).join('');
+      document.getElementById('items').innerHTML = html || '<p class="subtitle">本轮没有达到阈值的更新。</p>';
+    }
+
+    function renderHealth(payload) {
+      const rows = (payload.source_health || []).map(h => `<tr>
+        <td>${esc(h.source_name)}</td><td>${esc(h.source_type)}</td><td class="${h.ok ? 'ok' : 'err'}">${h.ok ? 'OK' : 'ERR'}</td><td>${esc(h.fetched_count)}</td><td>${esc(h.kept_count)}</td><td>${esc(h.latency_ms)}ms</td><td>${esc(h.error || '')}</td>
+      </tr>`).join('');
+      document.getElementById('health').innerHTML = `<table><thead><tr><th>Source</th><th>Type</th><th>Status</th><th>Fetched</th><th>Kept</th><th>Latency</th><th>Error</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    async function main() {
+      try {
+        const res = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const payload = await res.json();
+        renderStats(payload);
+        renderToolbar(payload);
+        renderItems(payload);
+        renderHealth(payload);
+      } catch (err) {
+        document.getElementById('items').innerHTML = `<div class="error">加载失败：${esc(err.message)}<br>请检查 <code>GarronMeng/trending/data/ai-news-radar.json</code> 是否存在，或稍后刷新。</div>`;
+        document.getElementById('toolbar').innerHTML = '<span class="pill">加载失败</span>';
+      }
+    }
+    main();
+  </script>
+</body>
+</html>
