@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F4EFE3">
+<title>小猫与三条路｜人生设计互动旅程</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app" id="app">
+  <section class="world" id="world" aria-label="旅程场景">
+    <div class="sky-wash"></div>
+    <div class="cloud c1"></div><div class="cloud c2"></div>
+    <div class="horizon"><div class="layer far" id="far"></div><div class="layer mid" id="mid"></div><div class="layer front" id="front"></div><div class="road" id="road"></div></div>
+    <div class="brand"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M8 13 6 6l7 4M24 13l2-7-7 4M8 13c-2 2-3 5-2 8 1 4 5 7 10 7s9-3 10-7c1-3 0-6-2-8-4-4-12-4-16 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18h.1M20 18h.1M15 21c.8.7 1.2.7 2 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div><div><div class="brand-title">小猫与三条路</div><div class="brand-sub">LIFE DESIGN JOURNEY</div></div></div>
+    <div class="journey-map" id="journeyMap" aria-label="旅程进度"></div>
+    <div class="step-title"><div class="kicker" id="sceneKicker"></div><h1 id="sceneTitle"></h1><p id="sceneDesc"></p></div>
+    <div class="scene-art" id="sceneArt"></div>
+    <div class="caption" id="caption"></div>
+    <div class="cat-track"><div class="cat" id="cat" aria-label="旅途中的小猫"><svg viewBox="0 0 130 105" fill="none"><path class="cat-tail" d="M99 69c17-1 26-13 17-23-4-4-10-3-12 2" stroke="#28322D" stroke-width="6" stroke-linecap="round"/><path d="M42 53c10-9 39-10 54 3 9 8 11 22 4 32-8 12-27 8-39 7-14-1-28-1-31-15-2-11 4-21 12-27Z" fill="#E7C982" stroke="#28322D" stroke-width="2.5"/><path d="m36 58-8-26 20 11M68 44l18-14-5 29" fill="#E7C982" stroke="#28322D" stroke-width="2.5" stroke-linejoin="round"/><path d="M31 43c8-10 29-12 41-4 12 8 14 26 4 36-10 11-35 10-45-2-7-8-7-21 0-30Z" fill="#E7C982" stroke="#28322D" stroke-width="2.5"/><g class="cat-blink"><path d="M42 57h.1M62 55h.1" stroke="#28322D" stroke-width="4.5" stroke-linecap="round"/></g><path d="M52 63c2 2 4 2 6 0M53 61l2-1 2 1" stroke="#28322D" stroke-width="1.8" stroke-linecap="round"/><path d="M31 63 15 61M31 68 14 72M73 62l16-5M74 68l16 3" stroke="#28322D" stroke-width="1.5" stroke-linecap="round" opacity=".65"/><path d="M45 92v8M76 93v7" stroke="#28322D" stroke-width="5" stroke-linecap="round"/></svg></div></div>
+  </section>
+
+  <aside class="panel" aria-live="polite">
+    <div class="panel-head"><div class="chapter" id="chapterLabel"></div><div class="autosave"><i></i>已自动保存</div></div>
+    <div class="panel-scroll" id="panelScroll"><div id="questionView"></div></div>
+    <div class="panel-actions"><button class="btn ghost" id="backBtn">往回看</button><div class="micro" id="stepCounter"></div><button class="btn primary" id="nextBtn">走向下一页</button></div>
+  </aside>
+
+  <div class="completion" id="completion" role="dialog" aria-modal="true" aria-labelledby="completionTitle">
+    <div class="completion-card"><div class="memento" id="memento"></div><h2 id="completionTitle"></h2><p id="completionText"></p><button class="btn primary" id="completionBtn">继续往前</button></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <section class="result" id="result" aria-label="奥德赛路线结果">
+    <div class="result-top"><div class="result-brand">小猫与三条路 · 我的奥德赛地图</div><div class="result-actions"><button class="small-btn" id="copyAllBtn">复制摘要</button><button class="small-btn" id="printBtn">打印 / PDF</button><button class="small-btn" id="downloadDataBtn">导出记录</button><button class="small-btn" id="restartBtn">重新开始</button></div></div>
+    <header class="result-hero"><div class="eyebrow">THREE EQUAL POSSIBILITIES</div><h1>你没有只有一条路。</h1><p>以下三张路线卡都是值得认真试走的 A 计划。它们不是终身承诺，而是三种可以通过真实行动获得反馈的人生原型。</p></header>
+    <div class="result-summary" id="resultSummary"></div>
+    <main class="cards" id="cards"></main>
+    <section class="prototype" id="prototype"></section>
+  </section>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
