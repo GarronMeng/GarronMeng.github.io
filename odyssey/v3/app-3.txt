@@ -1,0 +1,134 @@
+
+  <div class="range-list">${[['health','健康'],['work','工作'],['play','娱乐'],['love','爱']].map(([k,n])=>`<div class="range-row"><div class="range-top"><b>${n}</b><span class="range-value" id="score-${k}">${state.scores[k]}</span></div><input type="range" min="0" max="10" value="${state.scores[k]}" data-score="${k}" aria-label="${n}评分"></div>`).join('')}</div>
+  <div class="field"><label>现在最亮红灯的是哪一盏？</label>${options('red',[['健康',''],['工作',''],['娱乐',''],['爱','']])}</div>
+  ${state.red?`<div class="field"><label>最接近的原因</label>${options('redReason',reasons)}</div><div class="optional-field"><button type="button" class="optional-toggle" data-toggle="redDetail">＋ 补充自己的情况（可选）</button><input class="input optional-input ${state.redDetail?'show':''}" id="redDetail" value="${e(state.redDetail)}" placeholder="一句话即可"></div>`:''}`;
+ }
+ if(step===2){
+  const statements=state.problemType?(problemStatements[state.problemType]||[]):[];
+  return `<h2 class="question">你现在最卡的问题，更接近哪一种？</h2><p class="hint">先选主题，再从系统给出的句子中挑一句最像你的。</p>${options('problemType',optionSets.problemType)}
+  ${state.problemType?`<div class="field"><label>哪句话最接近你现在的感受？</label>${options('coreProblemChoice',statements,true)}</div><div class="optional-field"><button type="button" class="optional-toggle" data-toggle="problemDetail">＋ 用自己的话替换（可选）</button><textarea class="textarea optional-input ${state.problemDetail?'show':''}" id="problemDetail" placeholder="只在预设选项不够准确时填写">${e(state.problemDetail)}</textarea></div>`:''}
+  ${insight('先选一个“足够接近”的版本，比从空白里写出完美答案更重要。')}`;
+ }
+ if(step===3){
+  const g=gravity();
+  return `<h2 class="question">把不能推动的墙，和可以打开的门分开。</h2><p class="hint">系统先根据你的选择做一次重定义。只需判断它是否接近。</p>
+  <div class="split-box"><div class="logic-box"><div class="tag">重力条件</div><p>${e(g.gravity)}</p></div><div class="logic-box design"><div class="tag">可设计问题</div><p>${e(g.design)}</p></div></div>
+  <div class="field"><label>这次重定义的准确度</label>${options('gravityFit',optionSets.gravityFit,true)}</div>
+  ${state.gravityFit==='还没说到点上'?`<div class="optional-field always"><textarea class="textarea show" id="gravityNote" placeholder="补充一句真正可以动手的部分">${e(state.gravityNote)}</textarea></div>`:''}
+  ${insight(`下一步不再是解决全部人生，而是验证一个你能影响的变量。`)}`;
+ }
+ if(step===4)return `<h2 class="question">选择对你最重要的价值</h2><p class="hint">每组最多选 3 项。不用排序，也不用解释。</p><div class="field"><label>工作为什么值得你投入时间？</label>${options('workValues',optionSets.workValues)}</div><div class="field"><label>五年后，怎样才算这段人生没有白过？</label>${options('lifeValues',optionSets.lifeValues)}</div>${insight('价值之间有拉扯很正常。未来路线需要同时照顾多个目标，而不是只追一个数字。')}`;
+ if(step===5)return `<h2 class="question">哪些事情让你亮起来，哪些事情让你暗下去？</h2><p class="hint">每组最多选 3 项。只记录能量，不评价能力。</p><div class="field"><label>做完虽然累，但精神是亮的</label>${options('gainers',optionSets.gainers)}</div><div class="field"><label>明明做得不错，却会被抽干</label>${options('drainers',optionSets.drainers)}</div>${insight('高能力、低能量的事情可能让你表现很好，却让人生越来越窄。')}`;
+ if(step===6)return `<h2 class="question">有没有一个你守了很久的旧规则？</h2><p class="hint">从预设中选出最接近的执念，再给它换一种保护方式。</p>
+  ${options('anchor',optionSets.anchor)}
+  ${state.anchor&&state.anchor!=='我暂时想不到'?`<div class="field"><label>它真正想保护什么？</label>${options('anchorNeed',optionSets.anchorNeed)}</div><div class="field"><label>可以先换成哪种低成本做法？</label>${options('anchorAlternative',optionSets.anchorAlternative)}</div>`:''}
+  <div class="optional-field"><button type="button" class="optional-toggle" data-toggle="anchorDetail">＋ 再补一句（可选）</button><input class="input optional-input ${state.anchorDetail?'show':''}" id="anchorDetail" value="${e(state.anchorDetail)}" placeholder="预设选项之外的想法"></div>`;
+ if(step===7){
+  const r=state.routes[routeTab];
+  const meta={
+   A:['航线 A｜当前延展版','沿着现有积累继续生长'],
+   B:['航线 B｜替代人生版','假如当前路径突然消失'],
+   C:['航线 C｜无惧目光版','暂时不考虑钱与评价']
+  }[routeTab];
+  return `<h2 class="question">从预设画面中，拼出三条五年路线</h2><p class="hint">每条路线只需选“画面、收获、风险”。系统会自动扩写成详细分享卡。</p>
+  <div class="route-tabs">${['A','B','C'].map(k=>`<button class="route-tab ${routeTab===k?'active':''}" data-route-tab="${k}">${state.routes[k].future?'✓ ':''}${k} 路线</button>`).join('')}</div>
+  <div class="insight" style="margin-top:0"><b>${meta[0]}</b><br>${meta[1]}</div>
+  <div class="field"><label>五年后的工作与生活画面</label>${routeOptions('future',routePresets[routeTab].future)}</div>
+  <div class="field"><label>最希望它带给你</label>${routeOptions('gain',routePresets[routeTab].gain)}</div>
+  <div class="field"><label>最需要防范的风险</label>${routeOptions('risk',routePresets[routeTab].risk)}</div>
+  <div class="optional-field"><button type="button" class="optional-toggle" data-toggle="routeDetail">＋ 给这条路补一句（可选）</button><input class="input optional-input ${r.detail?'show':''}" id="routeDetail" value="${e(r.detail)}" placeholder="例如：我希望每周能有两天完全属于自己"></div>
+  <p class="empty-note" id="routeNote">A、B、C 三条路线都需要选择一幅五年画面。</p>`;
+ }
+ return '';
+}
+function bindView(){
+ $$('.option').forEach(btn=>btn.addEventListener('click',()=>toggleOption(btn.dataset.field,btn.dataset.value)));
+ $$('[data-score]').forEach(r=>r.addEventListener('input',()=>{state.scores[r.dataset.score]=Number(r.value);$('#score-'+r.dataset.score).textContent=r.value;save()}));
+ $$('[data-route-tab]').forEach(b=>b.addEventListener('click',()=>{routeTab=b.dataset.routeTab;$('#questionView').innerHTML=view();bindView()}));
+ $$('[data-route-key]').forEach(b=>b.addEventListener('click',()=>{state.routes[routeTab][b.dataset.routeKey]=b.dataset.routeValue;save();$('#questionView').innerHTML=view();bindView()}));
+ $$('[data-toggle]').forEach(b=>b.addEventListener('click',()=>{const el=$('#'+b.dataset.toggle);el?.classList.toggle('show');if(el&&!el.classList.contains('show')){el.value='';if(b.dataset.toggle==='routeDetail')state.routes[routeTab].detail='';else state[b.dataset.toggle]='';save()}}));
+ ['redDetail','problemDetail','gravityNote','anchorDetail'].forEach(id=>{const el=$('#'+id);if(el)el.addEventListener('input',()=>{state[id]=el.value;syncDerived();save()})});
+ const routeDetail=$('#routeDetail');if(routeDetail)routeDetail.addEventListener('input',()=>{state.routes[routeTab].detail=routeDetail.value;save()});
+}
+function toggleOption(field,value){
+ if(multiFields.includes(field)){
+  state[field]=state[field]||[];
+  const i=state[field].indexOf(value);
+  if(i>=0)state[field].splice(i,1);
+  else if(state[field].length<3)state[field].push(value);
+  else return toast('每组先保留 3 个，让真正重要的东西浮出来');
+ }else{
+  state[field]=value;
+  if(field==='red'){state.redReason='';state.redDetail='';}
+  if(field==='problemType'){state.coreProblemChoice='';state.problemDetail='';}
+  if(field==='anchor'){state.anchorNeed='';state.anchorAlternative='';state.anchorDetail='';}
+ }
+ syncDerived();save();$('#questionView').innerHTML=view();bindView();
+}
+function captureRoute(){syncDerived();save()}
+function validate(){
+ syncDerived();
+ if(step===0&&!state.mode)return '先选择今天的旅程长度';
+ if(step===1&&(!state.red||!state.redReason))return '选出最亮红灯的一盏，并选择最接近的原因';
+ if(step===2&&(!state.problemType||!state.coreProblem))return '选择问题类型，再挑一句最接近的描述';
+ if(step===4&&(state.workValues.length<1||state.lifeValues.length<1))return '工作观和人生观各选择至少一项';
+ if(step===5&&(state.gainers.length<1||state.drainers.length<1))return '回血与耗电事项各选择至少一项';
+ if(step===6&&!state.anchor)return '先选择一个最接近的旧规则';
+ if(step===7){
+  const complete=['A','B','C'].every(k=>state.routes[k].future);
+  if(!complete){$('#routeNote')?.classList.add('show');return 'A、B、C 三条路线都需要选择五年画面'}
+ }
+ return '';
+}
+function gravity(){
+ const p=(state.problemType+' '+state.coreProblem).toLowerCase();
+ let gravity='他人的评价与选择、已经发生的过去、短期无法改变的行业和家庭环境。';
+ let design='如何在既有边界下，用一个低成本行动验证更适合自己的下一步。';
+ if(p.includes('赚钱')||p.includes('收入')){
+  gravity='市场周期、别人是否付费、短期现金流压力，以及收益的不确定性。';
+  design='如何保留基本安全边界，同时验证一个能够持续产生增量收入的原型。';
+ }else if(p.includes('转型')||p.includes('工作')){
+  gravity='过去履历已经形成、转型成本客观存在、他人不会立刻理解你的新身份。';
+  design='如何把转型从一次性跳跃，改成可以并行测试、逐步积累证据的连续原型。';
+ }else if(p.includes('消耗')||p.includes('累')){
+  gravity='部分职责和组织结构短期不会消失，外部需求也不会完全按你的节奏出现。';
+  design='如何降低高耗电事项的占比，并把高能量活动稳定放回日程和工作结构。';
+ }else if(p.includes('家庭')||p.includes('关系')){
+  gravity='他人是否理解、支持或改变，不由你单方面控制。';
+  design='如何在不等待完全理解的情况下，设定边界、争取资源并推进自己的小步选择。';
+ }else if(p.includes('不知道')||p.includes('方向')){
+  gravity='不存在一个能够通过思考一次算出的唯一正确答案。';
+  design='如何通过几次不同类型的真实体验，收集自己对方向的能量、能力与现实反馈。';
+ }
+ return{gravity,design};
+}
+function next(){
+ const err=validate();
+ if(err)return toast(err);
+ if(transitioning)return;
+ crossObstacle(()=>{if(step===7)finish();else{step++;render()}});
+}
+function crossObstacle(done){
+ transitioning=true;
+ $('#nextBtn').disabled=true;
+ $('#backBtn').disabled=true;
+ const cat=$('#cat'),obstacle=$('#obstacle'),world=$('#world'),feedback=$('#trailFeedback');
+ const f=feedbacks[step]||feedbacks[feedbacks.length-1];
+ $('#trailIcon').innerHTML=mementoSVG(f.icon);
+ $('#trailTitle').textContent=f.title;
+ $('#trailText').textContent=f.text;
+ feedback.classList.add('show');
+ cat.classList.add('leaping');
+ obstacle.classList.add('crossed');
+ world.classList.add('rushing');
+ setTimeout(()=>{
+  cat.classList.remove('leaping');
+  obstacle.classList.remove('crossed');
+  world.classList.remove('rushing');
+  feedback.classList.remove('show');
+  transitioning=false;
+  done();
+ },1180);
+}
+function back(){if(step>0&&!transitioning){captureRoute();step--;render()}}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),2200)}
