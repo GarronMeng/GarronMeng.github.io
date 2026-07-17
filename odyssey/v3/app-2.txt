@@ -1,0 +1,80 @@
+
+ lights:`<svg viewBox="0 0 520 360" fill="none"><path d="M115 281V161l143-75 145 75v120" fill="#F4EAD6" ${common}/><path d="M97 166 258 80l163 86" ${common}/><path d="M229 281v-72h58v72" fill="#C4A67A" ${common}/>${[0,1,2,3].map((_,i)=>`<g transform="translate(${143+i*68} 176)"><rect width="42" height="54" rx="17" fill="${i===0?'#E7C36F':'#C7D6C0'}" ${common}/><path d="M21 54v25M10 79h22" ${common}/><circle cx="21" cy="26" r="8" fill="#FFF4C8" opacity=".8"/></g>`).join('')}<path d="M83 300c110-20 242-20 354 0" ${common} opacity=".2"/></svg>`,
+ fog:`<svg viewBox="0 0 520 360" fill="none"><g opacity=".5" stroke="#71827A" stroke-width="18" stroke-linecap="round"><path d="M56 125h250M163 170h300M55 218h360"/><path d="M192 262h273"/></g><path d="M282 292V134" ${common}/><path d="M282 145h137l-26 34H282Z" fill="#EADDBF" ${common}/><path d="M282 200H157l25 34h100Z" fill="#D6E0D1" ${common}/><path d="M253 292h58" ${common}/><path d="M333 159h44M199 216h43" ${common} opacity=".52"/></svg>`,
+ mountain:`<svg viewBox="0 0 520 360" fill="none"><path d="M44 294 210 96l66 86 49-59 151 171Z" fill="#B7C6B7" ${common}/><path d="m210 96 31 98 35-12M325 123l18 84 35-18" ${common} opacity=".55"/><path d="M46 294c91-25 173-18 235 0 69 20 130 20 193 0" ${common} opacity=".3"/><path d="M227 294c19-36 45-52 75-50 32 2 56 20 77 50" fill="#E6D4B5" ${common}/><path d="M299 244c3 19 5 35 5 50" ${common} stroke-dasharray="8 8"/></svg>`,
+ compass:`<svg viewBox="0 0 520 360" fill="none"><circle cx="285" cy="188" r="104" fill="#F4EBD9" ${common}/><circle cx="285" cy="188" r="77" ${common} opacity=".45"/><path d="m285 102 23 86-23 86-23-86Z" fill="#D2A95F" ${common}/><path d="m201 188 84-23 84 23-84 23Z" fill="#91A993" ${common}/><circle cx="285" cy="188" r="9" fill="#344039"/><path d="M285 72v-25M285 329v-25M169 188h-25M426 188h-25" ${common}/><text x="278" y="45" fill="#344039" font-family="serif" font-size="22">N</text><path d="M87 294c78-17 153-14 220 0 57 12 104 12 142 0" ${common} opacity=".24"/></svg>`,
+ forest:`<svg viewBox="0 0 520 360" fill="none">${[76,142,215,303,388,451].map((x,i)=>`<g transform="translate(${x} ${88+(i%2)*25})"><path d="M0 198V76" ${common}/><path d="M0 0-49 91h98Z" fill="${i%2?'#ABC2A7':'#C2D0B8'}" ${common}/><path d="M0 36-39 121h78Z" fill="${i%2?'#91AA91':'#B3C4AA'}" ${common}/></g>`).join('')}<path d="M45 303c116-22 303-22 430 0" ${common} opacity=".25"/><path d="M238 304c8-47 21-76 43-76s36 29 43 76" fill="#D8C49D" ${common}/><path d="M281 227v78" ${common} stroke-dasharray="7 8"/></svg>`,
+ anchor:`<svg viewBox="0 0 520 360" fill="none"><path d="M39 266c78-31 152-25 222 0 75 27 150 28 222 0" stroke="#789AA0" stroke-width="16" stroke-linecap="round" opacity=".43"/><path d="M38 294c82-24 157-17 225 3 77 22 148 23 220-2" ${common} opacity=".34"/><circle cx="265" cy="104" r="32" fill="#F1E7D3" ${common}/><path d="M265 136v132M218 185h94" ${common}/><path d="M196 234c15 42 38 61 69 61 32 0 55-20 70-61M196 234l-22 30M335 234l22 30" ${common}/><path d="M314 158c31 15 49 37 51 67" ${common} stroke-dasharray="7 8" opacity=".45"/></svg>`,
+ fork:`<svg viewBox="0 0 520 360" fill="none"><path d="M256 318c0-59 2-104 7-134 5-31 4-62-3-94" stroke="#D4BE94" stroke-width="46" stroke-linecap="round"/><path d="M262 190c-9-43-46-66-111-87M264 191c9-44 48-68 116-91" stroke="#D4BE94" stroke-width="39" stroke-linecap="round"/><path d="M256 318c0-59 2-104 7-134 5-31 4-62-3-94M262 190c-9-43-46-66-111-87M264 191c9-44 48-68 116-91" ${common} stroke-dasharray="8 10" opacity=".35"/><path d="M260 199V96" ${common}/><path d="M260 111H129l24 31h107ZM260 154h138l-25 31H260Z" fill="#F2E6CF" ${common}/><circle cx="260" cy="72" r="25" fill="#E5B766" opacity=".66"/><path d="M82 313c113-17 249-16 357 0" ${common} opacity=".25"/></svg>`
+ };return map[type]||map.camp;
+}
+function mementoSVG(type){const s=`stroke="#344039" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`;const m={star:`<svg viewBox="0 0 48 48" fill="none"><path d="m24 6 4.7 12.1L41 23l-12.3 4.9L24 42l-4.7-14.1L7 23l12.3-4.9Z" fill="#E8C678" ${s}/></svg>`,lamp:`<svg viewBox="0 0 48 48" fill="none"><path d="M15 28c0-8 4-14 9-14s9 6 9 14v4H15Z" fill="#E8C678" ${s}/><path d="M24 14V7M18 37h12M24 32v5" ${s}/></svg>`,sign:`<svg viewBox="0 0 48 48" fill="none"><path d="M24 42V10M24 13h16l-4 7H24M24 25H9l4 7h11" ${s}/></svg>`,mountain:`<svg viewBox="0 0 48 48" fill="none"><path d="M4 39 20 12l8 12 5-8 11 23Z" fill="#B8C8B4" ${s}/><path d="M20 12l3 13 5-1" ${s}/></svg>`,compass:`<svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="17" ${s}/><path d="m24 11 5 13-5 13-5-13Z" fill="#D8AA5F" ${s}/></svg>`,leaf:`<svg viewBox="0 0 48 48" fill="none"><path d="M39 9C20 10 9 20 10 36c15 1 27-8 29-27Z" fill="#B7CBB2" ${s}/><path d="M12 35c7-8 14-14 24-22" ${s}/></svg>`,anchor:`<svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="10" r="5" ${s}/><path d="M24 15v22M15 22h18M10 32c3 7 8 10 14 10s11-3 14-10M10 32l-4 5M38 32l4 5" ${s}/></svg>`};return m[type]||m.star}
+
+function obstacleSVG(i){
+ const s=`stroke="#344039" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"`;
+ const obstacles=[
+  `<svg viewBox="0 0 110 100" fill="none"><path d="M13 80h84" ${s} opacity=".25"/><path d="M23 80V32h64v48" ${s}/><path d="M22 32h66M35 32v48M75 32v48" ${s}/><path d="M49 19h13v24H49z" fill="#E8C678" ${s}/></svg>`,
+  `<svg viewBox="0 0 110 100" fill="none"><path d="M8 82h94" ${s} opacity=".25"/><path d="M17 82c8-24 19-34 33-31 11 2 18 12 22 31" fill="#B9C8B3" ${s}/><path d="M54 82c5-19 14-27 25-25 9 2 14 10 17 25" fill="#D4BE94" ${s}/></svg>`,
+  `<svg viewBox="0 0 110 100" fill="none"><path d="M52 91V22M52 29h48L90 43H52M52 53H14l9 14h29" ${s}/><g opacity=".33" stroke="#71827A" stroke-width="8" stroke-linecap="round"><path d="M5 24h34M73 68h31M11 82h41"/></g></svg>`,
+  `<svg viewBox="0 0 110 100" fill="none"><path d="M6 85h98" ${s} opacity=".25"/><path d="M20 84 50 27l18 23 10-14 23 48Z" fill="#AFC0AF" ${s}/><path d="m50 27 7 29 11-6" ${s}/></svg>`,
+  `<svg viewBox="0 0 110 100" fill="none"><path d="M7 84h96" ${s} opacity=".25"/><circle cx="56" cy="53" r="31" fill="#F2E6CF" ${s}/><path d="m56 26 8 27-8 27-8-27Z" fill="#D8AA5F" ${s}/></svg>`,
+  `<svg viewBox="0 0 110 100" fill="none"><path d="M5 84h100" ${s} opacity=".25"/><path d="M13 72c27-5 53-3 83 4" stroke="#705844" stroke-width="13" stroke-linecap="round"/><path d="M29 63 20 43M67 70l11-20M46 69l-2-17" ${s}/><path d="M20 43c7 4 12 3 17-2M78 50c5 4 10 4 16 0" ${s}/></svg>`,
+  `<svg viewBox="0 0 110 100" fill="none"><path d="M7 84h96" ${s} opacity=".25"/><circle cx="56" cy="22" r="11" fill="#F2E6CF" ${s}/><path d="M56 33v43M39 48h34M28 66c7 17 16 24 28 24s22-8 29-24M28 66l-9 12M85 66l8 11" ${s}/><path d="M77 34c13 7 20 17 21 30" ${s} stroke-dasharray="5 6"/></svg>`,
+  `<svg viewBox="0 0 110 100" fill="none"><path d="M55 91V25M55 35H10l9 14h36M55 55h46L92 69H55" ${s}/><circle cx="55" cy="14" r="8" fill="#E8C678" ${s}/></svg>`
+ ];
+ return obstacles[i]||obstacles[0];
+}
+function render(){
+ syncDerived();
+ const s=scenes[step];
+ $('#chapterLabel').textContent=`${s.chapter} · ${step+1}/${scenes.length}`;
+ $('#sceneKicker').textContent=s.kicker;
+ $('#sceneTitle').textContent=s.title;
+ $('#sceneDesc').textContent=s.desc;
+ $('#caption').textContent=s.caption;
+ $('#stepCounter').textContent=`${step+1} / ${scenes.length}`;
+ $('#backBtn').disabled=step===0||transitioning;
+ $('#nextBtn').disabled=transitioning;
+ $('#nextBtn').textContent=step===7?'生成三张路线卡':'越过障碍，继续';
+ updateMap();
+ updateScene(s);
+ $('#questionView').innerHTML=view();
+ bindView();
+ save();
+ requestAnimationFrame(()=>$('#panelScroll').scrollTo({top:0,behavior:'smooth'}));
+}
+function updateScene(s){
+ const art=$('#sceneArt');
+ art.classList.add('changing');
+ setTimeout(()=>{art.innerHTML=sceneSVG(s.art);art.classList.remove('changing')},220);
+ const world=$('#world');
+ world.style.background=[
+  'linear-gradient(180deg,#dce8e8 0%,#edf0e3 60%,#d7dfc4 100%)',
+  'linear-gradient(180deg,#dfe9e5 0%,#f1eddf 58%,#d8dfc7 100%)',
+  'linear-gradient(180deg,#d5dfdf 0%,#e8e7dc 58%,#d1dac4 100%)',
+  'linear-gradient(180deg,#ccd9db 0%,#e5e5dc 58%,#c5d2bf 100%)',
+  'linear-gradient(180deg,#d9e6e3 0%,#eef0df 58%,#d3dfc6 100%)',
+  'linear-gradient(180deg,#d2e0d9 0%,#e7ecdb 58%,#bfd0b5 100%)',
+  'linear-gradient(180deg,#dce7e4 0%,#eef0df 58%,#c8d7c0 100%)',
+  'linear-gradient(180deg,#d8e4e5 0%,#f0eadb 58%,#d5ddc3 100%)'
+ ][step];
+ const shift=step*38;
+ $('#far').style.transform=`translateX(${-shift*.25}px)`;
+ $('#mid').style.transform=`translateX(${-shift*.55}px)`;
+ $('#front').style.transform=`translateX(${-shift*.85}px)`;
+ $('#road').style.transform=`translateX(${-shift}px)`;
+ const pct=step/(scenes.length-1);
+ const max=Math.max(0,Math.min(window.innerWidth*.28,250));
+ const catX=pct*max;
+ $('#cat').style.setProperty('--cat-x',`${catX}px`);
+ $('#obstacle').style.setProperty('--cat-x',`${catX}px`);
+ $('#obstacle').innerHTML=obstacleSVG(step);
+ $('#obstacle').className='obstacle';
+ $('#caption').classList.remove('pop');
+ requestAnimationFrame(()=>$('#caption').classList.add('pop'));
+}
+function view(){
+ if(step===0)return `<h2 class="question">你今天想走多远？</h2><p class="hint">标准版适合第一次体验。选择后直接继续，所有答案都可以返回修改。</p>${options('mode',optionSets.mode,true)}${insight('不需要先知道自己热爱什么。我们会从选择、能量和现实边界里找线索。')}`;
+ if(step===1){
+  const reasons=state.red?redReasons[state.red]:[];
+  return `<h2 class="question">给四盏灯打分：0 到 10</h2><p class="hint">先用滑杆快速判断，再选最接近的原因。补充文字完全可选。</p>
