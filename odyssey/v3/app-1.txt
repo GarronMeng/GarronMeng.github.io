@@ -1,0 +1,127 @@
+
+(()=>{
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const STORAGE_KEY='odyssey-cat-v3-state';
+const blankState={
+ mode:'25 分钟标准版',
+ scores:{health:5,work:5,play:5,love:5},
+ red:'',redReason:'',redDetail:'',redWhy:'',
+ problemType:'',coreProblemChoice:'',problemDetail:'',coreProblem:'',
+ gravityFit:'基本准确',gravityNote:'',
+ workValues:[],lifeValues:[],gainers:[],drainers:[],
+ anchor:'',anchorNeed:'',anchorAlternative:'',anchorDetail:'',anchorText:'',
+ routes:{
+  A:{future:'',gain:'',risk:'',detail:''},
+  B:{future:'',gain:'',risk:'',detail:''},
+  C:{future:'',gain:'',risk:'',detail:''}
+ },
+ step:0
+};
+let state=load();
+let step=Math.min(Math.max(Number(state.step)||0,0),7);
+let routeTab='A';
+let transitioning=false;
+
+const scenes=[
+ {chapter:'序章',kicker:'从这里出发',title:'你不需要先想清楚。',desc:'人生不是一道只能答对一次的题。今天只需带着一点好奇，和这只小猫一起往前走。',caption:'我们先决定走多远，不急着决定去哪里。',art:'camp'},
+ {chapter:'第一章',kicker:'四盏灯的小屋',title:'先看见，你在哪里。',desc:'健康、工作、娱乐与爱，构成了此刻人生的四盏灯。打分不是评判，只是读懂仪表盘。',caption:'亮得暗一点的灯，不代表你失败了。它只是正在发信号。',art:'lights'},
+ {chapter:'第二章',kicker:'雾中的路牌',title:'把模糊的焦虑，说成一句话。',desc:'当一个困扰有了名字，它才从无边的雾，变成可以靠近观察的路牌。',caption:'先挑一句最接近的，不必从空白开始。',art:'fog'},
+ {chapter:'第三章',kicker:'山与风',title:'有些山要翻，有些山要绕。',desc:'重力问题无法靠更努力消失；可设计问题则可以拆成行动与反馈。先把两者分开。',caption:'承认山在那里，不是认输，是重新选择走法。',art:'mountain'},
+ {chapter:'第四章',kicker:'指南针草地',title:'什么才是你的正北？',desc:'工作观与人生观不需要完全一致，但它们的张力必须被看见，否则路线会越走越偏。',caption:'指南针不会替你走路，但它能提醒你为什么出发。',art:'compass'},
+ {chapter:'第五章',kicker:'能量森林',title:'听见身体比语言更诚实的回答。',desc:'擅长不等于适合。真正可持续的路线，要关注哪些事让你活过来，哪些事在悄悄抽干你。',caption:'未来的路，应该多经过让你发亮的地方。',art:'forest'},
+ {chapter:'第六章',kicker:'旧锚小河',title:'松开一个曾经保护你的执念。',desc:'有些信念过去帮你获得安全，如今却可能把你钉在原地。我们不砍断它，只重新理解它。',caption:'旧锚不是敌人。只是船已经准备去更远的水面。',art:'anchor'},
+ {chapter:'终章',kicker:'三条地平线',title:'把三种可能，都认真选出来。',desc:'当前延展、替代人生、无惧目光。三条路地位平等，都值得用一个小原型去试。',caption:'先从预设画面里挑最接近的一张，之后仍可修改。',art:'fork'}
+];
+const feedbacks=[
+ {title:'迈过起点',text:'你已经允许自己从一个小版本开始。',icon:'star'},
+ {title:'点亮四盏灯',text:'模糊的不适，已经变成可以观察的信号。',icon:'lamp'},
+ {title:'穿过一小片雾',text:'你给最卡的事情选出了一个更清楚的名字。',icon:'sign'},
+ {title:'绕开不能推动的山',text:'力气开始回到真正可以行动的变量上。',icon:'mountain'},
+ {title:'找到一枚指南针',text:'你正在看见自己真正想同时守住的价值。',icon:'compass'},
+ {title:'跨过倒下的树枝',text:'你区分了“做得来”和“做了会发亮”。',icon:'leaf'},
+ {title:'松开旧锚的绳结',text:'过去的保护方式，可以升级而不必被否定。',icon:'anchor'},
+ {title:'抵达三条地平线',text:'三种人生可能都已经有了可试走的轮廓。',icon:'star'}
+];
+const multiFields=['workValues','lifeValues','gainers','drainers'];
+const optionSets={
+ mode:[['10 分钟速通版','快速获得三条路线草图'],['25 分钟标准版','推荐：完整路线与行动卡'],['45 分钟深水版','更细地拆解执念与原型']],
+ problemType:[['不知道未来该走哪条路','方向模糊'],['想换工作或转型，但不敢','转场风险'],['想赚钱，但不想被工作吞掉','收入与自由'],['现在的人生很消耗','能量失衡'],['有很多想法，但一直没开始','启动困难'],['被家庭、关系或责任卡住','外部约束'],['不知道自己真正想要什么','价值模糊'],['其他','仍可补充自己的话']],
+ workValues:[['赚钱和安全感',''],['成长和能力提升',''],['影响他人',''],['创造作品',''],['身份与认可',''],['自由安排生活',''],['与优秀的人合作',''],['服务更大的议题','']],
+ lifeValues:[['我变得更自由',''],['我赚到了足够的钱',''],['我做出了自己的作品或事业',''],['我帮助了一类人',''],['我拥有更稳定的关系',''],['我变得更健康、更松弛',''],['我获得了社会认可',''],['我不再被恐惧驱动','']],
+ gainers:[['和人深度交流',''],['做策略分析',''],['写作与表达',''],['做项目推进',''],['研究复杂问题',''],['帮别人解决困境',''],['组织活动',''],['做视觉、内容或产品',''],['学习新工具',''],['独处恢复','']],
+ drainers:[['重复沟通',''],['情绪劳动',''],['应付层级关系',''],['琐碎执行',''],['无意义会议',''],['纯销售转化',''],['被动响应需求',''],['长时间社交',''],['没有反馈的工作',''],['临时救火','']],
+ anchor:[['必须在当前行业里证明自己',''],['必须赚到某个数字才有资格改变',''],['必须等准备好了再开始',''],['必须获得别人认可',''],['必须找到热爱才能行动',''],['必须一次选对',''],['必须先稳定再自由',''],['我暂时想不到','']],
+ anchorNeed:[['安全感与可控感',''],['证明自己有价值',''],['避免失败和后悔',''],['维持收入与生活稳定',''],['不让重要的人失望',''],['保住已有积累',''],['避免被评价或拒绝','']],
+ anchorAlternative:[['先做一个不影响主业的小实验',''],['设定可承受的试错预算',''],['找走过类似路线的人访谈',''],['把大决定拆成 30 天验证',''],['先建立边界，不等待所有人理解',''],['保留退路，同时积累新证据','']],
+ gravityFit:[['基本准确','这已经抓到主要矛盾'],['部分准确','方向对，但还缺一点'],['还没说到点上','我会补充一句']]
+};
+const redReasons={
+ 健康:[['睡眠和精力长期不足',''],['身体不适或恢复变慢',''],['焦虑、紧绷或情绪低落',''],['运动和休息总被挤掉','']],
+ 工作:[['工作持续消耗，缺少成就感',''],['看不到成长或下一步',''],['收入压力让我无法松动',''],['缺少自主权，总在被动响应','']],
+ 娱乐:[['几乎没有真正属于自己的时间',''],['娱乐也变成任务或消费',''],['喜欢的兴趣被长期搁置',''],['下班后只剩下瘫着恢复','']],
+ 爱:[['缺少稳定而深入的连接',''],['关系中有冲突或难以表达',''],['常感到孤独或不被理解',''],['照顾别人太多，自己被忽略','']]
+};
+const problemStatements={
+ '不知道未来该走哪条路':[['我有几条路，但不知道哪条更值得先试',''],['现在的路不算差，却越来越不像我想要的生活',''],['我担心一旦选错，就浪费已有积累',''],['我一直在想方向，却没有真实体验来验证','']],
+ '想换工作或转型，但不敢':[['我想转型，但收入和身份风险让我停在原地',''],['我不知道现有能力能迁移到哪里',''],['我想离开现在的工作，却不确定自己是在逃离还是靠近',''],['我总想等准备充分再开始，但准备似乎没有尽头','']],
+ '想赚钱，但不想被工作吞掉':[['我想提高收入，但不愿继续用时间和健康硬换',''],['我想建立第二收入来源，却一直没有形成闭环',''],['我把财务目标当成改变人生的前置条件',''],['我担心一放慢就会失去安全感和竞争力','']],
+ '现在的人生很消耗':[['我能完成很多事，但长期没有真正恢复',''],['每天都在响应需求，却很少推进自己的事情',''],['我做得不错，但越来越感受不到意义',''],['工作、健康和关系正在互相挤压','']],
+ '有很多想法，但一直没开始':[['我总想把方案想完整，结果迟迟没有第一版',''],['我的想法很多，但没有一个被持续推进',''],['我害怕公开一个不成熟的作品',''],['我很忙，却没有为真正重要的事情留出固定时间','']],
+ '被家庭、关系或责任卡住':[['我想改变，但担心伤害或辜负重要的人',''],['我一直等待别人理解，才敢推进自己的选择',''],['现实责任让我觉得自己没有选择权',''],['我很难在照顾别人和照顾自己之间设边界','']],
+ '不知道自己真正想要什么':[['我知道自己不想要什么，却说不清真正想靠近什么',''],['我习惯按外部标准行动，很少听见自己的偏好',''],['我擅长的事情很多，但它们不一定让我有能量',''],['我想先找到热爱再行动，因此一直没有开始','']],
+ '其他':[['我现在的问题很复杂，但最影响我的仍是一种卡住感',''],['我知道现状不能一直持续，却还没找到可以动手的部分',''],['我需要先把这个问题从情绪变成一个可测试的假设','']]
+};
+const routePresets={
+ A:{
+  future:[['在现有岗位或行业继续升级，成为更自主的专家或负责人',''],['保留主业，同时孵化一个自己的副业、作品或咨询服务',''],['在组织内部转向更适配的职能或业务方向',''],['维持稳定职业，但把健康、关系和生活重新放回中心','']],
+  gain:[['更强的自主权',''],['稳定收入与持续成长',''],['专业影响力',''],['自己的作品和资产',''],['更平衡的生活','']],
+  risk:[['责任越来越多，自主权却没有增加',''],['双线作战导致健康透支',''],['稳定逐渐变成停滞',''],['私人生活继续被工作挤压','']]
+ },
+ B:{
+  future:[['把现有能力迁移到相邻行业或新职能',''],['转为独立顾问、自由职业或项目制工作',''],['进入公益、教育、创意或科技等新领域',''],['回到学习或训练场，重新建立一套专业身份','']],
+  gain:[['重新选择的空间',''],['更轻的组织关系',''],['能力迁移与抗脆弱性',''],['新的身份与成长曲线',''],['更适合自己的日常','']],
+  risk:[['收入和反馈在早期不稳定',''],['对新领域的想象大于真实了解',''],['身份落差让我过早退回旧轨道',''],['已有积累无法顺利迁移','']]
+ },
+ C:{
+  future:[['以个人创作、内容或自己的事业为生活中心',''],['把健康、亲密关系和慢生活放在首位',''],['过一种旅居、小团队、多项目组合的自由生活',''],['长期投入一个真正有意义的社会议题','']],
+  gain:[['时间与地点自由',''],['真实的创造感',''],['更深的关系和生活质感',''],['意义感与影响力',''],['更像自己的节奏','']],
+  risk:[['理想缺少稳定的收入承载结构',''],['自由变成松散，难以持续推进',''],['与主流评价体系脱节带来不安',''],['只是在逃离，而非真正建设','']]
+ }
+};
+
+function load(){
+ try{
+  const raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+  return {
+   ...structuredClone(blankState),...raw,
+   scores:{...blankState.scores,...(raw.scores||{})},
+   routes:Object.fromEntries(['A','B','C'].map(k=>[k,{...blankState.routes[k],...(raw.routes?.[k]||{})}]))
+  };
+ }catch{return structuredClone(blankState)}
+}
+function save(){state.step=step;try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch{}}
+function e(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function selected(field,value){return Array.isArray(state[field])?state[field].includes(value):state[field]===value}
+function options(field,items,single=false){return `<div class="option-grid ${single?'single':''}">${items.map(([v,s],i)=>`<button type="button" class="option ${selected(field,v)?'selected':''}" data-field="${field}" data-value="${e(v)}"><span class="option-index">${String(i+1).padStart(2,'0')}</span><span class="option-text">${e(v)}${s?`<small>${e(s)}</small>`:''}</span></button>`).join('')}</div>`}
+function routeOptions(key,items){const current=state.routes[routeTab][key];return `<div class="option-grid">${items.map(([v,s],i)=>`<button type="button" class="option ${current===v?'selected':''}" data-route-key="${key}" data-route-value="${e(v)}"><span class="option-index">${String(i+1).padStart(2,'0')}</span><span class="option-text">${e(v)}${s?`<small>${e(s)}</small>`:''}</span></button>`).join('')}</div>`}
+function insight(text){return `<div class="insight"><b>设计师观察：</b>${text}</div>`}
+function list(arr,fallback='尚未选择'){return arr&&arr.length?arr.join('、'):fallback}
+
+function syncDerived(){
+ state.redWhy=[state.redReason,state.redDetail].filter(Boolean).join('；');
+ state.coreProblem=(state.problemDetail||state.coreProblemChoice||state.problemType||'').trim();
+ state.anchorText=[
+  state.anchor?`我死守的是“${state.anchor}”`:'',
+  state.anchorNeed?`它想保护的是“${state.anchorNeed}”`:'',
+  state.anchorAlternative?`我可以先尝试“${state.anchorAlternative}”`:'',
+  state.anchorDetail
+ ].filter(Boolean).join('。');
+}
+function initMap(){const map=$('#journeyMap');map.innerHTML=scenes.map((_,i)=>`${i?'<span class="map-line"></span>':''}<span class="map-node" data-node="${i}"></span>`).join('')}
+function updateMap(){$$('.map-node').forEach((n,i)=>{n.classList.toggle('done',i<step);n.classList.toggle('current',i===step)})}
+function sceneSVG(type){
+ const common=`stroke="#344039" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"`;
+ const map={
+ camp:`<svg viewBox="0 0 520 360" fill="none"><path d="M74 276c96-58 251-47 365 6" ${common} opacity=".22"/><path d="M199 267 264 148l70 119Z" fill="#E8D8B8" ${common}/><path d="m264 148 7 119" ${common}/><path d="M234 201h60" ${common} opacity=".55"/><path d="M114 279c8-34 22-51 43-51s33 18 40 51" fill="#BECFB5" ${common}/><path d="M137 228v-32M128 202c8-8 19-8 28 0" ${common}/><circle cx="390" cy="118" r="35" fill="#E6B96B" opacity=".62"/><path d="M371 301c8-21 18-29 30-29 14 0 23 9 30 29" fill="#D8C49D" ${common}/></svg>`,
