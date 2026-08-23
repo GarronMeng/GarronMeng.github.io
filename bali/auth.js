@@ -1,6 +1,6 @@
 (()=>{
-  const AUTH_KEY='project-bali-auth-v1';
-  const PASS_HASH='ac1a6ed3b3b40a41e43a54aace7bb14773efce011f130417ab98aaabd73c186a';
+  const AUTH_KEY='project-bali-auth-v2';
+  const PASS_HASH='d84944a2e374f1a7e3c11cd19402219a975dde64fc3b6649ec809c365d67a618';
   let unlocked=false;
   try{unlocked=sessionStorage.getItem(AUTH_KEY)==='ok'}catch(e){}
   if(unlocked)return;
