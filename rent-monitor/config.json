@@ -1,9 +1,11 @@
 {
   "criteria": {
     "collect_min_area": 280,
-    "collect_max_rent": 15000,
+    "collect_max_rent": 17000,
     "target_min_area": 300,
-    "target_max_rent": 14000,
+    "target_max_rent": 15000,
+    "stretch_max_rent": 16000,
+    "exceptional_max_rent": 17000,
     "require_whole_unit": true,
     "prefer_split_ac": true,
     "prefer_wet_dry": true,
@@ -16,7 +18,8 @@
     "work_arrival_station": "金钟",
     "work_arrival_deadline": "06:30",
     "preferred_arrival_buffer_min": 5,
-    "require_first_service_feasible": true
+    "require_first_service_feasible": true,
+    "preferred_west_kowloon_zone": ["深水埗", "长沙湾", "荔枝角", "南昌", "大角咀", "奥运"]
   },
   "baseline": {
     "estate": "基安大厦 10C",
