@@ -13,6 +13,7 @@ function commute(x){
     return {ok:true,risk:'safe',label:'06:30可达 · 余量充足',bonus:8};
   }
   if(route.includes('港岛线'))return {ok:true,risk:'safe',label:'06:30可达 · 早班余量充足',bonus:8};
+  if(route.includes('南港岛线'))return {ok:true,risk:'safe',label:'06:30可达 · 首班约06:11前后到金钟',bonus:9};
   if(route.includes('荃湾线')){
     if(TW_TIGHT.has(st))return {ok:true,risk:'tight',label:'06:30可达 · 首班约06:26–06:28到，容错低',bonus:-6};
     return {ok:true,risk:'safe',label:'06:30可达 · 余量较好',bonus:5};
