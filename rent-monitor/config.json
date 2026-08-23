@@ -4,11 +4,17 @@
     "collect_max_rent": 15000,
     "target_min_area": 300,
     "target_max_rent": 14000,
+    "collect_max_mtr_walk_min": 10,
+    "target_max_mtr_walk_min": 5,
+    "min_rent_psf": 20,
+    "max_details_per_source": 45,
     "require_whole_unit": true,
-    "prefer_split_ac": true,
-    "prefer_wet_dry": true,
-    "prefer_lift": true,
-    "require_direct_admiralty": true
+    "require_conventional_residential": true,
+    "require_mtr_distance_evidence": true,
+    "require_direct_admiralty": true,
+    "require_lift_for_strict": true,
+    "require_split_ac_for_strict": true,
+    "prefer_wet_dry": true
   },
   "baseline": {
     "estate": "基安大厦 10C",
