@@ -6,6 +6,8 @@
     "target_max_rent": 15000,
     "stretch_max_rent": 16000,
     "exceptional_max_rent": 17000,
+    "watchlist_max_rent": 18000,
+    "pavilia_alert_max_rent": 20000,
     "require_whole_unit": true,
     "prefer_split_ac": true,
     "prefer_wet_dry": true,
@@ -19,7 +21,14 @@
     "work_arrival_deadline": "06:30",
     "preferred_arrival_buffer_min": 5,
     "require_first_service_feasible": true,
-    "preferred_west_kowloon_zone": ["深水埗", "长沙湾", "荔枝角", "南昌", "大角咀", "奥运"]
+    "preferred_west_kowloon_zone": ["深水埗", "长沙湾", "荔枝角", "南昌", "大角咀", "奥运"],
+    "priority_areas": ["北角", "鰂鱼涌", "长沙湾", "鸭脷洲", "大围", "沙田", "柴湾", "粉岭"],
+    "watchlist_estates": [
+      "惠利大廈", "金海大廈", "中興大廈", "東發大廈",
+      "曉悅", "睿峰", "美居中心", "嘉裕居", "黃金大廈", "昌遠大廈", "喜居",
+      "柏傲莊", "雅麗閣", "粉嶺名都", "粉嶺中心", "牽晴間"
+    ],
+    "premium_watchlist_estates": ["柏傲莊", "睿峰"]
   },
   "baseline": {
     "estate": "基安大厦 10C",
