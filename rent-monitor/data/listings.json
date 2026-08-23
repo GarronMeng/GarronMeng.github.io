@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "updated_at": null,
+    "status": "pending",
+    "source_count": 8,
+    "errors": [],
+    "message": "等待首次自动刷新"
+  },
+  "baseline": {
+    "estate": "基安大厦 10C",
+    "rent": 11000,
+    "area": 224,
+    "age_years": 35,
+    "ac": "窗口式冷气",
+    "station": "何文田"
+  },
+  "listings": []
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f5f2" />
+  <title>香港租房雷达</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">HK RENTAL RADAR</p>
+        <h1>香港租房雷达</h1>
+        <p class="sub">只看真正值得从基安大厦搬走的房源。</p>
+      </div>
+      <div class="refresh-box">
+        <span class="pulse"></span>
+        <div><strong id="refreshStatus">正在读取</strong><small id="updatedAt">—</small></div>
+      </div>
+    </header>
+
+    <section class="benchmark">
+      <div class="benchmark-title"><span>当前基准</span><strong>基安大厦 10C</strong></div>
+      <div class="benchmark-grid">
+        <div><b>HK$11,000</b><span>月租</span></div>
+        <div><b>224 呎</b><span>实用面积</span></div>
+        <div><b>35 年</b><span>楼龄</span></div>
+        <div><b>窗机</b><span>冷气</span></div>
+      </div>
+    </section>
+
+    <section class="summary" aria-label="监控摘要">
+      <div><b id="activeCount">0</b><span>有效候选</span></div>
+      <div><b id="strictCount">0</b><span>核心达标</span></div>
+      <div><b id="newCount">0</b><span>新盘 / 降价</span></div>
+      <div><b id="sourceCount">0</b><span>监控区域</span></div>
+    </section>
+
+    <section class="controls">
+      <div class="segmented" role="tablist">
+        <button class="seg active" data-view="all">全部候选</button>
+        <button class="seg" data-view="strict">核心达标</button>
+        <button class="seg" data-view="new">新盘 / 降价</button>
+      </div>
+      <div class="chips" id="chips">
+        <button class="chip active" data-filter="area">≥300呎</button>
+        <button class="chip active" data-filter="rent">≤14k</button>
+        <button class="chip active" data-filter="direct">直达金钟</button>
+        <button class="chip" data-filter="split">分体冷气已确认</button>
+      </div>
+    </section>
+
+    <section class="list-head">
+      <div><strong id="resultTitle">推荐房源</strong><span id="resultMeta"></span></div>
+      <select id="sortSelect" aria-label="排序">
+        <option value="score">综合推荐</option>
+        <option value="area">面积最大</option>
+        <option value="rent">租金最低</option>
+        <option value="fresh">最新确认</option>
+      </select>
+    </section>
+
+    <section id="listings" class="listings"></section>
+    <section id="empty" class="empty" hidden>
+      <strong>暂时没有符合当前筛选的房源</strong>
+      <span>监控会继续刷新；可关闭部分筛选查看接近条件的候选。</span>
+    </section>
+
+    <footer>
+      <span>来源：28Hse 公开租盘页面</span>
+      <span>详情页失效后自动移除</span>
+    </footer>
+  </main>
+  <script src="./app.js" defer></script>
+</body>
+</html>

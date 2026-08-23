@@ -1,0 +1,40 @@
+name: Refresh HK rental monitor
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'rent-monitor/**'
+      - '.github/workflows/rent-monitor.yml'
+  schedule:
+    - cron: '17 0,6,12,18 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: rent-monitor-refresh
+  cancel-in-progress: true
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: rent-monitor/requirements.txt
+      - name: Install dependencies
+        run: pip install -r rent-monitor/requirements.txt
+      - name: Refresh live listings
+        run: python rent-monitor/scripts/scrape.py
+      - name: Commit refreshed data
+        run: |
+          if git diff --quiet -- rent-monitor/data/listings.json; then
+            echo "No data changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rent-monitor/data/listings.json
+          git commit -m "chore: refresh rental listings [skip ci]"
+          git push
