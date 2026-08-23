@@ -35,13 +35,14 @@
       <div><b id="activeCount">0</b><span>有效候选</span></div>
       <div><b id="strictCount">0</b><span>核心达标</span></div>
       <div><b id="newCount">0</b><span>新盘 / 降价</span></div>
-      <div><b id="sourceCount">0</b><span>监控区域</span></div>
+      <div><b id="watchCount">0</b><span>重点屋苑</span></div>
     </section>
 
     <section class="controls">
       <div class="segmented" role="tablist">
         <button class="seg active" data-view="all">全部候选</button>
         <button class="seg" data-view="strict">核心达标</button>
+        <button class="seg" data-view="watch">重点屋苑</button>
         <button class="seg" data-view="new">新盘 / 降价</button>
       </div>
       <div class="chips" id="chips">
@@ -66,12 +67,12 @@
     <section id="listings" class="listings"></section>
     <section id="empty" class="empty" hidden>
       <strong>暂时没有符合当前筛选的房源</strong>
-      <span>监控会继续刷新；14k以内优先，15–16k作为可接受扩展区间。</span>
+      <span>常规候选默认看到16k；重点屋苑页会额外观察18–20k内的明显降价机会。</span>
     </section>
 
     <footer>
       <span>来源：28Hse 公开租盘页面</span>
-      <span>详情页失效后自动移除</span>
+      <span>重点：北角 / 鰂鱼涌 / 长沙湾 / 鸭脷洲 / 大围 / 沙田 / 柴湾 / 粉岭</span>
     </footer>
   </main>
   <script src="./app.js" defer></script>
