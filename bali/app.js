@@ -1,5 +1,5 @@
 (()=>{const D=window.TRAVEL_DATA||{},days=D.days||[],routes=D.routes||{},byId=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#039;'}[c]));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const dayHtml=d=>`<details class="day${d.cambodia?' cambodia':''}"${d.cambodia?' open':''}><summary><div class="badge"><span>${esc(d.date)}</span><b>D${d.n}</b></div><div class="dtext"><h3>${esc(d.title)}</h3><p>${esc(d.desc)}</p><span class="level">强度：${esc(d.level)}</span></div><div class="chev">⌄</div></summary><div class="timeline">${d.timeline.map(x=>`<div class="trow"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></div>`).join('')}</div><div class="todos">${d.tags.map(x=>`<span class="tag ${x[0]}">${esc(x[1])}</span>`).join('')}${d.n===9?'<a class="tag info" href="./angkor/" style="text-decoration:none">打开吴哥专题 →</a>':''}</div></details>`;
 byId('days').innerHTML=days.map(dayHtml).join('');
 let selected='D9',map=null,live=false,layers=[],tools=byId('maptools'),fallback=byId('mapFallback'),status=byId('mapstatus'),gmaps=byId('gmaps');
