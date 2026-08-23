@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">HK RENTAL RADAR</p>
         <h1>香港租房雷达</h1>
-        <p class="sub">优先找真正值得从基安大厦搬走、并能在早上 06:30 前到金钟的房源。</p>
+        <p class="sub">不追求每项满分。把通勤、空间、租金、楼龄与居住品质放在同一张表里权衡。</p>
       </div>
       <div class="refresh-box">
         <span class="pulse"></span>
@@ -26,28 +26,29 @@
       <div class="benchmark-grid">
         <div><b>HK$11,000</b><span>月租</span></div>
         <div><b>224 呎</b><span>实用面积</span></div>
-        <div><b>≤15k</b><span>优先预算</span></div>
+        <div><b>15–18k</b><span>主要权衡区间</span></div>
         <div><b>06:30</b><span>到金钟</span></div>
       </div>
     </section>
 
     <section class="summary" aria-label="监控摘要">
-      <div><b id="activeCount">0</b><span>有效候选</span></div>
-      <div><b id="strictCount">0</b><span>核心达标</span></div>
-      <div><b id="newCount">0</b><span>新盘 / 降价</span></div>
+      <div><b id="coreCount">0</b><span>A 核心盘</span></div>
+      <div><b id="tradeoffCount">0</b><span>B 权衡盘</span></div>
       <div><b id="watchCount">0</b><span>重点屋苑</span></div>
+      <div><b id="newCount">0</b><span>新盘 / 降价</span></div>
     </section>
 
     <section class="controls">
       <div class="segmented" role="tablist">
         <button class="seg active" data-view="all">全部候选</button>
-        <button class="seg" data-view="strict">核心达标</button>
+        <button class="seg" data-view="core">A 核心</button>
+        <button class="seg" data-view="tradeoff">B 权衡</button>
         <button class="seg" data-view="watch">重点屋苑</button>
         <button class="seg" data-view="new">新盘 / 降价</button>
       </div>
       <div class="chips" id="chips">
-        <button class="chip active" data-filter="area">≥300呎</button>
-        <button class="chip active" data-filter="rent">≤16k</button>
+        <button class="chip" data-filter="area">只看 ≥300呎</button>
+        <button class="chip" data-filter="rent">只看 ≤16k</button>
         <button class="chip active" data-filter="direct">直达金钟</button>
         <button class="chip active" data-filter="commute">06:30前可达</button>
         <button class="chip" data-filter="split">分体冷气已确认</button>
@@ -55,7 +56,7 @@
     </section>
 
     <section class="list-head">
-      <div><strong id="resultTitle">推荐房源</strong><span id="resultMeta"></span></div>
+      <div><strong id="resultTitle">全部可权衡候选</strong><span id="resultMeta"></span></div>
       <select id="sortSelect" aria-label="排序">
         <option value="score">综合推荐</option>
         <option value="area">面积最大</option>
@@ -66,13 +67,13 @@
 
     <section id="listings" class="listings"></section>
     <section id="empty" class="empty" hidden>
-      <strong>暂时没有符合当前筛选的房源</strong>
-      <span>常规候选默认看到16k；重点屋苑页会额外观察18–20k内的明显降价机会。</span>
+      <strong>暂时没有符合当前组合的房源</strong>
+      <span>关闭部分筛选即可看到面积、租金或设备存在取舍但仍值得比较的候选。</span>
     </section>
 
     <footer>
-      <span>来源：28Hse 公开租盘页面</span>
-      <span>重点：北角 / 鰂鱼涌 / 长沙湾 / 鸭脷洲 / 大围 / 沙田 / 柴湾 / 粉岭</span>
+      <span>A：核心匹配 · B：有明确取舍但值得看 · C：机会观察</span>
+      <span>硬排除：失效盘 / 合租分间 / 学生宿舍 / 村屋 / 非住宅</span>
     </footer>
   </main>
   <script src="./app.js" defer></script>
