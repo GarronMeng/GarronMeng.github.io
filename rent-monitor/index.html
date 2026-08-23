@@ -15,12 +15,8 @@
         <h1>香港租房雷达</h1>
         <p class="sub">不追求每项满分。把通勤、空间、租金、楼龄与居住品质放在同一张表里权衡。</p>
       </div>
-      <div class="refresh-box">
-        <span class="pulse"></span>
-        <div><strong id="refreshStatus">正在读取</strong><small id="updatedAt">—</small></div>
-      </div>
+      <div class="refresh-box"><span class="pulse"></span><div><strong id="refreshStatus">正在读取</strong><small id="updatedAt">—</small></div></div>
     </header>
-
     <section class="benchmark">
       <div class="benchmark-title"><span>当前基准</span><strong>基安大厦 10C</strong></div>
       <div class="benchmark-grid">
@@ -30,14 +26,12 @@
         <div><b>06:30</b><span>到金钟</span></div>
       </div>
     </section>
-
     <section class="summary" aria-label="监控摘要">
-      <div><b id="coreCount">0</b><span>A 核心盘</span></div>
+      <div><b id="coreCount">0</b><span>A 核心候选</span></div>
       <div><b id="tradeoffCount">0</b><span>B 权衡盘</span></div>
       <div><b id="watchCount">0</b><span>重点屋苑</span></div>
       <div><b id="newCount">0</b><span>新盘 / 降价</span></div>
     </section>
-
     <section class="controls">
       <div class="segmented" role="tablist">
         <button class="seg active" data-view="all">全部候选</button>
@@ -54,28 +48,14 @@
         <button class="chip" data-filter="split">分体冷气已确认</button>
       </div>
     </section>
-
     <section class="list-head">
       <div><strong id="resultTitle">全部可权衡候选</strong><span id="resultMeta"></span></div>
-      <select id="sortSelect" aria-label="排序">
-        <option value="score">综合推荐</option>
-        <option value="area">面积最大</option>
-        <option value="rent">租金最低</option>
-        <option value="fresh">最新确认</option>
-      </select>
+      <select id="sortSelect" aria-label="排序"><option value="score">综合推荐</option><option value="area">面积最大</option><option value="rent">租金最低</option><option value="fresh">最新确认</option></select>
     </section>
-
     <section id="listings" class="listings"></section>
-    <section id="empty" class="empty" hidden>
-      <strong>暂时没有符合当前组合的房源</strong>
-      <span>关闭部分筛选即可看到面积、租金或设备存在取舍但仍值得比较的候选。</span>
-    </section>
-
-    <footer>
-      <span>A：核心匹配 · B：有明确取舍但值得看 · C：机会观察</span>
-      <span>硬排除：失效盘 / 合租分间 / 学生宿舍 / 村屋 / 非住宅</span>
-    </footer>
+    <section id="empty" class="empty" hidden><strong>暂时没有符合当前组合的房源</strong><span>关闭部分筛选即可看到面积、租金或设备存在取舍但仍值得比较的候选。</span></section>
+    <footer><span>A 核心候选：核心经济与通勤达标；分体冷气、干湿分离可待确认</span><span>硬排除：失效盘 / 合租分间 / 学生宿舍 / 村屋 / 非住宅</span></footer>
   </main>
-  <script src="./app.js" defer></script>
+  <script src="./app.js?v=3.1" defer></script>
 </body>
 </html>
