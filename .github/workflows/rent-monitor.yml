@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r rent-monitor/requirements.txt
       - name: Refresh live listings
-        run: python rent-monitor/scripts/scrape.py
+        run: python rent-monitor/scripts/scrape_v22.py
       - name: Commit refreshed data
         run: |
           if git diff --quiet -- rent-monitor/data/listings.json; then
