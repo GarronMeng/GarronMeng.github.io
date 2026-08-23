@@ -18,9 +18,7 @@ function statusBadges(x){
   return out.join('')
 }
 function verifiedBase(x){return x.type_verified===true&&x.mtr_verified===true&&x.shared!==true}
-function strict(x){
-  return verifiedBase(x)&&x.area>=300&&x.rent<=14000&&x.direct_to_admiralty&&x.mtr_walk_min<=5&&x.lift===true&&x.split_ac===true&&x.window_ac!==true
-}
+function strict(x){return verifiedBase(x)&&x.area>=300&&x.rent<=14000&&x.direct_to_admiralty&&x.mtr_walk_min<=5&&x.lift===true&&x.split_ac===true&&x.window_ac!==true}
 function passes(x){
   if(!verifiedBase(x))return false;
   if(state.view==='strict'&&!strict(x))return false;
@@ -45,9 +43,8 @@ function card(x){
 }
 function render(){
   if(!state.data)return;
-  const verified=state.data.listings.filter(verifiedBase);
-  const items=sorted(verified.filter(passes));
-  document.querySelector('#listings').innerHTML=items.map(card).join('');document.querySelector('#empty').hidden=items.length>0;document.querySelector('#resultMeta').textContent=`${items.length} 套`;document.querySelector('#activeCount').textContent=verified.length;document.querySelector('#strictCount').textContent=verified.filter(strict).length;document.querySelector('#newCount').textContent=verified.filter(x=>x.is_new||x.price_drop>0).length;document.querySelector('#sourceCount').textContent=state.data.meta?.source_count||0;document.querySelector('#updatedAt').textContent=state.data.meta?.updated_at?`更新 ${fmtDate(state.data.meta.updated_at)}`:'等待首次刷新';document.querySelector('#refreshStatus').textContent=state.data.meta?.algorithm_version==='2.0'?(state.data.meta?.status==='ok'?'监控正常':state.data.meta?.status==='partial'?'部分来源异常':'等待刷新'):'等待新版筛选刷新'
+  const verified=state.data.listings.filter(verifiedBase);const items=sorted(verified.filter(passes));
+  document.querySelector('#listings').innerHTML=items.map(card).join('');document.querySelector('#empty').hidden=items.length>0;document.querySelector('#resultMeta').textContent=`${items.length} 套`;document.querySelector('#activeCount').textContent=verified.length;document.querySelector('#strictCount').textContent=verified.filter(strict).length;document.querySelector('#newCount').textContent=verified.filter(x=>x.is_new||x.price_drop>0).length;document.querySelector('#sourceCount').textContent=state.data.meta?.source_count||0;document.querySelector('#updatedAt').textContent=state.data.meta?.updated_at?`更新 ${fmtDate(state.data.meta.updated_at)}`:'等待首次刷新';document.querySelector('#refreshStatus').textContent=state.data.meta?.algorithm_version==='2.1'?(state.data.meta?.status==='ok'?'监控正常':state.data.meta?.status==='partial'?'部分来源异常':'等待刷新'):'等待新版筛选刷新'
 }
 async function boot(){try{const r=await fetch(`./data/listings.json?v=${Date.now()}`,{cache:'no-store'});state.data=await r.json()}catch(e){state.data={meta:{status:'pending',source_count:0},baseline:{rent:11000,area:224},listings:[]}}render()}
 document.addEventListener('click',e=>{const seg=e.target.closest('.seg');if(seg){document.querySelectorAll('.seg').forEach(x=>x.classList.remove('active'));seg.classList.add('active');state.view=seg.dataset.view;render();return}const chip=e.target.closest('.chip');if(chip){const k=chip.dataset.filter;state.filters[k]=!state.filters[k];chip.classList.toggle('active',state.filters[k]);render()}});document.querySelector('#sortSelect').addEventListener('change',e=>{state.sort=e.target.value;render()});boot();
