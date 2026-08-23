@@ -7,7 +7,7 @@
     "collect_max_mtr_walk_min": 10,
     "target_max_mtr_walk_min": 5,
     "min_rent_psf": 20,
-    "max_details_per_source": 45,
+    "max_details_per_source": 30,
     "require_whole_unit": true,
     "require_conventional_residential": true,
     "require_mtr_distance_evidence": true,
