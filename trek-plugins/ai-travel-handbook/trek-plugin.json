@@ -1,0 +1,28 @@
+{
+  "id": "ai-travel-handbook",
+  "name": "AI Travel Handbook",
+  "version": "1.0.0",
+  "apiVersion": 1,
+  "author": "GarronMeng",
+  "description": "A trip-native Travel Mode for TREK: today view, explore cards, preparation summary, photo tips and AI-enriched place metadata.",
+  "license": "MIT",
+  "icon": "Map",
+  "type": "trip-page",
+  "trek": ">=4.0.0 <5.0.0",
+  "nativeModules": false,
+  "permissions": [
+    "db:read:trips",
+    "db:read:packing",
+    "db:read:files",
+    "db:meta",
+    "hook:trip-warning-provider",
+    "hook:place-detail-provider"
+  ],
+  "requiredAddons": [],
+  "pluginDependencies": [],
+  "capabilities": {
+    "tripPage": {
+      "position": 1
+    }
+  }
+}
