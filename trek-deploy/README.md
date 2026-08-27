@@ -9,24 +9,39 @@ cd trek-deploy
 cp .env.example .env
 openssl rand -hex 32
 # paste the 64-char result into ENCRYPTION_KEY in .env
+# set APP_URL to the final HTTPS origin
+# set a strong ADMIN_PASSWORD
 
 docker compose up -d
 ```
 
 TREK listens on port 3000. Put it behind HTTPS with a reverse proxy and set `APP_URL` to the final public HTTPS origin before configuring OAuth/MCP.
 
-## First boot
+## Plugin installation
+
+`compose.yaml` already mounts:
+
+```text
+../trek-plugins/ai-travel-handbook
+```
+
+into TREK's production plugin directory. No ZIP upload is required for this deployment layout.
+
+After first boot:
 
 1. Sign in with the admin account from `.env`.
-2. Admin → Addons: enable MCP. Keep Packing, Budget, Documents and Collab enabled.
-3. Admin → Plugins: install `AI Travel Handbook` from `../trek-plugins/ai-travel-handbook` after packing it with the TREK Plugin SDK.
-4. Create/import the Project Bali trip.
-5. Add the second traveler as a trip member or guest.
-6. Settings → Integrations → MCP: create a scoped OAuth client or a machine client for the AI agent.
+2. Open **Admin → Plugins** and click **Rescan** if needed.
+3. Review and activate **AI Travel Handbook**.
+4. Open **Admin → Addons** and enable MCP. Keep Packing, Budget, Documents and Collab enabled.
+5. Create one empty Trip.
+6. Open its **AI Travel Handbook** tab and click **一键导入 Project Bali**.
+7. Add the second traveler as a trip member or guest.
+
+The importer creates 11 dated days, the route places and coordinates, day assignments, Travel Mode timing metadata, photo guidance and the current Angkor alternatives. It refuses a non-empty Trip to prevent duplicate imports.
 
 ## MCP recommendation
 
-Use a machine client for unattended agent work. Required scopes should be limited to the trip operations the agent actually needs, typically trips/days/places/itinerary/reservations/packing/todos read-write plus trip-summary read access. Do not use deprecated static full-access tokens for the final setup.
+Use a machine client for unattended agent work. Restrict scopes to the trip operations the agent actually needs. Avoid deprecated static full-access tokens for the final setup.
 
 TREK exposes the MCP endpoint at:
 
@@ -34,17 +49,22 @@ TREK exposes the MCP endpoint at:
 https://<your-trek-host>/mcp
 ```
 
-`APP_URL` must be set correctly for OAuth discovery.
+`APP_URL` must be correct for OAuth discovery. The reverse proxy must pass `Mcp-Session-Id` unchanged.
 
 ## Persistent data
 
-- `./data` → TREK database, backups and application data
+- `./data` → TREK database, plugin state, backups and application data
 - `./uploads` → trip documents and attachments
+- `../trek-plugins/ai-travel-handbook` → plugin code, mounted read-only
 
-Back up both directories. Do not store secrets in this Git repository.
+Back up `data` and `uploads`. Do not store real secrets in this Git repository.
 
 ## Reverse proxy requirements
 
 The proxy must support WebSocket upgrade headers for realtime collaboration. It must also pass the `Mcp-Session-Id` header unchanged for MCP sessions.
 
-If Cloudflare is used in front of TREK, its Bot Fight modes can block MCP requests from ChatGPT; configure the WAF accordingly before connecting the agent.
+If Cloudflare is used in front of TREK, Bot Fight modes can block MCP requests from ChatGPT; configure the WAF accordingly before connecting the agent.
+
+## Migration state
+
+The existing GitHub Pages `/bali/` handbook stays online as a fallback during migration. Once the TREK instance is live and Project Bali has been imported, TREK becomes the source of truth for collaborative changes. The static site should then be treated as a read-only reference unless intentionally retired.
