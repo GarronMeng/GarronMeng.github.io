@@ -4,50 +4,69 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0d6b5d">
-<title>Project Bali｜9/26–10/6</title>
+<title>Project Bali｜AI Travel Handbook</title>
 <script src="./auth.js?v=2"></script>
-<link rel="stylesheet" href="./app.css?v=3">
+<link rel="stylesheet" href="./app.css?v=5">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body><main class="page">
-<section class="hero"><h1>Project Bali</h1><h2>中秋国庆旅行路书｜9/26–10/6</h2><p>Bali → East Java → Singapore → Siem Reap → Phnom Penh → Hong Kong。前半程以自然与转场为主；柬埔寨段收敛为“认识暹粒 → 吴哥核心 → Jaya House 恢复日 → 夜巴返港”。</p><div class="chips"><span class="chip">11 Days</span><span class="chip">Mobile First</span><span class="chip">Route Map</span><span class="chip">Cambodia Detailed</span></div></section>
-<div class="alert"><strong>返程关键：</strong>10/5 晚上从暹粒坐 Larryta sleeper 夜巴，不住金边；10/6 清晨到金边后直接前往 Techo International Airport（KTI），乘 CX608 11:25 → HKG 15:15。</div>
+<section class="hero"><div class="eyebrow">AI Travel Handbook · Project Bali</div><h1>Project Bali</h1><h2>9/26–10/6｜Bali → East Java → Singapore → Cambodia → Hong Kong</h2><p>出发前用来规划，旅行中直接告诉你今天去哪、几点到、停多久、拍什么、下一站怎么走。</p><div class="chips"><span class="chip">11 Days</span><span class="chip">Travel Mode</span><span class="chip">Explore</span><span class="chip">Checklist</span><span class="chip">Route Map</span></div></section>
+
+<nav class="appnav" id="appnav" aria-label="旅行手册导航">
+<button data-view="trip" class="active"><b>Trip</b><span>完整路书</span></button>
+<button data-view="today"><b>Today</b><span>旅行模式</span></button>
+<button data-view="explore"><b>Explore</b><span>吃玩买</span></button>
+<button data-view="prepare"><b>Prepare</b><span>行前准备</span></button>
+</nav>
+
+<section class="view active" id="view-trip">
+<div class="alert"><strong>返程关键：</strong>10/5 晚上从暹粒坐 Larryta sleeper 夜巴，不住金边；10/6 清晨抵金边后直接去 Techo International Airport（KTI），乘 CX608 11:25 → HKG 15:15。</div>
 <section class="grid">
-<aside class="panel"><div class="ptitle">每日路书 <small>点击展开</small></div><div class="pbody" id="days"><div style="padding:12px">正在载入路书…</div></div></aside>
-
-<section class="panel"><div class="ptitle">路线地图 <small>D1–D11 可切换</small></div><div class="maptools" id="maptools"></div><div class="mapstage"><div id="mapFallback"><svg viewBox="0 0 800 520" role="img" aria-label="路线地图载入中"><rect width="800" height="520" fill="#edf5ef"/><text x="400" y="250" text-anchor="middle" fill="#47655d" font-size="18">正在载入 D9 吴哥路线…</text></svg></div><div id="map"></div><div class="mapstatus" id="mapstatus">备用路线图</div></div><div class="mapnote">默认显示 D9 吴哥核心路线。即使在线地图服务加载失败，路线和地点仍会保留。<a id="gmaps" href="#" target="_blank" rel="noopener">在 Google Maps 查看当天地点</a></div></section>
-
+<aside class="panel"><div class="ptitle">每日路书 <small>点击展开</small></div><div class="pbody" id="days"><div class="loading">正在载入路书…</div></div></aside>
+<section class="panel"><div class="ptitle">路线地图 <small>D1–D11 可切换</small></div><div class="maptools" id="maptools"></div><div class="mapstage"><div id="mapFallback"><svg viewBox="0 0 800 520" role="img" aria-label="路线地图载入中"><rect width="800" height="520" fill="#edf5ef"/><text x="400" y="250" text-anchor="middle" fill="#47655d" font-size="18">正在载入路线…</text></svg></div><div id="map"></div><div class="mapstatus" id="mapstatus">备用路线图</div></div><div class="mapnote">线路图永远可见；在线底图加载成功后自动切换成交互地图。<a id="gmaps" href="#" target="_blank" rel="noopener">在 Google Maps 查看当天路线</a></div></section>
 <aside>
-<section class="panel"><div class="ptitle">现在最需要确认 <small>P0</small></div><div class="pbody"><div class="pri">
-<div class="priitem"><div class="pritop"><b>Jaya House 10/5 使用方式</b><span class="pribadge P0">P0</span></div><p>按理想方案排：延迟退房；若不能，则退房后继续使用泳池、SPA、淋浴、更衣和寄存，晚上约 22:00 送 Larryta。</p></div>
-<div class="priitem"><div class="pritop"><b>两个人的 60min SPA</b><span class="pribadge P0">P0</span></div><p>先按 10:00 他做、14:00 你做排；向酒店锁定时段。</p></div>
-<div class="priitem"><div class="pritop"><b>Larryta sleeper</b><span class="pribadge P0">P0</span></div><p>目标 10/5 约 23:00 暹粒出发、10/6 约 05:00 金边到达；优先双人 sleeper、靠前/中段。</p></div>
-<div class="priitem"><div class="pritop"><b>吴哥司机</b><span class="pribadge P0">P0</span></div><p>10/4 只跑核心：Angkor Wat → Ta Prohm → South Gate → Bayon → 可选 Baphuon / Elephant Terrace。</p></div>
-<div class="priitem"><div class="pritop"><b>KTI 返港</b><span class="pribadge P0">P0</span></div><p>CX608 10/6 11:25 起飞。清晨夜巴抵金边后不进城，直接前往 KTI。</p></div>
-</div></div></section>
-<section class="panel" style="margin-top:13px"><div class="ptitle">柬埔寨怎么理解 <small>只记这几句</small></div><div class="legend"><div><b>10/3：</b>先把吴哥背景搞明白，不急着看寺庙。</div><div><b>10/4：</b>吴哥窟 = 最壮观；Ta Prohm = 大树废墟；Angkor Thom = 古代王城；Bayon = 很多大脸。</div><div><b>10/5：</b>不再看寺庙，也不去洞里萨湖。酒店恢复为主，你单独出去看 APOPO。</div><div><b>10/6：</b>金边只是换乘点，不住宿、不游览。</div></div></section>
-<section class="panel" style="margin-top:13px"><div class="ptitle">已确认 / 已购 <small>当前</small></div><div class="pbody confirmed"><div class="conf"><span class="check">✓</span><span>9/26 香港出发机票</span></div><div class="conf"><span class="check">✓</span><span>Grand Hyatt Bali 2晚</span></div><div class="conf"><span class="check">✓</span><span>Bali → Surabaya 机票</span></div><div class="conf"><span class="check">✓</span><span>Manis ae 1晚</span></div><div class="conf"><span class="check">✓</span><span>Hotel Majapahit Surabaya 1晚</span></div><div class="conf"><span class="check">✓</span><span>10/2 Dusit Thani Laguna Singapore</span></div><div class="conf"><span class="check">✓</span><span>10/3 Park Hyatt Siem Reap</span></div><div class="conf"><span class="check">✓</span><span>10/4 Jaya House River Park</span></div><div class="conf"><span class="check">✓</span><span>10/6 Cathay Pacific CX608</span></div></div></section>
+<section class="panel"><div class="ptitle">现在最需要确认 <small>P0</small></div><div class="pbody"><div class="pri" id="p0list"></div></div></section>
+<section class="panel" style="margin-top:13px"><div class="ptitle">吴哥专题 <small>10/4</small></div><div class="focus-card"><b>Angkor Focus</b><p>四个核心点、完整时间轴、每站看什么、备选景点和返回酒店时间。</p><a href="./angkor/">打开吴哥专题 →</a></div></section>
+<section class="panel" style="margin-top:13px"><div class="ptitle">已确认 / 已购 <small>当前</small></div><div class="pbody confirmed" id="confirmed"></div></section>
 </aside>
 </section>
-
-<section class="subgrid">
-<section class="panel"><div class="ptitle">11 天主线 <small>一眼看完</small></div><div class="pbody tablewrap"><table><thead><tr><th>日期</th><th>当天主线</th><th>住宿 / 夜间</th><th>强度</th></tr></thead><tbody>
-<tr><td>9/26 D1</td><td>香港 → 吉隆坡 → 巴厘岛</td><td>Grand Hyatt Bali</td><td>轻</td></tr>
-<tr><td>9/27 D2</td><td>君悦 staycation + Uluwatu</td><td>Grand Hyatt Bali</td><td>中</td></tr>
-<tr><td>9/28 D3</td><td>Nusa Dua → Ubud → Seminyak</td><td>KLEO Seminyak</td><td>中</td></tr>
-<tr><td>9/29 D4</td><td>Nusa Penida</td><td>KLEO Seminyak</td><td>高</td></tr>
-<tr><td>9/30 D5</td><td>Bali → Surabaya → Bromo</td><td>Manis ae</td><td>高</td></tr>
-<tr><td>10/1 D6</td><td>Bromo 日出 → Surabaya</td><td>Hotel Majapahit</td><td>高</td></tr>
-<tr><td>10/2 D7</td><td>Surabaya → Singapore</td><td>Dusit Thani Laguna</td><td>中</td></tr>
-<tr><td>10/3 D8</td><td>SAI → Park Hyatt → 吴哥国家博物馆 → 老城</td><td>Park Hyatt Siem Reap</td><td>中</td></tr>
-<tr><td>10/4 D9</td><td>吴哥核心精华 → Jaya House</td><td>Jaya House River Park</td><td>高</td></tr>
-<tr><td>10/5 D10</td><td>APOPO + Jaya House staycation → Larryta</td><td>夜巴 sleeper</td><td>轻</td></tr>
-<tr><td>10/6 D11</td><td>Phnom Penh → KTI → CX608 → HKG</td><td>返港</td><td>中</td></tr>
-</tbody></table></div></section>
-<section class="panel"><div class="ptitle">路线原则 <small>减少疲劳</small></div><div class="pbody rules"><div class="rule"><b>吴哥只看最核心。</b><br>不为了“大圈/小圈”名义刷寺庙数量，10/4 看四个辨识度最高的点。</div><div class="rule"><b>10/5 是恢复日。</b><br>洞里萨湖删除。APOPO 只占约 1–2 小时，其余时间给 Jaya House。</div><div class="rule"><b>酒店本身就是项目。</b><br>按 SPA、两个泳池、poolside treats、洗衣、午睡和晚餐来安排，不再硬塞景点。</div><div class="rule"><b>夜巴替代金边住宿。</b><br>10/5 晚上移动并睡觉，10/6 清晨直接 KTI，最大化暹粒可用时间。</div></div></section>
+<section class="subgrid"><section class="panel"><div class="ptitle">11 天主线 <small>一眼看完</small></div><div class="pbody tablewrap" id="triptable"></div></section><section class="panel"><div class="ptitle">路线原则 <small>减少疲劳</small></div><div class="pbody rules"><div class="rule"><b>强体验前后留恢复。</b><br>Nusa Penida、Bromo、吴哥日出之后不继续堆重行程。</div><div class="rule"><b>复杂目的地做专题。</b><br>吴哥已经拆成独立专题；后续 Bromo / Penida 也可按需要单独展开。</div><div class="rule"><b>现场优先执行。</b><br>Travel Mode 只显示今天真正需要的信息，不让你旅行中重新读整篇攻略。</div><div class="rule"><b>信息可降级。</b><br>地图服务失效时仍保留路线、地址和跳转入口。</div></div></section></section>
 </section>
+
+<section class="view" id="view-today">
+<section class="today-hero panel"><div><div class="today-kicker" id="todayKicker">Travel Mode</div><h2 id="todayTitle">今日行程</h2><p id="todayDesc"></p></div><div class="day-switch"><label for="daySelect">预览日期</label><select id="daySelect"></select></div></section>
+<div class="today-grid">
+<section class="panel"><div class="ptitle">今天怎么走 <small id="todayDate"></small></div><div class="live-list" id="liveList"></div></section>
+<aside>
+<section class="panel"><div class="ptitle">今日快捷入口 <small>现场使用</small></div><div class="quickbox" id="todayQuick"></div></section>
+<section class="panel" style="margin-top:13px"><div class="ptitle">今日顺路推荐 <small>不绕路</small></div><div class="mini-cards" id="todayNearby"></div></section>
+</aside>
+</div>
+</section>
+
+<section class="view" id="view-explore">
+<section class="panel explore-head"><div><div class="today-kicker">Explore</div><h2>想临时换项目，就从这里选</h2><p>已排入日程和自由备选分开显示；每个地点都可以直接打开 Google Maps 或小红书搜索。</p></div><div class="filterbar" id="filterbar"></div></section>
+<div class="place-grid" id="placeGrid"></div>
+<section class="threegrid">
+<section class="panel"><div class="ptitle">体验项目 <small>风险提示</small></div><div class="compact-list" id="experienceList"></div></section>
+<section class="panel"><div class="ptitle">餐饮解决方案 <small>按区域</small></div><div class="compact-list" id="foodList"></div></section>
+<section class="panel"><div class="ptitle">顺路购物 <small>伴手礼</small></div><div class="compact-list" id="shoppingList"></div></section>
+</section>
+</section>
+
+<section class="view" id="view-prepare">
+<div class="prepare-grid">
+<section class="panel"><div class="ptitle">行前准备清单 <small id="checkProgress">0%</small></div><div class="checkgroups" id="checkGroups"></div></section>
+<aside>
+<section class="panel"><div class="ptitle">语言锦囊 <small>高频够用</small></div><div class="language" id="language"></div></section>
+<section class="panel" style="margin-top:13px"><div class="ptitle">旅游贴士 <small>现场提醒</small></div><div class="tiplist" id="tipList"></div></section>
+</aside>
+</div>
+</section>
+
 <div class="foot">一起看世界，留下我们的故事 ♥</div>
 </main>
 <script src="./data.js?v=3"></script>
-<script src="./app.js?v=4"></script>
+<script src="./guide-data.js?v=1"></script>
+<script src="./app.js?v=5"></script>
 </body></html>
