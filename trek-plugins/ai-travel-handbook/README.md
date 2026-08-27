@@ -15,10 +15,12 @@ Trip-native Travel Mode for TREK. TREK is the source of truth for collaboration,
 
 ## Production install in this repository
 
-The deployment shell in `../../trek-deploy/compose.yaml` bind-mounts this plugin directly into TREK's plugin directory:
+The deployment shell in `../../trek-deploy/compose.yaml` does not run the raw plugin source directly. A one-shot `handbook-build` container first runs the official `trek-plugin-sdk pack`, which expands the `<!-- trek:ui -->` marker into TREK's production design kit and iframe bridge. The resulting package is unpacked into TREK's persistent plugin directory before TREK starts.
 
 ```text
-/app/data/plugins/ai-travel-handbook
+trek-plugins/ai-travel-handbook   source
+             ↓ trek-plugin-sdk pack
+trek-deploy/data/plugins/ai-travel-handbook   runtime package
 ```
 
 After TREK starts:
