@@ -7,67 +7,16 @@
 <title>Project Bali｜AI Travel Handbook</title>
 <script src="./auth.js?v=2"></script>
 <link rel="stylesheet" href="./app.css?v=6">
+<link rel="stylesheet" href="./handbook.css?v=1">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body><main class="page">
 <section class="hero"><div class="eyebrow">AI Travel Handbook · Project Bali</div><h1>Project Bali</h1><h2>9/26–10/6｜Bali → East Java → Singapore → Cambodia → Hong Kong</h2><p>出发前用来规划，旅行中直接告诉你今天去哪、几点到、停多久、拍什么、下一站怎么走。</p><div class="chips"><span class="chip">11 Days</span><span class="chip">Travel Mode</span><span class="chip">Explore</span><span class="chip">Checklist</span><span class="chip">Route Map</span></div></section>
-
-<nav class="appnav" id="appnav" aria-label="旅行手册导航">
-<button data-view="trip" class="active"><b>Trip</b><span>完整路书</span></button>
-<button data-view="today"><b>Today</b><span>旅行模式</span></button>
-<button data-view="explore"><b>Explore</b><span>吃玩买</span></button>
-<button data-view="prepare"><b>Prepare</b><span>行前准备</span></button>
-</nav>
-
-<section class="view active" id="view-trip">
-<div class="alert"><strong>返程关键：</strong>10/5 晚上从暹粒坐 Larryta sleeper 夜巴，不住金边；10/6 清晨抵金边后直接去 Techo International Airport（KTI），乘 CX608 11:25 → HKG 15:15。</div>
-<section class="grid">
-<aside class="panel"><div class="ptitle">每日路书 <small>点击展开</small></div><div class="pbody" id="days"><div class="loading">正在载入路书…</div></div></aside>
-<section class="panel"><div class="ptitle">路线地图 <small>D1–D11 可切换</small></div><div class="maptools" id="maptools"></div><div class="mapstage"><div id="mapFallback"><svg viewBox="0 0 800 520" role="img" aria-label="路线地图载入中"><rect width="800" height="520" fill="#edf5ef"/><text x="400" y="250" text-anchor="middle" fill="#47655d" font-size="18">正在载入路线…</text></svg></div><div id="map"></div><div class="mapstatus" id="mapstatus">备用路线图</div></div><div class="mapnote">线路图永远可见；在线底图加载成功后自动切换成交互地图。<a id="gmaps" href="#" target="_blank" rel="noopener">在 Google Maps 查看当天路线</a></div></section>
-<aside>
-<section class="panel"><div class="ptitle">现在最需要确认 <small>P0</small></div><div class="pbody"><div class="pri" id="p0list"></div></div></section>
-<section class="panel" style="margin-top:13px"><div class="ptitle">吴哥专题 <small>10/4</small></div><div class="focus-card"><b>Angkor Focus</b><p>四个核心点、完整时间轴、每站看什么、备选景点和返回酒店时间。</p><a href="./angkor/">打开吴哥专题 →</a></div></section>
-<section class="panel" style="margin-top:13px"><div class="ptitle">已确认 / 已购 <small>当前</small></div><div class="pbody confirmed" id="confirmed"></div></section>
-</aside>
-</section>
-<section class="subgrid"><section class="panel"><div class="ptitle">11 天主线 <small>一眼看完</small></div><div class="pbody tablewrap" id="triptable"></div></section><section class="panel"><div class="ptitle">路线原则 <small>减少疲劳</small></div><div class="pbody rules"><div class="rule"><b>强体验前后留恢复。</b><br>Nusa Penida、Bromo、吴哥日出之后不继续堆重行程。</div><div class="rule"><b>复杂目的地做专题。</b><br>吴哥已经拆成独立专题；后续 Bromo / Penida 也可按需要单独展开。</div><div class="rule"><b>现场优先执行。</b><br>Travel Mode 只显示今天真正需要的信息，不让你旅行中重新读整篇攻略。</div><div class="rule"><b>信息可降级。</b><br>地图服务失效时仍保留路线、地址和跳转入口。</div></div></section></section>
-</section>
-
-<section class="view" id="view-today">
-<section class="today-hero panel"><div><div class="today-kicker" id="todayKicker">Travel Mode</div><h2 id="todayTitle">今日行程</h2><p id="todayDesc"></p></div><div class="day-switch"><label for="daySelect">预览日期</label><select id="daySelect"></select></div></section>
-<div class="today-grid">
-<section class="panel"><div class="ptitle">今天怎么走 <small id="todayDate"></small></div><div class="live-list" id="liveList"></div></section>
-<aside>
-<section class="panel"><div class="ptitle">今日快捷入口 <small>现场使用</small></div><div class="quickbox" id="todayQuick"></div></section>
-<section class="panel" style="margin-top:13px"><div class="ptitle">今日顺路推荐 <small>不绕路</small></div><div class="mini-cards" id="todayNearby"></div></section>
-<section class="panel" style="margin-top:13px"><div class="ptitle">参考样片 <small>当前设备</small></div><div class="photo-ref"><label class="photo-upload">＋ 上传今天的参考照片<input id="photoInput" type="file" accept="image/*" multiple></label><div class="photo-help">适合保存想模仿的机位、穿搭和构图；切换到对应日期时自动显示。</div><div class="photo-gallery" id="photoGallery"></div></div></section>
-</aside>
-</div>
-</section>
-
-<section class="view" id="view-explore">
-<section class="panel explore-head"><div><div class="today-kicker">Explore</div><h2>想临时换项目，就从这里选</h2><p>已排入日程和自由备选分开显示；每个地点都可以直接打开 Google Maps 或小红书搜索。</p></div><div class="filterbar" id="filterbar"></div></section>
-<div class="place-grid" id="placeGrid"></div>
-<section class="threegrid">
-<section class="panel"><div class="ptitle">体验项目 <small>风险提示</small></div><div class="compact-list" id="experienceList"></div></section>
-<section class="panel"><div class="ptitle">餐饮解决方案 <small>按区域</small></div><div class="compact-list" id="foodList"></div></section>
-<section class="panel"><div class="ptitle">顺路购物 <small>伴手礼</small></div><div class="compact-list" id="shoppingList"></div></section>
-</section>
-</section>
-
-<section class="view" id="view-prepare">
-<div class="prepare-grid">
-<section class="panel"><div class="ptitle">行前准备清单 <small id="checkProgress">0%</small></div><div class="checkgroups" id="checkGroups"></div></section>
-<aside>
-<section class="panel"><div class="ptitle">语言锦囊 <small>高频够用</small></div><div class="language" id="language"></div></section>
-<section class="panel" style="margin-top:13px"><div class="ptitle">旅游贴士 <small>现场提醒</small></div><div class="tiplist" id="tipList"></div></section>
-</aside>
-</div>
-</section>
-
-<div class="foot">一起看世界，留下我们的故事 ♥</div>
-</main>
-<script src="./data.js?v=3"></script>
-<script src="./guide-data.js?v=1"></script>
-<script src="./app.js?v=6"></script>
+<nav class="appnav" id="appnav" aria-label="旅行手册导航"><button data-view="trip" class="active"><b>Trip</b><span>完整路书</span></button><button data-view="today"><b>Today</b><span>旅行模式</span></button><button data-view="explore"><b>Explore</b><span>吃玩买</span></button><button data-view="prepare"><b>Prepare</b><span>行前准备</span></button></nav>
+<section class="view active" id="view-trip"><div class="alert"><strong>返程关键：</strong>10/5 晚上从暹粒坐 Larryta sleeper 夜巴，不住金边；10/6 清晨抵金边后直接去 Techo International Airport（KTI），乘 CX608 11:25 → HKG 15:15。</div><section class="grid"><aside class="panel"><div class="ptitle">每日路书 <small>点击展开</small></div><div class="pbody" id="days"><div class="loading">正在载入路书…</div></div></aside><section class="panel"><div class="ptitle">路线地图 <small>D1–D11 可切换</small></div><div class="maptools" id="maptools"></div><div class="mapstage"><div id="mapFallback"><svg viewBox="0 0 800 520" role="img" aria-label="路线地图载入中"><rect width="800" height="520" fill="#edf5ef"/><text x="400" y="250" text-anchor="middle" fill="#47655d" font-size="18">正在载入路线…</text></svg></div><div id="map"></div><div class="mapstatus" id="mapstatus">备用路线图</div></div><div class="mapnote">线路图永远可见；在线底图加载成功后自动切换成交互地图。<a id="gmaps" href="#" target="_blank" rel="noopener">在 Google Maps 查看当天路线</a></div></section><aside><section class="panel"><div class="ptitle">现在最需要确认 <small>P0</small></div><div class="pbody"><div class="pri" id="p0list"></div></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">吴哥专题 <small>10/4</small></div><div class="focus-card"><b>Angkor Focus</b><p>四个核心点、完整时间轴、每站看什么、备选景点和返回酒店时间。</p><a href="./angkor/">打开吴哥专题 →</a></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">已确认 / 已购 <small>当前</small></div><div class="pbody confirmed" id="confirmed"></div></section></aside></section><section class="subgrid"><section class="panel"><div class="ptitle">11 天主线 <small>一眼看完</small></div><div class="pbody tablewrap" id="triptable"></div></section><section class="panel"><div class="ptitle">路线原则 <small>减少疲劳</small></div><div class="pbody rules"><div class="rule"><b>强体验前后留恢复。</b><br>Nusa Penida、Bromo、吴哥日出之后不继续堆重行程。</div><div class="rule"><b>复杂目的地做专题。</b><br>吴哥已经拆成独立专题；后续 Bromo / Penida 也可按需要单独展开。</div><div class="rule"><b>现场优先执行。</b><br>Travel Mode 只显示今天真正需要的信息，不让你旅行中重新读整篇攻略。</div><div class="rule"><b>信息可降级。</b><br>地图服务失效时仍保留路线、地址和跳转入口。</div></div></section></section></section>
+<section class="view" id="view-today"><section class="today-hero panel"><div><div class="today-kicker" id="todayKicker">Travel Mode</div><h2 id="todayTitle">今日行程</h2><p id="todayDesc"></p></div><div class="day-switch"><label for="daySelect">预览日期</label><select id="daySelect"></select></div></section><div class="today-grid"><section class="panel"><div class="ptitle">今天怎么走 <small id="todayDate"></small></div><div class="live-list" id="liveList"></div></section><aside><section class="panel"><div class="ptitle">今日快捷入口 <small>现场使用</small></div><div class="quickbox" id="todayQuick"></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">今日顺路推荐 <small>不绕路</small></div><div class="mini-cards" id="todayNearby"></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">参考样片 <small>当前设备</small></div><div class="photo-ref"><label class="photo-upload">＋ 上传今天的参考照片<input id="photoInput" type="file" accept="image/*" multiple></label><div class="photo-help">适合保存想模仿的机位、穿搭和构图；切换到对应日期时自动显示。</div><div class="photo-gallery" id="photoGallery"></div></div></section></aside></div></section>
+<section class="view" id="view-explore"><section class="panel explore-head"><div><div class="today-kicker">Explore</div><h2>想临时换项目，就从这里选</h2><p>已排入日程和自由备选分开显示；每个地点都可以直接打开 Google Maps 或小红书搜索。</p></div><div class="filterbar" id="filterbar"></div></section><div class="place-grid" id="placeGrid"></div><section class="threegrid"><section class="panel"><div class="ptitle">体验项目 <small>风险提示</small></div><div class="compact-list" id="experienceList"></div></section><section class="panel"><div class="ptitle">餐饮解决方案 <small>按区域</small></div><div class="compact-list" id="foodList"></div></section><section class="panel"><div class="ptitle">顺路购物 <small>伴手礼</small></div><div class="compact-list" id="shoppingList"></div></section></section></section>
+<section class="view" id="view-prepare"><div class="prepare-grid"><section class="panel"><div class="ptitle">行前准备清单 <small id="checkProgress">0%</small></div><div class="checkgroups" id="checkGroups"></div></section><aside><section class="panel"><div class="ptitle">语言锦囊 <small>高频够用</small></div><div class="language" id="language"></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">旅游贴士 <small>现场提醒</small></div><div class="tiplist" id="tipList"></div></section></aside></div></section>
+<div class="foot">一起看世界，留下我们的故事 ♥</div></main>
+<script src="./data.js?v=3"></script><script src="./guide-data.js?v=1"></script><script src="./app.js?v=6"></script><script src="./photos.js?v=1"></script>
 </body></html>
