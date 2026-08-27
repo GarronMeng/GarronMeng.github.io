@@ -1,0 +1,128 @@
+{
+  "schema": "ai-travel-handbook/trek-migration-v1",
+  "trip": {
+    "title": "Project Bali",
+    "description": "Bali → East Java → Singapore → Siem Reap → Phnom Penh → Hong Kong",
+    "start_date": "2026-09-26",
+    "end_date": "2026-10-06",
+    "currency": "CNY"
+  },
+  "days": [
+    {
+      "date": "2026-09-26",
+      "title": "香港 → 吉隆坡 → 巴厘岛",
+      "notes": "长途移动日，落地后只入住和恢复。",
+      "stops": ["HKG", "KUL", "DPS", "Grand Hyatt Bali"]
+    },
+    {
+      "date": "2026-09-27",
+      "title": "Grand Hyatt staycation + Uluwatu",
+      "notes": "上午留酒店，下午悬崖线与日落。",
+      "stops": ["Grand Hyatt Bali", "Uluwatu"]
+    },
+    {
+      "date": "2026-09-28",
+      "title": "Nusa Dua → Ubud → Seminyak",
+      "notes": "行李随包车，不先去 KLEO 再折返 Ubud。",
+      "stops": ["Grand Hyatt Bali", "Ubud", "KLEO Seminyak"]
+    },
+    {
+      "date": "2026-09-29",
+      "title": "Nusa Penida 一日往返",
+      "notes": "西线陆地或浮潜择一为主；提前 48h 看海况。",
+      "stops": ["KLEO Seminyak", "Sanur Harbour", "Nusa Penida"]
+    },
+    {
+      "date": "2026-09-30",
+      "title": "巴厘岛 → 泗水 → Bromo",
+      "notes": "抵达泗水后直接进山，核心是保证睡眠。",
+      "stops": ["KLEO Seminyak", "DPS", "SUB", "Manis ae"]
+    },
+    {
+      "date": "2026-10-01",
+      "title": "Bromo 日出 → Surabaya",
+      "notes": "凌晨日出和沙海，下午回泗水恢复。",
+      "stops": ["Manis ae", "Mount Bromo", "Hotel Majapahit Surabaya"]
+    },
+    {
+      "date": "2026-10-02",
+      "title": "Surabaya → Singapore",
+      "notes": "城市活动取决于抵达时间，不牺牲睡眠。",
+      "stops": ["Hotel Majapahit Surabaya", "SUB", "SIN", "Dusit Thani Laguna Singapore"]
+    },
+    {
+      "date": "2026-10-03",
+      "title": "Singapore → Siem Reap｜先认识吴哥",
+      "notes": "09:40 抵 SAI；下午博物馆和老城，晚上早睡。",
+      "stops": ["Dusit Thani Laguna Singapore", "SIN", "SAI", "Park Hyatt Siem Reap", "Angkor National Museum", "Old Market"]
+    },
+    {
+      "date": "2026-10-04",
+      "title": "吴哥核心日",
+      "notes": "04:40 左右从 Park Hyatt 出发；核心为 Angkor Wat、Ta Prohm、Angkor Thom South Gate、Bayon；Baphuon / Elephant Terrace 看体力。下午入住 Jaya House。",
+      "stops": ["Park Hyatt Siem Reap", "Angkor Wat", "Ta Prohm", "Angkor Thom South Gate", "Bayon", "Terrace of the Elephants", "Jaya House River Park"]
+    },
+    {
+      "date": "2026-10-05",
+      "title": "Jaya House 恢复日 + APOPO + 夜巴",
+      "notes": "上午两人早餐；一人去 APOPO，另一人留酒店 SPA；之后以 Jaya House staycation 为主。Phare 仅备选。约 23:00 Larryta sleeper 去金边。",
+      "stops": ["Jaya House River Park", "APOPO Visitor Center", "Phare Cambodian Circus", "Larryta Siem Reap"]
+    },
+    {
+      "date": "2026-10-06",
+      "title": "夜巴抵金边 → KTI → 香港",
+      "notes": "约 05:00 抵金边，不住酒店、不游览，直接前往 KTI；CX608 11:25 → HKG 15:15。",
+      "stops": ["Larryta Phnom Penh", "KTI", "HKG"]
+    }
+  ],
+  "places": [
+    {"key":"HKG","name":"Hong Kong International Airport","lat":22.308,"lng":113.9185,"type":"airport"},
+    {"key":"KUL","name":"Kuala Lumpur International Airport","lat":2.7456,"lng":101.7072,"type":"airport"},
+    {"key":"DPS","name":"I Gusti Ngurah Rai International Airport","lat":-8.7482,"lng":115.1673,"type":"airport"},
+    {"key":"Grand Hyatt Bali","name":"Grand Hyatt Bali","lat":-8.8034,"lng":115.2332,"type":"accommodation"},
+    {"key":"Uluwatu","name":"Uluwatu","lat":-8.8151,"lng":115.0876,"type":"area"},
+    {"key":"Ubud","name":"Ubud","lat":-8.5064,"lng":115.263,"type":"area"},
+    {"key":"KLEO Seminyak","name":"KLEO Seminyak","lat":-8.68065,"lng":115.15235,"type":"accommodation"},
+    {"key":"Sanur Harbour","name":"Sanur Harbour","lat":-8.6722,"lng":115.2646,"type":"transport"},
+    {"key":"Nusa Penida","name":"Nusa Penida","lat":-8.7389,"lng":115.4872,"type":"attraction"},
+    {"key":"SUB","name":"Juanda International Airport","lat":-7.3798,"lng":112.7869,"type":"airport"},
+    {"key":"Manis ae","name":"Manis ae","lat":-7.9045,"lng":113.0108,"type":"accommodation"},
+    {"key":"Mount Bromo","name":"Mount Bromo","lat":-7.908,"lng":112.9485,"type":"attraction"},
+    {"key":"Hotel Majapahit Surabaya","name":"Hotel Majapahit Surabaya - MGallery","lat":-7.259726,"lng":112.740077,"type":"accommodation"},
+    {"key":"SIN","name":"Singapore Changi Airport","lat":1.3644,"lng":103.9915,"type":"airport"},
+    {"key":"Dusit Thani Laguna Singapore","name":"Dusit Thani Laguna Singapore","lat":1.354,"lng":103.9659,"type":"accommodation"},
+    {"key":"SAI","name":"Siem Reap Angkor International Airport","lat":13.3697,"lng":104.223,"type":"airport"},
+    {"key":"Park Hyatt Siem Reap","name":"Park Hyatt Siem Reap","lat":13.3595,"lng":103.8566,"type":"accommodation"},
+    {"key":"Angkor National Museum","name":"Angkor National Museum","lat":13.3743,"lng":103.8568,"type":"attraction"},
+    {"key":"Old Market","name":"Old Market Siem Reap","lat":13.353,"lng":103.8556,"type":"attraction"},
+    {"key":"Angkor Wat","name":"Angkor Wat","lat":13.4125,"lng":103.8667,"type":"attraction"},
+    {"key":"Ta Prohm","name":"Ta Prohm","lat":13.4347,"lng":103.8898,"type":"attraction"},
+    {"key":"Angkor Thom South Gate","name":"Angkor Thom South Gate","lat":13.4129,"lng":103.8588,"type":"attraction"},
+    {"key":"Bayon","name":"Bayon Temple","lat":13.4414,"lng":103.859,"type":"attraction"},
+    {"key":"Terrace of the Elephants","name":"Terrace of the Elephants","lat":13.4467,"lng":103.8586,"type":"attraction"},
+    {"key":"Jaya House River Park","name":"Jaya House River Park","lat":13.37027,"lng":103.86446,"type":"accommodation"},
+    {"key":"APOPO Visitor Center","name":"APOPO Visitor Center","lat":13.3782,"lng":103.8499,"type":"attraction"},
+    {"key":"Phare Cambodian Circus","name":"Phare, The Cambodian Circus","lat":13.3479,"lng":103.8384,"type":"optional"},
+    {"key":"Larryta Siem Reap","name":"Larryta Siem Reap Branch","lat":13.363,"lng":103.8817,"type":"transport"},
+    {"key":"Larryta Phnom Penh","name":"Larryta Phnom Penh Branch","lat":11.5732,"lng":104.921,"type":"transport"},
+    {"key":"KTI","name":"Techo International Airport","lat":11.35999,"lng":104.92127,"type":"airport"}
+  ],
+  "confirmed": [
+    "9/26 香港出发机票",
+    "Grand Hyatt Bali 2晚",
+    "Bali → Surabaya 机票",
+    "Manis ae 1晚",
+    "Hotel Majapahit Surabaya 1晚",
+    "10/2 Dusit Thani Laguna Singapore",
+    "10/3 Park Hyatt Siem Reap",
+    "10/4 Jaya House River Park",
+    "10/6 Cathay Pacific CX608"
+  ],
+  "unresolved": [
+    "Jaya House 10/5 late checkout / 退房后继续使用设施",
+    "两个人 10/5 SPA 时段",
+    "Larryta 10/5 约23:00 sleeper",
+    "10/4 吴哥司机",
+    "KTI 夜巴到站后的送机车辆"
+  ]
+}
