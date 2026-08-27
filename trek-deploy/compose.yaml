@@ -1,8 +1,20 @@
 services:
+  handbook-build:
+    build:
+      context: .
+      dockerfile: plugin-builder.Dockerfile
+    restart: "no"
+    volumes:
+      - ../trek-plugins/ai-travel-handbook:/src:ro
+      - ./data/plugins/ai-travel-handbook:/out
+
   trek:
     image: mauriceboe/trek:latest
     container_name: trek
     restart: unless-stopped
+    depends_on:
+      handbook-build:
+        condition: service_completed_successfully
     ports:
       - "3000:3000"
     environment:
@@ -14,4 +26,3 @@ services:
     volumes:
       - ./data:/app/data
       - ./uploads:/app/uploads
-      - ../trek-plugins/ai-travel-handbook:/app/data/plugins/ai-travel-handbook:ro
