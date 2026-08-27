@@ -20,7 +20,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: trek-plugins/ai-travel-handbook/package.json
       - name: Validate TREK plugin
         run: npx -y trek-plugin-sdk validate
