@@ -12,20 +12,22 @@ openssl rand -hex 32
 # set APP_URL to the final HTTPS origin
 # set a strong ADMIN_PASSWORD
 
-docker compose up -d
+docker compose up -d --build
 ```
 
 TREK listens on port 3000. Put it behind HTTPS with a reverse proxy and set `APP_URL` to the final public HTTPS origin before configuring OAuth/MCP.
 
-## Plugin installation
+## How the handbook plugin is installed
 
-`compose.yaml` already mounts:
+The Compose stack has a one-shot `handbook-build` service. Before TREK starts it:
 
-```text
-../trek-plugins/ai-travel-handbook
-```
+1. mounts `../trek-plugins/ai-travel-handbook` read-only;
+2. runs the official `trek-plugin-sdk pack` command;
+3. expands `<!-- trek:ui -->` into TREK's production design kit and iframe bridge;
+4. unpacks the built plugin into `./data/plugins/ai-travel-handbook`;
+5. exits successfully, after which the TREK container starts.
 
-into TREK's production plugin directory. No ZIP upload is required for this deployment layout.
+This avoids running raw plugin source in production and keeps the deployed plugin equivalent to a normal sideloaded TREK package.
 
 After first boot:
 
@@ -37,7 +39,16 @@ After first boot:
 6. Open its **AI Travel Handbook** tab and click **一键导入 Project Bali**.
 7. Add the second traveler as a trip member or guest.
 
-The importer creates 11 dated days, the route places and coordinates, day assignments, Travel Mode timing metadata, photo guidance and the current Angkor alternatives. It refuses a non-empty Trip to prevent duplicate imports.
+The importer creates 11 dated days, route places and coordinates, itinerary assignments, Travel Mode timing metadata, photo guidance and the current Angkor alternatives. It refuses a non-empty Trip to prevent duplicate imports.
+
+When the plugin source changes, run:
+
+```bash
+docker compose up -d --build --force-recreate handbook-build
+docker compose restart trek
+```
+
+Then use **Admin → Plugins → Rescan** if TREK has not detected the updated files automatically. Permission expansions require explicit re-activation/re-consent by design.
 
 ## MCP recommendation
 
@@ -53,9 +64,9 @@ https://<your-trek-host>/mcp
 
 ## Persistent data
 
-- `./data` → TREK database, plugin state, backups and application data
+- `./data` → TREK database, built plugin code, plugin state, backups and application data
 - `./uploads` → trip documents and attachments
-- `../trek-plugins/ai-travel-handbook` → plugin code, mounted read-only
+- `../trek-plugins/ai-travel-handbook` → version-controlled plugin source
 
 Back up `data` and `uploads`. Do not store real secrets in this Git repository.
 
