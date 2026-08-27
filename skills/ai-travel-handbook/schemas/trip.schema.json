@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://garronmeng.github.io/schemas/ai-travel-handbook-trip.json",
+  "title": "AI Travel Handbook Trip",
+  "type": "object",
+  "required": ["id", "title", "startDate", "endDate", "days", "places"],
+  "properties": {
+    "id": {"type": "string"},
+    "title": {"type": "string"},
+    "startDate": {"type": "string", "format": "date"},
+    "endDate": {"type": "string", "format": "date"},
+    "timezoneStrategy": {"type": "string", "enum": ["device-local", "per-day"]},
+    "confirmedBookings": {"type": "array", "items": {"type": "string"}},
+    "days": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dayNumber", "date", "title", "timeline"],
+        "properties": {
+          "dayNumber": {"type": "integer", "minimum": 1},
+          "date": {"type": "string", "format": "date"},
+          "title": {"type": "string"},
+          "intensity": {"type": "string", "enum": ["light", "medium", "high"]},
+          "lodging": {"type": "string"},
+          "timeline": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["timeLabel", "title"],
+              "properties": {
+                "timeLabel": {"type": "string"},
+                "title": {"type": "string"},
+                "placeId": {"type": ["string", "null"]},
+                "durationMinutes": {"type": ["integer", "null"], "minimum": 0},
+                "transport": {"type": ["string", "null"]},
+                "note": {"type": ["string", "null"]}
+              }
+            }
+          }
+        }
+      }
+    },
+    "places": {"type": "array", "items": {"$ref": "place.schema.json"}},
+    "checklist": {"type": "array"},
+    "modules": {"type": "object"}
+  }
+}
