@@ -1,0 +1,26 @@
+name: Validate AI Travel Handbook TREK Plugin
+
+on:
+  push:
+    paths:
+      - 'trek-plugins/ai-travel-handbook/**'
+      - '.github/workflows/validate-ai-travel-handbook.yml'
+  pull_request:
+    paths:
+      - 'trek-plugins/ai-travel-handbook/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: trek-plugins/ai-travel-handbook
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: trek-plugins/ai-travel-handbook/package.json
+      - name: Validate TREK plugin
+        run: npx -y trek-plugin-sdk validate
