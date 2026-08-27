@@ -1,0 +1,15 @@
+{
+  "name": "ai-travel-handbook",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "npx -y trek-plugin-sdk dev",
+    "status": "npx -y trek-plugin-sdk status",
+    "validate": "npx -y trek-plugin-sdk validate",
+    "pack": "npx -y trek-plugin-sdk pack"
+  },
+  "devDependencies": {
+    "trek-plugin-sdk": "^1.0.0"
+  }
+}
