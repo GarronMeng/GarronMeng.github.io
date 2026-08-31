@@ -1,0 +1,16 @@
+y trauma, contingency or radical change.</p><p class="zh">反对“人生如故事”：很多人生本来就破碎、开放。强行追求连贯，可能歪曲创伤、偶然性与真正的变化。</p></div><div class="objection"><b>Against created meaning</b><p class="en">If I simply invent meaning, can anything count as meaningful—including cruelty or obsession? Creation may need constraints such as value, relation, reality or flourishing.</p><p class="zh">反对“意义自己创造”：如果完全随便创造，那么残酷或执念也能算意义吗？创造可能仍需要价值、关系、现实或繁荣等限制。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">Imagine you achieve every career goal you currently want, but no one remembers you 100 years later. Has the life lost its meaning? Now reverse it: the world remembers your work, but you hated the life while living it. Which matters more?</p><p class="zh">想象你实现了所有职业目标，但 100 年后无人记得你。人生因此失去意义了吗？再反过来：作品名垂后世，但你活着时一直痛苦。哪一种更“有意义”？</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">If meaning seems to require something larger than the individual, Chapter 3 asks whether God can provide that ground—and at what philosophical cost.</p><p class="zh">如果意义似乎需要一个超越个人的根据，第 3 章就会问：上帝能否提供这种根据？代价又是什么？</p></div>
+</section>
+
+<section class="chapter" id="c3">
+  <header class="ch-head">
+    <div class="num">03</div>
+    <div><div class="pages">pp. 62–102</div><h2>God<span>上帝</span></h2>
+    <div class="question"><p class="en">Which God is being affirmed or denied, and what would count as a good reason?</p><p class="zh">我们接受或拒绝的究竟是哪一种“上帝”？什么才算好理由？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The chapter expands the concept of God before evaluating belief. It distinguishes transcendence, immanence, pantheism, deism and other conceptions; then uses the problem of evil as a stress test and surveys classic arguments for belief, faith and religious practice.</p><p class="zh">本章先把“上帝”这个概念展开，再评估信仰。超越、内在、泛神论、自然神论等都被区分；随后“恶的问题”成为压力测试，再进入经典有神论论证、信仰与宗教实践。</p></div>
+  <div class="section-title"><small>01 · CONCEPTS</small><h3>Conceptual deep dive <span>概念深挖</span></h3></div>
+  <div class="concept-grid"><article class="concept"><h4>Transcendence / 超越</h4><p class="en">God is fundamentally beyond the world and not reducible to nature.</p><p class="zh">上帝根本上超越世界，不能还原成自然本身。</p></article><article class="concept"><h4>Immanence / 内在</h4><p class="en">The divine is present in or through the world rather than wholly outside it.</p><p class="zh">神圣性存在于世界之中或贯穿世界，而非完全在世界之外。</p></article><article class="concept"><h4>Theodicy / 神义论</h4><p class="en">A theodicy tries to reconcile divine goodness and power with the existence of evil and suffering.</p><p class="zh">神义论试图调和“上帝全善全能”与“世界存在恶和苦难”。</p></article><article class="concept"><h4>Faith / 信仰</h4><p class="en">Faith can mean confidence, commitment or trust where demonstrative proof is unavailable; the philosophical issue is whether such commitment can be rational.</p><p class="zh">faith 可以指在无法演绎证明时的信任、承诺与确信；哲学问题是：这样的承诺是否仍可理性。</p></article></div>
+  <div class="section-title"><small>02 · POSITIONS</small><h3>What the rival views actually claim <span>竞争立场到底在说什么</span></h3></div>
+  <div class="
