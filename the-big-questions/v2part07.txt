@@ -1,0 +1,16 @@
+ class="argstep"><i>1</i><div><p class="en">Answer first, research later.</p><p class="zh">先回答，再查理论。</p></div></div><div class="argstep"><i>2</i><div><p class="en">Mark confidence from 0–100 rather than only yes/no.</p><p class="zh">给每个答案标 0–100 的确信度，而不是只有“是/否”。</p></div></div><div class="argstep"><i>3</i><div><p class="en">Look for two answers that cannot both be true without qualification.</p><p class="zh">找两条不能未经限定同时成立的答案。</p></div></div><div class="argstep"><i>4</i><div><p class="en">Use later chapters to decide whether to reject one belief or refine both.</p><p class="zh">用后面章节判断：是放弃其中一条，还是重新定义让两者兼容。</p></div></div></div>
+  <div class="section-title"><small>04 · OBJECTIONS</small><h3>Where the view gets pressured <span>真正困难在哪里</span></h3></div>
+  <div class="objections"><div class="objection"><b>“I need more knowledge before I can answer.”</b><p class="en">The point is not to be correct; it is to expose your current intuitions so later reasoning has something to work on.</p><p class="zh">“我懂得不够多，没资格答。”——这里不是考试。目的恰恰是暴露未经训练的直觉，后面才有东西可改。</p></div><div class="objection"><b>“My answers are inconsistent.”</b><p class="en">Good. Inconsistency is diagnostic information, not a failure at this stage.</p><p class="zh">“我的答案自相矛盾。”——很好。此时矛盾不是失败，而是最有价值的诊断信息。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">Write quick answers to: Is there a God? Is the mind only the brain? Are people free? Is morality objective? Should equality ever override liberty? Save the answers and revisit them after Chapter 11.</p><p class="zh">快速回答五题：有上帝吗？心灵只是大脑吗？人自由吗？道德客观吗？平等能否压过自由？把答案保存到读完第 11 章再重答。</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Chapter 2 takes the most personal of these questions: what could make an entire life meaningful?</p><p class="zh">第 2 章从最贴身的问题切入：什么能让整个人生具有意义？</p></div>
+</section>
+
+<section class="chapter" id="c2">
+  <header class="ch-head">
+    <div class="num">02</div>
+    <div><div class="pages">pp. 40–61</div><h2>The Meaning of Life<span>生命的意义</span></h2>
+    <div class="question"><p class="en">What kind of “meaning” could an entire life have?</p><p class="zh">整个人生究竟能以什么方式“有意义”？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The chapter first asks what &#x27;meaning&#x27; means, then tests external anchors such as children, God and an afterlife, and finally turns to a long sequence of life-metaphors. The metaphors are not decorative: each supplies a different standard for judging a life.</p><p class="zh">本章先追问 meaning 这个词本身，再检验孩子、上帝、来世等外部意义来源，最后进入一长串“人生如……”的隐喻。隐喻不是修辞装饰，而是一套隐藏的评分规则。</p></div>
+  <div class="section-title"><small>01 · CONCEPTS</small><h3>Conceptual deep dive <span>概念深挖</span></h3></div>
+  <div class="concept-grid"><article class="concept"><h4>Purpose vs. significance / 目的与重要性</h4><p class="en">A life may lack a cosmic purpose yet still matter intensely to people. &#x27;What am I for?&#x27; and &#x27;What makes my life worth caring about?&#x27; are different questions.</p><p class="zh">人生可能没有宇宙赋予的“任务”，却仍对某些人极其重要。“我被造来干什么”和“什么让我的人生值得在意”不是同一问题。</p
