@@ -1,0 +1,16 @@
+能形成。</p></div></div><div class="argstep"><i>Rational belief</i><div><p class="en">The chapter&#x27;s later move is important: being rational means making the best use of available reasons, not possessing infallible truth.</p><p class="zh">理性信念：后半章的重要转向是——理性意味着在现有条件下最好地使用理由，而不是拥有绝对不会错的真理。</p></div></div></div>
+  <div class="section-title"><small>04 · OBJECTIONS</small><h3>Where the view gets pressured <span>真正困难在哪里</span></h3></div>
+  <div class="objections"><div class="objection"><b>Against coherence alone</b><p class="en">A perfectly coherent fantasy may still fail to describe reality. Coherence needs contact with evidence or experience.</p><p class="zh">反对纯融贯：一套幻想可以内部极其一致，却仍与现实无关。因此融贯还需要与证据或经验接触。</p></div><div class="objection"><b>Against crude pragmatism</b><p class="en">A useful belief can be false, comforting or socially convenient. &#x27;Works for me&#x27; is weaker than a philosophical theory of pragmatic truth.</p><p class="zh">反对粗糙实用主义：一个信念可能很有用，却仍然错误、安慰性或社会方便。“对我有用”远弱于哲学意义的实用主义真理观。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">Imagine two doctors make the same correct diagnosis. One uses good evidence; the other guesses based on astrology. Both conclusions are true. Do both know? If not, what is missing from the astrologer&#x27;s case?</p><p class="zh">两位医生做出同一个正确诊断。一位依据检查和证据，另一位靠占星猜中。两人的结论都是真的。两人都“知道”吗？如果不是，占星者缺了什么？</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Chapter 6 turns the knowing subject itself into a problem: who or what is the &#x27;self&#x27; that knows?</p><p class="zh">第 6 章把“认识者”本身变成问题：那个在知道的“我”到底是什么？</p></div>
+</section>
+
+<section class="chapter" id="c6">
+  <header class="ch-head">
+    <div class="num">06</div>
+    <div><div class="pages">pp. 181–219</div><h2>Self<span>自我</span></h2>
+    <div class="question"><p class="en">What makes you the same person through change—and must there be one self at all?</p><p class="zh">不断变化中，什么让你仍然是“你”？而且一定只有一个自我吗？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The chapter moves from an essential self to body and consciousness, emotions, other minds and the mind–body problem. It then destabilizes the unitary self through existential choice, Buddhist no-self, many selves, social identity and relationships.</p><p class="zh">本章先从“本质自我”出发，比较身体与意识，再进入情感、他人心灵和心身问题；随后通过存在主义选择、佛教无我、多重自我、社会身份与关系性，把“单一统一自我”进一步动摇。</p></div>
+  <div class="section-title"><small>01 · CONCEPTS</small><h3>Conceptual deep dive <span>概念深挖</span></h3></div>
+  <div class="concept-grid"><article class="concept"><h4>Personal identity / 人格同一性</h4><p class="en">The question is what makes a person at one time the same person later. Candidates include bodily continuity, memory, psychological continuity and narrative or relational continuity.</p><p class="zh">人格同一性问的是：现在的我凭什么和十年后的我算同一个人？候选标准包括身体连续、记忆、心理连续、叙事或关系连续。</p></article><article class="concept"><h4>Mind–body problem / 心身问题</h4><p class="en">How can subjective experience, intention and thought relate to physical brain and body processes?</p><p class="zh">主观体验、意图与思想，如何和物理的大脑/身体过程
