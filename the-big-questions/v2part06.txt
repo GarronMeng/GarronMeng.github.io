@@ -1,0 +1,17 @@
+句话会在哪种情况下失效。</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Chapter 1 turns this method into a diagnostic questionnaire for your whole worldview.</p><p class="zh">第 1 章会把这套方法变成一份“世界观体检表”。</p></div>
+</section>
+
+<section class="chapter" id="c1">
+  <header class="ch-head">
+    <div class="num">01</div>
+    <div><div class="pages">pp. 25–39</div><h2>Philosophical Questions<span>哲学问题</span></h2>
+    <div class="question"><p class="en">Which questions reveal the hidden architecture of a worldview?</p><p class="zh">哪些问题最能暴露一整套世界观？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">Chapter 1 is deliberately light on doctrine and heavy on questions. It asks the reader to commit before later chapters supply canonical answers. The point is to create a baseline against which intellectual change can be measured.</p><p class="zh">第 1 章故意少讲理论、多问问题。作者先逼你表态，再让后续章节用经典理论来冲击你。它相当于全书的 baseline：读完之后，你才能知道自己到底改变了什么。</p></div>
+  <div class="section-title"><small>01 · CONCEPTS</small><h3>Conceptual deep dive <span>概念深挖</span></h3></div>
+  <div class="concept-grid"><article class="concept"><h4>Worldview / 世界观</h4><p class="en">A worldview is not one belief but a network: what you think is real affects what can be known; what you think a person is affects freedom and responsibility; what you value affects morality and politics.</p><p class="zh">世界观不是一个观点，而是一张网：现实观影响什么算知识；自我观影响自由与责任；价值观影响道德与政治。</p></article><article class="concept"><h4>Hidden dependency / 隐性依赖</h4><p class="en">Many beliefs seem independent until conflict appears. Believing both that every action is fully determined and that everyone always deserves full blame may force you to revise one side or redefine responsibility.</p><p class="zh">很多信念平时看似互不相干，直到冲突出现。比如“所有行动都被完全决定”与“每个人都永远该为选择承担完整责罚”放在一起，就会逼你修改其中一个。</p></article><article class="concept"><h4>Philosophical baseline / 哲学基线</h4><p class="en">Your first answer matters because later sophistication can create false memory: after learning a theory, we often feel we &#x27;always thought that&#x27;. Recording the initial view prevents this.</p><p class="zh">初始答案很重要，因为学完理论后，人很容易产生“我本来就是这么想的”的错觉。先写下来，才能看见真正的变化。</p></article></div>
+  <div class="section-title"><small>02 · POSITIONS</small><h3>What the rival views actually claim <span>竞争立场到底在说什么</span></h3></div>
+  <div class="position-grid"><div class="position"><b>Realism</b><span>实在论倾向</span><p class="en">The world has a structure independent of what we happen to think about it.</p><p class="zh">世界拥有独立于我们想法的结构。</p></div><div class="position"><b>Constructivist tendency</b><span>建构论倾向</span><p class="en">Some categories and meanings depend on social, linguistic or human practices.</p><p class="zh">某些范畴与意义依赖社会、语言或人类实践。</p></div><div class="position"><b>Skeptical tendency</b><span>怀疑论倾向</span><p class="en">Our confidence may outrun our justification; certainty needs to be earned.</p><p class="zh">我们的确信可能超过了证据，确定性必须被赢得。</p></div></div>
+  <div class="section-title"><small>03 · ARGUMENT WORKSHOP</small><h3>Reconstruct the reasoning <span>把论证一步步还原</span></h3></div>
+  <div class="argbox"><div
