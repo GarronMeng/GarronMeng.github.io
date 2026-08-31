@@ -1,0 +1,16 @@
+Compatibilism</b><span>相容论</span><p class="en">Causal determination and meaningful agency are compatible.</p><p class="zh">因果决定与有意义的能动性可以兼容。</p></div></div>
+  <div class="section-title"><small>03 · ARGUMENT WORKSHOP</small><h3>Reconstruct the reasoning <span>把论证一步步还原</span></h3></div>
+  <div class="argbox"><div class="argstep"><i>The responsibility pressure</i><div><p class="en">Praise and blame seem to presuppose that the agent had enough control for the action to count as theirs.</p><p class="zh">责任压力：赞扬与责罚似乎都预设行动者拥有足够控制，行动才真正算“他的”。</p></div></div><div class="argstep"><i>The randomness problem</i><div><p class="en">If indeterminism only inserts chance, the action becomes less controlled, not more authored.</p><p class="zh">随机难题：如果非决定论只是加入随机，行动会更少受控制，而不是更像“由我作出”。</p></div></div><div class="argstep"><i>Compatibilist move</i><div><p class="en">Ask not whether the agent is uncaused, but whether the action flows through the agent&#x27;s values, deliberation and capacities without manipulation or coercion.</p><p class="zh">相容论转向：不要问行动者是否“无因”，而问行动是否通过他的价值、思考与能力产生，并免于操控和强制。</p></div></div></div>
+  <div class="section-title"><small>04 · OBJECTIONS</small><h3>Where the view gets pressured <span>真正困难在哪里</span></h3></div>
+  <div class="objections"><div class="objection"><b>Manipulation argument</b><p class="en">If a person&#x27;s desires were secretly engineered, they might act exactly as they want yet seem unfree. This pressures simple compatibilism.</p><p class="zh">操控论证：如果一个人的欲望被秘密植入，他可能“完全按自己想法行动”却仍显得不自由，这会给简单相容论施压。</p></div><div class="objection"><b>Moral luck</b><p class="en">Our character, upbringing and opportunities are not chosen. If responsibility depends on traits we did not author, how deep can desert go?</p><p class="zh">道德运气：性格、成长环境和机会都不是我们选择的。如果责任建立在未由自己创造的特质上，“应得”究竟能有多深？</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">Suppose an implant changes your values so that you sincerely want to betray a friend. You act on the new desire without external coercion. Did you act freely?</p><p class="zh">假设一个植入装置改变了你的价值观，让你真心想背叛朋友。你没有受到外部强迫，而是按照“自己的新欲望”行动。你自由吗？</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Once action is attributed to agents, Chapter 8 asks the normative question: how should those agents live and act?</p><p class="zh">一旦行动能够归属于行动者，第 8 章就进入规范问题：行动者应该怎样生活、怎样做？</p></div>
+</section>
+
+<section class="chapter" id="c8">
+  <header class="ch-head">
+    <div class="num">08</div>
+    <div><div class="pages">pp. 246–280</div><h2>Morality and the Good Life<span>道德与美好生活</span></h2>
+    <div class="question"><p class="en">What makes an action right, a person good, or a life go well?</p><p class="zh">什么让行动正确、人格优秀、人生过得好？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The 10th edition reorganizes this chapter around moral philosophy, pleasure, egoism and altruism, relativism, duty, Kant, consequences and utilitarianism, Aristotle&#x27;s virtue ethics and feminist care ethics.</p><p class="zh">第 10 版把本章重组为：道德哲学、快乐、自利与利他、相对主义、义务论、康德、后果主义/功利主义、亚里士多德德性伦理、女性主义关怀伦理。<
