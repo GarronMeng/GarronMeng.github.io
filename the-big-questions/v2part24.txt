@@ -1,0 +1,16 @@
+o narrow.</p><p class="zh">重新打开正义：如果人首先是嵌入共同体的存在，个人 vs 国家这一政治哲学框架可能太窄。</p></div></div></div>
+  <div class="section-title"><small>04 · OBJECTIONS</small><h3>Where the view gets pressured <span>真正困难在哪里</span></h3></div>
+  <div class="objections"><div class="objection"><b>Exoticism</b><p class="en">Broadening the canon can still distort if traditions are treated as mystical, harmonious or homogeneous &#x27;alternatives to the West&#x27;.</p><p class="zh">异域化风险：即使扩展经典，如果把其他传统想象成神秘、和谐、同质的“西方替代品”，仍然是在扭曲。</p></div><div class="objection"><b>False equivalence</b><p class="en">Not every concept has a clean analogue. Forcing one-to-one comparison can erase genuine differences.</p><p class="zh">虚假对应：不是每个概念都有干净的一一对应。强行比较可能抹掉真正差异。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">Take the concept &#x27;self&#x27;. Compare three starting points: an independent chooser, a node in relationships, and a changing process without permanent essence. How would each reshape freedom, morality and justice?</p><p class="zh">拿“自我”做实验：分别从“独立选择者”“关系网络节点”“没有固定本质的变化过程”出发。三种起点会怎样重写自由、道德与正义？</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">The correct ending is circular: return to Chapter 1 and answer the Opening Questions again. The book&#x27;s success is measured by what has become harder, not merely by what has become clearer.</p><p class="zh">最好的结束方式是回环：回到第 1 章重答 Opening Questions。这本书是否成功，不只看你“更清楚了多少”，还看哪些原本简单的问题现在变得更难。</p></div>
+</section>
+</div><div id="noResults" class="no-results">No matching chapter / 没有匹配章节</div>
+<section class="end"><div class="kicker">End of first pass · 第一遍读完后</div><h2>Return to Chapter 1.</h2><p>Do not measure progress by how many philosophers you can name. Measure it by whether you can now state your own position more precisely, identify what it depends on, and explain the strongest objection to it.</p><p class="zh">不要用“记住了多少哲学家”衡量阅读成果。真正的指标是：你能否更精确地说出自己的立场、知道它依赖哪些前提，并且能够替反方说出最强的反对意见。</p></section>
+</div></main></div>
+<script>
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.lang button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.body.classList.remove('en-only','zh-only');if(b.dataset.lang==='en')document.body.classList.add('en-only');if(b.dataset.lang==='zh')document.body.classList.add('zh-only')});
+const ch=[...document.querySelectorAll('.chapter')],s=document.getElementById('search'),nr=document.getElementById('noResults'),p=document.getElementById('progress'),navs=[...document.querySelectorAll('.nav')];
+s.oninput=()=>{let q=s.value.toLowerCase().trim(),n=0;ch.forEach(c=>{let ok=!q||c.innerText.toLowerCase().includes(q);c.style.display=ok?'':'none';if(ok)n++});nr.style.display=n?'none':'block'};
+function scr(){let d=document.documentElement,m=d.scrollHeight-d.clientHeight;p.style.width=(m?d.scrollTop/m*100:0)+'%';let cur='';ch.forEach(c=>{if(c.getBoundingClientRect().top<145)cur=c.id});navs.forEach(a=>a.classList.toggle('active',a.dataset.target===cur))}addEventListener('scroll',scr,{passive:true});scr();
+</script>
+</body></html>
