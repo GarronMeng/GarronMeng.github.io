@@ -1,0 +1,16 @@
+b><span>形式主义</span><p class="en">Aesthetic value depends centrally on formal relations, organization or composition.</p><p class="zh">审美价值主要依赖形式关系、组织与构图。</p></div><div class="position"><b>Contextualism</b><span>语境主义</span><p class="en">Meaning and artistic status depend partly on historical and interpretive context.</p><p class="zh">意义与艺术身份部分依赖历史与解释语境。</p></div></div>
+  <div class="section-title"><small>03 · ARGUMENT WORKSHOP</small><h3>Reconstruct the reasoning <span>把论证一步步还原</span></h3></div>
+  <div class="argbox"><div class="argstep"><i>Taste can be discussed</i><div><p class="en">If two people disagree, they can still point to composition, technique, coherence, originality or expressive power. Contestability does not equal arbitrariness.</p><p class="zh">品味可讨论：即使意见不同，也可以谈构图、技巧、连贯、原创与表达力。有争议不等于任意。</p></div></div><div class="argstep"><i>Art ≠ beauty</i><div><p class="en">Many artworks aim at disturbance, conceptual provocation or testimony rather than prettiness.</p><p class="zh">艺术不等于美：很多作品追求扰动、概念挑衅或见证，而非漂亮。</p></div></div><div class="argstep"><i>Moral-aesthetic interaction</i><div><p class="en">A work&#x27;s moral features can affect interpretation without reducing aesthetic judgment to moral approval.</p><p class="zh">道德—审美互动：作品的道德特征可以影响解释，却不意味着审美评价等于道德赞同。</p></div></div></div>
+  <div class="section-title"><small>04 · OBJECTIONS</small><h3>Where the view gets pressured <span>真正困难在哪里</span></h3></div>
+  <div class="objections"><div class="objection"><b>Expert tyranny</b><p class="en">If experts define &#x27;good taste&#x27;, standards may merely reproduce class, institutional or cultural power.</p><p class="zh">专家霸权：如果“好品味”由专家定义，标准可能只是再生产阶层、制度或文化权力。</p></div><div class="objection"><b>Anything-goes contextualism</b><p class="en">If context can make anything art, the concept risks losing discriminatory force.</p><p class="zh">语境主义过度：如果任何东西只要放入某语境都能成为艺术，“艺术”概念可能失去区分能力。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">Place an ordinary urinal in a hardware store and then in a museum with a title and artist&#x27;s signature. Has the object changed? If not, what exactly has changed enough for the second case to be treated as art?</p><p class="zh">把一个普通小便池先放在五金店，再放进博物馆、加上标题与艺术家署名。物体本身没变，那么究竟是什么变化让第二个案例被当作艺术？</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Chapter 11 then questions the cultural frame in which many of the previous ten chapters were posed.</p><p class="zh">第 11 章最后反过来质疑：前十章提出问题的文化框架本身是不是太窄？</p></div>
+</section>
+
+<section class="chapter" id="c11">
+  <header class="ch-head">
+    <div class="num">11</div>
+    <div><div class="pages">pp. 344–375</div><h2>Non-Western Philosophy<span>非西方哲学</span></h2>
+    <div class="question"><p class="en">What changes when the philosophical canon itself is widened?</p><p class="zh">当哲学经典本身被拓宽，问题会怎样改变？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The final chapter broadens the frame through Native American, African, Latin American, Middle Eastern, South Asian and East Asian traditions. Its deepest role is methodolo
