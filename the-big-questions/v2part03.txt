@@ -1,0 +1,17 @@
+px dashed var(--line)}.next b{font-size:10px}.next p{margin:4px 0 0}.next .en{font:400 12px Georgia,serif}.next .zh{font-size:10px;color:var(--muted)}
+.end{padding:70px 0;border-top:1px solid var(--line)}.end h2{font:400 40px Georgia,serif;margin:0 0 10px}.end p{font-size:12px;color:var(--muted);max-width:900px}
+.no-results{display:none;text-align:center;padding:60px;color:var(--muted)}
+body.en-only .zh{display:none!important}body.zh-only .en{display:none!important}
+@media(max-width:900px){.layout{display:block}aside{height:auto;padding:9px 12px;display:flex;align-items:center;gap:8px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}.brand{font-size:15px;white-space:nowrap}.subbrand,.search,.lang,.side-note{display:none}.nav{display:block;white-space:nowrap;padding:6px}.nav>span,.nav em{display:none}.hero{min-height:76vh;padding-top:60px}.content{padding-left:18px;padding-right:18px}.mode-grid,.concept-grid,.position-grid,.objections{grid-template-columns:1fr}.ch-head{grid-template-columns:1fr}.num{font-size:31px}.argstep{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+<aside><a class="brand" href="#top">The Big Questions</a><div class="subbrand">Deep bilingual reader · 深度自足学习版</div>
+<input id="search" class="search" placeholder="Search / 搜索">
+<div class="lang"><button class="active" data-lang="dual">中 / EN</button><button data-lang="en">EN</button><button data-lang="zh">中文</button></div>
+<a class="nav" href="#intro" data-target="intro"><span>INTRO</span><b>Doing Philosophy</b><em>做哲学</em></a><a class="nav" href="#c1" data-target="c1"><span>01</span><b>Philosophical Questions</b><em>哲学问题</em></a><a class="nav" href="#c2" data-target="c2"><span>02</span><b>The Meaning of Life</b><em>生命的意义</em></a><a class="nav" href="#c3" data-target="c3"><span>03</span><b>God</b><em>上帝</em></a><a class="nav" href="#c4" data-target="c4"><span>04</span><b>The Nature of Reality</b><em>现实的本性</em></a><a class="nav" href="#c5" data-target="c5"><span>05</span><b>The Search for Truth</b><em>对真理的追寻</em></a><a class="nav" href="#c6" data-target="c6"><span>06</span><b>Self</b><em>自我</em></a><a class="nav" href="#c7" data-target="c7"><span>07</span><b>Freedom</b><em>自由</em></a><a class="nav" href="#c8" data-target="c8"><span>08</span><b>Morality and the Good Life</b><em>道德与美好生活</em></a><a class="nav" href="#c9" data-target="c9"><span>09</span><b>Justice and the Good Society</b><em>正义与良善社会</em></a><a class="nav" href="#c10" data-target="c10"><span>10</span><b>Beauty</b><em>美</em></a><a class="nav" href="#c11" data-target="c11"><span>11</span><b>Non-Western Philosophy</b><em>非西方哲学</em></a><div class="side-note">10th-edition structure anchored to Cengage. Explanations are original study notes, not a reproduction of the textbook.</div></aside>
+<main id="top">
+<header class="hero"><div class="kicker">Standalone study edition · 没有原著也能读</div><h1>The Big Questions<span>深度中英双语学习版</span></h1>
+<div class="deck">A book-anchored but self-contained philosophy reader. Each chapter now explains the concepts, reconstructs the arguments, presents rival positions, develops objections, and giv
