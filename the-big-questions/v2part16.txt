@@ -1,0 +1,16 @@
+它可能只是在给连续性命名，而非真正解释。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">A teleport machine scans you, destroys your body and creates an exact psychological duplicate on Mars. Did you travel, or die and get replaced? Now imagine it creates two copies. Which one is you?</p><p class="zh">一台传送机扫描你、摧毁原身体，并在火星制造一个心理完全相同的复制体。你是“传送过去”，还是“死了后被替代”？再假设它同时制造两个复制体，谁才是你？</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Chapter 7 depends on this chapter: before asking whether the self is free, we need to know what kind of self could author an action.</p><p class="zh">第 7 章直接依赖本章：在问“我是否自由”前，必须先知道究竟什么样的“我”能够成为行动的作者。</p></div>
+</section>
+
+<section class="chapter" id="c7">
+  <header class="ch-head">
+    <div class="num">07</div>
+    <div><div class="pages">pp. 220–245</div><h2>Freedom<span>自由</span></h2>
+    <div class="question"><p class="en">What kind of freedom is required for agency and responsibility?</p><p class="zh">要让“能动性与责任”成立，我们究竟需要哪种自由？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The chapter distinguishes political freedom from metaphysical free will, links freedom to concepts of self, stages determinism against indeterminism, then introduces compatibilism as a redefinition of what freedom may require.</p><p class="zh">本章先区分政治自由与形而上自由意志，再把自由与自我概念连接，展开决定论/非决定论争论，最后用相容论重新定义“自由究竟需要什么”。</p></div>
+  <div class="section-title"><small>01 · CONCEPTS</small><h3>Conceptual deep dive <span>概念深挖</span></h3></div>
+  <div class="concept-grid"><article class="concept"><h4>Political liberty / 政治自由</h4><p class="en">Freedom from legal or social interference: speech, movement, association, bodily autonomy and political participation.</p><p class="zh">免于法律或社会干预的自由，包括言论、迁徙、结社、身体自主与政治参与。</p></article><article class="concept"><h4>Determinism / 决定论</h4><p class="en">Every event, including human action, is fully determined by prior conditions and laws.</p><p class="zh">每个事件，包括人的行动，都由先前条件与规律充分决定。</p></article><article class="concept"><h4>Indeterminism / 非决定论</h4><p class="en">Not every event is determined by the past; however, mere randomness does not yet equal agency.</p><p class="zh">并非所有事件都由过去决定；但“随机”本身还不等于能动性。</p></article><article class="concept"><h4>Compatibilism / 相容论</h4><p class="en">Freedom can coexist with causal determination if freedom means acting from one&#x27;s own reasons and desires without coercion or certain forms of compulsion.</p><p class="zh">如果自由意味着依据自己的理由和欲望行动，并且没有受到强制或某些形式的控制，那么自由可以与因果决定共存。</p></article></div>
+  <div class="section-title"><small>02 · POSITIONS</small><h3>What the rival views actually claim <span>竞争立场到底在说什么</span></h3></div>
+  <div class="position-grid"><div class="position"><b>Hard determinism</b><span>强决定论</span><p class="en">Determinism is true and robust free will is not.</p><p class="zh">决定论为真，强意义自由意志不存在。</p></div><div class="position"><b>Libertarianism</b><span>自由意志论</span><p class="en">At least some choices are genuinely open and not fully determined by prior causes.</p><p class="zh">至少部分选择真正开放，不被先前原因完全决定。</p></div><div class="position"><b>
