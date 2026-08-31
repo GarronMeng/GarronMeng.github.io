@@ -1,0 +1,17 @@
+>心灵、经验或观念对“可知世界”甚至现实本身具有构成作用。</p></div></div>
+  <div class="section-title"><small>03 · ARGUMENT WORKSHOP</small><h3>Reconstruct the reasoning <span>把论证一步步还原</span></h3></div>
+  <div class="argbox"><div class="argstep"><i>From change to permanence</i><div><p class="en">If everything we encounter changes, how can knowledge have stable objects? One move is to posit a more stable level of reality.</p><p class="zh">从变化到稳定：如果所有可见事物都变化，知识如何拥有稳定对象？一种做法是提出更稳定的现实层次。</p></div></div><div class="argstep"><i>Against a separate realm</i><div><p class="en">Aristotle&#x27;s answer is that form must explain the concrete thing without being exiled to another world.</p><p class="zh">反对独立理念界：亚里士多德要让“形式”解释具体事物，却不把它放逐到另一个世界。</p></div></div><div class="argstep"><i>Mind as problem</i><div><p class="en">Once knowledge is mediated by consciousness, philosophers ask whether matter alone can explain experience or whether mind has irreducible status.</p><p class="zh">心灵问题：既然所有知识都经由意识，哲学家会问物质是否足以解释体验，还是心灵具有不可还原地位。</p></div></div></div>
+  <div class="section-title"><small>04 · OBJECTIONS</small><h3>Where the view gets pressured <span>真正困难在哪里</span></h3></div>
+  <div class="objections"><div class="objection"><b>Against reduction</b><p class="en">Reducing love to hormones, law to physical marks, or money to paper may miss the level at which these things actually function and matter.</p><p class="zh">反对过度还原：把爱还原成激素、法律还原成纸上墨迹、货币还原成纸张，可能错过它们真正发挥作用的层次。</p></div><div class="objection"><b>Against multiplying entities</b><p class="en">Positing invisible Forms or metaphysical substances can explain by adding entities whose own status then needs explanation.</p><p class="zh">反对实体膨胀：为了说明世界而增加不可见理念或形而上实体，可能只是把解释责任推给新的东西。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">Is a corporation real? It has no single body, yet it owns property, signs contracts and can outlive every employee. Compare its reality with a chair, a number and a friendship.</p><p class="zh">“公司”真实吗？它没有一个单一身体，却能拥有财产、签合同、比所有员工活得更久。把它与椅子、数字、友谊的“真实方式”比较。</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Once you decide what reality is like, Chapter 5 asks the unavoidable next question: how could we know it?</p><p class="zh">一旦你开始回答“现实是什么”，第 5 章立刻追问：我们怎么知道？</p></div>
+</section>
+
+<section class="chapter" id="c5">
+  <header class="ch-head">
+    <div class="num">05</div>
+    <div><div class="pages">pp. 140–180</div><h2>The Search for Truth<span>对真理的追寻</span></h2>
+    <div class="question"><p class="en">How do truth, evidence, rationality and certainty differ?</p><p class="zh">真理、证据、理性与确定性究竟有什么区别？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The chapter separates empirical from necessary truth, stages rationalism against empiricism, pushes skepticism through Descartes and Hume, brings in Kant, and then shifts from truth itself to standards of rational belief, coherence, pragmatism and relativism.</p><p class="zh">本章先区分经验真理与必然真理，再展开理性主义/经验主义之争；通过笛卡尔与休谟把怀疑推高，再引入康德；最后从“真理是什么”转向“什么算理性地相信”，讨论融贯、实用主义与相对主义。</p></div>
+  <div class="section-title"><
