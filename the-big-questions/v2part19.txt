@@ -1,0 +1,16 @@
+xt?</p><p class="zh">德性测试：反复这样做会把我培养成怎样的人？在这个具体情境中，实践智慧要求什么？</p></div></div></div>
+  <div class="section-title"><small>04 · OBJECTIONS</small><h3>Where the view gets pressured <span>真正困难在哪里</span></h3></div>
+  <div class="objections"><div class="objection"><b>Against rigid duty</b><p class="en">Absolute rules can clash. Telling the truth may aid a murderer; duties can conflict without an obvious hierarchy.</p><p class="zh">反对僵硬义务：绝对规则可能冲突。说真话可能帮助杀人犯；多个义务冲突时未必有清晰排序。</p></div><div class="objection"><b>Against pure aggregation</b><p class="en">Maximizing total welfare can permit sacrificing individuals in ways that violate rights or dignity.</p><p class="zh">反对纯总量最大化：为了总体福利最大化，可能允许牺牲个体，侵犯权利或尊严。</p></div><div class="objection"><b>Against virtue vagueness</b><p class="en">&#x27;Do what the virtuous person would do&#x27; may seem circular unless virtues and practical wisdom are independently explained.</p><p class="zh">反对德性含糊：如果不独立解释“什么是德性与实践智慧”，“做有德者会做的事”可能显得循环。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">A hospital has one ICU bed and two patients: one has a 90% chance of surviving with treatment, another 40% but is the sole caregiver of three children. Run the case through utilitarian, Kantian, virtue and care lenses.</p><p class="zh">医院只剩一张 ICU 床，两位患者：A 治疗后存活率 90%；B 只有 40%，但独自照顾三个孩子。分别用功利主义、康德、德性伦理、关怀伦理做一次判断。</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Chapter 9 takes morality out of isolated decisions and asks how institutions should distribute power, rights, opportunities and recognition.</p><p class="zh">第 9 章把道德从个人决定放大到制度：权力、权利、机会与承认该如何分配？</p></div>
+</section>
+
+<section class="chapter" id="c9">
+  <header class="ch-head">
+    <div class="num">09</div>
+    <div><div class="pages">pp. 282–320</div><h2>Justice and the Good Society<span>正义与良善社会</span></h2>
+    <div class="question"><p class="en">What makes authority legitimate and social arrangements just?</p><p class="zh">什么让权力正当、社会安排正义？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The chapter moves from society and legitimacy to anarchism, markets and government, then justice, equality, social contract, global justice, rights, libertarianism, liberalism, communitarianism, race and feminist political thought.</p><p class="zh">本章从社会与正当性进入无政府主义、市场与政府，再讨论正义、平等、社会契约、全球正义、权利、自由至上主义、自由主义、共同体主义、种族与女性主义政治哲学。</p></div>
+  <div class="section-title"><small>01 · CONCEPTS</small><h3>Conceptual deep dive <span>概念深挖</span></h3></div>
+  <div class="concept-grid"><article class="concept"><h4>Legitimacy / 正当性</h4><p class="en">Legitimacy asks why an institution or government has the right to make binding rules, not merely whether it has power.</p><p class="zh">正当性问的是制度或政府凭什么有权制定有约束力的规则，而不是它有没有能力强制。</p></article><article class="concept"><h4>Equality / 平等</h4><p class="en">Equality is incomplete without an object: equality of rights, opportunity, resources, outcomes, capabilities, status or political voice.</p><p class="zh">不说明“什么平等”，“平等”就不是完整主张。权利、机会、资源、结果、能力、地位、政治发言权都可能是对象。</p></article><article class="concept"><h4
