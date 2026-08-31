@@ -1,0 +1,16 @@
+es a thought experiment—so the guide can teach, not merely navigate.<span class="zh">这不再只是“看过原著的人用的导航”。每章都会解释概念、还原论证、比较立场、发展反驳并给出思想实验，让你即使没有原书，也能真正把问题往下钻。</span></div>
+<div class="meta"><span class="pill">12 sections</span><span class="pill">bilingual</span><span class="pill">argument reconstruction</span><span class="pill">objections</span><span class="pill">thought experiments</span></div></header>
+<div class="content">
+<section class="orientation"><div class="kicker">How this version works · 这版怎么读</div><h2>Not a summary. A learning path. <span>不是摘要，而是一条学习路径</span></h2>
+<div class="mode-grid"><div class="mode"><b>Book-anchored</b><p>保留第 10 版章节问题与概念骨架，明确哪些内容来自原著结构。</p></div><div class="mode"><b>Deep explanation</b><p>用自己的语言把哲学立场、论证与反驳解释到可以独立理解。</p></div><div class="mode"><b>Active learning</b><p>每章用思想实验迫使你做选择，而不是只读“别人怎么说”。</p></div></div>
+<div class="copyright-note"><strong>Source boundary / 来源边界：</strong> This page does not reproduce the textbook. Book-specific structure is anchored to the verified 10th edition; the extended explanations, argument reconstructions and examples are newly written study material. / 本页不复制原著正文。原著相关内容以第 10 版可核验结构为锚；扩展讲解、论证重建与案例均为重新撰写的学习材料。</div></section>
+<div id="chapters">
+<section class="chapter" id="intro">
+  <header class="ch-head">
+    <div class="num">INTRO</div>
+    <div><div class="pages">pp. 1–24</div><h2>Doing Philosophy<span>做哲学</span></h2>
+    <div class="question"><p class="en">How do we turn an opinion into a philosophical position?</p><p class="zh">如何把一个“我觉得”变成真正的哲学立场？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The introduction treats philosophy as an activity before it treats it as a body of knowledge. Its central pair is articulation and argument: first make a belief explicit enough to inspect; then give reasons for it, identify its assumptions, and expose it to objections.</p><p class="zh">导论首先把哲学理解成一种“做法”，而不是一堆需要背诵的知识。核心动作有两个：articulation（把你真正相信的东西说清楚）与 argument（给出理由、识别前提、面对反驳）。</p></div>
+  <div class="section-title"><small>01 · CONCEPTS</small><h3>Conceptual deep dive <span>概念深挖</span></h3></div>
+  <div class="concept-grid"><article class="concept"><h4>Articulation / 表达清楚</h4><p class="en">You may strongly believe in “freedom,” “truth,” or “authenticity,” yet still be unable to say what the word means. Philosophy begins when the vague word is replaced by a claim that could in principle be false.</p><p class="zh">你可能非常相信“自由”“真理”“真实自我”，却说不清这些词是什么意思。哲学的第一步，是把漂亮的大词改写成一个有边界、甚至可能被证明错误的具体主张。</p></article><article class="concept"><h4>Argument / 论证</h4><p class="en">An argument is not a quarrel. It is a structure in which some claims—the premises—are offered as reasons for accepting another—the conclusion. Good philosophical reading asks both whether the premises are plausible and whether the conclusion really follows.</p><p class="zh">argument 不是“争吵”，而是“前提 → 推理 → 结论”的结构。哲学阅读要同时问两件事：前提可信吗？即使前提可信，结论真的由它们推出吗？</p></article><article class="concept"><h4>Conceptual framework / 概念框架</h4><p class="en">Beliefs come in systems. If you redefine the self as socially constituted rather than a private inner core, your views abou
