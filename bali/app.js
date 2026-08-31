@@ -2,6 +2,7 @@
 const D=window.TRAVEL_DATA||{},G=window.TRAVEL_GUIDE||{},days=D.days||[],routes=D.routes||{},places=G.places||[];
 const byId=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const mapsSearch=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||''),xhsSearch=q=>'https://www.xiaohongshu.com/search_result?keyword='+encodeURIComponent(q||'');
+let map=null;
 
 /* navigation */
 const tripStart=new Date((G.trip?.start||'2026-09-26')+'T00:00:00'),tripEnd=new Date((G.trip?.end||'2026-10-06')+'T23:59:59');
@@ -21,7 +22,7 @@ const hotelByDay={1:'Grand Hyatt Bali',2:'Grand Hyatt Bali',3:'KLEO Seminyak',4:
 byId('triptable').innerHTML=`<table><thead><tr><th>日期</th><th>当天主线</th><th>住宿 / 夜间</th><th>强度</th></tr></thead><tbody>${days.map(d=>`<tr><td>${esc(d.date)} D${d.n}</td><td>${esc(d.title)}</td><td>${esc(hotelByDay[d.n]||'')}</td><td>${esc(d.level)}</td></tr>`).join('')}</tbody></table>`;
 
 /* map with offline fallback */
-let selected='D9',map=null,live=false,layers=[],tools=byId('maptools'),fallback=byId('mapFallback'),status=byId('mapstatus'),gmaps=byId('gmaps');
+let selected='D9',live=false,layers=[],tools=byId('maptools'),fallback=byId('mapFallback'),status=byId('mapstatus'),gmaps=byId('gmaps');
 function routePoints(k){return k==='ALL'?Object.values(routes).flat():routes[k]||[]}
 function bounds(pts){let a=pts.map(p=>p[0]),b=pts.map(p=>p[1]),mnA=Math.min(...a),mxA=Math.max(...a),mnB=Math.min(...b),mxB=Math.max(...b),pA=Math.max((mxA-mnA)*.2,.012),pB=Math.max((mxB-mnB)*.2,.012);return[mnA-pA,mxA+pA,mnB-pB,mxB+pB]}
 function renderFallback(k){const pts=routePoints(k);if(!pts.length)return;const [mnA,mxA,mnB,mxB]=bounds(pts),W=800,H=520,pr=p=>[40+(p[1]-mnB)/(mxB-mnB)*(W-80),40+(mxA-p[0])/(mxA-mnA)*(H-80)];let poly=pts.map(p=>pr(p).map(v=>v.toFixed(1)).join(',')).join(' '),grid='';for(let x=100;x<W;x+=100)grid+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`;for(let y=100;y<H;y+=100)grid+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`;let marks='';pts.forEach(p=>{let [x,y]=pr(p),left=x<W*.72,dx=left?10:-10,anchor=left?'start':'end';marks+=`<circle cx="${x}" cy="${y}" r="7" fill="#0d6b5d" stroke="#fff" stroke-width="3"/><text x="${x+dx}" y="${y-10}" text-anchor="${anchor}" font-size="15" font-weight="700" fill="#173e35">${esc(p[2])}</text>`});fallback.innerHTML=`<svg viewBox="0 0 ${W} ${H}" aria-label="${esc(k)} route map"><rect width="${W}" height="${H}" fill="#edf5ef"/><g opacity=".3" stroke="#8bb4a8">${grid}</g><polyline points="${poly}" fill="none" stroke="#0d6b5d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>${marks}</svg>`}
