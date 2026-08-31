@@ -1,0 +1,16 @@
+没有边界，纠正不平等也可能制造家长主义、过度强制或新的不公。</p></div></div>
+  <div class="thought"><div class="layer-label">THOUGHT EXPERIMENT · 思想实验</div><p class="en">A university admits purely by exam score. One student had elite tutoring; another studied in an under-resourced rural school. Is the same rule equal? Is it fair? Notice that the two questions may diverge.</p><p class="zh">一所大学完全按考试分数录取。一个学生有顶级补习，另一个来自资源匮乏的乡村学校。同一规则算“平等”吗？算“公平”吗？注意两个问题可能分开。</p></div>
+  <div class="next"><b>Why the next chapter follows · 为什么下一章会接在这里</b><p class="en">Chapter 10 asks about another domain of value that cannot be reduced to truth or morality: beauty and art.</p><p class="zh">第 10 章转向另一种无法还原为真理或道德的价值：美与艺术。</p></div>
+</section>
+
+<section class="chapter" id="c10">
+  <header class="ch-head">
+    <div class="num">10</div>
+    <div><div class="pages">pp. 322–342</div><h2>Beauty<span>美</span></h2>
+    <div class="question"><p class="en">Can aesthetic judgments be more than personal preference?</p><p class="zh">审美判断能否超越“我喜欢/我不喜欢”？</p></div></div>
+  </header>
+  <div class="book-layer"><div class="layer-label">BOOK-ANCHORED · 原著基底</div><p class="en">The chapter moves from aesthetics and beauty–truth relations to the paradox of tragedy, arguments about taste, art and ethics/religion, definitions of art and popular culture.</p><p class="zh">本章从美学以及美与真的关系进入“为什么我们享受悲剧”的悖论，再讨论品味能否争论、艺术与伦理/宗教、艺术定义以及大众文化。</p></div>
+  <div class="section-title"><small>01 · CONCEPTS</small><h3>Conceptual deep dive <span>概念深挖</span></h3></div>
+  <div class="concept-grid"><article class="concept"><h4>Aesthetic judgment / 审美判断</h4><p class="en">An aesthetic judgment seems more demanding than a report of liking. Saying &#x27;I like it&#x27; describes me; saying &#x27;it is beautiful&#x27; invites reasons others can assess.</p><p class="zh">审美判断似乎比“个人喜好报告”更强。“我喜欢”描述的是我；“它很美”则似乎邀请别人一起讨论理由。</p></article><article class="concept"><h4>Taste / 品味</h4><p class="en">Taste may be educated through attention, comparison and experience without becoming a mechanical objective score.</p><p class="zh">品味可以通过注意、比较和经验被训练，却不必变成机械客观评分。</p></article><article class="concept"><h4>Tragedy paradox / 悲剧悖论</h4><p class="en">We seek artworks that evoke grief, fear or discomfort, so aesthetic pleasure cannot simply mean pleasant sensation.</p><p class="zh">我们主动寻找会引发悲伤、恐惧和不适的作品，因此审美快感不能简单等于舒服感觉。</p></article><article class="concept"><h4>Artworld / 艺术语境</h4><p class="en">Modern art makes context, intention, history, institutions and interpretation relevant to what counts as art.</p><p class="zh">现代艺术让语境、意图、历史、制度与解释都参与决定“什么算艺术”。</p></article></div>
+  <div class="section-title"><small>02 · POSITIONS</small><h3>What the rival views actually claim <span>竞争立场到底在说什么</span></h3></div>
+  <div class="position-grid"><div class="position"><b>Subjectivism</b><span>审美主观主义</span><p class="en">Beauty is fundamentally in the response of the perceiver.</p><p class="zh">美根本上存在于感受者的反应。</p></div><div class="position"><b>Critical standards</b><span>批评标准论</span><p class="en">Some judgments are better because they rest on informed attention, comparison and reasons.</p><p class="zh">有些审美判断更好，因为它们建立在训练过的注意、比较与理由上。</p></div><div class="position"><b>Formalism</
