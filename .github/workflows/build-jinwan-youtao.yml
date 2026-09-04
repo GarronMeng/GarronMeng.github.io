@@ -1,0 +1,60 @@
+name: Build Jinwan Youtao static page
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'games/jinwan-youtao/payload-*.js'
+      - '.github/workflows/build-jinwan-youtao.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-static-html:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Rebuild standalone HTML from payload chunks
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, re
+
+          root = Path('games/jinwan-youtao')
+          chunks = []
+          for path in sorted(root.glob('payload-*.js'), key=lambda p: int(p.stem.split('-')[1])):
+              text = path.read_text(encoding='utf-8')
+              m = re.search(r"\+\s*'([^']+)'\s*;\s*$", text)
+              if not m:
+                  raise SystemExit(f'Could not parse {path}')
+              chunks.append(m.group(1))
+
+          if not chunks:
+              raise SystemExit('No payload chunks found')
+
+          packed = base64.b64decode(''.join(chunks))
+          html = gzip.decompress(packed)
+          if not html.lstrip().lower().startswith(b'<!doctype html>'):
+              raise SystemExit('Decoded payload is not HTML')
+
+          (root / 'index.html').write_bytes(html)
+          print(f'Wrote {len(html)} bytes to {root / "index.html"}')
+          PY
+
+      - name: Commit rebuilt page
+        run: |
+          if git diff --quiet -- games/jinwan-youtao/index.html; then
+            echo 'No change needed'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html
+          git commit -m 'fix: publish Jinwan Youtao without browser decompression [skip ci]'
+          git push origin HEAD:master
