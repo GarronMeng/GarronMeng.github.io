@@ -20,25 +20,32 @@ jobs:
         with:
           ref: master
 
-      - name: Rebuild standalone HTML from payload chunks
+      - name: Rebuild standalone HTML from verified payload chunks
         run: |
           python - <<'PY'
           from pathlib import Path
           import base64, gzip, re
 
           root = Path('games/jinwan-youtao')
+          names = [
+              'payload-0.js', 'payload-1.js',
+              'payload-2a.js', 'payload-2b.js', 'payload-2c.js', 'payload-2d.js', 'payload-2e.js',
+              'payload-3.js', 'payload-4.js', 'payload-5.js', 'payload-6.js',
+              'payload-7a.js', 'payload-7b.js', 'payload-7c.js', 'payload-7d.js', 'payload-7e.js',
+          ]
+
           chunks = []
-          for path in sorted(root.glob('payload-*.js'), key=lambda p: int(p.stem.split('-')[1])):
+          for name in names:
+              path = root / name
+              if not path.exists():
+                  raise SystemExit(f'Missing {path}')
               text = path.read_text(encoding='utf-8')
               m = re.search(r"\+\s*'([^']+)'\s*;\s*$", text)
               if not m:
                   raise SystemExit(f'Could not parse {path}')
               chunks.append(m.group(1))
 
-          if not chunks:
-              raise SystemExit('No payload chunks found')
-
-          packed = base64.b64decode(''.join(chunks))
+          packed = base64.b64decode(''.join(chunks), validate=True)
           html = gzip.decompress(packed)
           if not html.lstrip().lower().startswith(b'<!doctype html>'):
               raise SystemExit('Decoded payload is not HTML')
@@ -47,7 +54,7 @@ jobs:
           print(f'Wrote {len(html)} bytes to {root / "index.html"}')
           PY
 
-      - name: Commit rebuilt page
+      - name: Commit rebuilt standalone page
         run: |
           if git diff --quiet -- games/jinwan-youtao/index.html; then
             echo 'No change needed'
@@ -56,5 +63,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add games/jinwan-youtao/index.html
-          git commit -m 'fix: publish Jinwan Youtao without browser decompression [skip ci]'
+          git commit -m 'fix: publish standalone Jinwan Youtao page [skip ci]'
           git push origin HEAD:master
