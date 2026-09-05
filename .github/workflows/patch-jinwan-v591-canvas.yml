@@ -1,0 +1,63 @@
+name: Patch Jinwan Youtao v5.9.1 canvas
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v591-canvas.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Fix task indicator without destroying goal DOM
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('games/jinwan-youtao/index.html')
+          s=p.read_text(encoding='utf-8')
+          old=re.compile(r"function updateQuestIndicator\(\)\{.*?\n\}\n\nfunction occupancy\(\)",re.S)
+          new=r'''function updateQuestIndicator(){
+  ensureQuestState();var q=mainQuestDefs(),idx=mainQuestIndex(),ready=questReadyCount(),g=$('goalStrip'),rb=$('reportBtn'),phase=$('phaseLabel'),goal=$('dailyGoalText'),score=$('dailyScore');
+  if(g){
+    if(idx<q.length){var m=q[idx],v=m.progress(),done=v>=m.target;if(phase)phase.textContent='任务';if(goal)goal.textContent=m.title;if(score)score.textContent=done?'领取 '+questRewardText(m.reward):Math.min(v,m.target)+'/'+m.target;g.title=m.desc}
+    else{if(phase)phase.textContent='任务';if(goal)goal.textContent='主线完成';if(score)score.textContent='今日 / 成就 ›';g.title='查看今日任务和长期成就'}
+    g.classList.toggle('questready',ready>0)
+  }
+  if(rb){rb.innerHTML='<span>📋</span>任务'+(ready?'<small>'+ready+' 可领</small>':'');rb.classList.toggle('alert',ready>0)}
+}
+
+function occupancy()'''
+          s2,n=old.subn(new,s,count=1)
+          if n!=1: raise SystemExit('updateQuestIndicator patch target not found')
+          s2=s2.replace("var QUEST_SYSTEM_VERSION='5.9';","var QUEST_SYSTEM_VERSION='5.9.1';",1)
+          p.write_text(s2,encoding='utf-8')
+          PY
+      - name: Validate game script
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('games/jinwan-youtao/index.html').read_text(encoding='utf-8')
+          m=re.findall(r'<script>(.*?)</script>',s,re.S)
+          if not m: raise SystemExit('inline script missing')
+          Path('/tmp/game.js').write_text(m[-1],encoding='utf-8')
+          assert "QUEST_SYSTEM_VERSION='5.9.1'" in s
+          assert "g.innerHTML='<span><b>任务</b>" not in s
+          PY
+          node --check /tmp/game.js
+      - name: Commit v5.9.1
+        shell: bash
+        run: |
+          if git diff --quiet -- games/jinwan-youtao/index.html; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html
+          git commit -m 'fix: restore hotel canvas after task hub v5.9.1 [skip ci]'
+          git push origin master
