@@ -1,0 +1,109 @@
+from pathlib import Path
+import re
+
+p = Path('games/jinwan-youtao/index.html')
+s = p.read_text(encoding='utf-8')
+if "var QUEST_SYSTEM_VERSION='5.9.4'" in s:
+    raise SystemExit(0)
+
+old = "function closeSheets(clearSelection){['inventorySheet','opsSheet','portfolioSheet','reportSheet','logSheet','questSheet'].forEach(function(id){$(id).classList.remove('show')});$('sheetBackdrop').classList.remove('show');if(clearSelection)state.selectedRoom=null}"
+new = "function closeSheets(clearSelection){['inventorySheet','roomSheet','opsSheet','portfolioSheet','reportSheet','logSheet','questSheet'].forEach(function(id){var el=$(id);if(el)el.classList.remove('show')});$('sheetBackdrop').classList.remove('show');if(clearSelection)state.selectedRoom=null}"
+if old not in s:
+    raise SystemExit('closeSheets target missing')
+s = s.replace(old, new, 1)
+
+old_sheet = '''  <div class="sheet" id="roomSheet">
+    <div class="sheethead"><div><h3 id="roomSheetTitle">房间 / Room</h3><div class="sub" id="roomSheetSub">查看这个房间的状态与用途。</div></div><button class="sheetclose" data-close-sheet>×</button></div>
+    <div class="notice roomstatus" id="roomStatusCard"></div>
+    <div id="roomBuildBlock">
+      <div class="section-title">建设这个房间</div>
+      <div class="cards room-build-cards">
+        <button class="card" data-room-build="standard"><strong>🛏 标准客房</strong><small>最基础的可售房。稳定增加房晚库存与收入。</small><span class="tag">建造 ¥700</span></button>
+        <button class="card" data-room-build="suite"><strong>🛋 套房</strong><small>用于 Globalist 升套与更高房价。</small><span class="tag gold">建造 ¥1500</span></button>
+      </div>
+      <button class="inspectbtn" id="roomMoreFacilitiesBtn" type="button">想把这里改成早餐厅 / 酒廊 / 健身房 / Spa →</button>
+    </div>
+  </div>'''
+new_sheet = '''  <div class="sheet" id="roomSheet">
+    <div class="sheethead"><div><h3 id="roomSheetTitle">房间 / Room</h3><div class="sub" id="roomSheetSub">房态、住客体验与可执行操作。</div></div><button class="sheetclose" data-close-sheet>×</button></div>
+    <div class="roompreview" id="roomPreview"><canvas id="roomPreviewCanvas" width="640" height="300"></canvas><div class="roompreviewmeta"><b id="roomPreviewName"></b><small id="roomPreviewState"></small></div></div>
+    <div class="notice roomstatus" id="roomStatusCard"></div>
+    <div id="roomGuestBlock" class="roomdetailblock"></div>
+    <div id="roomReviewBlock" class="roomdetailblock"></div>
+    <div id="roomActionBlock"><div class="section-title">现在可以做什么</div><div class="roomactions" id="roomActions"></div></div>
+    <div id="roomBuildBlock">
+      <div class="section-title">建设这个房间</div>
+      <div class="cards room-build-cards">
+        <button class="card" data-room-build="standard"><strong>🛏 标准客房</strong><small>最基础的可售房。稳定增加房晚库存与收入。</small><span class="tag">建造 ¥700</span></button>
+        <button class="card" data-room-build="suite"><strong>🛋 套房</strong><small>用于 Globalist 升套与更高房价。</small><span class="tag gold">建造 ¥1500</span></button>
+      </div>
+      <button class="inspectbtn" id="roomMoreFacilitiesBtn" type="button">改成早餐厅 / 酒廊 / 健身房 / Spa →</button>
+    </div>
+  </div>'''
+if old_sheet not in s:
+    raise SystemExit('room sheet target missing')
+s = s.replace(old_sheet, new_sheet, 1)
+
+css = '''
+/* v5.9.4 room detail + lightweight interior sprites */
+.roompreview{position:relative;height:150px;margin:2px 0 9px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#2b3540;display:none}.roompreview.show{display:block}.roompreview canvas{display:block;width:100%;height:100%;position:static}.roompreviewmeta{position:absolute;left:9px;right:9px;bottom:7px;padding:6px 8px;border-radius:9px;background:rgba(23,29,35,.78);color:#fff}.roompreviewmeta b{display:block;font-size:10.5px}.roompreviewmeta small{display:block;margin-top:2px;font-size:7.5px;color:rgba(255,255,255,.76)}
+.roomdetailblock{display:none;margin:8px 0;padding:10px 11px;border:1px solid var(--line);border-radius:13px;background:#fff}.roomdetailblock.show{display:block}.roomdetailblock .eyebrow{font-size:7px;font-weight:950;letter-spacing:1px;color:var(--gold)}.roomdetailblock strong{display:block;margin-top:4px;font-size:11px}.roomdetailblock p{margin:4px 0 0;font-size:9px;line-height:1.5;color:var(--muted)}
+.roomactions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}.roomaction{min-height:58px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px;text-align:left;color:var(--ink)}.roomaction.primary{border-color:#c8a257;background:#fff8e8}.roomaction strong{display:block;font-size:9.5px}.roomaction small{display:block;margin-top:3px;font-size:7.5px;line-height:1.35;color:var(--muted)}.roomaction[disabled]{opacity:.45}
+'''
+s = s.replace('</style>', css + '</style>', 1)
+
+anchor = 'function suitesFree(){'
+sprite = r'''function drawMiniInterior(c,type,x,y,w,h,alpha){
+  c.save();c.globalAlpha=alpha==null?1:alpha;c.beginPath();c.rect(x,y,w,h);c.clip();
+  var floor=type==='gym'?'#a87343':type==='spa'?'#c6b49d':'#c79f6d';c.fillStyle=floor;c.fillRect(x,y,w,h);
+  c.fillStyle='rgba(255,246,226,.82)';c.fillRect(x,y,w,h*.28);
+  var sx=w/100,sy=h/70;function box(px,py,pw,ph,fill){c.fillStyle=fill;c.fillRect(x+px*sx,y+py*sy,pw*sx,ph*sy)}
+  if(type==='standard'||type==='suite'){box(8,25,48,25,'#f5efe4');box(8,24,48,5,'#76533c');box(10,43,46,6,'#7f8b58');box(63,25,25,18,'#744f32');box(66,28,18,11,'#d8c7a9');box(63,49,24,5,'#68472f');if(type==='suite'){box(58,45,33,13,'#d8c8b5');box(60,47,29,4,'#76845d')}}
+  else if(type==='breakfast'){box(6,18,88,14,'#6e4a2d');for(var i=0;i<4;i++){box(12+i*20,38,14,12,'#875b38');box(14+i*20,52,10,4,'#78855d')}box(16,21,15,7,'#d39f52');box(38,21,18,7,'#e5c074');box(62,21,20,7,'#b46c45')}
+  else if(type==='club'){box(52,17,40,15,'#574035');box(56,20,32,4,'#d0a45e');box(7,34,34,16,'#d6c7b5');box(10,48,10,5,'#6f7e58');box(25,48,10,5,'#6f7e58');box(46,45,20,8,'#684936')}
+  else if(type==='gym'){box(8,34,35,8,'#33383b');box(12,25,5,16,'#44494d');box(49,29,16,17,'#30363a');box(72,24,19,18,'#2f3336');box(20,51,60,10,'#4b4540')}
+  else if(type==='spa'){box(24,30,52,18,'#f2eadc');box(29,46,42,5,'#7e8b5b');box(7,18,18,32,'#765037');box(79,18,13,31,'#79543a');box(33,18,38,8,'#6d4b34')}
+  c.restore();return true;
+}
+function drawRoomSpriteInCell(r,q,locked){if(locked||!r.type)return false;ctx.save();ctx.beginPath();ctx.rect(q.x+4,q.y+15,q.w-8,q.h-28);ctx.clip();drawMiniInterior(ctx,r.type,q.x+4,q.y+15,q.w-8,q.h-28,r.occupied?0.76:0.9);ctx.restore();return true}
+function drawRoomPreview(r){var cv=$('roomPreviewCanvas');if(!cv||!r||!r.type)return;var c=cv.getContext('2d'),w=cv.width,h=cv.height;c.clearRect(0,0,w,h);var g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#243342');g.addColorStop(1,'#171d23');c.fillStyle=g;c.fillRect(0,0,w,h);drawMiniInterior(c,r.type,70,18,w-140,h-55,1)}
+'''
+if anchor not in s:
+    raise SystemExit('sprite anchor missing')
+s = s.replace(anchor, sprite + anchor, 1)
+
+old_icon = "ctx.textAlign='center';ctx.font='22px -apple-system, sans-serif';ctx.fillText(locked?'🔒':(r.type?defs[r.type].icon:'＋'),q.x+q.w/2,q.y+q.h/2+6);ctx.font='700 7px -apple-system, sans-serif';"
+new_icon = "ctx.textAlign='center';var spr=drawRoomSpriteInCell(r,q,locked);ctx.font='22px -apple-system, sans-serif';if(!spr)ctx.fillText(locked?'🔒':(r.type?defs[r.type].icon:'＋'),q.x+q.w/2,q.y+q.h/2+6);ctx.font='700 7px -apple-system, sans-serif';"
+if old_icon not in s:
+    raise SystemExit('room draw target missing')
+s = s.replace(old_icon, new_icon, 1)
+
+start = s.find('function roomStateText(r){')
+end = s.find('function occupancy(){', start)
+if start < 0 or end < 0:
+    raise SystemExit('room helper range missing')
+helpers = r'''function roomStateText(r){if(!r.type)return'EMPTY · 尚未建设';if(r.reserved)return'SUA LOCK · 已预留';if(r.occupied)return'IN HOUSE · 入住中';if(r.dirty)return r.cleaning>0?'CLEANING · 清扫中':'DIRTY · 待清扫';return'AVAILABLE · 可售'}
+function roomGuest(r){if(!r||!r.guest)return null;for(var i=0;i<state.guests.length;i++)if(state.guests[i].id===r.guest)return state.guests[i];return null}
+function roomStars(gu){if(!gu)return 0;var n=4;if(gu.upgraded)n++;if(gu.denied)n--;if((gu.grudge||0)>=3)n-=2;else if((gu.grudge||0)>=1.3)n--;if(gu.roomServiceDone)n++;return Math.max(1,Math.min(5,n))}
+function starText(n){return'★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n)}
+function renderRoomActions(r,gu){var box=$('roomActions'),h=[];box.innerHTML='';if(!r.type){$('roomActionBlock').style.display='none';return}$('roomActionBlock').style.display='block';if(gu){if((state.perks||0)>0)h.push('<button class="roomaction primary" data-room-action="amenity"><strong>🎁 送欢迎礼</strong><small>礼遇券 -1 · 缓和当前体验</small></button>');if(!gu.roomServiceDone)h.push('<button class="roomaction" data-room-action="service"><strong>🛎 主动房内服务</strong><small>¥80 · 当前体验 +1</small></button>');if(gu.tier==='Globalist'&&gu.lateChoice!=='honor')h.push('<button class="roomaction" data-room-action="late"><strong>🕓 确认 16:00 退房</strong><small>口碑 +1 · 业主 -1</small></button>')}else if(r.dirty)h.push('<button class="roomaction primary" data-room-action="clean"><strong>🧹 优先翻房</strong><small>¥80 · 立即恢复可售</small></button>');else if(r.type==='standard'&&!r.reserved)h.push('<button class="roomaction" data-room-action="upgrade"><strong>🛋 改造成套房</strong><small>¥800 · 套房库存 +1</small></button>');else if(r.type==='breakfast')h.push('<button class="roomaction" data-room-action="breakfast"><strong>🍳 补满早餐</strong><small>¥180 · 当前 '+Math.round(state.breakfastStock)+'%</small></button>');else if(r.type==='club')h.push('<button class="roomaction" data-room-action="lounge"><strong>🥂 补满酒廊</strong><small>¥220 · 当前 '+Math.round(state.loungeStock)+'%</small></button>');if(!h.length)h.push('<button class="roomaction" disabled><strong>✓ 当前无需处理</strong><small>这间房现在处于正常运营状态。</small></button>');box.innerHTML=h.join('')}
+function openRoomSheet(r){state.selectedRoom=r;closeSheets(false);var code=roomCode(r),d=r.type?defs[r.type]:null,status=roomStateText(r),build=!r.type,gu=roomGuest(r),p=gu?personaOf(gu):null;$('roomSheetTitle').textContent=code+' · '+(build?'空房间':'房间详情');$('roomSheetSub').textContent=build?'先决定这个房间的用途。':'房态、住客体验与可执行操作。';$('roomStatusCard').innerHTML='<strong>'+(build?'⬜ '+code+' · 未建设':(d.icon+' '+code+' · '+d.label))+'</strong><small>'+status+(d&&d.rate?' · 基础房价 ¥'+Math.round(d.rate*brand().rate):'')+'</small>';$('roomBuildBlock').hidden=!build;var pv=$('roomPreview');if(r.type){pv.classList.add('show');$('roomPreviewName').textContent=code+' · '+d.label;$('roomPreviewState').textContent=status;drawRoomPreview(r)}else pv.classList.remove('show');var gb=$('roomGuestBlock'),rb=$('roomReviewBlock');if(gu){var thought=guestThought(gu)||p.quote,stars=roomStars(gu);gb.classList.add('show');gb.innerHTML='<div class="eyebrow">CURRENT GUEST · 当前入住</div><strong>'+p.icon+' '+gu.name+' · '+gu.tier+(gu.returning?' · 熟客':'')+'</strong><p>计划 '+(gu.tripNights||1)+' 晚 · '+(gu.upgraded?'已升套 · ':'')+(gu.lateChoice==='honor'?'16:00 退房已确认':'当前正常入住')+'</p>';rb.classList.add('show');rb.innerHTML='<div class="eyebrow">LIVE EXPERIENCE · 当前体验</div><strong>'+starText(stars)+' · 预估 '+stars+'/5</strong><p>“'+thought+'”</p>'}else{gb.classList.remove('show');gb.innerHTML='';if(r.lastReview){rb.classList.add('show');rb.innerHTML='<div class="eyebrow">LAST REVIEW · 上一位住客</div><strong>'+(r.lastGuestName||'上一位住客')+'</strong><p>'+r.lastReview+'</p>'}else{rb.classList.remove('show');rb.innerHTML=''}}renderRoomActions(r,gu);$('roomSheet').classList.add('show');$('sheetBackdrop').classList.add('show')}
+'''
+s = s[:start] + helpers + s[end:]
+
+listener = "document.querySelectorAll('[data-room-build]').forEach(function(btn){"
+actions = r'''if($('roomActions'))$('roomActions').addEventListener('click',function(e){var b=e.target.closest('[data-room-action]');if(!b||!state.selectedRoom)return;var r=state.selectedRoom,gu=roomGuest(r),a=b.getAttribute('data-room-action'),cost=0;if(a==='amenity'){if(!gu||!spendPerk(1)){showToast('没有可用礼遇券。');return}gu.grudge=Math.max(0,(gu.grudge||0)-1.5);changeRep(1);showToast('🎁 欢迎礼送达 · 当前体验改善')}else if(a==='service'){if(!gu||gu.roomServiceDone)return;cost=80;if(state.cash<cost){showToast('预算不足。');return}state.cash-=cost;state.expense+=cost;state.stats.totalExpense+=cost;gu.roomServiceDone=true;gu.grudge=Math.max(0,(gu.grudge||0)-1);changeRep(1);showToast('🛎 房内服务完成 · 当前体验 +1')}else if(a==='late'){if(!gu)return;gu.latePending=true;gu.lateChoice='honor';changeRep(1);changeOwner(-1);showToast('🕓 16:00 退房已提前确认')}else if(a==='clean'){cost=80;if(state.cash<cost){showToast('预算不足。');return}state.cash-=cost;state.expense+=cost;state.stats.totalExpense+=cost;r.dirty=false;r.cleaning=0;showToast('🧹 '+roomCode(r)+' 已优先翻房 · 恢复可售')}else if(a==='upgrade'){cost=800;if(state.cash<cost){showToast('预算不足。');return}state.cash-=cost;state.expense+=cost;state.stats.totalExpense+=cost;r.type='suite';changeOwner(1);showToast('🛋 '+roomCode(r)+' 已改造成套房')}else if(a==='breakfast'){cost=180;if(state.cash<cost){showToast('预算不足。');return}state.cash-=cost;state.expense+=cost;state.stats.totalExpense+=cost;state.breakfastStock=100;showToast('🍳 早餐已补满')}else if(a==='lounge'){cost=220;if(state.cash<cost){showToast('预算不足。');return}state.cash-=cost;state.expense+=cost;state.stats.totalExpense+=cost;state.loungeStock=100;showToast('🥂 酒廊已补满')}updateUI();saveState(true);openRoomSheet(r)});
+'''
+if listener not in s:
+    raise SystemExit('room listener anchor missing')
+s = s.replace(listener, actions + listener, 1)
+
+review_target = "state.review=reviews[Math.floor(Math.random()*reviews.length)];var rareMsg=resolveRareReward(gu,p);"
+if review_target not in s:
+    raise SystemExit('review target missing')
+s = s.replace(review_target, "state.review=reviews[Math.floor(Math.random()*reviews.length)];r.lastReview=state.review;r.lastGuestName=gu.name;var rareMsg=resolveRareReward(gu,p);", 1)
+
+if "var QUEST_SYSTEM_VERSION='5.9.3';" not in s:
+    raise SystemExit('version marker missing')
+s = s.replace("var QUEST_SYSTEM_VERSION='5.9.3';", "var QUEST_SYSTEM_VERSION='5.9.4';", 1)
+p.write_text(s, encoding='utf-8')
