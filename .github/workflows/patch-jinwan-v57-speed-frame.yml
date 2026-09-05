@@ -1,0 +1,48 @@
+name: Patch Jinwan Youtao v5.7 speed and frame
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v57-speed-frame.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable 4x from Day 1 and remove facade outline
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('games/jinwan-youtao/index.html')
+          s=p.read_text()
+          old_speed="function maxManualSpeed(){if(state.scenario&&state.scenario.active)return 4;if(state.day<2)return 1;if(state.day<5)return 2;return 4}"
+          new_speed="function maxManualSpeed(){return 4}"
+          if s.count(old_speed)!=1:
+              raise SystemExit(f'maxManualSpeed match count={s.count(old_speed)}')
+          s=s.replace(old_speed,new_speed,1)
+          old_frame="if(facadeLv>1){ctx.strokeStyle='rgba(182,147,79,.55)';ctx.lineWidth=2;ctx.strokeRect(d.m+.5,d.top-8,d.bw-1,d.base-d.top+5)}"
+          if s.count(old_frame)!=1:
+              raise SystemExit(f'facade frame match count={s.count(old_frame)}')
+          s=s.replace(old_frame,'',1)
+          s=s.replace('v5.6','v5.7')
+          p.write_text(s)
+          PY
+      - name: Verify patch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('games/jinwan-youtao/index.html').read_text()
+          assert 'function maxManualSpeed(){return 4}' in s
+          assert "ctx.strokeRect(d.m+.5,d.top-8,d.bw-1,d.base-d.top+5)" not in s
+          assert 'v5.7' in s
+          print('v5.7 verified: 4x available from Day 1, large facade frame removed')
+          PY
+      - name: Commit v5.7
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html
+          git commit -m 'fix: enable 4x from day 1 and remove facade frame v5.7 [skip ci]'
+          git push
