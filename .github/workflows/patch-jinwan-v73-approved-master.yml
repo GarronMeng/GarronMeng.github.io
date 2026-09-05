@@ -1,0 +1,57 @@
+name: Patch Jinwan v7.3 approved visual master
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v73-approved-master.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Rebuild approved master asset
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, hashlib
+          root=Path('games/jinwan-youtao/assets')
+          s=''.join((root/f'v70_master2.part{i}').read_text().strip() for i in (1,2,3))
+          raw=base64.b64decode(s, validate=True)
+          assert len(raw)==35226, len(raw)
+          assert raw[:4]==b'RIFF' and raw[8:12]==b'WEBP'
+          out=root/'v70_master2.webp'
+          out.write_bytes(raw)
+          print('webp bytes',len(raw),'sha1',hashlib.sha1(raw).hexdigest())
+          assert hashlib.sha1(raw).hexdigest()=='cde73a6bb1eee610b657709d33f7b2a5604d20b5'
+          PY
+      - name: Patch v7.3 UI
+        run: python games/jinwan-youtao/patch_v73.py
+      - name: Verify v7.3
+        run: |
+          grep -q "QUEST_SYSTEM_VERSION='7.3.0'" games/jinwan-youtao/index.html
+          grep -q 'data-build="7.3.0"' games/jinwan-youtao/index.html
+          grep -q 'assets/v70_master2.webp?v=730' games/jinwan-youtao/index.html
+          grep -q 'id="v73-approved-master-css"' games/jinwan-youtao/index.html
+          grep -q 'id="v73-approved-master-js"' games/jinwan-youtao/index.html
+          test -s games/jinwan-youtao/assets/v70_master2.webp
+          python - <<'PY'
+          import re,pathlib,subprocess,tempfile,os
+          s=pathlib.Path('games/jinwan-youtao/index.html').read_text()
+          scripts=re.findall(r'<script(?:[^>]*)>([\s\S]*?)</script>',s)
+          f=tempfile.NamedTemporaryFile(delete=False,suffix='.js',mode='w');f.write('\n'.join(scripts));f.close()
+          r=subprocess.run(['node','--check',f.name],capture_output=True,text=True);os.unlink(f.name)
+          print(r.stderr)
+          assert r.returncode==0
+          PY
+      - name: Commit game and binary asset
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add games/jinwan-youtao/index.html games/jinwan-youtao/assets/v70_master2.webp
+          git commit -m 'feat: approved cinematic hotel world v7.3 [skip ci]' || exit 0
+          git push
