@@ -1,0 +1,102 @@
+name: Patch Jinwan Youtao v5.6 visual restore
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v56-visual.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore original 3D image scenes and tighten 2D facade
+        shell: python
+        run: |
+          from pathlib import Path
+          import re, subprocess
+
+          path = Path('games/jinwan-youtao/index.html')
+          cur = path.read_text(encoding='utf-8')
+          old = subprocess.check_output(
+              ['git','show','58f8718697098d4f2098c4d759be736ffeed2f8f:games/jinwan-youtao/index.html'],
+              text=True,
+              encoding='utf-8'
+          )
+
+          # 1) Restore the original WebP-based 3D hotel scenes from v5.1.
+          old_assets = re.search(r"var sceneAssets=\{.*?\};\nvar sceneMeta=", old, re.S)
+          if not old_assets:
+              raise SystemExit('historical sceneAssets not found')
+          cur, n = re.subn(r"var sceneAssets=\{.*?\};\nvar sceneMeta=", lambda m: old_assets.group(0), cur, count=1, flags=re.S)
+          if n != 1:
+              raise SystemExit('current sceneAssets block not replaced')
+
+          # 2) Restore background-image rendering instead of injecting scene strings as HTML.
+          old_apply = re.search(r"function applyVisualMode\(\)\{.*?\}\nfunction updateSceneHUD", old, re.S)
+          if not old_apply:
+              raise SystemExit('historical applyVisualMode not found')
+          historical_apply = old_apply.group(0).rsplit('\nfunction updateSceneHUD',1)[0]
+          cur, n = re.subn(r"function applyVisualMode\(\)\{.*?\}\nfunction updateSceneHUD", lambda m: historical_apply + '\nfunction updateSceneHUD', cur, count=1, flags=re.S)
+          if n != 1:
+              raise SystemExit('applyVisualMode not replaced')
+
+          # 3) Respect hidden UI elements even when .action has display:flex.
+          if '[hidden]{display:none!important}' not in cur:
+              cur = cur.replace('*{box-sizing:border-box;', '[hidden]{display:none!important}\n*{box-sizing:border-box;', 1)
+
+          # 4) Keep all facade decoration inside the actual room/lobby footprint.
+          cur = cur.replace(
+              "ctx.fillRect(8,d.top-6,4,d.base-d.top+2);ctx.fillRect(d.w-12,d.top-6,4,d.base-d.top+2)",
+              "ctx.fillRect(d.m-3,d.top-6,3,d.base-d.top+2);ctx.fillRect(d.w-d.m,d.top-6,3,d.base-d.top+2)"
+          )
+          cur = cur.replace(
+              "ctx.strokeRect(12,d.top-8,d.w-24,d.base-d.top+5)",
+              "ctx.strokeRect(d.m+.5,d.top-8,d.bw-1,d.base-d.top+5)"
+          )
+          cur = cur.replace(
+              "ctx.beginPath();ctx.arc(22+fl*(d.w-44)/6,d.top-13,2.2,0,Math.PI*2);ctx.fill()",
+              "ctx.beginPath();ctx.arc(d.m+8+fl*(d.bw-16)/6,d.top-13,2.2,0,Math.PI*2);ctx.fill()"
+          )
+
+          # 5) Make the intended four-button IA explicit.
+          cur = cur.replace('.actions{grid-template-columns:repeat(4,1fr);grid-gap:6px}', '.actions{grid-template-columns:repeat(4,1fr);grid-gap:6px}.action[hidden]{display:none!important}', 1)
+
+          # 6) Version labels only; no gameplay/economy changes in this patch.
+          cur = cur.replace('v5.5', 'v5.6')
+          cur = cur.replace('?v=550&fresh=', '?v=560&fresh=')
+
+          path.write_text(cur, encoding='utf-8')
+
+      - name: Verify patch
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          s = Path('games/jinwan-youtao/index.html').read_text(encoding='utf-8')
+          checks = {
+              'version': 'v5.6' in s,
+              'webp scenes': 'data:image/webp;base64,' in s,
+              'background rendering': "scene.style.backgroundImage='url('+sceneAssets[b]+')'" in s,
+              'hidden action fix': '.action[hidden]{display:none!important}' in s,
+              'facade aligned': 'ctx.strokeRect(d.m+.5,d.top-8,d.bw-1,d.base-d.top+5)' in s,
+              'old overflow frame removed': 'ctx.strokeRect(12,d.top-8,d.w-24,d.base-d.top+5)' not in s,
+          }
+          bad = [k for k,v in checks.items() if not v]
+          if bad:
+              raise SystemExit('verification failed: ' + ', '.join(bad))
+          print('v5.6 verification passed')
+
+      - name: Commit v5.6
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html
+          git commit -m 'fix: restore 3D image scenes and align hotel frame v5.6 [skip ci]'
+          git push
