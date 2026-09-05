@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>今晚有套吗？ v5.4</title>
+<title>今晚有套吗？ v5.5</title>
 <style>
 :root{
   --bg:#ece7df;--panel:#fbf8f2;--panel2:#f3eee6;--ink:#20272d;--muted:#736c64;--line:#d7cec2;
@@ -74,26 +74,28 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
 .action.locked{opacity:.42;position:relative;filter:saturate(.55)}.action.locked:after{content:"🔒";position:absolute;right:6px;top:5px;font-size:8px}.propertybadge.locked{display:none}.scenario-card{position:relative}.scenario-card.active{border-color:#c8a75d;background:#fff8e8}.scenario-card .scenario-best{display:inline-block;margin-top:5px;font-size:7px;color:#8e7440;font-weight:900}.scenario-card .scenario-diff{position:absolute;right:8px;top:8px;font-size:7px;font-weight:950;color:#9b7b41}.scenario-active-note{border-left:4px solid #a5524d;background:#fff5f2}.memorytag{display:inline-block;margin-top:4px;padding:2px 5px;border-radius:999px;background:#eef2f5;color:#4c6170;font-size:7px;font-weight:900}.unlockflash{border-left:4px solid var(--green);background:#f5fbf5}.visual3d .scenario-card.active{background:#2a261c;border-color:#7d6a3e}.visual3d .memorytag{background:#263641;color:#c8d2d9}
 @media(max-width:360px){.metrics{max-width:170px}.pill{font-size:8px}.sceneop:nth-child(3){display:none}.sceneops{grid-template-columns:repeat(3,1fr)}.game-title h1{font-size:15px}.action{height:49px;font-size:8.2px}.propertybadge{display:none}}
 
+
+/* v5.5 UI reset: one hierarchy, four primary actions, fewer always-on metrics */
+.game-title small{display:none}.titleline{align-items:center}.game-title h1{font-size:18px}.metrics{flex-wrap:nowrap}.metrics .pill{margin-bottom:0;padding:5px 8px}.propertyline{margin-top:6px;font-size:9px}.rolechip{font-size:7px;padding:3px 5px}.statusgrid{grid-gap:5px;margin-top:6px}.meter{height:16px}.meter span{font-size:7.5px;top:1px}.goalstrip{margin-top:5px;padding:6px 8px;font-size:8.3px}.goalstrip .right{font-size:8px}.stage{height:100vw;min-height:330px;max-height:410px}.stagehud{justify-content:flex-end;left:auto;right:8px}.viewtoggle{box-shadow:none;background:rgba(251,248,242,.86)}.stage.mode3d .viewtoggle{background:rgba(13,21,29,.72)}.sceneops[hidden],.scenecaption[hidden],.propertybadge[hidden]{display:none!important}.hint{left:10px;right:10px;bottom:8px;padding:6px 8px;font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bottom{padding-top:7px}.actions{grid-template-columns:repeat(4,1fr);grid-gap:6px}.action{height:50px;font-size:9px}.action span{font-size:18px}.feed{min-height:0;height:28px;margin-top:6px;padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8.5px}.foot{margin-top:4px;min-height:24px;font-size:8.8px}.speed button{height:22px;width:29px}.nightfast{font-size:7px}.hubrow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:2px 0 11px}.hubbtn{border:1px solid var(--line);border-radius:11px;background:#fff;padding:9px 10px;color:var(--ink);font-size:9px;font-weight:900;text-align:left}.hubbtn.on{background:#eef2f5;border-color:#b9c5cf;color:#274156}.hubbtn.danger{background:#fff4f2;border-color:#e2b8b2;color:#8b443f}.visual3d .hubbtn{background:#1c2a35;border-color:#3a4a55;color:#dfe6ea}.visual3d .hubbtn.on{background:#263945}.visual3d .hubbtn.danger{background:#3b2928;border-color:#6e4743;color:#f0d6d2}.reportdetails{margin:10px 0;border:1px solid var(--line);border-radius:13px;background:#f7f3ed;overflow:hidden}.reportdetails summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:10px 11px;font-size:9px;font-weight:900;color:#544d46;cursor:pointer}.reportdetails summary::-webkit-details-marker{display:none}.reportdetails[open] summary{border-bottom:1px solid var(--line);background:#fff}.reportdetails>div,.reportdetails>.cards{margin-left:8px;margin-right:8px}.reportdetails .section-title{margin-left:8px;margin-right:8px}.visual3d .reportdetails{background:#17242f;border-color:#364650}.visual3d .reportdetails summary{color:#dfe6ea}.visual3d .reportdetails[open] summary{background:#1d2b35;border-color:#364650}@media(max-width:430px){.stage{height:96vw;min-height:320px;max-height:390px}.top{padding-bottom:7px}.actions{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
 <div id="app">
   <div class="top">
     <div class="titleline">
-      <div class="game-title"><h1>今晚有套吗？ <span class="versiontag">v5.2</span></h1><small>UNOFFICIAL WORLD OF HYATT FAN GAME · 非官方粉丝创作</small></div>
+      <div class="game-title"><h1>今晚有套吗？ <span class="versiontag">v5.5</span></h1><small>UNOFFICIAL WORLD OF HYATT FAN GAME · 非官方粉丝创作</small></div>
       <div class="metrics">
         <div class="pill">💰 ¥<span id="cash">7800</span></div>
-        <div class="pill warn">🛋 <span id="suiteCount">1</span></div>
-        <div class="pill good">👑 <span id="gloToday">0</span></div>
-        <div class="pill">🎁 <span id="perks">1</span></div>
+        <div class="pill warn">🛋 <span id="suiteCount">1</span> 套</div>
+        <span id="gloToday" hidden>0</span><span id="perks" hidden>1</span>
       </div>
     </div>
-    <div class="propertyline"><div><b id="propertyName">Hyatt Place · Airport</b> · Day <b id="day">1</b> · <b id="clock">13:20</b> <span id="weather">☀️</span></div><div><span class="rolechip" id="roleLabel">Duty Manager</span><button class="newgamechip" id="newGameBtn" type="button">🆕 新档</button><span class="secondary-meta"> · 房晚 <b id="nights">0</b></span></div></div>
+    <div class="propertyline"><div><b id="propertyName">Hyatt Place · Airport</b> · D<b id="day">1</b> · <b id="clock">13:20</b> <span id="weather">☀️</span></div><div><span class="rolechip" id="roleLabel">Duty Manager</span><span id="nights" hidden>0</span></div></div>
     <div class="statusgrid">
       <div class="meter"><i id="repFill"></i><span>会员口碑 <b id="rep">63</b></span></div>
       <div class="meter owner"><i id="ownerFill"></i><span>业主满意 <b id="owner">70</b></span></div>
     </div>
-    <button class="goalstrip" id="goalStrip"><span><b id="phaseLabel">试营业</b> · <b id="dailyScore">0/4</b> · <span id="dailyGoalText">¥0/900 · 0/2夜</span></span><span class="right"><span class="goal-label">董事会 </span><span id="winProgress">0/5</span> ›</span></button>
+    <button class="goalstrip" id="goalStrip"><span><b id="phaseLabel">试营业</b> · <span id="dailyGoalText">¥0/900 · 0/2夜</span></span><span class="right"><b id="dailyScore">0/4</b> ›</span><span id="winProgress" hidden>0/5</span></button>
   </div>
 
   <div class="toastwrap"><div class="toast" id="toast"></div></div>
@@ -110,33 +112,33 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
       </div>
     </div>
     <div class="scene3d" id="scene3d"></div><canvas id="game"></canvas><canvas id="people3d"></canvas>
-    <div class="stagehud"><div class="stagechip" id="occChip">入住率 0%</div><div class="viewtoggle" id="viewToggle"><button class="on" data-view="2d">经典 2D</button><button data-view="3d">沉浸 3D</button></div><div class="stagechip" id="explorerChip">Brand Explorer 1/5</div></div>
-    <div class="sceneops" id="sceneOps"><div class="sceneop"><b id="sceneSuite">🛋 1</b><small>可用套房</small></div><div class="sceneop"><b id="sceneQueue">🚨 0</b><small>待升级事项</small></div><div class="sceneop"><b id="sceneDirty">🧹 0</b><small>待翻房</small></div><div class="sceneop"><b id="sceneVip">👑 0</b><small>今日 Globalist</small></div></div>
-    <div class="scenecaption" id="sceneCaption"><strong id="sceneTitle">Hyatt Place · Work / Life Base</strong><small id="sceneDesc">轻量、高周转、早餐与 24/7 日常。</small></div>
+    <div class="stagehud"><span id="occChip" hidden>入住率 0%</span><div class="viewtoggle" id="viewToggle"><button class="on" data-view="2d">2D</button><button data-view="3d">3D</button></div><span id="explorerChip" hidden>Brand Explorer 1/5</span></div>
+    <div class="sceneops" id="sceneOps" hidden><div class="sceneop"><b id="sceneSuite">🛋 1</b><small>可用套房</small></div><div class="sceneop"><b id="sceneQueue">🚨 0</b><small>待升级事项</small></div><div class="sceneop"><b id="sceneDirty">🧹 0</b><small>待翻房</small></div><div class="sceneop"><b id="sceneVip">👑 0</b><small>今日 Globalist</small></div></div>
+    <div class="scenecaption" id="sceneCaption" hidden><strong id="sceneTitle">Hyatt Place · Work / Life Base</strong><small id="sceneDesc">轻量、高周转、早餐与 24/7 日常。</small></div>
     <div class="scenereveal" id="sceneReveal"><em id="sceneRevealEye">VISUAL UPGRADE</em><strong id="sceneRevealTitle">HYATT PLACE</strong><small id="sceneRevealDesc"></small></div>
     <div class="constructionhud" id="constructionHud"><div class="constructiontop"><b id="constructionTitle">🏗️ 空间焕新施工中</b><span id="constructionPct">0%</span></div><small id="constructionSub">施工期间相关区域运营效率会暂时下降。</small><div class="constructionbar"><i id="constructionFill"></i></div></div>
     <div class="designhotspots" id="designHotspots"><button class="designhotspot hot-facade" data-hotspot="facade" aria-label="外立面">🏙</button><button class="designhotspot hot-lobby" data-hotspot="lobby" aria-label="大堂">🛎</button><button class="designhotspot hot-rooms" data-hotspot="rooms" aria-label="客房">🛏</button><button class="designhotspot hot-public" data-hotspot="public" aria-label="公区">🥂</button><button class="designhotspot hot-rooftop" data-hotspot="rooftop" aria-label="屋顶">🌆</button></div>
-    <button class="propertybadge" id="propertyBadge" type="button">🏨 <b id="propertyPrestige">BASIC 0/15</b><span class="dots" id="propertyDots">○○○</span></button>
+    <button class="propertybadge" id="propertyBadge" type="button" hidden>🏨 <b id="propertyPrestige">BASIC 0/15</b><span class="dots" id="propertyDots">○○○</span></button>
     <div class="hint" id="hint">Globalist 到前台了。点「前台」决定：今晚到底有没有套？</div><div class="viewnote">3D 沉浸模式 · 经营逻辑完全相同</div>
   </div>
 
   <div class="bottom">
     <div class="actions">
       <button class="action primary" id="frontBtn"><span>🛎️</span><b id="frontLabel">前台</b><small id="frontSub">需要你</small></button>
-      <button class="action" id="inventoryBtn"><span>🏗️</span>空间</button>
+      <button class="action" id="inventoryBtn"><span>🏨</span>酒店</button>
       <button class="action" id="opsBtn"><span>⚙️</span>运营</button>
-      <button class="action" id="portfolioBtn"><span>🧭</span>品牌</button>
-      <button class="action" id="reportBtn"><span>🎯</span>目标</button>
+      <button class="action" id="reportBtn"><span>📋</span>日报</button>
+      <button class="action" id="portfolioBtn" hidden><span>🧭</span>品牌</button>
     </div>
-    <div class="feed" id="feed"><b>会员点评：</b> “机场转机很方便。早餐不错。<em>套房就随缘吧。</em>” ★★★★☆</div>
-    <div class="foot"><div>今日收入 <b>¥<span id="income">0</span></b> · ADR <b>¥<span id="adr">0</span></b> · RevPAR <b>¥<span id="revpar">0</span></b></div><div class="timecontrols"><span class="nightfast" id="nightFast">🌙 22:00 后自动快进</span><div class="speed"><button class="on" data-speed="1">1×</button><button data-speed="2">2×</button><button data-speed="4">4×</button></div></div></div>
+    <div class="feed" id="feed"><b>最近：</b> “机场转机很方便。早餐不错。<em>套房就随缘吧。</em>” ★★★★☆</div>
+    <div class="foot"><div>收入 <b>¥<span id="income">0</span></b> · ADR <b>¥<span id="adr">0</span></b><span id="revpar" hidden>0</span></div><div class="timecontrols"><span class="nightfast" id="nightFast">🌙 自动快进</span><div class="speed"><button class="on" data-speed="1">1×</button><button data-speed="2">2×</button><button data-speed="4">4×</button></div></div></div>
   </div>
 
   <div class="sheetbackdrop" id="sheetBackdrop"></div>
 
   <div class="sheet" id="inventorySheet">
     <div class="sheethead"><div><h3>空间 / Property Design</h3><div class="sub">既可以继续造房，也可以把大堂、客房、公区、屋顶和外立面真正做出档次。</div></div><button class="sheetclose" data-close-sheet>×</button></div>
-    <div class="section-title">Property Design · 空间焕新</div>
+    <div class="hubrow"><button class="hubbtn on" type="button">空间与设施</button><button class="hubbtn" id="openPortfolioFromHotel" type="button">品牌组合 ›</button></div>\n    <div class="section-title">Property Design · 空间焕新</div>
     <div class="notice prestige-note" id="propertyDesignNote">从大堂到屋顶，装修升级会真正改变收益、口碑与 VIP 体验。</div>
     <button class="inspectbtn" id="inspectPropertyBtn" type="button">◎ 回到酒店场景查看 5 个空间热点</button>
     <div class="cards" id="propertyUpgradeCards"></div>
@@ -184,32 +186,51 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
   </div>
 
   <div class="sheet" id="reportSheet">
-    <div class="sheethead"><div><h3>GM Dashboard · v5.4</h3><div class="sub">每天四项经营目标，最终汇聚成 5 项终局条件。5 项全亮，即通过集团 GM Review。</div></div><button class="sheetclose" data-close-sheet>×</button></div>
-    <div class="section-title">Victory · 今晚有套吗？的胜利条件</div>
-    <div class="notice" id="victorySummary">完成 5 项终局目标即可胜利。</div>
-    <div class="cards" id="victoryCards"></div>
-    <div class="section-title">Scenario Mode · 5–10 分钟挑战</div>
-    <div class="notice" id="scenarioNote">同一套经营系统，给你一个更短、更狠的残局。</div>
-    <div class="cards" id="scenarioCards"></div>
-    <div class="section-title">Plot · 今天到底怎么了</div>
-    <div class="notice theme-notice" id="themeDetail"></div>
-    <div class="section-title">GM Desk · Escalation &amp; Ops Health</div>
-    <div class="notice" id="gmDeskNote">随着组织成熟，黄色和红色问题才会被送到你桌上。</div>
-    <div class="cards" id="opsHealthCards"></div>
-    <div class="section-title">Today · 每日经营 Brief</div>
+    <div class="sheethead"><div><h3>日报 · v5.5</h3><div class="sub">先看今天，再决定下一步。长期集团进度收进折叠区。</div></div><button class="sheetclose" data-close-sheet>×</button></div>
+    <div class="hubrow"><button class="hubbtn" id="reportLogBtn" type="button">📝 运营日志</button><button class="hubbtn danger" id="newGameSheetBtn" type="button">↻ 新开存档</button></div>
+
+    <div class="section-title">Today · 今日经营</div>
     <div class="notice" id="difficultyNote"></div>
     <div class="cards" id="dailyGoalCards"></div>
-    <div class="section-title">Property Design · 酒店空间成熟度</div><div class="notice" id="propertyReportNote">装修不是纯外观：每个空间都会改变经营表现。</div><div class="cards" id="propertyProgressCards"></div>
-    <div class="section-title">Leadership · 组织成熟度</div><div class="cards" id="leadershipProgressCards"></div>
-    <div class="section-title">集团能力 · Meta Unlocks</div><div class="cards" id="metaCards"></div>
-    <div class="section-title">Guest Memory · 熟客关系</div><div class="cards" id="guestMemoryCards"></div>
-    <div class="section-title">Insider Stats · 会籍战绩</div>
-    <div class="cards" id="reportCards"></div>
-    <div class="section-title">Daily Share Card · 可传播战报</div>
-    <div class="notice" id="lastReportNote">第一天还没结束。先活过今晚。</div>
-    <div class="cards share-actions"><button class="card" id="shareCardBtn"><strong>📸 预览经营战报</strong><small>把今天的主题、升套率、名场面和经理人格做成一张竖版卡片。</small><span class="tag gold">生成图片</span></button><button class="card" id="postNoteBtn"><strong>📕 发到小红书</strong><small>真机小工具内直接带图打开笔记发布页；浏览器预览会显示战报。</small><span class="tag red">Post Note</span></button></div>
-    <div class="section-title">Save</div>
-    <div class="cards"><button class="card" id="personalityBtn"><strong>📋 经理人格</strong><small>会员和业主分别怎么看你。</small><span class="tag gold">生成报告</span></button><button class="card" id="resetBtn"><strong>🗑 重新开业</strong><small>清除本地存档，从 Hyatt Place 新手村重新开始。</small><span class="tag red">Reset</span></button></div>
+    <div class="section-title">Plot · 今天发生了什么</div>
+    <div class="notice theme-notice" id="themeDetail"></div>
+    <div class="section-title">GM Desk · 需要你处理的事</div>
+    <div class="notice" id="gmDeskNote">组织成熟后，Routine Task 不再占用你的注意力。</div>
+    <div class="cards" id="opsHealthCards"></div>
+
+    <details class="reportdetails">
+      <summary>长期目标与集团进度 <span>›</span></summary>
+      <div class="section-title">Victory · 长期目标</div>
+      <div class="notice" id="victorySummary">完成 5 项终局目标即可胜利。</div>
+      <div class="cards" id="victoryCards"></div>
+      <div class="section-title">Property Design · 空间成熟度</div>
+      <div class="notice" id="propertyReportNote">装修不是纯外观：每个空间都会改变经营表现。</div>
+      <div class="cards" id="propertyProgressCards"></div>
+      <div class="section-title">Leadership · 组织成熟度</div>
+      <div class="cards" id="leadershipProgressCards"></div>
+      <div class="section-title">集团能力 · Meta Unlocks</div>
+      <div class="cards" id="metaCards"></div>
+    </details>
+
+    <details class="reportdetails">
+      <summary>挑战、熟客与战绩 <span>›</span></summary>
+      <div class="section-title">Scenario Mode · 5–10 分钟挑战</div>
+      <div class="notice" id="scenarioNote">同一套经营系统，给你一个更短、更狠的残局。</div>
+      <div class="cards" id="scenarioCards"></div>
+      <div class="section-title">Guest Memory · 熟客关系</div>
+      <div class="cards" id="guestMemoryCards"></div>
+      <div class="section-title">Insider Stats · 会籍战绩</div>
+      <div class="cards" id="reportCards"></div>
+    </details>
+
+    <details class="reportdetails">
+      <summary>分享与经理人格 <span>›</span></summary>
+      <div class="section-title">Daily Share Card</div>
+      <div class="notice" id="lastReportNote">第一天还没结束。先活过今晚。</div>
+      <div class="cards share-actions"><button class="card" id="shareCardBtn"><strong>📸 预览经营战报</strong><small>把今天的主题、升套率、名场面和经理人格做成一张竖版卡片。</small><span class="tag gold">生成图片</span></button><button class="card" id="postNoteBtn"><strong>📕 发到小红书</strong><small>真机小工具内直接带图打开笔记发布页；浏览器预览会显示战报。</small><span class="tag red">Post Note</span></button></div>
+      <div class="section-title">Manager Profile</div>
+      <div class="cards"><button class="card widecard" id="personalityBtn"><strong>📋 经理人格</strong><small>会员和业主分别怎么看你。</small><span class="tag gold">生成报告</span></button><button id="resetBtn" hidden></button></div>
+    </details>
   </div>
 
   <div class="sheet" id="logSheet">
@@ -223,7 +244,8 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
 'use strict';
 var $=function(id){return document.getElementById(id)};
 var TEST_MODE=location.search.indexOf('test=1')>=0;
-var SAVE_KEY='jinwanyoutao_v51',SCENARIO_SAVE_KEY='jinwanyoutao_v51_scenario',SCENARIO_BEST_KEY='jinwanyoutao_v51_best',LEGACY_SAVE_KEY='jinwanyoutao_v50',OLDER_SAVE_KEY='jinwanyoutao_v47',ANCIENT_SAVE_KEY='jinwanyoutao_v46',ANCIENT2_SAVE_KEY='jinwanyoutao_v45';
+var SAVE_KEY='jinwanyoutao_v55',SCENARIO_SAVE_KEY='jinwanyoutao_v55_scenario',SCENARIO_BEST_KEY='jinwanyoutao_v55_best',LEGACY_SAVE_KEY='jinwanyoutao_v51',OLDER_SAVE_KEY='jinwanyoutao_v50',ANCIENT_SAVE_KEY='jinwanyoutao_v47',ANCIENT2_SAVE_KEY='jinwanyoutao_v46';
+var resettingCareer=false;
 var brands={
  place:{name:'Hyatt Place · Airport',short:'Hyatt Place',rate:.88,globalist:.08,bg:'#c8d2d4',cost:0,need:0,rep:0,desc:'新手村。低人力、高周转、早餐区每天都像春运。'},
  regency:{name:'Hyatt Regency · Convention Center',short:'Hyatt Regency',rate:1.08,globalist:.22,bg:'#bac7d0',cost:2500,need:8,rep:65,desc:'Club、会议团与 Globalist 三方同时向你走来。'},
@@ -583,7 +605,7 @@ function managerPersonality(){var s=state.stats,p=managerProfile();showModal('MA
 function victoryConditions(){var opened=Object.keys(state.opened).length,hired=hiredManagerCount(),gmReview=state.rep>=82&&state.owner>=72&&state.streak>=2&&(state.stats.vipResolved||0)>=2;return[{name:'General Manager',ok:careerLevel()>=4,now:state.stats.nights+'/34 房晚',why:'前期亲自干活，34 房晚后正式进入 GM 层级。'},{name:'Brand Explorer',ok:opened>=5,now:Math.min(opened,5)+'/5 品牌',why:'经营 5 个品牌，证明你能跨不同酒店模型工作。'},{name:'Leadership Team',ok:hired>=6,now:hired+'/6 部门负责人',why:'至少 6 位 Department Head 到岗，Routine Task 才能真正离开你。'},{name:'累计营业收入',ok:state.stats.totalRevenue>=WIN_REVENUE,now:'¥'+Math.round(state.stats.totalRevenue)+' / ¥'+WIN_REVENUE,why:'收入证明组织不是只会做漂亮服务。'},{name:'GM Review',ok:gmReview,now:'VIP '+(state.stats.vipResolved||0)+'/2 · 连续达标 '+state.streak+'/2',why:'双满意达标，并连续稳定经营且成功处理至少 2 次高阶升级事项。'}]}
 function currentDailyPasses(){ensureDaily();var p=state.daily.plan;return[state.income>=p.revenue,state.daily.checkouts>=p.nights,state.rep>=p.rep,state.owner>=p.owner]}
 function victoryCount(){var c=victoryConditions(),n=0,i;for(i=0;i<c.length;i++)if(c[i].ok)n++;return n}
-function checkVictory(){if(state.victory)return;var c=victoryConditions(),i;for(i=0;i<c.length;i++)if(!c[i].ok)return;if($('modal').classList.contains('show'))return;state.victory=true;saveState(true);showModal('BOARD REVIEW PASSED','🏆 今晚，真的有套。','你完成了 v5.4 的 GM 终局考核：\n\n✓ 晋升 General Manager\n✓ Brand Explorer 5/5\n✓ Leadership Team 成型\n✓ 累计营业收入达标\n✓ Executive VIP / 双满意 / 稳定经营通过\n\n董事会终于不再问你为什么亲自去补早餐。\n\nPark Hyatt 之后进入无限 GM 模式：你只处理 Exception。',[],'GENERAL MANAGER')}
+function checkVictory(){if(state.victory)return;var c=victoryConditions(),i;for(i=0;i<c.length;i++)if(!c[i].ok)return;if($('modal').classList.contains('show'))return;state.victory=true;saveState(true);showModal('BOARD REVIEW PASSED','🏆 今晚，真的有套。','你完成了 v5.5 的 GM 终局考核：\n\n✓ 晋升 General Manager\n✓ Brand Explorer 5/5\n✓ Leadership Team 成型\n✓ 累计营业收入达标\n✓ Executive VIP / 双满意 / 稳定经营通过\n\n董事会终于不再问你为什么亲自去补早餐。\n\nPark Hyatt 之后进入无限 GM 模式：你只处理 Exception。',[],'GENERAL MANAGER')}
 function goalCard(ok,title,now,why){return '<div class="card"><strong>'+(ok?'✅ ':'○ ')+title+'</strong><small>'+why+'</small><span class="tag '+(ok?'green':'')+'">'+now+'</span></div>'}
 function opsHealthHtml(){var dirty=state.rooms.filter(function(r){return r.dirty}).length,q=state.frontQueue.length+(state.executiveQueue?state.executiveQueue.length:0),fb=Math.round(Math.min(state.breakfastStock,state.brand==='regency'||state.brand==='grand'?state.loungeStock:100)),l=leadershipMaturity(),high=0,i;if(state.executiveQueue)for(i=0;i<state.executiveQueue.length;i++)high=Math.max(high,state.executiveQueue[i].level||0);for(i=0;i<state.frontQueue.length;i++)high=Math.max(high,state.frontQueue[i].level||1);return '<div class="card"><strong>⚠ GM Desk</strong><small>待处理升级事项 '+q+' 件</small><span class="tag '+(high>=3?'red':q?'gold':'green')+'">'+(q?escalationName(high):'Desk Clear')+'</span></div><div class="card"><strong>🧹 Rooms Ready</strong><small>Dirty / Cleaning '+dirty+' 间</small><span class="tag '+(dirty>=4?'red':dirty>=2?'gold':'green')+'">'+(managerHired('house')?'Housekeeper 自动调度':'手工人力')+'</span></div><div class="card"><strong>🍳 F&B Capacity</strong><small>最低库存 '+fb+'%</small><span class="tag '+(fb<25?'red':fb<50?'gold':'green')+'">'+(managerHired('fb')?'Auto Refill':'Manual')+'</span></div><div class="card"><strong>👥 Organization</strong><small>Leadership '+hiredManagerCount()+'/'+departmentOrder.length+'</small><span class="tag '+(l>=3?'green':l>=1?'gold':'')+'">成熟度 '+l+'/4</span></div><div class="card"><strong>🤖 Delegation</strong><small>今日自动解决 '+state.daily.autoResolved+' 件</small><span class="tag blue">累计 '+state.stats.autoResolved+'</span></div><div class="card"><strong>🧑‍💼 GM Attention</strong><small>今日升级 '+state.daily.escalated+' 件 · L4 累计 '+state.stats.l4Escalations+'</small><span class="tag red">VIP 成功 '+state.stats.vipResolved+'</span></div>'}
 function leadershipProgressHtml(){var h='',i;for(i=0;i<departmentOrder.length;i++){var k=departmentOrder[i],d=departmentDefs[k],ok=managerHired(k),u=departmentUnlocked(k);h+=goalCard(ok,d.icon+' '+d.name,ok?d.person:(u?'可招聘 ¥'+d.cost:'未解锁'),ok?d.passive:'达到 '+d.unlock+' 房晚'+(d.brand?' 并进入 '+brands[d.brand].short:''))}return h}
@@ -594,7 +616,7 @@ function cleanShareText(text){return String(text||'').replace(/[★☆]/g,'').re
 function generateShareCard(){var r=reportForShare(),cv=document.createElement('canvas'),c=cv.getContext('2d'),w=1080,h=1440,p=managerProfile();cv.width=w;cv.height=h;c.fillStyle='#ece7df';c.fillRect(0,0,w,h);c.fillStyle='#21364c';c.fillRect(0,0,w,250);c.fillStyle='#ffffff';c.font='900 72px -apple-system, BlinkMacSystemFont, sans-serif';c.fillText('今晚有套吗？',64,105);c.font='700 28px -apple-system, BlinkMacSystemFont, sans-serif';c.fillStyle='#d9c89c';c.fillText('DAY '+r.day+' · '+r.brand+' · '+(r.role||careerName())+' · 非官方粉丝创作',66,158);c.font='900 42px -apple-system, BlinkMacSystemFont, sans-serif';c.fillStyle='#ffffff';c.fillText(r.themeIcon+' '+r.themeTitle,66,220);var cards=[['经营评分',r.score+'/4'],['今日营收','¥'+r.revenue],['房晚',String(r.nights)],['自动解决',String(r.autoResolved||0)],['空间成熟度',String(r.prestige||propertyTotal())+'/15'],['升套率',r.upgradeRate+'%'],['会员口碑',String(r.rep)],['业主满意',String(r.owner)]];var i,col,row,x,y;for(i=0;i<cards.length;i++){col=i%2;row=Math.floor(i/2);x=64+col*490;y=300+row*150;c.fillStyle='#fbf8f2';c.beginPath();c.roundRect?c.roundRect(x,y,450,120,24):(c.fillRect(x,y,450,120));if(c.roundRect)c.fill();c.fillStyle='#736c64';c.font='700 24px -apple-system, BlinkMacSystemFont, sans-serif';c.fillText(cards[i][0],x+28,y+38);c.fillStyle='#20272d';c.font='900 46px -apple-system, BlinkMacSystemFont, sans-serif';c.fillText(cards[i][1],x+28,y+91)}c.fillStyle='#fbf8f2';c.fillRect(64,920,952,210);c.fillStyle='#b6934f';c.font='900 24px -apple-system, BlinkMacSystemFont, sans-serif';c.fillText('今日名场面',92,965);c.fillStyle='#20272d';c.font='800 34px -apple-system, BlinkMacSystemFont, sans-serif';wrapText(c,cleanShareText(r.highlight),92,1015,890,50,2);c.fillStyle='#fbf8f2';c.fillRect(64,1160,952,190);c.fillStyle='#b6934f';c.font='900 22px -apple-system, BlinkMacSystemFont, sans-serif';c.fillText('你的酒店经理人格',92,1202);c.fillStyle='#21364c';c.font='900 42px -apple-system, BlinkMacSystemFont, sans-serif';c.fillText(p.title,92,1256);c.fillStyle='#625c55';c.font='700 28px -apple-system, BlinkMacSystemFont, sans-serif';wrapText(c,p.tag,92,1302,880,38,2);c.fillStyle='#746c63';c.font='700 22px -apple-system, BlinkMacSystemFont, sans-serif';c.fillText('会员满意，不代表业主满意。反过来也一样。',66,1395);return cv.toDataURL('image/png')}
 function previewShareCard(){var data=generateShareCard();showModal('DAILY SHARE CARD','今天值得发一条 DP','这张战报来自你最近一个完整经营日；如果今天还没结束，则展示当前进度。',[],'');$('modalScore').innerHTML='<img class="shareimg" alt="经营战报" src="'+data+'">'}
 async function postShareCard(){var data=generateShareCard(),r=reportForShare(),bridge=window.xhs&&window.xhs.miniTool;if(!bridge||typeof bridge.postNote!=='function'){previewShareCard();showToast('当前预览环境没有小红书发布桥接；真机内可直接发笔记。');return}try{saveState(true);await bridge.postNote({title:'今晚有套吗？ Day '+r.day,content:r.themeIcon+' '+r.themeTitle+'｜经营评分 '+r.score+'/4｜升套率 '+r.upgradeRate+'%\n'+r.highlight+'\n\n#今晚有套吗 #WorldofHyatt',pageType:'photo_publish',mediaInfo:{image_resources:[{url:data}]}});showToast('📕 已打开小红书发布页')}catch(e){showToast('发布失败：'+(e&&e.errMsg?e.errMsg:'请稍后再试'))}}
-function updateFeed(){var msg=state.review.replace('套房','<em>套房</em>');$('feed').innerHTML='📝 <b>运营日志</b>｜点这里查看重要事件；当前点评：'+msg}
+function updateFeed(){var msg=state.review.replace('套房','<em>套房</em>');$('feed').innerHTML='<b>最近：</b> '+msg+' · 点按回看日志'}
 function occupancy(){var rooms=state.rooms.filter(function(r){return r.type==='standard'||r.type==='suite'});return rooms.length?Math.round(rooms.filter(function(r){return r.occupied}).length/rooms.length*100):0}
 function updateOps(){$('hkCount').textContent=state.staffHK;$('breakfastStockText').textContent=Math.round(state.breakfastStock);$('loungeStockText').textContent=Math.round(state.loungeStock);$('breakfastStockFill').style.width=Math.max(0,state.breakfastStock)+'%';$('loungeStockFill').style.width=Math.max(0,state.loungeStock)+'%'}
 function updateUI(){ensureDaily();applyVisualMode();var occ=occupancy(),vis=Math.min(Object.keys(state.opened).length,5),sold=Math.max(1,state.daily.checkouts),adr=Math.round(state.income/sold),revpar=Math.round(adr*occ/100),p=state.daily.plan,passes=currentDailyPasses(),ds=0,i,t=activeTheme(),eq=state.frontQueue.length+(state.executiveQueue?state.executiveQueue.length:0),high=0,tasks=todayFocusTasks(),dow=dayOfWeekName(state.day);for(i=0;i<passes.length;i++)if(passes[i])ds++;if(state.executiveQueue)for(i=0;i<state.executiveQueue.length;i++)high=Math.max(high,state.executiveQueue[i].level||0);for(i=0;i<state.frontQueue.length;i++)high=Math.max(high,state.frontQueue[i].level||1);$('cash').textContent=Math.round(state.cash);$('suiteCount').textContent=suitesFree();$('gloToday').textContent=state.daily.glo;if($('perks'))$('perks').textContent=state.perks||0;$('day').textContent=state.day;$('nights').textContent=state.stats.nights;var h=Math.floor(state.minute/60),m=Math.floor(state.minute%60);$('clock').textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m;$('weather').textContent=state.weather==='rain'?'🌧️':'☀️';$('rep').textContent=Math.round(state.rep);$('owner').textContent=Math.round(state.owner);$('repFill').style.width=Math.max(0,Math.min(100,state.rep))+'%';$('ownerFill').style.width=Math.max(0,Math.min(100,state.owner))+'%';$('propertyName').textContent=brand().name+' · '+dow;if($('roleLabel'))$('roleLabel').textContent=careerName();$('occChip').textContent='入住率 '+occ+'%';$('explorerChip').textContent='Brand Explorer '+vis+'/5';$('income').textContent=Math.round(state.income);$('adr').textContent=isFinite(adr)?adr:0;$('revpar').textContent=isFinite(revpar)?revpar:0;$('phaseLabel').textContent=state.scenario&&state.scenario.active?scenarioDefs[state.scenario.key].icon+' CHALLENGE':t.icon+' '+t.short;$('dailyScore').textContent=ds+'/4';$('dailyGoalText').textContent=state.scenario&&state.scenario.active?scenarioDefs[state.scenario.key].goal:'¥'+Math.round(state.income)+'/'+p.revenue+' · '+state.daily.checkouts+'/'+p.nights+'夜 · '+brandDemandNote(state.brand,state.day);$('winProgress').textContent=victoryCount()+'/5';$('goalStrip').title='今日任务：'+tasks.join(' / ');if($('frontLabel'))$('frontLabel').textContent=(managerHired('front')||careerLevel()>=2)?'升级事项':'前台';if($('frontSub'))$('frontSub').textContent=eq?(high>=4?'L4 · '+eq+'件':eq+' 件待处理'):(managerHired('front')?'Desk Clear':'需要你');$('frontBtn').classList.toggle('alert',eq>0);if(state.onboarded){$('hint').style.display='block';$('hint').textContent=eq?'先处理前台 / 升级事项，空档再做：'+tasks.slice(0,2).join(' · '):'今日任务：'+tasks.join(' · ')}var nf=$('nightFast');if(nf){var active=autoNightActive();nf.classList.toggle('on',active);nf.textContent=active?'🌙 自动快进 8×':'🌙 22:00 后自动快进'}var ms=maxManualSpeed();if(state.speed>ms)state.speed=ms;document.querySelectorAll('[data-speed]').forEach(function(sb){var v=parseInt(sb.getAttribute('data-speed'),10),locked=v>ms;sb.disabled=locked;sb.title=locked?(v===4?'Day 5 解锁 4×':'Day 2 解锁 2×'):'';sb.classList.toggle('on',v===state.speed)});syncFeatureLocks();updateOps();updateSceneHUD();checkVictory()}
@@ -612,9 +634,9 @@ if($('inspectPropertyBtn'))$('inspectPropertyBtn').addEventListener('click',show
 Array.prototype.forEach.call(document.querySelectorAll('[data-hotspot]'),function(btn){btn.addEventListener('click',function(){var area=btn.getAttribute('data-hotspot');if($('designHotspots'))$('designHotspots').classList.remove('show');state.hotspotsVisible=false;buildPropertyCards(area);toggleSheet('inventorySheet');showToast(propertyAreas[area].icon+' '+propertyName(area)+' · 当前 Lv'+propertyLevel(area)+'/3')})});
 document.querySelectorAll('[data-view]').forEach(function(btn){btn.addEventListener('click',function(){var mode=btn.getAttribute('data-view');if(mode!=='2d'&&mode!=='3d')return;state.visualMode=mode;applyVisualMode();saveState(true);if(mode==='3d'){showToast('🏨 沉浸 3D · 与经典 2D 共用同一存档');setTimeout(function(){showSceneReveal(state.brand,false)},120)}else showToast('🧩 经典 2D · 房间格、小人与实时运营状态全部保留')})});
 document.querySelectorAll('[data-speed]').forEach(function(btn){btn.addEventListener('click',function(){var v=parseInt(btn.getAttribute('data-speed'),10),ms=maxManualSpeed();if(v>ms){showToast(v===4?'🔒 Day 5 解锁 4×，先熟悉核心操作':'🔒 Day 2 解锁 2×，先把第一天跑明白');return}state.speed=v;document.querySelectorAll('[data-speed]').forEach(function(x){x.classList.toggle('on',x===btn)});updateUI();saveState(true)})});
-function startNewCareer(){if(state.scenario&&state.scenario.active){if(confirm('先退出当前 Challenge，再新开档？'))exitScenario();return}if(!confirm('新开档会清除当前本地生涯进度，并从 Hyatt Place Day 1 重新开始。继续吗？'))return;try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem(LEGACY_SAVE_KEY);localStorage.removeItem(OLDER_SAVE_KEY);localStorage.removeItem(ANCIENT_SAVE_KEY);localStorage.removeItem(ANCIENT2_SAVE_KEY);localStorage.removeItem(SCENARIO_SAVE_KEY)}catch(e){}location.reload()}
-$('shareCardBtn').addEventListener('click',previewShareCard);$('postNoteBtn').addEventListener('click',postShareCard);$('personalityBtn').addEventListener('click',managerPersonality);$('resetBtn').addEventListener('click',startNewCareer);if($('newGameBtn'))$('newGameBtn').addEventListener('click',startNewCareer);
-document.addEventListener('visibilitychange',function(){saveState(true);if(!document.hidden)last=window.performance&&performance.now?performance.now():Date.now()});
+function startNewCareer(){if(!confirm('新开存档会清除当前生涯进度，并从 Hyatt Place · Day 1 重新开始。挑战最佳成绩会保留。继续吗？'))return;resettingCareer=true;try{var keys=[],i,k;for(i=0;i<localStorage.length;i++){k=localStorage.key(i);if(k&&k.indexOf('jinwanyoutao_')===0&&k.indexOf('_best')<0)keys.push(k)}for(i=0;i<keys.length;i++)localStorage.removeItem(keys[i]);var fresh=freshState();localStorage.setItem(SAVE_KEY,JSON.stringify(fresh))}catch(e){}location.replace(location.pathname+'?v=550&fresh='+Date.now())}
+$('shareCardBtn').addEventListener('click',previewShareCard);$('postNoteBtn').addEventListener('click',postShareCard);$('personalityBtn').addEventListener('click',managerPersonality);$('resetBtn').addEventListener('click',startNewCareer);if($('newGameBtn'))$('newGameBtn').addEventListener('click',startNewCareer);if($('newGameSheetBtn'))$('newGameSheetBtn').addEventListener('click',startNewCareer);if($('reportLogBtn'))$('reportLogBtn').addEventListener('click',openLogSheet);if($('openPortfolioFromHotel'))$('openPortfolioFromHotel').addEventListener('click',function(){if(!featureUnlocked('brand')){showToast('🔒 '+featureUnlockText('brand'));return}if(state.scenario&&state.scenario.active){showToast('⚡ Challenge 酒店固定，不能切换品牌。');return}buildBrandCards();toggleSheet('portfolioSheet')});
+document.addEventListener('visibilitychange',function(){if(resettingCareer)return;saveState(true);if(!document.hidden)last=window.performance&&performance.now?performance.now():Date.now()});
 applyThemeStart();updateFeed();buildLeadershipCards();buildPropertyCards();updateUI();buildBrandCards();ensureStageReady();updateConstructionHud();
 var firstTheme=activeTheme();if(TEST_MODE){window.__TS_TEST__={state:state,startPropertyConstruction:startPropertyConstruction,processConstruction:processConstruction,buildPropertyCards:buildPropertyCards,startSignatureConstruction:startSignatureConstruction,vipSpaceCoverage:vipSpaceCoverage,vipSpaceRequirements:vipSpaceRequirements,resolveExecutiveVip:resolveExecutiveVip,showExecutiveDecision:showExecutiveDecision,startScenario:startScenario,completeScenario:completeScenario,featureUnlocked:featureUnlocked,getState:function(){return state},spawnGuest:spawnGuest,updateGuestMemory:updateGuestMemory,buildScenarioCards:buildScenarioCards};state.onboarded=true;draw()}else if(state.scenario&&state.scenario.active){var resumeScenarioKey=state.scenario.key;state.onboarded=true;startScenario(resumeScenarioKey)}else if(!state.onboarded){state.onboarded=true;showModal('WELCOME','今晚有套吗？','先别管八个部门。今天只做一件事：接住第一位 Globalist。\n\nDay 2 解锁空间 · Day 4 解锁运营 · Day 6 解锁 Brand Explorer。\n\nDay 1 仅开放 1×，Day 2 解锁 2×，Day 5 才开放 4×。先把操作跑明白，再加速。\n\n以后你会从亲自干活，一路做到只处理 VIP 和 Exception。',[{title:'开始值班',impact:firstTheme.icon+' '+firstTheme.title,sub:'第一位 Globalist 已经快到前台。',best:true,fn:function(){spawnGuest('Globalist');setTimeout(function(){spawnGuest()},3600)}}])}else{setTimeout(function(){spawnGuest('Globalist')},900);setTimeout(function(){spawnGuest()},4200)}
 })();
