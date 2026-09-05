@@ -1,0 +1,79 @@
+name: Patch Jinwan copy hygiene
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-copy-hygiene.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scrub meta copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('games/jinwan-youtao/index.html')
+          s=p.read_text(encoding='utf-8')
+          replacements={
+            '<title>今晚有套吗？ v5.7</title>':'<title>今晚有套吗？</title>',
+            ' <span class="versiontag">v5.7</span>':'',
+            '<h3>日报 · v5.7</h3><div class="sub">先看今天，再决定下一步。长期集团进度收进折叠区。</div>':'<h3>经营日报</h3><div class="sub">当班经营摘要与董事会进度。</div>',
+            '<div class="notice" id="leadershipNote">前期你亲自处理日常；随着酒店升级，部门负责人会接管 Routine Task，只有 Exception 会升级到你。</div>':'<div class="notice" id="leadershipNote">当前授权：日常事项由值班经理审批。部门负责人到岗后，相关事务按部门 SOP 处理，异常事项再上报 GM。</div>',
+            '<div class="notice" id="gmDeskNote">组织成熟后，Routine Task 不再占用你的注意力。</div>':'<div class="notice" id="gmDeskNote">这里只显示需要 GM 审批或跨部门协调的事项。</div>',
+            '<div class="notice" id="scenarioNote">同一套经营系统，给你一个更短、更狠的残局。</div>':'<div class="notice" id="scenarioNote">集团临时委派的短期经营任务：目标更集中，容错更低。</div>',
+            '<div class="sub">快进时的重要事件、自动处理与结果都会记录在这里。</div>':'<div class="sub">记录当班事件、部门处置与经营结果。</div>',
+            '<strong>📸 预览经营战报</strong><small>把今天的主题、升套率、名场面和经理人格做成一张竖版卡片。</small>':'<strong>📸 生成经营战报</strong><small>整理今日主题、升套率、关键事件与经理风格，生成竖版战报。</small>',
+            '<strong>📕 发到小红书</strong><small>真机小工具内直接带图打开笔记发布页；浏览器预览会显示战报。</small>':'<strong>📕 分享到小红书</strong><small>将今日经营战报整理为图文笔记。</small>',
+            "showToast('当前预览环境没有小红书发布桥接；真机内可直接发笔记。');":"showToast('当前环境暂不支持直接发布，可先生成战报图片后手动分享。');",
+            "why:'前期亲自干活，34 房晚后正式进入 GM 层级。'":"why:'累计 34 房晚后通过任期考核，晋升 General Manager。'",
+            "park:{title:'Park Hyatt · Quiet Luxury',reveal:'PARK HYATT',desc:'克制、住宅感、艺术与极致服务。后期不再追求热闹，而是不能出错。',accent:'#c6ae79'}":"park:{title:'Park Hyatt · Quiet Luxury',reveal:'PARK HYATT',desc:'克制、住宅感、艺术与极致服务。核心不是热闹，而是稳定且几乎零失误的体验。',accent:'#c6ae79'}",
+            "$('victorySummary').textContent='GM 终局进度 '+victoryCount()+'/5。v5.4：口碑改为整数档位，负面冲击加入缓冲与单日上限，减少数值雪崩。';":"$('victorySummary').textContent='董事会进度 '+victoryCount()+'/5。完成任期、品牌覆盖、组织配置、累计收入与服务稳定性要求即可通过年度 Review。';",
+            "goalCard(passes[2],'会员口碑',''+Math.round(state.rep)+' / '+p.rep,'口碑采用整数档位；普通失误单次最多 -4，且每天有负面缓冲上限。')":"goalCard(passes[2],'会员口碑',''+Math.round(state.rep)+' / '+p.rep,'减少客诉并持续兑现会员权益，才能维持稳定口碑。')",
+            "goalCard(passes[3],'业主满意',''+Math.round(state.owner)+' / '+p.owner,'业主满意决定你能不能继续买人、买系统和给套。')":"goalCard(passes[3],'业主满意',''+Math.round(state.owner)+' / '+p.owner,'业主满意度决定后续招聘、改造与服务预算空间。')",
+            "$('difficultyNote').textContent='Day '+state.day+' · '+dayOfWeekName(state.day)+' · '+p.phase+' · '+careerName()+'。需求画像：'+brandDemandNote(state.brand,state.day)+'。今天的目标依旧是营收 / 房晚 / 双满意，但随着组织成熟，越来越多低阶问题应该由部门负责人自动解决。固定成本 ¥'+state.daily.payroll+'。';":"$('difficultyNote').textContent='Day '+state.day+' · '+dayOfWeekName(state.day)+' · '+p.phase+' · '+careerName()+'。今日客群：'+brandDemandNote(state.brand,state.day)+'。固定成本 ¥'+state.daily.payroll+'。经营考核：营收 / 房晚 / 会员口碑 / 业主满意度。';",
+            "box.innerHTML='<div class=\"card widecard\"><strong>还没有运营日志</strong><small>4× 快进时的重要动态、处理结果与自动化动作都会记在这里。</small><span class=\"tag blue\">LOG EMPTY</span></div>';":"box.innerHTML='<div class=\"card widecard\"><strong>还没有运营日志</strong><small>当班事件、部门处置与经营结果会记录在这里。</small><span class=\"tag blue\">暂无记录</span></div>';",
+            "'你完成了 v5.7 的 GM 终局考核：\\n\\n":"'董事会已确认本年度 GM Review 通过：\\n\\n",
+            "Park Hyatt 之后进入无限 GM 模式：你只处理 Exception。":"此后继续经营集团组合，仅异常事项需要 GM 亲自介入。",
+            "showModal('WELCOME','今晚有套吗？','先别管八个部门。今天只做一件事：接住第一位 Globalist。\\n\\nDay 2 解锁空间 · Day 4 解锁运营 · Day 6 解锁 Brand Explorer。\\n\\nDay 1 仅开放 1×，Day 2 解锁 2×，Day 5 才开放 4×。先把操作跑明白，再加速。\\n\\n以后你会从亲自干活，一路做到只处理 VIP 和 Exception。'":"showModal('WELCOME','今晚有套吗？','第一位 Globalist 即将到店。先处理他的入住，再根据房态决定是否扩房、补人或调整价格。\\n\\n空间、部门与品牌权限会随任期逐步开放。速度可随时切换 1× / 2× / 4×。\\n\\n随着团队到岗，日常事项会逐步转由部门 SOP 处理，GM 只介入异常与高价值客。'",
+          }
+          for old,new in replacements.items():
+              if old in s:
+                  s=s.replace(old,new)
+              else:
+                  print('NOTE missing exact string:', old[:100])
+          # Remove development-only comments and visible version tags generically.
+          s=re.sub(r'/\*\s*v5\.7 UI reset:.*?\*/','',s,flags=re.S)
+          s=re.sub(r'<span class="versiontag">v\d+(?:\.\d+)*</span>','',s)
+          s=re.sub(r'<h3>日报\s*·\s*v\d+(?:\.\d+)*</h3>','<h3>经营日报</h3>',s)
+          # Day 1 now supports every manual speed; remove stale lock copy from unreachable code too.
+          s=s.replace("sb.title=locked?(v===4?'Day 5 解锁 4×':'Day 2 解锁 2×'):''","sb.title='' ")
+          s=s.replace("if(v>ms){showToast(v===4?'🔒 Day 5 解锁 4×，先熟悉核心操作':'🔒 Day 2 解锁 2×，先把第一天跑明白');return}","")
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify no conversation or tuning rationale is player-facing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('games/jinwan-youtao/index.html').read_text(encoding='utf-8')
+          forbidden=[
+            '今晚有套吗？ v5.','versiontag">v','日报 · v','你完成了 v5.','v5.4：口碑','v5.7 UI reset',
+            '长期集团进度收进折叠区','同一套经营系统，给你一个更短、更狠的残局','真机小工具内直接带图',
+            '当前预览环境没有小红书发布桥接','口碑采用整数档位；普通失误','今天的目标依旧是营收 / 房晚 / 双满意',
+            'Day 1 仅开放 1×','Day 5 才开放 4×','快进时的重要事件、自动处理与结果都会记录在这里。'
+          ]
+          bad=[x for x in forbidden if x in s]
+          if bad:
+              raise SystemExit('forbidden meta copy remains: '+repr(bad))
+          print('copy hygiene verification passed')
+          PY
+      - name: Commit copy scrub
+        run: |
+          git config user.name 'Garron'
+          git config user.email '83269443+GarronMeng@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html
+          git commit -m 'fix: remove meta copy from player UI' || exit 0
+          git push
