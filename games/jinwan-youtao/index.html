@@ -143,158 +143,44 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
 </style>
 
 
-<style id="v65-true3d-css">
-/* v6.5 — approved cutaway composition rebuilt as an interactive, scrollable hotel tower. */
-#tower2dScroll{position:absolute;inset:0;z-index:2;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none;touch-action:pan-y}
-#tower2dScroll::-webkit-scrollbar,.v65-scroller::-webkit-scrollbar{display:none}
-#tower2dScroll #game{position:relative!important;inset:auto!important;width:100%!important;height:var(--v65-canvas-h,610px)!important;display:block;touch-action:pan-y}
-.stage:not(.mode3d) #tower2dScroll{opacity:1;pointer-events:auto}.stage.mode3d #tower2dScroll{opacity:0;pointer-events:none}
-.stage.mode3d #people3d{display:none!important}.stage.mode3d .scene3d{background-image:none!important;background:#315b7b!important;overflow:hidden!important;transform:none!important;filter:none!important}
-.stage.mode3d:after{height:14%;background:linear-gradient(to bottom,transparent,rgba(13,24,32,.20));pointer-events:none}
-.v65-scroller{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none;touch-action:pan-y;background:linear-gradient(180deg,#537da0 0%,#9db7c7 34%,#cfb799 69%,#9b806b 100%)}
-.v65-world{--v65-navy:#153653;--v65-wall:#ede2d2;--v65-wood:#644636;--v65-accent:#78969b;--v65-soft:#ad765e;--v65-green:#607a61;position:relative;min-height:100%;padding:68px 7px 64px;isolation:isolate;background:radial-gradient(circle at 76% 8%,rgba(255,228,164,.55),transparent 18%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(20,43,59,.10))}
-.v65-city{position:absolute;z-index:-2;left:-8%;right:-8%;top:210px;bottom:0;opacity:.56;background:repeating-linear-gradient(90deg,transparent 0 18px,rgba(31,50,66,.33) 19px 42px,transparent 43px 58px),linear-gradient(180deg,transparent 0 42%,rgba(25,44,58,.42) 42% 100%);clip-path:polygon(0 32%,5% 23%,10% 41%,16% 18%,22% 38%,28% 28%,35% 44%,42% 17%,49% 36%,56% 24%,63% 43%,70% 21%,77% 35%,84% 14%,91% 31%,96% 20%,100% 28%,100% 100%,0 100%)}
-.v65-tower{position:relative;width:100%;filter:drop-shadow(0 18px 26px rgba(11,26,38,.34))}
-.v65-roof{position:relative;margin-left:44px;height:108px;overflow:hidden;border:1px solid rgba(255,255,255,.32);border-bottom:5px solid #314a5b;background:linear-gradient(180deg,rgba(156,190,204,.23),rgba(205,184,156,.54))}
-.v65-roof:before{content:"";position:absolute;left:5px;right:5px;bottom:5px;height:49px;background:linear-gradient(165deg,#d8c29f,#92735c);clip-path:polygon(0 28%,100% 0,100% 100%,0 100%);box-shadow:inset 0 2px rgba(255,244,215,.65)}
-.v65-roof:after{content:"";position:absolute;left:22px;right:24px;bottom:17px;height:24px;background:repeating-linear-gradient(90deg,#f4eee3 0 25px,transparent 25px 41px);opacity:.94;transform:skewX(-10deg)}
-.v65-umbrella{position:absolute;z-index:4;top:18px;width:2px;height:44px;background:#78634d}.v65-umbrella:before{content:"";position:absolute;left:-24px;top:-1px;width:49px;height:15px;background:#f7f1e7;clip-path:polygon(50% 0,100% 82%,50% 64%,0 82%);filter:drop-shadow(0 2px 2px rgba(0,0,0,.13))}.v65-u1{left:29%}.v65-u2{left:62%}
-.v65-roofplant{position:absolute;z-index:5;bottom:15px;width:12px;height:17px;background:#82644e}.v65-roofplant:before,.v65-roofplant:after{content:"";position:absolute;bottom:11px;width:22px;height:18px;background:#557158;border-radius:70% 30%}.v65-roofplant:before{left:-10px;transform:rotate(-18deg)}.v65-roofplant:after{right:-10px;transform:rotate(18deg)}.v65-p1{left:9%}.v65-p2{right:8%}
-.v65-floor,.v65-amenity,.v65-breakfastfloor,.v65-lobby{display:grid;grid-template-columns:44px minmax(0,1fr);position:relative}
-.v65-floor{min-height:112px}.v65-floorlabel{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--v65-navy),#0e2b44);color:#fff;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(0,0,0,.32);text-align:center}.v65-floorlabel b{font-size:14px;line-height:1}.v65-floorlabel span{margin-top:6px;font-size:8px;font-weight:900}.v65-floorlabel small{font-size:5.6px;margin-top:3px;opacity:.62;letter-spacing:.25px}
-.v65-floorrooms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:4px;background:#253b4b;border-top:4px solid #42596a;border-bottom:4px solid #1b2c39;box-shadow:inset 0 1px rgba(255,255,255,.18)}
-.v65-room{--status:#69bd7c;position:relative;height:99px;min-width:0;padding:0;border:0;border-radius:1px;overflow:hidden;color:#352d27;text-align:left;background:linear-gradient(180deg,#f6eee1 0 54%,#bc916e 55% 100%);box-shadow:inset 0 0 0 1px rgba(78,59,46,.32),inset 0 9px 15px rgba(255,250,232,.36)}
-.v65-room:before{content:"";position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(160deg,#cca27d,#9b7357);clip-path:polygon(0 18%,100% 0,94% 100%,6% 100%)}.v65-room:after{content:"";position:absolute;left:8%;right:8%;bottom:3px;height:8px;border-radius:50%;background:rgba(36,27,21,.13);filter:blur(3px)}
-.v65-room.empty{background:linear-gradient(180deg,#d7d4ce,#b8b5b0);filter:saturate(.46)}.v65-room.empty:before{background:#a7a39e}.v65-room.dirty{--status:#79a9c5}.v65-room.reserved{--status:#d8aa54}.v65-room.occupied{--status:#e2bb56}.v65-room.available{--status:#69bd7c}.v65-room.problem{--status:#c46f64}
-.v65-roomno{position:absolute;z-index:9;left:6px;top:5px;font-size:10px;font-weight:950;text-shadow:0 1px rgba(255,255,255,.72)}
-.v65-window{position:absolute;z-index:2;left:8px;top:17px;width:31px;height:20px;border:3px solid #625348;background:linear-gradient(180deg,#b1cbd2 0 54%,#6b8793 55%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.58)}.v65-window:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.58)}
-.v65-art{position:absolute;z-index:2;right:12px;top:15px;width:27px;height:11px;border:3px solid #655447;background:linear-gradient(135deg,var(--v65-accent),#ddc7a5);box-shadow:0 2px 3px rgba(0,0,0,.12)}
-.v65-bed{position:absolute;z-index:4;left:13px;bottom:21px;width:53px;height:22px;border-radius:2px;background:linear-gradient(180deg,#fffef9 0 42%,#eee6dd 43%);box-shadow:0 4px 0 #594338,0 7px 9px rgba(45,30,22,.22)}.v65-bed:before{content:"";position:absolute;left:0;right:0;top:-9px;height:12px;background:#795744}.v65-bed:after{content:"";position:absolute;left:4px;right:4px;bottom:2px;height:6px;background:var(--v65-soft);box-shadow:inset 0 1px rgba(255,255,255,.3)}
-.v65-pillow{position:absolute;z-index:6;left:18px;bottom:37px;width:17px;height:7px;border-radius:5px;background:#fffaf2;box-shadow:20px 0 0 #fffaf2}.v65-desk{position:absolute;z-index:4;right:9px;bottom:24px;width:29px;height:5px;background:var(--v65-wood)}.v65-desk:before,.v65-desk:after{content:"";position:absolute;top:5px;width:3px;height:13px;background:var(--v65-wood)}.v65-desk:before{left:3px}.v65-desk:after{right:3px}.v65-chair{position:absolute;z-index:5;right:18px;bottom:15px;width:12px;height:11px;border-radius:3px;background:var(--v65-accent);box-shadow:0 5px 0 -3px #493b32}
-.v65-lamp{position:absolute;z-index:6;right:38px;bottom:31px;width:2px;height:18px;background:#b18c50}.v65-lamp:before{content:"";position:absolute;left:-5px;top:-4px;width:12px;height:7px;background:#f3dda8;clip-path:polygon(15% 0,85% 0,100% 100%,0 100%);filter:drop-shadow(0 0 5px rgba(255,218,135,.7))}.v65-plant{position:absolute;z-index:6;right:4px;bottom:16px;width:8px;height:8px;background:#8a6a51}.v65-plant:before,.v65-plant:after{content:"";position:absolute;bottom:6px;width:13px;height:13px;background:var(--v65-green);border-radius:70% 30%}.v65-plant:before{left:-7px;transform:rotate(-24deg)}.v65-plant:after{right:-7px;transform:rotate(24deg)}
-.v65-sofa{display:none;position:absolute;z-index:4;right:5px;bottom:17px;width:32px;height:18px;border-radius:6px 6px 3px 3px;background:var(--v65-accent);box-shadow:0 4px 0 #55443a}.v65-room.suite .v65-sofa{display:block}.v65-room.suite .v65-desk,.v65-room.suite .v65-chair{display:none}.v65-room.suite .v65-bed{width:48px}.v65-v1 .v65-window{left:auto;right:8px}.v65-v1 .v65-art{right:auto;left:14px}.v65-v2 .v65-bed{left:8px}.v65-v2 .v65-desk{right:5px}.v65-v3 .v65-window{width:38px}.v65-v3 .v65-art{right:7px}
-.v65-state{position:absolute;z-index:12;left:5px;right:5px;bottom:4px;height:13px;display:flex;align-items:center;justify-content:center;border-radius:3px;background:var(--status);font-size:6.3px;font-weight:950;letter-spacing:.2px;color:#173022;box-shadow:0 1px 3px rgba(0,0,0,.18)}.v65-room.occupied .v65-state{color:#453315}.v65-room.dirty .v65-state{color:#173044}.v65-room.empty .v65-state{background:rgba(70,68,65,.55);color:#fff}
-.v65-avatar{position:absolute;z-index:10;left:62%;bottom:17px;width:12px;height:22px;border-radius:5px 5px 3px 3px;background:#264761;box-shadow:0 2px 4px rgba(0,0,0,.24)}.v65-avatar:before{content:"";position:absolute;left:2px;top:-9px;width:9px;height:9px;border-radius:50%;background:#e5bea0;box-shadow:0 -3px 0 #28211d}.v65-avatar:after{content:"";position:absolute;left:3px;bottom:-5px;width:2px;height:6px;background:#403833;box-shadow:5px 0 0 #403833}.v65-thought{position:absolute;z-index:14;right:4px;top:3px;max-width:68px;padding:3px 5px;border-radius:7px;background:rgba(255,255,255,.95);border:1px solid rgba(94,75,59,.14);font-size:5.8px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 5px rgba(0,0,0,.10)}
-.v65-room.breakfast .v65-bed,.v65-room.breakfast .v65-pillow,.v65-room.breakfast .v65-desk,.v65-room.breakfast .v65-chair,.v65-room.breakfast .v65-lamp{display:none}.v65-buffet{position:absolute;z-index:4;left:8px;right:8px;bottom:24px;height:18px;background:linear-gradient(#7e553b,#553a2d);box-shadow:0 4px 0 #423027}.v65-buffet:before{content:"";position:absolute;left:5px;right:5px;top:-6px;height:7px;background:repeating-linear-gradient(90deg,#d7b76d 0 12px,#b9664e 12px 24px,#d8d0a5 24px 36px);border:2px solid #694936}
-.v65-room.club .v65-bed,.v65-room.club .v65-pillow{display:none}.v65-bar{position:absolute;z-index:4;left:7px;right:7px;bottom:24px;height:23px;background:linear-gradient(#6c4936,#493225);box-shadow:0 4px 0 #33251e}.v65-bar:before{content:"";position:absolute;left:3px;right:3px;top:-18px;height:16px;background:repeating-linear-gradient(90deg,#bc9958 0 3px,transparent 3px 9px),linear-gradient(#2d2622,#443228);border:2px solid #5f4434}
-.v65-room.gym .v65-bed,.v65-room.gym .v65-pillow,.v65-room.gym .v65-desk,.v65-room.gym .v65-chair,.v65-room.gym .v65-lamp{display:none}.v65-room.gym{background:linear-gradient(180deg,#dadbd6 0 55%,#8a8e89 56%)}.v65-tread{position:absolute;z-index:5;left:10px;bottom:23px;width:35px;height:16px;border-bottom:5px solid #40484c;border-right:3px solid #40484c;transform:skewX(-10deg)}.v65-tread:before{content:"";position:absolute;right:-2px;top:-12px;width:3px;height:16px;background:#454d51;transform:skewX(10deg)}.v65-ball{position:absolute;z-index:4;right:16px;bottom:23px;width:17px;height:17px;border-radius:50%;background:#8c9a9d;box-shadow:-22px 3px 0 -2px #b08c66}
-.v65-room.spa .v65-bed,.v65-room.spa .v65-pillow,.v65-room.spa .v65-desk,.v65-room.spa .v65-chair{display:none}.v65-room.spa{background:linear-gradient(180deg,#eee9df 0 56%,#a88f78 57%)}.v65-treatment{position:absolute;z-index:4;left:12px;bottom:26px;width:58px;height:14px;border-radius:7px 7px 2px 2px;background:#f7f1e8;box-shadow:0 5px 0 #765f4e}.v65-treatment:after{content:"";position:absolute;right:-21px;top:-16px;width:17px;height:30px;background:rgba(205,187,157,.72);border-radius:8px}
-.v65-amenity{height:96px}.v65-amenityrooms{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:4px;background:#263946;border-top:4px solid #3d5465;border-bottom:4px solid #1d2c38}.v65-amenitybox{position:relative;overflow:hidden;background:linear-gradient(180deg,#eee5d7 0 55%,#a98568 56%);box-shadow:inset 0 0 0 1px rgba(78,60,48,.28)}.v65-amenitybox b{position:absolute;left:7px;top:6px;font-size:8px;z-index:5}.v65-amenitybox small{position:absolute;left:7px;top:17px;font-size:5.5px;opacity:.62;z-index:5}.v65-amenitybox .v65-bar{left:10px;right:10px}.v65-amenitybox .v65-tread{left:22px}.v65-amenitybox .v65-treatment{left:18px}
-.v65-breakfastfloor{height:118px}.v65-breakfastspace{position:relative;overflow:hidden;background:linear-gradient(180deg,#efe4d3 0 47%,#aa805f 48%);border-top:4px solid #3b5161;border-bottom:4px solid #1d2c38}.v65-breakfastspace:before{content:"";position:absolute;left:16px;right:16px;bottom:22px;height:31px;background:linear-gradient(#74513c,#50372b);box-shadow:0 5px 0 #39291f}.v65-breakfastspace:after{content:"";position:absolute;left:26px;right:26px;bottom:52px;height:17px;background:repeating-linear-gradient(90deg,#d9b46e 0 15px,#b7634c 15px 29px,#d7ce9d 29px 42px);border:3px solid #674735}.v65-breakfastspace b{position:absolute;left:18px;top:13px;font-size:10px}.v65-table-dot{position:absolute;bottom:14px;width:22px;height:7px;border-radius:50%;background:#6b4d3a;box-shadow:0 6px 0 -3px #4b372d}.v65-t1{left:18%}.v65-t2{left:46%}.v65-t3{left:72%}
-.v65-lobby{height:168px}.v65-lobbyspace{position:relative;overflow:hidden;background:linear-gradient(180deg,#efe6d9 0 52%,#b18e70 53%);border-top:4px solid #3c5364;border-bottom:5px solid #1d2d39}.v65-lobbyspace:before{content:"";position:absolute;left:15px;right:15px;top:15px;height:67px;background:linear-gradient(90deg,rgba(255,255,255,.18),rgba(255,255,255,.55),rgba(255,255,255,.18));border:1px solid rgba(121,101,82,.12);box-shadow:inset 0 0 28px rgba(255,244,218,.42)}.v65-lobbybrand{position:absolute;z-index:4;left:50%;top:27px;transform:translateX(-50%);font-size:12px;font-weight:950;letter-spacing:1px;color:var(--v65-navy);white-space:nowrap}.v65-lobbybrand:before{content:"";display:inline-block;width:17px;height:17px;margin-right:6px;vertical-align:-4px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#e7bd62 0 18%,transparent 20%),radial-gradient(circle at 70% 30%,#7b9e9f 0 18%,transparent 20%),radial-gradient(circle at 30% 70%,#466278 0 18%,transparent 20%),radial-gradient(circle at 70% 70%,#d18e67 0 18%,transparent 20%)}.v65-frontdesk{position:absolute;z-index:5;left:18%;right:16%;bottom:25px;height:42px;background:linear-gradient(#825b43,#51392d);clip-path:polygon(3% 0,97% 0,92% 100%,8% 100%);box-shadow:0 6px 10px rgba(50,34,25,.27)}.v65-frontdesk:before{content:"";position:absolute;left:6%;right:6%;top:5px;height:2px;background:#d0ab68;box-shadow:0 24px 0 rgba(41,31,25,.25)}
-.v65-staff{position:absolute;z-index:8;bottom:49px;width:14px;height:24px;border-radius:5px 5px 2px 2px;background:#183b5d}.v65-staff:before{content:"";position:absolute;left:2px;top:-10px;width:10px;height:10px;border-radius:50%;background:#e8c6aa;box-shadow:0 -3px 0 #26211d}.v65-s1{left:36%}.v65-s2{left:58%}.v65-luggage{position:absolute;z-index:7;right:8%;bottom:18px;width:28px;height:46px;border:4px solid #b38d4e;border-radius:12px 12px 2px 2px}.v65-luggage:before{content:"";position:absolute;left:-9px;right:-9px;top:14px;height:5px;background:#c7654f;box-shadow:0 11px 0 #53829b,0 22px 0 #c29c52}
-.v65-brandtower{position:absolute;z-index:7;right:7px;top:79px;width:58px;min-height:145px;padding:17px 7px 10px;background:linear-gradient(#17354f,#10283e);border:1px solid rgba(255,255,255,.22);box-shadow:0 7px 18px rgba(0,0,0,.28);color:#fff;text-align:center}.v65-brandtower strong{display:block;font-size:9px;line-height:1.1;letter-spacing:.8px;word-break:break-word}.v65-brandtower small{display:block;margin-top:10px;font-size:5.5px;line-height:1.4;opacity:.70}.v65-brandmark{width:26px;height:26px;margin:0 auto 8px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#e7bf64 0 16%,transparent 18%),radial-gradient(circle at 70% 30%,#82a7a8 0 16%,transparent 18%),radial-gradient(circle at 30% 70%,#57778e 0 16%,transparent 18%),radial-gradient(circle at 70% 70%,#d68f69 0 16%,transparent 18%)}
-.v65-floorrail{position:absolute;z-index:13;right:7px;top:74px;width:34px;padding:5px 3px;border-radius:17px;background:rgba(21,43,60,.84);border:1px solid rgba(255,255,255,.42);box-shadow:0 7px 18px rgba(0,0,0,.21);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:none}.stage.mode3d .v65-floorrail{display:block}.v65-floorrail button{display:block;width:100%;height:23px;border:0;background:transparent;color:rgba(255,255,255,.76);font-size:7px;font-weight:900;border-radius:10px}.v65-floorrail button:active,.v65-floorrail button.on{background:rgba(255,255,255,.19);color:#fff}.v65-floorrail .arrow{font-size:10px}
-.v65-weather{position:absolute;z-index:13;right:9px;top:9px;padding:5px 8px;border-radius:999px;background:rgba(20,51,77,.80);border:1px solid rgba(255,255,255,.58);color:#fff;font-size:7px;font-weight:900;display:none}.stage.mode3d .v65-weather{display:block}.v65-scrollnote{position:absolute;z-index:12;right:9px;top:43px;padding:4px 7px;border-radius:999px;background:rgba(21,45,66,.68);color:#fff;font-size:6px;font-weight:800;display:none;pointer-events:none}.stage.mode3d .v65-scrollnote{display:block}
-/* 3D chrome: mirror approved mockup rather than the old black theme. */
-.visual3d .top{background:linear-gradient(145deg,#17456f,#103858 72%,#183d5e);border-bottom-color:rgba(255,255,255,.14);color:#fff}.visual3d .game-title h1{color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.12)}.visual3d .game-title small{color:rgba(255,255,255,.58)}.visual3d .propertyline{color:rgba(255,255,255,.78)}.visual3d .propertyline b{color:#fff}.visual3d .pill{background:rgba(8,31,51,.24);border-color:rgba(255,255,255,.72);color:#fff;box-shadow:none}.visual3d .pill.warn{background:rgba(85,60,21,.18);border-color:#d8ad62}.visual3d .rolechip{background:rgba(255,255,255,.15);color:#fff}.visual3d .meter{background:rgba(255,255,255,.22)}.visual3d .meter i{background:linear-gradient(90deg,#aa7e2d,#d5ad54)}.visual3d .meter.owner i{background:linear-gradient(90deg,#245882,#10848c)}.visual3d .goalstrip{background:#fff9ee;border-color:#ddb86d;color:#173754;box-shadow:0 3px 10px rgba(7,24,39,.12)}.visual3d .goalstrip b,.visual3d .goalstrip .right{color:#173754}.visual3d .bottom{background:#faf7f2;border-color:#d7cec2;color:#20272d}.visual3d .action{background:#fff;border-color:#d8cfc4;color:#20272d}.visual3d .action.primary{background:#173b5b;border-color:#173b5b;color:#fff}.visual3d .feed{background:#f4efe8;border-color:#d7cec2;color:#625c55}.visual3d .feed b{color:#342f2b}.visual3d .foot{color:#736c64}.visual3d .speed button{background:#e7e0d6;color:#605a53}.visual3d .speed button.on{background:#173956;color:#fff}.visual3d .stagechip{background:rgba(20,49,73,.82);border-color:rgba(255,255,255,.55);color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.13)}.visual3d .viewtoggle{background:rgba(250,247,241,.91);border-color:rgba(255,255,255,.68);box-shadow:0 3px 12px rgba(0,0,0,.12)}.visual3d .viewtoggle button{color:#6d655e}.visual3d .viewtoggle button.on{background:#173956;color:#fff}.stage.mode3d .hint{bottom:9px;background:rgba(255,249,233,.96);border-color:#dfc47d;color:#745d2c}
-@media(max-width:380px){.v65-floor{min-height:104px}.v65-room{height:91px}.v65-lobby{height:154px}.v65-breakfastfloor{height:108px}.v65-brandtower{width:52px}.v65-floorrail{width:31px}}
-</style>
 
-
-<style id="v66-reference-ui">
-/* v6.6 — pixel-locked visual pass based on the approved hotel reference. */
-:root{--v66-navy:#0d3b67;--v66-navy2:#082d50;--v66-gold:#d2a23f;--v66-cream:#f8f4ed;--v66-line:#dfcba4;--v66-ink:#122c48}
-@media (max-width:520px){body.v66-github-host{padding-top:0!important}}
-body.v66-github-host #app{min-height:100dvh}
-#app.visual3d{background:#102f4e!important;color:#f7f5ef}
-.visual3d .top{background:linear-gradient(180deg,#104b80 0%,#0c3d6b 56%,#0a355d 100%)!important;border-bottom:0!important;color:#fff!important;padding:12px 12px 11px!important;box-shadow:0 8px 22px rgba(3,22,39,.20)}
-.visual3d .game-title h1{font-size:24px!important;line-height:1!important;letter-spacing:-.7px!important;color:#fff!important;text-shadow:0 1px 0 rgba(0,0,0,.08)}
-.visual3d .game-title small{display:none!important}
-.visual3d .metrics{gap:6px!important}.visual3d .pill{margin:0!important;padding:6px 10px!important;border:1.5px solid rgba(255,255,255,.78)!important;background:rgba(4,35,62,.30)!important;color:#fff!important;box-shadow:inset 0 1px rgba(255,255,255,.13),0 3px 12px rgba(1,20,34,.12);font-size:10px!important}
-.visual3d .pill.warn{border-color:#d9a950!important;background:rgba(57,40,11,.30)!important}.visual3d .pill.good{border-color:#79b5c2!important;background:rgba(8,72,87,.26)!important}
-.visual3d .propertyline{margin-top:8px!important;color:rgba(255,255,255,.92)!important;font-size:10px!important}.visual3d .propertyline b{color:#fff!important}.visual3d .rolechip{background:rgba(8,32,53,.46)!important;color:#fff!important;border:1px solid rgba(255,255,255,.10);padding:4px 8px!important}
-.visual3d .statusgrid{grid-gap:7px!important;margin-top:8px!important}.visual3d .meter{height:20px!important;border-radius:999px!important;background:rgba(245,239,228,.92)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}.visual3d .meter i{background:linear-gradient(90deg,#bc8830,#e0b858)!important}.visual3d .meter.owner i{background:linear-gradient(90deg,#173d62,#0c6a83)!important}.visual3d .meter span{top:3px!important;font-size:8.7px!important;color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.33)}
-.visual3d .goalstrip{margin-top:8px!important;padding:8px 10px!important;border:1.5px solid #e2b95f!important;border-radius:12px!important;background:#fffdf7!important;color:#193653!important;box-shadow:0 3px 11px rgba(2,26,45,.15)!important;font-size:9.5px!important}.visual3d .goalstrip b{color:#173a5c!important}.visual3d .goalstrip .right{color:#163a5e!important}
-.visual3d .stage{height:160vw!important;min-height:590px!important;max-height:730px!important;background:#224d70!important;overflow:hidden!important}
-.visual3d .scene3d{opacity:1!important;transform:none!important;background:none!important;filter:none!important;overflow:hidden!important}
-.visual3d .scene3d>*:not(#v66ReferenceStage){display:none!important}
-#v66ReferenceStage{position:absolute;inset:0;z-index:1;overflow:hidden;background:linear-gradient(180deg,#6f99b5 0%,#a8c1ce 31%,#d1b893 75%,#8c725f 100%)}
-.v66-scroll{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none;touch-action:pan-y;background:#2a5575}.v66-scroll::-webkit-scrollbar{display:none}
-.v66-art{position:relative;width:100%;min-height:100%;isolation:isolate;background:#264b68}.v66-art>img{position:relative;z-index:0;width:100%;height:auto;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none;filter:saturate(1.03) contrast(1.015)}
-.v66-art:after{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 -60px 80px rgba(11,31,45,.09)}
-.v66-brandmask{position:absolute;z-index:4;right:0;top:1.0%;width:17.5%;height:15.7%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 3px;background:linear-gradient(180deg,rgba(17,43,65,.98),rgba(13,38,60,.96));color:#fff;text-align:center;box-shadow:-5px 0 12px rgba(3,18,29,.16)}.v66-branddots{width:34px;height:34px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:5px}.v66-branddots i{display:block;border-radius:50%;background:#d9b453}.v66-branddots i:nth-child(2),.v66-branddots i:nth-child(4),.v66-branddots i:nth-child(6){background:#83b4c0}.v66-branddots i:nth-child(3),.v66-branddots i:nth-child(7){background:#eee4ca}.v66-brandmask strong{font-size:8.6px;line-height:1.05;letter-spacing:.5px}.v66-brandmask small{margin-top:6px;font-size:5.4px;line-height:1.28;color:rgba(255,255,255,.72)}
-.v66-lobbybrand{position:absolute;z-index:4;left:26%;bottom:7.7%;width:45%;padding:4px 6px;border-radius:4px;background:rgba(246,234,214,.76);backdrop-filter:blur(2px);color:#23384a;text-align:center;font-size:8.3px;font-weight:950;letter-spacing:.6px;box-shadow:0 2px 7px rgba(0,0,0,.10)}
-.v66-roomlayer{position:absolute;z-index:5;inset:0;pointer-events:none}.v66-roomhot{position:absolute;pointer-events:auto;border:1.5px solid transparent;border-radius:3px;background:transparent;color:#152c3c;text-align:left;padding:0;overflow:visible}.v66-roomhot:active{background:rgba(255,255,255,.09);border-color:#f2d68b}.v66-roomhot.locked{background:rgba(20,30,37,.43);border-color:rgba(255,255,255,.08)}
-.v66-roomno{position:absolute;left:4px;top:3px;padding:1px 4px;border-radius:5px;background:rgba(255,248,235,.82);font-size:7.4px;font-weight:950;box-shadow:0 1px 2px rgba(0,0,0,.09)}.v66-roomhot.locked .v66-roomno{color:#d7dde0;background:rgba(31,47,59,.74)}
-.v66-status{position:absolute;left:4px;right:4px;bottom:3px;min-height:10px;border-radius:2px;padding:2px 3px;background:#6fd685;color:#0c3822;text-align:center;font-size:5.9px;line-height:1;font-weight:950;letter-spacing:.2px;box-shadow:0 1px 2px rgba(0,0,0,.14)}.v66-status.occupied{background:#f2ca5d;color:#433109}.v66-status.cleaning{background:#70b9e6;color:#17374c}.v66-status.dirty{background:#db8b79;color:#58241e}.v66-status.reserved{background:#e7bd68;color:#4b3510}.v66-status.empty{background:#d7d1c7;color:#5a5146}.v66-status.locked{background:#344a5b;color:#e7edf0}
-.v66-thought{position:absolute;z-index:7;left:50%;bottom:16px;max-width:92px;transform:translateX(-50%);padding:3px 5px;border-radius:7px;background:rgba(255,255,255,.94);border:1px solid rgba(49,48,44,.16);color:#333;font-size:5.7px;line-height:1.18;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.12);white-space:normal}.v66-thought:after{content:"";position:absolute;left:50%;bottom:-3px;width:5px;height:5px;background:#fff;transform:translateX(-50%) rotate(45deg);border-right:1px solid rgba(49,48,44,.12);border-bottom:1px solid rgba(49,48,44,.12)}
-.v66-rail{position:absolute;z-index:8;right:8px;top:25%;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.45);border-radius:16px;background:rgba(19,45,65,.78);backdrop-filter:blur(7px);box-shadow:0 5px 16px rgba(0,0,0,.18)}.v66-rail button{width:31px;height:27px;border:0;border-bottom:1px solid rgba(255,255,255,.10);background:transparent;color:#fff;font-size:7.5px;font-weight:900}.v66-rail button:last-child{border-bottom:0}.v66-rail button.active{background:#e8c26f;color:#18344a}.v66-rail button:active{background:rgba(255,255,255,.18)}
-.v66-weather{position:absolute;z-index:9;right:10px;top:10px;padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.72);background:rgba(24,55,79,.76);color:#fff;font-size:8px;font-weight:900;box-shadow:0 3px 12px rgba(0,0,0,.16);pointer-events:none}.v66-scrollhint{position:absolute;z-index:8;right:9px;bottom:11px;padding:4px 6px;border-radius:8px;background:rgba(15,37,53,.66);color:rgba(255,255,255,.88);font-size:6.4px;font-weight:800;pointer-events:none;transition:opacity .3s}.v66-scrollhint.hide{opacity:0}
-.visual3d #people3d,.visual3d #tower2dScroll{opacity:0!important;pointer-events:none!important}.visual3d .stage-fallback{display:none!important}
-.visual3d .stagehud{z-index:12!important;top:10px!important;left:10px!important;right:10px!important;align-items:center!important}.visual3d #occChip{padding:7px 10px!important;border:1.4px solid rgba(255,255,255,.82)!important;background:rgba(20,53,77,.78)!important;color:#fff!important;font-size:9px!important;box-shadow:0 3px 13px rgba(0,0,0,.16)!important}.visual3d #explorerChip{display:none!important}.visual3d .viewtoggle{top:0!important;border:1.4px solid rgba(255,255,255,.70)!important;background:rgba(246,241,232,.94)!important;box-shadow:0 3px 13px rgba(0,0,0,.12)!important}.visual3d .viewtoggle button{padding:5px 10px!important;color:#5e5a54!important;font-size:8.5px!important}.visual3d .viewtoggle button.on{background:#123a5d!important;color:#fff!important}.visual3d .sceneops,.visual3d .scenecaption{display:none!important}
-.visual3d .hint{left:12px!important;right:12px!important;bottom:10px!important;padding:8px 10px!important;border:1.3px solid #e2bd6c!important;border-radius:12px!important;background:rgba(255,250,236,.96)!important;color:#735a27!important;box-shadow:0 4px 14px rgba(0,0,0,.14)!important;font-size:8.8px!important}
-.visual3d .bottom{background:linear-gradient(180deg,#f8f5ef,#efe9df)!important;border-top:1px solid #dfd1bd!important;color:#162f49!important;padding-top:9px!important}.visual3d .actions{grid-gap:7px!important}.visual3d .action{height:60px!important;border:1px solid #d7c8b5!important;border-radius:15px!important;background:rgba(255,255,255,.94)!important;color:#17334d!important;box-shadow:0 2px 7px rgba(63,47,30,.06)!important;font-size:10px!important}.visual3d .action span{font-size:21px!important}.visual3d .action.primary{background:linear-gradient(180deg,#153f63,#0f3455)!important;border-color:#153f63!important;color:#fff!important}.visual3d .feed{border:1px solid #d9ccba!important;background:#f6f1e8!important;color:#6c6256!important}.visual3d .feed b{color:#302c27!important}.visual3d .foot{color:#756d63!important}.visual3d .speed button{background:#ded5c9!important;color:#61594f!important}.visual3d .speed button.on{background:#163d60!important;color:#fff!important}
-@media(max-width:380px){.visual3d .game-title h1{font-size:21px!important}.visual3d .pill{padding:5px 7px!important}.v66-rail{right:5px}.v66-rail button{width:27px;height:25px}.v66-brandmask{width:18.5%}}
-</style>
-
-
-<style id="v71-single-hotel-css">
-/* v7.1 — ONE WORLD. The hotel itself is now the primary game screen. */
-:root{--v71-navy:#0b385f;--v71-navy2:#082947;--v71-gold:#d7a947;--v71-cream:#fbf7ef;--v71-ink:#17324d}
+<style id="v72-hardboot-css">
+:root{--v72-navy:#0b3a61;--v72-blue:#0f4d7c;--v72-gold:#d9ad50;--v72-cream:#fbf7ee}
 html,body{overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;background:#071d31!important}
-#app.v71-world{background:#0b2f4d!important;box-shadow:0 0 42px rgba(0,0,0,.28)!important}
-#app.v71-world .top{position:relative!important;z-index:20!important;background:linear-gradient(180deg,#0e4b80 0%,#0b3f6d 58%,#0a355d 100%)!important;border:0!important;color:#fff!important;padding:12px 12px 11px!important;box-shadow:0 10px 28px rgba(0,17,31,.24)!important}
-#app.v71-world .game-title h1{font-size:24px!important;line-height:1!important;color:#fff!important;letter-spacing:-.8px!important;text-shadow:0 2px 9px rgba(0,0,0,.15)!important}
-#app.v71-world .game-title small{display:none!important}
-#app.v71-world .metrics{gap:6px!important}
-#app.v71-world .pill{margin:0!important;padding:6px 10px!important;border:1.4px solid rgba(255,255,255,.78)!important;background:rgba(6,31,54,.28)!important;color:#fff!important;box-shadow:0 3px 12px rgba(0,0,0,.12)!important;font-size:10px!important}
-#app.v71-world .pill.warn{border-color:#e0b35f!important;background:rgba(65,47,15,.28)!important}
-#app.v71-world .propertyline{margin-top:8px!important;color:rgba(255,255,255,.88)!important;font-size:10px!important}
-#app.v71-world .propertyline b{color:#fff!important}
-#app.v71-world .rolechip{background:rgba(7,31,52,.42)!important;color:#fff!important;border:1px solid rgba(255,255,255,.10)!important;padding:4px 8px!important}
-#app.v71-world .statusgrid{grid-gap:7px!important;margin-top:8px!important}
-#app.v71-world .meter{height:20px!important;border-radius:999px!important;background:rgba(242,239,232,.94)!important}
-#app.v71-world .meter i{background:linear-gradient(90deg,#b78329,#e0b854)!important}
-#app.v71-world .meter.owner i{background:linear-gradient(90deg,#173f65,#14838c)!important}
-#app.v71-world .meter span{top:3px!important;font-size:8.7px!important;color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.35)!important}
-#app.v71-world .goalstrip{margin-top:8px!important;padding:8px 10px!important;border:1.5px solid #e1b85d!important;border-radius:12px!important;background:#fffdf7!important;color:#193653!important;box-shadow:0 4px 13px rgba(2,26,45,.16)!important;font-size:9.5px!important}
-#app.v71-world .goalstrip b,#app.v71-world .goalstrip .right{color:#173a5c!important}
-
-/* Kill the old split-view presentation. Gameplay DOM remains for compatibility only. */
-#app.v71-world #game,#app.v71-world #people3d,#app.v71-world .stage-fallback,#app.v71-world #viewToggle,#app.v71-world #explorerChip,#app.v71-world #propertyBadge,#app.v71-world #designHotspots,#app.v71-world #constructionHud,#app.v71-world .sceneops,#app.v71-world .scenecaption,#app.v71-world .viewnote{display:none!important}
-#app.v71-world .stagehud{z-index:18!important;top:12px!important;left:12px!important;right:auto!important;display:block!important;pointer-events:none!important}
-#app.v71-world #occChip{display:inline-flex!important;align-items:center!important;padding:7px 10px!important;border:1.4px solid rgba(255,255,255,.82)!important;border-radius:999px!important;background:rgba(10,47,75,.76)!important;color:#fff!important;font-size:9px!important;box-shadow:0 4px 15px rgba(0,0,0,.18)!important}
-#app.v71-world .stage{position:relative!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:400/900!important;overflow:visible!important;background:#214b68!important}
-#app.v71-world .scene3d{position:absolute!important;inset:0!important;z-index:1!important;display:block!important;opacity:1!important;transform:none!important;background:none!important;overflow:visible!important;transition:none!important}
-#app.v71-world .scene3d>*:not(#v71Hotel){display:none!important}
-#app.v71-world .stage:after{display:none!important}
-#v71Hotel{position:absolute;inset:0;z-index:2;overflow:hidden;background:linear-gradient(180deg,#517fa2 0%,#92aeba 34%,#caa881 75%,#66524b 100%);isolation:isolate}
-#v71Hotel:before{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(4,29,54,.20) 0%,rgba(26,58,82,.04) 35%,rgba(75,39,18,.07) 100%);mix-blend-mode:multiply}
-#v71Hotel:after{content:"";position:absolute;z-index:9;inset:0;pointer-events:none;box-shadow:inset 0 0 60px rgba(2,18,31,.18),inset 0 -90px 90px rgba(15,25,32,.13)}
-.v71-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:block;filter:saturate(1.10) contrast(1.035) brightness(.97);user-select:none;-webkit-user-drag:none;pointer-events:none}
-.v71-brandplate{position:absolute;z-index:7;right:2.5%;top:10.5%;width:17.5%;min-height:11%;padding:12px 5px 8px;background:linear-gradient(180deg,rgba(13,48,75,.97),rgba(8,37,61,.97));border:1px solid rgba(255,255,255,.28);box-shadow:0 8px 20px rgba(0,0,0,.24);color:#fff;text-align:center}
-.v71-branddots{width:28px;height:28px;margin:0 auto 7px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px}.v71-branddots i{border-radius:50%;background:#e0b85d}.v71-branddots i:nth-child(2n){background:#7fb5bc}.v71-branddots i:nth-child(3n){background:#eee6d3}
-.v71-brandplate b{display:block;font-size:8.5px;line-height:1.1;letter-spacing:.5px;word-break:break-word}.v71-brandplate small{display:block;margin-top:6px;font-size:5px;line-height:1.35;color:rgba(255,255,255,.68)}
-.v71-weather{position:absolute;z-index:10;right:3%;top:2.2%;padding:5px 8px;border:1px solid rgba(255,255,255,.68);border-radius:999px;background:rgba(13,49,76,.74);color:#fff;font-size:7px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.15)}
-.v71-floorlabel{position:absolute;z-index:8;left:0;width:12.5%;padding:5px 2px;background:linear-gradient(180deg,rgba(18,57,86,.96),rgba(10,43,68,.96));border-top:1px solid rgba(255,255,255,.15);border-bottom:1px solid rgba(0,0,0,.18);color:#fff;text-align:center;box-shadow:3px 0 9px rgba(0,0,0,.10)}
-.v71-floorlabel b{display:block;font-size:9px;line-height:1.05}.v71-floorlabel span{display:block;margin-top:2px;font-size:5px;opacity:.72;letter-spacing:.2px}
-.v71-roomlayer{position:absolute;z-index:11;inset:0;pointer-events:none}
-.v71-room{position:absolute;pointer-events:auto;border:1.5px solid transparent;background:transparent;padding:0;overflow:visible;border-radius:2px;color:#172b3a;transition:.16s}
-.v71-room:active{border-color:#f2d27d;background:rgba(255,239,188,.08)}
-.v71-room.occupied{box-shadow:inset 0 0 18px rgba(255,197,84,.17)}
-.v71-room.cleaning{box-shadow:inset 0 0 18px rgba(91,183,231,.20)}
-.v71-room.dirty{box-shadow:inset 0 0 18px rgba(216,99,68,.20)}
-.v71-room.locked{background:rgba(13,29,41,.50);border-color:rgba(255,255,255,.07);backdrop-filter:saturate(.45)}
-.v71-roomno{position:absolute;left:3px;top:3px;padding:1px 4px;border-radius:5px;background:rgba(255,249,238,.88);font-size:7px;font-weight:950;box-shadow:0 1px 3px rgba(0,0,0,.13)}
-.v71-roomicon{position:absolute;right:4px;top:4px;min-width:15px;height:15px;padding:1px 3px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:rgba(17,54,80,.88);color:#fff;font-size:7px;box-shadow:0 2px 5px rgba(0,0,0,.18)}
-.v71-room.occupied .v71-roomicon{background:#d2a440;color:#2f2612}.v71-room.cleaning .v71-roomicon{background:#66afd9}.v71-room.dirty .v71-roomicon{background:#c86e5b}.v71-room.locked .v71-roomicon{background:#263c4c}
-.v71-guest{position:absolute;left:58%;bottom:9%;width:11px;height:20px;border-radius:5px 5px 3px 3px;background:#173f62;box-shadow:0 2px 5px rgba(0,0,0,.28)}.v71-guest:before{content:"";position:absolute;left:1px;top:-8px;width:9px;height:9px;border-radius:50%;background:#e6bea0;box-shadow:0 -3px 0 #29221e}.v71-guest:after{content:"";position:absolute;left:2px;bottom:-4px;width:2px;height:5px;background:#3f3833;box-shadow:5px 0 0 #3f3833}
-.v71-emptyplus{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);font-size:16px;font-weight:300;color:rgba(34,42,48,.45);text-shadow:0 1px rgba(255,255,255,.6)}
-.v71-lobbyqueue{position:absolute;z-index:13;left:40%;bottom:7.2%;display:flex;gap:5px;align-items:flex-end;pointer-events:none}.v71-qperson{width:10px;height:19px;border-radius:5px 5px 2px 2px;background:#213e58;position:relative;box-shadow:0 2px 4px rgba(0,0,0,.22)}.v71-qperson:before{content:"";position:absolute;left:1px;top:-8px;width:8px;height:8px;border-radius:50%;background:#e5bda0;box-shadow:0 -2px 0 #2a2420}
-.v71-queuepill{position:absolute;z-index:14;left:36%;bottom:10.2%;padding:3px 6px;border-radius:999px;background:#fff9ef;border:1px solid #d7b766;color:#6b5728;font-size:6px;font-weight:900;box-shadow:0 2px 7px rgba(0,0,0,.15)}
-#v71Rail{position:fixed;z-index:45;right:max(6px,calc((100vw - 440px)/2 + 6px));top:27vh;display:none;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.50);border-radius:17px;background:rgba(9,42,67,.84);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.24)}
-#v71Rail.show{display:flex}#v71Rail button{width:33px;height:29px;border:0;border-bottom:1px solid rgba(255,255,255,.10);background:transparent;color:#fff;font-size:7px;font-weight:900}#v71Rail button:last-child{border:0}#v71Rail button.active{background:#e0b65a;color:#17344c}
-#app.v71-world .hint{z-index:16!important;left:12px!important;right:12px!important;bottom:10px!important;padding:8px 10px!important;border:1.4px solid #e2bc69!important;border-radius:12px!important;background:rgba(255,250,237,.96)!important;color:#715b2c!important;font-size:8.8px!important;box-shadow:0 4px 14px rgba(0,0,0,.14)!important}
-#app.v71-world .bottom{background:linear-gradient(180deg,#fbf8f2,#f2ece3)!important;border-color:#dfd2c0!important;color:#17324d!important;padding-top:9px!important}
-#app.v71-world .actions{grid-gap:7px!important}#app.v71-world .action{height:60px!important;border:1px solid #d9cbb9!important;border-radius:15px!important;background:rgba(255,255,255,.96)!important;color:#17324d!important;box-shadow:0 2px 8px rgba(59,43,27,.06)!important;font-size:10px!important}#app.v71-world .action span{font-size:21px!important}#app.v71-world .action.primary{background:linear-gradient(180deg,#153f63,#103554)!important;border-color:#153f63!important;color:#fff!important}
-#app.v71-world .feed{border-color:#d9ccba!important;background:#f6f1e8!important;color:#665f56!important}#app.v71-world .feed b{color:#302c27!important}#app.v71-world .foot{color:#756d63!important}#app.v71-world .speed button{background:#ded5c9!important;color:#61594f!important}#app.v71-world .speed button.on{background:#163d60!important;color:#fff!important}
-@media(max-width:380px){#app.v71-world .game-title h1{font-size:22px!important}.v71-brandplate{width:18.5%}.v71-floorlabel{width:13%}#v71Rail{right:4px}#v71Rail button{width:29px;height:27px}}
+#app.v72-world{background:#0b2f4d!important;box-shadow:0 0 42px rgba(0,0,0,.26)!important}
+#app.v72-world .top{background:linear-gradient(180deg,#0f4f82 0%,#0b416f 58%,#09365e 100%)!important;border:0!important;color:#fff!important;padding:12px 12px 11px!important;box-shadow:0 8px 24px rgba(0,18,33,.23)!important}
+#app.v72-world .game-title h1{color:#fff!important;font-size:24px!important;line-height:1!important;letter-spacing:-.8px!important;text-shadow:0 2px 8px rgba(0,0,0,.14)!important}
+#app.v72-world .game-title small{display:none!important}
+#app.v72-world .pill{background:rgba(5,31,53,.25)!important;border:1.4px solid rgba(255,255,255,.76)!important;color:#fff!important;padding:6px 10px!important;margin:0 0 3px 5px!important}
+#app.v72-world .pill.warn{border-color:#e3b45c!important;background:rgba(75,52,15,.25)!important}
+#app.v72-world .propertyline{color:rgba(255,255,255,.88)!important}.v72-world .propertyline b{color:#fff!important}.v72-world .rolechip{background:rgba(5,30,50,.38)!important;color:#fff!important}
+#app.v72-world .meter{height:20px!important;background:rgba(243,240,234,.94)!important}.v72-world .meter i{background:linear-gradient(90deg,#b9862e,#ddb654)!important}.v72-world .meter.owner i{background:linear-gradient(90deg,#163f65,#0f7d8b)!important}
+#app.v72-world .goalstrip{background:#fffdf8!important;border:1.4px solid #e1ba64!important;color:#183654!important;box-shadow:0 3px 12px rgba(4,25,42,.14)!important}.v72-world .goalstrip b,.v72-world .goalstrip .right{color:#183a5c!important}
+/* Old canvas / split-mode UI is now compatibility-only and can never win the cascade. */
+#app.v72-world #game,#app.v72-world #people3d,#app.v72-world .stage-fallback,#app.v72-world #viewToggle,#app.v72-world #explorerChip,#app.v72-world #propertyBadge,#app.v72-world #designHotspots,#app.v72-world #constructionHud,#app.v72-world .sceneops,#app.v72-world .scenecaption,#app.v72-world .viewnote{display:none!important;opacity:0!important;pointer-events:none!important}
+#app.v72-world .stage{position:relative!important;width:100%!important;height:min(72vh,610px)!important;min-height:480px!important;max-height:610px!important;overflow:hidden!important;background:#1e4a6b!important}
+#app.v72-world .scene3d{position:absolute!important;inset:0!important;display:block!important;opacity:1!important;transform:none!important;background:#315e7c!important;overflow:hidden!important;filter:none!important;transition:none!important}
+#app.v72-world .scene3d>*:not(#v72Hotel){display:none!important}
+#app.v72-world .stage:after{display:none!important}
+#v72Hotel{position:absolute;inset:0;z-index:3;overflow:hidden;background:linear-gradient(180deg,#6b99b5,#a9c0cc 34%,#b99b7c 100%)}
+.v72-scroll{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none;touch-action:pan-y}.v72-scroll::-webkit-scrollbar{display:none}
+.v72-art{position:relative;width:100%;min-height:100%;isolation:isolate;background:#2a5574}.v72-art>img{display:block;width:100%;height:auto;min-height:100%;object-fit:cover;object-position:center;filter:saturate(1.06) contrast(1.025) brightness(.98);user-select:none;-webkit-user-drag:none;pointer-events:none}
+.v72-art:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;box-shadow:inset 0 0 55px rgba(4,23,36,.18),inset 0 -70px 80px rgba(10,27,39,.10)}
+.v72-brandplate{position:absolute;z-index:8;right:4.5%;top:12%;width:16%;padding:8px 3px;background:rgba(10,42,66,.90);border:1px solid rgba(255,255,255,.38);color:#fff;text-align:center;font-size:8px;font-weight:950;letter-spacing:.5px;box-shadow:0 5px 14px rgba(0,0,0,.20)}
+.v72-roomlayer{position:absolute;inset:0;z-index:7;pointer-events:none}.v72-roomhot{position:absolute;pointer-events:auto;border:1px solid transparent;background:transparent;border-radius:3px;padding:0}.v72-roomhot:active{border-color:#f5d67f;background:rgba(255,255,255,.08)}
+.v72-roomhot.locked{background:rgba(13,28,39,.26)}.v72-roomtag{position:absolute;left:3px;top:3px;padding:1px 3px;border-radius:4px;background:rgba(255,248,235,.84);color:#273847;font:950 6.5px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:0 1px 2px rgba(0,0,0,.10)}
+.v72-state{position:absolute;right:3px;top:3px;width:10px;height:10px;border-radius:50%;background:#6fc987;border:1px solid rgba(255,255,255,.8);box-shadow:0 1px 4px rgba(0,0,0,.18)}.v72-roomhot.occupied .v72-state{background:#e4b94f}.v72-roomhot.cleaning .v72-state{background:#68b1dc}.v72-roomhot.dirty .v72-state{background:#c86f5d}.v72-roomhot.locked .v72-state{background:#344b5d}
+.v72-rail{position:absolute;z-index:12;right:7px;top:20%;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.52);border-radius:16px;background:rgba(10,43,67,.82);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);box-shadow:0 6px 18px rgba(0,0,0,.22)}.v72-rail button{width:31px;height:27px;border:0;border-bottom:1px solid rgba(255,255,255,.10);background:transparent;color:#fff;font-size:7px;font-weight:900}.v72-rail button.active{background:#e2b85b;color:#17354d}.v72-rail button:last-child{border:0}
+.v72-scrollhint{position:absolute;z-index:11;right:8px;bottom:10px;padding:4px 6px;border-radius:7px;background:rgba(12,39,59,.66);color:#fff;font-size:6.3px;font-weight:800;pointer-events:none;transition:opacity .25s}.v72-scrollhint.hide{opacity:0}
+#app.v72-world .stagehud{z-index:15!important;top:10px!important;left:10px!important;right:auto!important;display:block!important}#app.v72-world #occChip{padding:7px 10px!important;border:1.4px solid rgba(255,255,255,.82)!important;background:rgba(11,49,76,.78)!important;color:#fff!important;font-size:9px!important;box-shadow:0 3px 12px rgba(0,0,0,.15)!important}
+#app.v72-world .hint{z-index:16!important;left:12px!important;right:12px!important;bottom:9px!important;padding:8px 10px!important;border:1.3px solid #dfbd70!important;background:rgba(255,249,234,.96)!important;color:#6e582b!important;box-shadow:0 4px 14px rgba(0,0,0,.14)!important}
+#app.v72-world .bottom{background:linear-gradient(180deg,#fbf8f2,#f1eae0)!important;border-color:#decfbc!important;color:#17324d!important}.v72-world .action{height:60px!important;border-color:#d8cab7!important;background:#fff!important;color:#17324d!important}.v72-world .action.primary{background:linear-gradient(180deg,#163f63,#103555)!important;color:#fff!important;border-color:#163f63!important}.v72-world .speed button.on{background:#173d60!important;color:#fff!important}
+@media(max-width:380px){#app.v72-world .stage{height:70vh!important;min-height:455px!important}.v72-rail{right:4px}.v72-rail button{width:28px;height:25px}}
 </style>
 
 </head>
 <body>
-<div id="app">
+<div id="app" class="v72-world visual3d" data-build="7.2.0">
   <div class="top">
     <div class="titleline">
       <div class="game-title"><h1>今晚有套吗？</h1><small>UNOFFICIAL WORLD OF HYATT FAN GAME · 非官方粉丝创作</small></div>
@@ -325,7 +211,7 @@ html,body{overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow
         <div class="fallback-lobby">🛎️ &nbsp; FRONT DESK</div>
       </div>
     </div>
-    <div class="scene3d" id="scene3d"></div><canvas id="game"></canvas><canvas id="people3d"></canvas>
+    <div class="scene3d" id="scene3d"><div id="v72Hotel"><div class="v72-scroll" id="v72Scroll"><div class="v72-art" id="v72Art"><img src="assets/v66_reference_tower.svg?v=720" alt="hotel cutaway" id="v72TowerImg"><div class="v72-roomlayer" id="v72RoomLayer"></div><div class="v72-brandplate" id="v72BrandPlate">HYATT</div></div></div><div class="v72-rail" id="v72Rail"></div><div class="v72-scrollhint">↕ 上下滑动查看整栋酒店</div></div></div><canvas id="game"></canvas><canvas id="people3d"></canvas>
     <div class="stagehud"><div class="stagechip" id="occChip">入住率 0%</div><div class="viewtoggle" id="viewToggle"><button class="on" data-view="2d">经典 2D</button><button data-view="3d">沉浸 3D</button></div><div class="stagechip" id="explorerChip">Explorer 1/5</div></div>
     <div class="sceneops" id="sceneOps" hidden><div class="sceneop"><b id="sceneSuite">🛋 1</b><small>可用套房</small></div><div class="sceneop"><b id="sceneQueue">🚨 0</b><small>待升级事项</small></div><div class="sceneop"><b id="sceneDirty">🧹 0</b><small>待翻房</small></div><div class="sceneop"><b id="sceneVip">👑 0</b><small>今日 Globalist</small></div></div>
     <div class="scenecaption" id="sceneCaption" hidden><strong id="sceneTitle">Hyatt Place · Work / Life Base</strong><small id="sceneDesc">轻量、高周转、早餐与 24/7 日常。</small></div>
@@ -602,7 +488,7 @@ function freshState(){return{cash:7800,rep:68,owner:70,day:1,minute:13*60+20,spe
 function loadState(){var s=null,scenarioRaw=null;try{scenarioRaw=localStorage.getItem(SCENARIO_SAVE_KEY);var raw=scenarioRaw||localStorage.getItem(SAVE_KEY)||localStorage.getItem(LEGACY_SAVE_KEY)||localStorage.getItem(OLDER_SAVE_KEY)||localStorage.getItem(ANCIENT_SAVE_KEY)||localStorage.getItem(ANCIENT2_SAVE_KEY);if(raw)s=JSON.parse(raw)}catch(e){}if(!s)return freshState();var base=freshState(),k,stats=base.stats,daily=base.daily;for(k in s){if(Object.prototype.hasOwnProperty.call(s,k)&&k!=='stats'&&k!=='daily')base[k]=s[k]}if(s.stats){for(k in s.stats){if(Object.prototype.hasOwnProperty.call(s.stats,k))stats[k]=s.stats[k]}}if(s.daily){for(k in s.daily){if(Object.prototype.hasOwnProperty.call(s.daily,k))daily[k]=s.daily[k]}}base.stats=stats;base.daily=daily;base.streak=typeof s.streak==='number'?s.streak:0;base.victory=!!s.victory;base.guests=[];base.frontQueue=[];base.executiveQueue=[];base.paused=false;base.selectedRoom=null;if(!base.guestBook)base.guestBook={};if(!base.unlocksSeen)base.unlocksSeen={front:true,goal:true};if(!base.dailyHistory||!base.dailyHistory.length)base.dailyHistory=base.lastDayReport?[base.lastDayReport]:[];var oldRooms=(s.rooms&&Array.isArray(s.rooms))?s.rooms:[],nextRooms=freshRooms(),oi,ni;for(oi=0;oi<oldRooms.length;oi++){for(ni=0;ni<nextRooms.length;ni++){if(nextRooms[ni].f===oldRooms[oi].f&&nextRooms[ni].c===oldRooms[oi].c){nextRooms[ni]=Object.assign(nextRooms[ni],oldRooms[oi]);break}}}base.rooms=nextRooms;for(k=0;k<base.rooms.length;k++){base.rooms[k].occupied=false;base.rooms[k].guest=null;base.rooms[k].cleaning=0;base.rooms[k].reserved=false}if(scenarioRaw&&base.scenario)base.scenario.active=true;return base}
 var state=loadState();if(TEST_MODE&&location.search.indexOf('view=3d')>=0)state.visualMode='3d';
 var GAMEPLAY_PASS='5.8';
-var QUEST_SYSTEM_VERSION='7.1.0';
+var QUEST_SYSTEM_VERSION='7.2.0';
 var WIN_REVENUE=26000;
 function challengeLevel(day){return Math.min(5,1+Math.floor((Math.max(1,day)-1)/5))}
 function difficulty(day){
@@ -1121,158 +1007,56 @@ $('shareCardBtn').addEventListener('click',previewShareCard);$('postNoteBtn').ad
 document.addEventListener('visibilitychange',function(){if(resettingCareer)return;saveState(true);if(!document.hidden)last=window.performance&&performance.now?performance.now():Date.now()});
 applyThemeStart();updateFeed();buildLeadershipCards();buildPropertyCards();updateUI();buildBrandCards();ensureStageReady();updateConstructionHud();
 var firstTheme=activeTheme();if(TEST_MODE){window.__TS_TEST__={state:state,startPropertyConstruction:startPropertyConstruction,processConstruction:processConstruction,buildPropertyCards:buildPropertyCards,startSignatureConstruction:startSignatureConstruction,vipSpaceCoverage:vipSpaceCoverage,vipSpaceRequirements:vipSpaceRequirements,resolveExecutiveVip:resolveExecutiveVip,showExecutiveDecision:showExecutiveDecision,startScenario:startScenario,completeScenario:completeScenario,featureUnlocked:featureUnlocked,getState:function(){return state},spawnGuest:spawnGuest,updateGuestMemory:updateGuestMemory,buildScenarioCards:buildScenarioCards};state.onboarded=true;draw()}else if(state.scenario&&state.scenario.active){var resumeScenarioKey=state.scenario.key;state.onboarded=true;startScenario(resumeScenarioKey)}else if(!state.onboarded){state.onboarded=true;showModal('WELCOME','今晚有套吗？','第一班只做两件事：接待客人、看懂房态。\n\n先点「前台」处理第一位 Globalist；等他入住后，再看今晚还剩几间房。\n\n1× / 2× / 4× 从开局就能切换。其他职责会在真正需要时开放。',[{title:'开始值班',impact:firstTheme.icon+' '+firstTheme.title,sub:'第一位 Globalist 已经快到前台。',best:true,fn:function(){spawnGuest('Globalist','chill');setTimeout(function(){spawnGuest()},4200)}}])}else{setTimeout(function(){spawnGuest('Globalist')},900);setTimeout(function(){spawnGuest()},4200)}
+window.__JYT__={
+  getState:function(){return state},
+  brands:brands,brandOrder:brandOrder,
+  brand:function(){return brand()},
+  mapFloorCount:function(){return mapFloorCount()},
+  roomUnlocked:function(r){return roomUnlocked(r)},
+  roomCode:function(r){return roomCode(r)},
+  openRoomSheet:function(r){return openRoomSheet(r)},
+  occupancy:function(){return occupancy()},
+  showToast:function(t){return showToast(t)},
+  save:function(){return saveState(true)}
+};
+
 })();
 </script>
 
 
-<script id="v65-true3d-js">
+
+<script id="v72-hardboot-js">
 (function(){
-  if(window.__v65TowerReady)return;window.__v65TowerReady=true;
-  var stage=$('stage'),canvas=$('game'),scene=$('scene3d');if(!stage||!canvas||!scene)return;
-  var wrap=$('tower2dScroll');if(!wrap){wrap=document.createElement('div');wrap.id='tower2dScroll';canvas.parentNode.insertBefore(wrap,canvas);wrap.appendChild(canvas)}
-  scene.innerHTML='';
-  var scroller=document.createElement('div');scroller.className='v65-scroller';scroller.id='v65Scroller';
-  var world=document.createElement('div');world.className='v65-world';world.id='v65World';scroller.appendChild(world);scene.appendChild(scroller);
-  var rail=document.createElement('div');rail.className='v65-floorrail';rail.id='v65FloorRail';scene.appendChild(rail);
-  var weather=document.createElement('div');weather.className='v65-weather';weather.id='v65Weather';scene.appendChild(weather);
-  var note=document.createElement('div');note.className='v65-scrollnote';note.textContent='↕ 上下滑动查看整栋酒店';scene.appendChild(note);
-  var lastKey='',lastFloors=-1,lastBrand='';
+'use strict';
+function boot(){
+  var B=window.__JYT__;if(!B){setTimeout(boot,60);return}
+  var S=B.getState(),hotel=document.getElementById('v72Hotel'),scroll=document.getElementById('v72Scroll'),art=document.getElementById('v72Art'),layer=document.getElementById('v72RoomLayer'),rail=document.getElementById('v72Rail'),plate=document.getElementById('v72BrandPlate');
+  if(!hotel||!scroll||!art||!layer||!rail)return;
+  S.visualMode='3d';
+  var last='';
   function esc(x){return String(x==null?'':x).replace(/[&<>\"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]})}
-  function theme(){var t={place:['#153653','#ede2d2','#644636','#78969b','#ad765e','#607a61'],regency:['#203b52','#e8e3da','#5a493d','#758a96','#8d705e','#687b69'],grand:['#263747','#ece2d5','#554137','#6a7d88','#8f604e','#5f735f'],andaz:['#3f3445','#ede6dd','#55443b','#8c7186','#ae6c57','#647765'],alila:['#344b49','#e8e2d7','#594b40','#7c8c82','#927b67','#667b64'],park:['#263746','#ede8e1','#4e433c','#6b7d85','#816b60','#5d715f']};return t[state.brand]||t.place}
-  function applyTheme(){var a=theme();world.style.setProperty('--v65-navy',a[0]);world.style.setProperty('--v65-wall',a[1]);world.style.setProperty('--v65-wood',a[2]);world.style.setProperty('--v65-accent',a[3]);world.style.setProperty('--v65-soft',a[4]);world.style.setProperty('--v65-green',a[5])}
-  function roomStatus(r){if(!r.type)return['empty','EMPTY'];if(r.reserved)return['reserved','SUA'];if(r.occupied)return['occupied','IN HOUSE'];if(r.dirty)return['dirty',r.cleaning>0?'CLEANING':'DIRTY'];return['available',(r.type==='standard'||r.type==='suite')?'AVAILABLE':'OPEN']}
-  function furniture(type){if(!type)return'';if(type==='breakfast')return'<i class="v65-window"></i><i class="v65-art"></i><i class="v65-buffet"></i><i class="v65-plant"></i>';if(type==='club')return'<i class="v65-window"></i><i class="v65-bar"></i><i class="v65-plant"></i>';if(type==='gym')return'<i class="v65-window"></i><i class="v65-tread"></i><i class="v65-ball"></i><i class="v65-plant"></i>';if(type==='spa')return'<i class="v65-window"></i><i class="v65-treatment"></i><i class="v65-lamp"></i><i class="v65-plant"></i>';return'<i class="v65-window"></i><i class="v65-art"></i><i class="v65-bed"></i><i class="v65-pillow"></i><i class="v65-desk"></i><i class="v65-chair"></i><i class="v65-lamp"></i><i class="v65-plant"></i><i class="v65-sofa"></i>'}
-  function roomHtml(r,idx){var st=roomStatus(r),gu=roomGuest(r),thought=gu?guestThought(gu):'',v=((r.f||0)*3+(r.c||0))%4,code=roomCode(r),type=r.type||'empty',bubble='';if(thought){thought=String(thought);if(thought.length>8)thought=thought.slice(0,8)+'…';bubble='<span class="v65-thought">'+esc(thought)+'</span>'}return'<button class="v65-room '+type+' '+st[0]+' v65-v'+v+'" data-v65-room="'+idx+'" type="button"><b class="v65-roomno">'+code+'</b>'+furniture(r.type)+(gu?'<i class="v65-avatar"></i>':'')+bubble+'<span class="v65-state">'+st[1]+'</span></button>'}
-  function floorHtml(f){var arr=[],i,h='';for(i=0;i<state.rooms.length;i++)if(state.rooms[i].f===f)arr.push({r:state.rooms[i],i:i});arr.sort(function(a,b){return a.r.c-b.r.c});for(i=0;i<arr.length;i++)h+=roomHtml(arr[i].r,arr[i].i);return'<section class="v65-floor" data-v65-floor="'+(f+2)+'"><div class="v65-floorlabel"><b>'+(f+2)+'F</b><span>客房</span><small>GUEST ROOMS</small></div><div class="v65-floorrooms">'+h+'</div></section>'}
-  function amenityBox(kind,title,sub){var inside=kind==='gym'?'<i class="v65-tread"></i><i class="v65-ball"></i>':kind==='spa'?'<i class="v65-treatment"></i>':'<i class="v65-bar"></i>';return'<div class="v65-amenitybox"><b>'+title+'</b><small>'+sub+'</small>'+inside+'<i class="v65-plant"></i></div>'}
-  function amenityRows(){var rank=maxOpenedBrandRank(),h='';if(rank>=3)h+='<section class="v65-amenity" data-v65-floor="W"><div class="v65-floorlabel"><b>康体</b><span>WELLNESS</span></div><div class="v65-amenityrooms">'+amenityBox('gym','健身房','GYM')+amenityBox('spa','休闲区','WELLNESS')+'</div></section>';if(rank>=2)h+='<section class="v65-amenity" data-v65-floor="C"><div class="v65-floorlabel"><b>酒廊</b><span>CLUB</span></div><div class="v65-amenityrooms">'+amenityBox('club','行政酒廊','CLUB LOUNGE')+amenityBox('club','社交吧','SOCIAL BAR')+'</div></section>';return h}
-  function rooftop(){return'<section class="v65-roof" data-v65-floor="RF"><i class="v65-umbrella v65-u1"></i><i class="v65-umbrella v65-u2"></i><i class="v65-roofplant v65-p1"></i><i class="v65-roofplant v65-p2"></i></section>'}
-  function breakfast(){return'<section class="v65-breakfastfloor" data-v65-floor="1"><div class="v65-floorlabel"><b>1F</b><span>餐饮</span><small>BREAKFAST</small></div><div class="v65-breakfastspace"><b>早餐厅 · '+esc(brand().short)+'</b><i class="v65-table-dot v65-t1"></i><i class="v65-table-dot v65-t2"></i><i class="v65-table-dot v65-t3"></i></div></section>'}
-  function lobby(){return'<section class="v65-lobby" data-v65-floor="L"><div class="v65-floorlabel"><b>大堂</b><span>LOBBY</span></div><div class="v65-lobbyspace"><div class="v65-lobbybrand">'+esc(brand().short.toUpperCase())+'</div><div class="v65-frontdesk"></div><i class="v65-staff v65-s1"></i><i class="v65-staff v65-s2"></i><i class="v65-luggage"></i></div></section>'}
-  function brandTower(){return'<aside class="v65-brandtower"><div class="v65-brandmark"></div><strong>'+esc(brand().short.toUpperCase())+'</strong><small>'+esc(propertyPrestigeLabel())+'<br>'+propertyTotal()+'/15<br>'+(state.weather==='rain'?'Rainy Stay':'Bright Stay')+'</small></aside>'}
-  function sceneKey(){var a=[state.brand,mapFloorCount(),state.staffFD,state.weather,propertyTotal(),state.frontQueue.length],i,r;for(i=0;i<state.rooms.length;i++){r=state.rooms[i];if(r.f<mapFloorCount())a.push(r.type||'-',r.occupied?1:0,r.dirty?1:0,r.cleaning>0?1:0,r.reserved?1:0,r.guest||0)}return a.join('|')}
-  function buildRail(){var h='<button class="arrow" data-v65-jump="RF">▲</button>',f;for(f=mapFloorCount()+1;f>=2;f--)h+='<button data-v65-jump="'+f+'">'+f+'F</button>';h+='<button data-v65-jump="1">1F</button><button data-v65-jump="L">L</button><button class="arrow" data-v65-jump="L">▼</button>';rail.innerHTML=h}
-  function render3D(force){var k=sceneKey();if(!force&&k===lastKey)return;var oldTop=scroller.scrollTop,had=!!lastKey,fc=mapFloorCount(),h='<div class="v65-city"></div><div class="v65-tower">'+rooftop()+amenityRows(),f;for(f=fc-1;f>=0;f--)h+=floorHtml(f);h+=breakfast()+lobby()+'</div>'+brandTower();world.innerHTML=h;applyTheme();buildRail();weather.textContent=(state.weather==='rain'?'🌧️':'🌤️')+' 深圳 · '+(state.weather==='rain'?'24':'26')+'°C';lastKey=k;requestAnimationFrame(function(){if(!had||fc!==lastFloors||state.brand!==lastBrand)scroller.scrollTop=Math.max(0,scroller.scrollHeight-scroller.clientHeight);else scroller.scrollTop=Math.min(oldTop,Math.max(0,scroller.scrollHeight-scroller.clientHeight));lastFloors=fc;lastBrand=state.brand})}
-  function canvasHeight(){return 60+92+30+floorRenderCount()*86}
-  function sync2D(force){var h=canvasHeight(),fc=floorRenderCount();if(canvas.style.height!==h+'px'||force){canvas.style.height=h+'px';wrap.style.setProperty('--v65-canvas-h',h+'px');resize(true)}if(force||wrap.getAttribute('data-floors')!==String(fc)){wrap.setAttribute('data-floors',String(fc));requestAnimationFrame(function(){wrap.scrollTop=Math.max(0,wrap.scrollHeight-wrap.clientHeight);draw()})}}
-  world.addEventListener('click',function(e){var b=e.target.closest('[data-v65-room]');if(!b)return;var idx=parseInt(b.getAttribute('data-v65-room'),10),r=state.rooms[idx];if(r)openRoomSheet(r)});
-  rail.addEventListener('click',function(e){var b=e.target.closest('[data-v65-jump]');if(!b)return;var key=b.getAttribute('data-v65-jump'),el=world.querySelector('[data-v65-floor="'+key+'"]');if(el)scroller.scrollTo({top:Math.max(0,el.offsetTop-scroller.clientHeight*.22),behavior:'smooth'})});
-  var oldUpdateUI=updateUI;updateUI=function(){oldUpdateUI.apply(this,arguments);sync2D(false);render3D(false)};
-  var oldApplyVisualMode=applyVisualMode;applyVisualMode=function(){oldApplyVisualMode.apply(this,arguments);if(state.visualMode==='3d')render3D(false)};
-  sync2D(true);render3D(true);updateUI();draw();
-})();
-</script>
-
-
-<script id="v66-reference-ui-js">
-(function(){
-  if(window.__v66ReferenceReady)return;window.__v66ReferenceReady=true;
-  var stage=$('stage'),scene=$('scene3d');if(!stage||!scene)return;
-  if(/github\.io$/i.test(location.hostname)){document.body.classList.add('v66-github-host');document.documentElement.style.setProperty('--host-top-offset','0px')}
-  try{if(localStorage.getItem('jinwan-v66-reference-default')!=='1'){state.visualMode='3d';localStorage.setItem('jinwan-v66-reference-default','1');saveState(true)}}catch(e){state.visualMode='3d'}
-  scene.innerHTML='';
-  var root=document.createElement('div');root.id='v66ReferenceStage';
-  root.innerHTML='<div class="v66-scroll" id="v66Scroll"><div class="v66-art" id="v66Art"><img id="v66TowerImg" src="assets/v66_reference_tower.svg" alt="hotel cutaway"><div class="v66-brandmask" id="v66BrandMask"></div><div class="v66-lobbybrand" id="v66LobbyBrand"></div><div class="v66-roomlayer" id="v66RoomLayer"></div></div></div><div class="v66-weather" id="v66Weather"></div><div class="v66-rail" id="v66Rail"></div><div class="v66-scrollhint" id="v66ScrollHint">↕ 上下滑动查看整栋酒店</div>';
-  scene.appendChild(root);
-  var scroll=$('v66Scroll'),art=$('v66Art'),roomLayer=$('v66RoomLayer'),rail=$('v66Rail'),brandMask=$('v66BrandMask'),lobbyBrand=$('v66LobbyBrand'),weather=$('v66Weather'),hint=$('v66ScrollHint'),img=$('v66TowerImg');
-  var roomTop=23.35,rowStep=7.12,rowHeight=6.77,colLeft=[3.0,34.7,66.5],colWidth=29.7,lastKey='';
-  function esc(x){return String(x==null?'':x).replace(/[&<>\"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]})}
-  function statusOf(r,locked){if(locked)return['LOCKED','locked'];if(!r.type)return['EMPTY','empty'];if(r.reserved)return['RESERVED','reserved'];if(r.occupied)return['IN HOUSE','occupied'];if(r.cleaning>0)return['CLEANING','cleaning'];if(r.dirty)return['DIRTY','dirty'];return['AVAILABLE','available']}
-  function shortThought(gu){if(!gu)return'';var t='';try{t=guestThought(gu)||''}catch(e){}t=String(t).replace(/[“”\"]/g,'').trim();if(!t)return'';return t.length>13?t.slice(0,13)+'…':t}
-  function brandTag(){var k=state.brand||'place',m={place:'Good People · Good Stays',regency:'Connection · Energy',grand:'Grand Moments',andaz:'Local · Creative',alila:'Nature · Ritual',park:'Luxury · Residence'};return m[k]||'A Brighter Stay Ahead'}
-  function renderBrand(){var name=brand().name||brand().short;brandMask.innerHTML='<span class="v66-branddots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><strong>'+esc(name.toUpperCase())+'</strong><small>'+esc(brandTag())+'</small>';lobbyBrand.textContent=name.toUpperCase();weather.textContent=(state.weather==='rain'?'🌧️':'🌤️')+' 深圳 · '+(state.weather==='rain'?'24':'26')+'°C'}
-  function roomKey(){var a=[state.brand,mapFloorCount(),state.weather],i,r;for(i=0;i<state.rooms.length;i++){r=state.rooms[i];a.push(r.f,r.c,r.type||'-',r.occupied?1:0,r.dirty?1:0,r.cleaning>0?1:0,r.reserved?1:0,r.guest||0)}return a.join('|')}
-  function renderRooms(force){var key=roomKey();if(!force&&key===lastKey)return;lastKey=key;var h='',f,c,r,idx,locked,st,gu,thought,top,left;for(f=0;f<7;f++){for(c=0;c<3;c++){idx=f*3+c;r=state.rooms[idx];if(!r)continue;locked=!roomUnlocked(r);st=statusOf(r,locked);gu=roomGuest(r);thought=gu&&r.occupied?shortThought(gu):'';top=roomTop+(6-f)*rowStep;left=colLeft[c];h+='<button class="v66-roomhot '+(locked?'locked':'')+'" data-v66-room="'+idx+'" style="left:'+left+'%;top:'+top+'%;width:'+colWidth+'%;height:'+rowHeight+'%"><span class="v66-roomno">'+esc(roomCode(r))+'</span>'+(thought?'<span class="v66-thought">'+esc(thought)+'</span>':'')+'<span class="v66-status '+st[1]+'">'+st[0]+'</span></button>'}}roomLayer.innerHTML=h;renderRail()}
-  function renderRail(){var h='<button data-v66-y="0">RF</button>',f;for(f=8;f>=2;f--)h+='<button data-v66-floor="'+f+'">'+f+'F</button>';h+='<button data-v66-y="82">1F</button><button data-v66-y="92">L</button>';rail.innerHTML=h}
-  function scrollToPct(p){var max=Math.max(0,scroll.scrollHeight-scroll.clientHeight);scroll.scrollTo({top:max*(Math.max(0,Math.min(100,p))/100),behavior:'smooth'})}
-  roomLayer.addEventListener('click',function(e){var b=e.target.closest('[data-v66-room]');if(!b)return;var idx=parseInt(b.getAttribute('data-v66-room'),10),r=state.rooms[idx];if(!r)return;if(!roomUnlocked(r)){showToast('🔒 '+(r.f+2)+'F 尚未开放。随着酒店定位升级继续解锁。');return}openRoomSheet(r)});
-  rail.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-v66-y')){scrollToPct(parseFloat(b.getAttribute('data-v66-y')));return}var floor=parseInt(b.getAttribute('data-v66-floor'),10),f=floor-2,top=roomTop+(6-f)*rowStep,view=(top/100)*(art.offsetHeight||1),max=Math.max(0,scroll.scrollHeight-scroll.clientHeight);scroll.scrollTo({top:Math.max(0,Math.min(max,view-scroll.clientHeight*.32)),behavior:'smooth'})});
-  scroll.addEventListener('scroll',function(){if(hint)hint.classList.add('hide')},{passive:true});
-  function sync(force){renderBrand();renderRooms(force);if($('occChip'))$('occChip').textContent='▥ 入住率 '+occupancy()+'%'}
-  var oldUpdate=updateUI;updateUI=function(){oldUpdate.apply(this,arguments);sync(false)};
-  var oldApply=applyVisualMode;applyVisualMode=function(){oldApply.apply(this,arguments);if(state.visualMode==='3d'){sync(false);requestAnimationFrame(function(){stage.classList.add('mode3d')})}};
-  img.addEventListener('load',function(){sync(true);requestAnimationFrame(function(){scroll.scrollTop=Math.max(0,scroll.scrollHeight-scroll.clientHeight)})});
-  applyVisualMode();sync(true);requestAnimationFrame(function(){scroll.scrollTop=Math.max(0,scroll.scrollHeight-scroll.clientHeight)});
-})();
-</script>
-
-
-<script id="v71-single-hotel-js">
-(function(){
-  'use strict';
-  var app=document.getElementById('app'),stage=document.getElementById('stage'),scene=document.getElementById('scene3d');
-  if(!app||!stage||!scene||typeof state==='undefined')return;
-  app.classList.add('v71-world');
-  document.body.classList.add('v71-world-body');
-
-  /* Park/portfolio progression now has real vertical capacity: 2..7 guest-room floors. */
-  window.mapFloorCount=function(){var i=(typeof brandOrder!=='undefined'?brandOrder.indexOf(state.brand):-1);return Math.max(2,Math.min(7,i+2));};
-  function ensureRooms(){
-    if(!Array.isArray(state.rooms))state.rooms=[];
-    for(var f=0;f<7;f++)for(var c=0;c<3;c++){
-      var hit=state.rooms.some(function(r){return r.f===f&&r.c===c});
-      if(!hit)state.rooms.push({f:f,c:c,type:null,occupied:false,dirty:false,cleaning:0,reserved:false,guest:null,review:null});
-    }
-  }
-  ensureRooms();
-
-  /* Presentation is single-mode now. Legacy view state remains only so old save/event code keeps working. */
-  state.visualMode='3d';
-  stage.classList.add('mode3d');
-  app.classList.add('visual3d');
-  var oldToggle=document.getElementById('viewToggle');if(oldToggle)oldToggle.setAttribute('aria-hidden','true');
-
-  var hotel=document.getElementById('v71Hotel');
-  if(!hotel){hotel=document.createElement('div');hotel.id='v71Hotel';scene.appendChild(hotel)}
-  scene.querySelectorAll(':scope > *').forEach(function(n){if(n!==hotel)n.style.display='none'});
-
-  var rail=document.getElementById('v71Rail');
-  if(!rail){rail=document.createElement('div');rail.id='v71Rail';document.body.appendChild(rail)}
-
-  var rowY=[594,530,466,402,338,274,210], xs=[12,139,266], roomW=119, roomH=61;
-  function esc(x){return String(x==null?'':x).replace(/[&<>\"]/g,function(a){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[a]})}
-  function brandName(){try{return brands[state.brand].short||brands[state.brand].name}catch(e){return 'HYATT'}}
-  function roomAt(f,c){for(var i=0;i<state.rooms.length;i++)if(state.rooms[i].f===f&&state.rooms[i].c===c)return state.rooms[i];return null}
-  function roomIndex(r){return state.rooms.indexOf(r)}
-  function roomClass(r,locked){if(locked)return'locked';if(!r||!r.type)return'empty';if(r.cleaning>0)return'cleaning';if(r.dirty)return'dirty';if(r.occupied)return'occupied';if(r.reserved)return'reserved';return'available'}
-  function roomIcon(r,locked){if(locked)return'🔒';if(!r||!r.type)return'＋';if(r.cleaning>0)return'🧹';if(r.dirty)return'🔧';if(r.occupied)return r.reserved?'👑':'●';if(r.reserved)return'◆';return'✓'}
-  function floorLabel(f){var n=f+2;return'<div class="v71-floorlabel" style="top:'+((rowY[f]-2)/900*100).toFixed(3)+'%;height:'+((roomH+8)/900*100).toFixed(3)+'%"><b>'+n+'F</b><span>客房<br>GUEST ROOMS</span></div>'}
-  function brandDots(){var h='<div class="v71-branddots">';for(var i=0;i<9;i++)h+='<i></i>';return h+'</div>'}
+  function roomAt(f,c){var a=S.rooms||[];for(var i=0;i<a.length;i++)if(a[i].f===f&&a[i].c===c)return a[i];return null}
+  function idxOf(r){return (S.rooms||[]).indexOf(r)}
+  function status(r,locked){if(locked)return'locked';if(!r||!r.type)return'empty';if(r.cleaning>0)return'cleaning';if(r.dirty)return'dirty';if(r.occupied)return'occupied';if(r.reserved)return'reserved';return'available'}
+  function sig(){var a=[S.brand,S.weather,B.mapFloorCount(),(S.frontQueue||[]).length,(S.executiveQueue||[]).length],r,i;for(i=0;i<(S.rooms||[]).length;i++){r=S.rooms[i];a.push(r.f,r.c,r.type||'-',r.occupied?1:0,r.dirty?1:0,r.cleaning>0?1:0,r.reserved?1:0)}return a.join('|')}
+  /* Coordinates map to the approved cutaway composition. 2F-4F are room-operable; 5F/6F remain club/wellness in the visual world. */
+  var y={2:61.0,3:49.0,4:36.8},xs=[20.5,42.5,64.5],w=20.7,h=11.4;
   function render(){
-    ensureRooms();
-    var html='<img class="v71-art" src="assets/v66_reference_tower.svg?v=711" alt="hotel cutaway">';
-    html+='<div class="v71-weather">'+(state.weather==='rain'?'🌧️':'🌤️')+' 深圳 · '+(state.weather==='rain'?'24':'26')+'°C</div>';
-    html+='<div class="v71-brandplate">'+brandDots()+'<b>'+esc(brandName()).toUpperCase()+'</b><small>GOOD PEOPLE<br>GOOD STAYS<br>BRIGHT DAYS</small></div>';
-    html+='<div class="v71-floorlabel" style="top:8.4%;height:9.7%"><b>RF</b><span>天台<br>ROOFTOP</span></div>';
-    for(var f=6;f>=0;f--)html+=floorLabel(f);
-    html+='<div class="v71-floorlabel" style="top:74.2%;height:8.7%"><b>1F</b><span>餐饮<br>BREAKFAST</span></div>';
-    html+='<div class="v71-floorlabel" style="top:83.0%;height:9.0%"><b>大堂</b><span>LOBBY</span></div>';
-    html+='<div class="v71-roomlayer">';
-    var open=mapFloorCount();
-    for(var f=0;f<7;f++)for(var c=0;c<3;c++){
-      var r=roomAt(f,c),locked=f>=open,cl=roomClass(r,locked),x=xs[c]/400*100,y=rowY[f]/900*100,w=roomW/400*100,h=roomH/900*100;
-      html+='<button class="v71-room '+cl+'" data-v71-room="'+(r?roomIndex(r):-1)+'" style="left:'+x.toFixed(3)+'%;top:'+y.toFixed(3)+'%;width:'+w.toFixed(3)+'%;height:'+h.toFixed(3)+'%">';
-      html+='<span class="v71-roomno">'+(f+2)+'0'+(c+1)+'</span><span class="v71-roomicon">'+roomIcon(r,locked)+'</span>';
-      if(!locked&&r&&r.occupied)html+='<span class="v71-guest"></span>';
-      if(!locked&&r&&!r.type)html+='<span class="v71-emptyplus">＋</span>';
-      html+='</button>';
-    }
-    html+='</div>';
-    var q=Math.min(4,(state.frontQueue||[]).length+(state.executiveQueue||[]).length);if(q){html+='<div class="v71-queuepill">前台待办 '+q+'</div><div class="v71-lobbyqueue">';for(var i=0;i<q;i++)html+='<i class="v71-qperson"></i>';html+='</div>'}
-    hotel.innerHTML=html;
-    buildRail();
+    var html='',open=B.mapFloorCount();
+    [2,3,4].forEach(function(floor){for(var c=0;c<3;c++){var r=roomAt(floor-2,c),locked=(floor-2)>=open,cl=status(r,locked),idx=r?idxOf(r):-1;html+='<button class="v72-roomhot '+cl+'" data-v72-room="'+idx+'" style="left:'+xs[c]+'%;top:'+y[floor]+'%;width:'+w+'%;height:'+h+'%"><span class="v72-roomtag">'+floor+'0'+(c+1)+'</span><i class="v72-state"></i></button>'}});
+    layer.innerHTML=html;
+    var bn='HYATT';try{bn=(B.brand().short||B.brand().name||'HYATT').toUpperCase()}catch(e){}plate.textContent=bn;
+    rail.innerHTML='<button data-y="0">RF</button><button data-y="14">6F</button><button data-y="26">5F</button><button data-y="38">4F</button><button data-y="50">3F</button><button data-y="62">2F</button><button data-y="75">1F</button><button data-y="90">L</button>';
+    var occ=document.getElementById('occChip');if(occ)occ.textContent='▥ 入住率 '+B.occupancy()+'%';
   }
-  function buildRail(){var labels=['RF','8F','7F','6F','5F','4F','3F','2F','1F','L'],h='';for(var i=0;i<labels.length;i++)h+='<button data-v71-jump="'+labels[i]+'">'+labels[i]+'</button>';rail.innerHTML=h}
-  var targetY={RF:.08,'8F':.23,'7F':.30,'6F':.37,'5F':.44,'4F':.51,'3F':.58,'2F':.65,'1F':.76,L:.86};
-  rail.addEventListener('click',function(e){var b=e.target.closest('[data-v71-jump]');if(!b)return;var k=b.getAttribute('data-v71-jump'),r=stage.getBoundingClientRect(),top=window.scrollY+r.top,goal=top+stage.offsetHeight*targetY[k]-window.innerHeight*.34;window.scrollTo({top:Math.max(0,goal),behavior:'smooth'})});
-  hotel.addEventListener('click',function(e){var b=e.target.closest('[data-v71-room]');if(!b)return;var idx=parseInt(b.getAttribute('data-v71-room'),10);if(idx<0)return;var r=state.rooms[idx];if(r&&typeof openRoomSheet==='function')openRoomSheet(r)});
-  function railVisibility(){var r=stage.getBoundingClientRect();rail.classList.toggle('show',r.bottom>window.innerHeight*.18&&r.top<window.innerHeight*.80);var y=(window.innerHeight*.42-r.top)/Math.max(1,r.height),best=null,dist=99;Object.keys(targetY).forEach(function(k){var d=Math.abs(y-targetY[k]);if(d<dist){dist=d;best=k}});rail.querySelectorAll('button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-v71-jump')===best)})}
-  window.addEventListener('scroll',railVisibility,{passive:true});window.addEventListener('resize',railVisibility,{passive:true});
-  var last='';function signature(){var a=[state.brand,state.weather,state.frontQueue&&state.frontQueue.length,state.executiveQueue&&state.executiveQueue.length,mapFloorCount()];for(var i=0;i<state.rooms.length;i++){var r=state.rooms[i];a.push(r.f,r.c,r.type||'-',r.occupied?1:0,r.dirty?1:0,r.cleaning>0?1:0,r.reserved?1:0)}return a.join('|')}
-  function sync(){var k=signature();if(k!==last){last=k;render()}railVisibility()}
-  var oldUI=window.updateUI;if(typeof oldUI==='function'){window.updateUI=function(){var x=oldUI.apply(this,arguments);sync();return x}}
-  render();railVisibility();
-  setInterval(sync,700);
+  layer.addEventListener('click',function(e){var b=e.target.closest('[data-v72-room]');if(!b)return;var idx=parseInt(b.getAttribute('data-v72-room'),10);if(idx<0)return;var r=S.rooms[idx];if(!r)return;if(!B.roomUnlocked(r)){B.showToast('🔒 这一层尚未开放。');return}B.openRoomSheet(r)});
+  rail.addEventListener('click',function(e){var b=e.target.closest('[data-y]');if(!b)return;var p=parseFloat(b.getAttribute('data-y'))/100,max=Math.max(0,scroll.scrollHeight-scroll.clientHeight);scroll.scrollTo({top:max*p,behavior:'smooth'})});
+  scroll.addEventListener('scroll',function(){var n=document.querySelector('.v72-scrollhint');if(n)n.classList.add('hide')},{passive:true});
+  function sync(){S=B.getState();var k=sig();if(k!==last){last=k;render()}}
+  render();sync();setInterval(sync,500);
+  requestAnimationFrame(function(){scroll.scrollTop=Math.max(0,scroll.scrollHeight-scroll.clientHeight*.94)});
+}
+boot();
 })();
 </script>
 
