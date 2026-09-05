@@ -1,0 +1,115 @@
+name: Patch Jinwan v6.0 board
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v60-board.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Rebuild hotel board UI
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('games/jinwan-youtao/index.html')
+          s=p.read_text()
+          # v6.0 board-only CSS: preserve gameplay, rebuild visual hierarchy.
+          css=r'''
+<style id="v60-board">
+/* v6.0: hotel board is the visual focus; systems beneath are untouched */
+.stage{height:116vw;min-height:390px;max-height:500px;background:linear-gradient(180deg,#d7e2e2 0%,#cbd4d2 20%,#31445a 20.5%,#26394f 100%)}
+.stagehud{top:9px;left:11px;right:11px;justify-content:flex-start;gap:6px;align-items:center}
+.stagehud .stagechip{padding:5px 8px;border-radius:999px;background:rgba(251,248,242,.94);border:1px solid rgba(126,109,87,.18);box-shadow:0 3px 10px rgba(0,0,0,.06)}
+#propertyBadge,#explorerChip{display:none!important}
+.viewtoggle{position:absolute;left:50%;transform:translateX(-50%);top:0;box-shadow:0 3px 10px rgba(0,0,0,.07)}
+.hint{left:11px;right:11px;bottom:9px;border-radius:12px;font-size:9px;padding:7px 9px}
+/* room details/actions: compact, readable */
+#roomSheet .sheet,#roomSheet .sheetbody{overflow-wrap:anywhere;word-break:break-word}
+#roomSheet button{white-space:normal;line-height:1.2}
+@media(max-width:380px){.stage{height:120vw}.stagechip{font-size:8px}.viewtoggle button{padding:3px 6px}.hint{font-size:8.5px}}
+</style>
+'''
+          if 'id="v60-board"' not in s:
+              s=s.replace('</head>',css+'\n</head>')
+          # Hide permanent Explorer/BASIC chips from board without deleting underlying elements.
+          # Preserve title/version conventions and mark build.
+          s=s.replace("QUEST_SYSTEM_VERSION='5.9.6'","QUEST_SYSTEM_VERSION='6.0.0'")
+          s=s.replace('v5.9.6','v6.0')
+          # Add a board renderer override before final script close. It uses the existing room model
+          # and replaces only drawMiniInterior, so state/events/click hitboxes remain intact.
+          js=r'''
+<script id="v60-board-renderer">
+(function(){
+  function rr(c,x,y,w,h,r,fill,stroke){c.beginPath();c.roundRect(x,y,w,h,r);if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.stroke()}}
+  function line(c,x1,y1,x2,y2,col,w){c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.strokeStyle=col;c.lineWidth=w||1;c.stroke()}
+  window.drawMiniInterior=function(c,r,q){
+    if(!c||!q)return;
+    var x=q.x+5,y=q.y+18,w=q.w-10,h=q.h-34;
+    if(w<20||h<16)return;
+    var type=(r&&r.type)||'standard', lv=(window.state&&state.renovation&&state.renovation.rooms)||0;
+    // miniature room shell
+    var wall=type==='suite'?'#ead7b7':'#e9dcc7', floor=type==='suite'?'#b98758':'#bb936c';
+    rr(c,x,y,w,h,4,wall,'rgba(85,67,50,.35)');
+    c.fillStyle=floor;c.fillRect(x+2,y+h*.62,w-4,h*.34);
+    line(c,x+2,y+h*.62,x+w-2,y+h*.62,'rgba(104,77,55,.35)',1);
+    // ceiling lights
+    c.fillStyle='rgba(255,248,208,.95)';c.fillRect(x+w*.22,y+3,5,2);c.fillRect(x+w*.68,y+3,5,2);
+    function plant(px,py){c.fillStyle='#6e8b5d';c.fillRect(px-2,py-5,2,6);c.fillRect(px+1,py-7,2,8);c.fillStyle='#9a6f4c';c.fillRect(px-3,py+1,7,4)}
+    function lamp(px,py){c.fillStyle='#d8b15b';c.fillRect(px,py-7,1,8);c.fillStyle='#f3df9e';c.beginPath();c.moveTo(px-4,py-7);c.lineTo(px+4,py-7);c.lineTo(px+2,py-3);c.lineTo(px-2,py-3);c.closePath();c.fill()}
+    function bed(px,py,bw,bh){c.fillStyle='#6d4c36';c.fillRect(px,py,bw,bh);c.fillStyle='#f6f0e5';c.fillRect(px+2,py-3,bw-4,bh-1);c.fillStyle=type==='suite'?'#b46d4d':'#c79a69';c.fillRect(px+2,py+bh-4,bw-4,3);c.fillStyle='#fffaf0';c.fillRect(px+3,py-2,bw*.35,3)}
+    function art(px,py,aw,ah){c.fillStyle='#745b46';c.fillRect(px,py,aw,ah);c.fillStyle=lv>0?'#77969a':'#d1b38a';c.fillRect(px+1,py+1,aw-2,ah-2)}
+    if(type==='breakfast'){
+      c.fillStyle='#7c5a3f';c.fillRect(x+4,y+8,w-8,6);c.fillStyle='#d7b26d';c.fillRect(x+6,y+5,w*.28,3);c.fillStyle='#39464b';c.fillRect(x+w*.72,y+4,6,7);
+      for(var i=0;i<3;i++){var tx=x+8+i*(w-16)/3;c.fillStyle='#805d43';c.fillRect(tx,y+h*.72,12,2);c.fillRect(tx+2,y+h*.74,1,5);c.fillRect(tx+9,y+h*.74,1,5)}
+    }else if(type==='lounge'){
+      c.fillStyle='#55705f';c.fillRect(x+5,y+h*.56,w*.38,8);c.fillStyle='#7d563d';c.fillRect(x+w*.52,y+h*.61,w*.24,3);c.fillRect(x+w*.58,y+h*.64,1,5);c.fillRect(x+w*.72,y+h*.64,1,5);lamp(x+w*.84,y+h*.56);plant(x+w*.91,y+h*.69)
+    }else if(type==='gym'){
+      c.fillStyle='#4f5960';c.fillRect(x+5,y+h*.65,w*.36,3);line(c,x+8,y+h*.64,x+13,y+h*.42,'#4f5960',2);line(c,x+w*.62,y+h*.68,x+w*.78,y+h*.68,'#4f5960',2);c.fillStyle='#738b98';c.fillRect(x+w*.54,y+h*.45,w*.34,2);c.fillStyle='#56745e';c.fillRect(x+5,y+h*.78,w*.30,2)
+    }else if(type==='spa'){
+      c.fillStyle='#eee7d8';c.fillRect(x+5,y+h*.58,w*.48,7);c.fillStyle='#a98762';c.fillRect(x+5,y+h*.65,w*.48,3);c.fillStyle='#c6ad88';c.fillRect(x+w*.62,y+h*.36,w*.25,h*.34);plant(x+w*.9,y+h*.72);lamp(x+w*.58,y+h*.62)
+    }else{
+      var bw=type==='suite'?w*.48:w*.43;bed(x+5,y+h*.58,bw,8);lamp(x+5+bw+6,y+h*.61);art(x+w*.38,y+6,w*.24,6);plant(x+w-9,y+h*.72);
+      c.fillStyle='#76543b';c.fillRect(x+w*.63,y+h*.58,w*.22,3);c.fillRect(x+w*.66,y+h*.61,1,6);c.fillRect(x+w*.81,y+h*.61,1,6);
+      if(type==='suite'){c.fillStyle='#55705f';c.fillRect(x+w*.58,y+h*.73,w*.28,6)}
+    }
+    // subtle glass/highlight gives the 5.0.1 toy-board weight without image thumbnails
+    c.fillStyle='rgba(255,255,255,.10)';c.fillRect(x+2,y+2,w-4,2);
+  };
+  // remove the broken image-atlas path from the board: renderer above is canonical in v6.0.
+  window.roomInteriorImages={};
+})();
+</script>
+'''
+          if 'id="v60-board-renderer"' not in s:
+              s=s.replace('</body>',js+'\n</body>')
+          p.write_text(s)
+          PY
+      - name: Verify
+        run: |
+          grep -q 'id="v60-board"' games/jinwan-youtao/index.html
+          grep -q 'id="v60-board-renderer"' games/jinwan-youtao/index.html
+          grep -q "QUEST_SYSTEM_VERSION='6.0.0'" games/jinwan-youtao/index.html
+          python - <<'PY'
+          import re, pathlib, subprocess, tempfile, os
+          s=pathlib.Path('games/jinwan-youtao/index.html').read_text()
+          scripts=re.findall(r'<script(?:[^>]*)>([\s\S]*?)</script>',s)
+          js='\n'.join(scripts)
+          f=tempfile.NamedTemporaryFile(delete=False,suffix='.js',mode='w');f.write(js);f.close()
+          r=subprocess.run(['node','--check',f.name],capture_output=True,text=True);os.unlink(f.name)
+          print(r.stderr)
+          assert r.returncode==0
+          PY
+      - name: Commit
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add games/jinwan-youtao/index.html
+          git commit -m 'feat: rebuild hotel board v6.0 [skip ci]' || exit 0
+          git push
