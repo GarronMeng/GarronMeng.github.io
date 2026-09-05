@@ -1,0 +1,38 @@
+name: Run patch Jinwan v6.1
+on:
+  push:
+    paths:
+      - '.github/workflows/run-patch-jinwan-v610.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Patch source
+        run: python .github/scripts/patch_jinwan_v610.py
+      - name: Verify
+        run: |
+          grep -q 'v610-finished-css' games/jinwan-youtao/index.html
+          grep -q 'v610-finished-js' games/jinwan-youtao/index.html
+          grep -q 'data-ui-version' games/jinwan-youtao/index.html
+          python - <<'PY'
+          import re,pathlib,tempfile,subprocess,os
+          s=pathlib.Path('games/jinwan-youtao/index.html').read_text()
+          js='\n'.join(re.findall(r'<script(?:[^>]*)>([\s\S]*?)</script>',s))
+          f=tempfile.NamedTemporaryFile(delete=False,suffix='.js',mode='w');f.write(js);f.close()
+          r=subprocess.run(['node','--check',f.name],capture_output=True,text=True);os.unlink(f.name)
+          print(r.stderr)
+          assert r.returncode==0
+          PY
+      - name: Commit
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add games/jinwan-youtao/index.html
+          git commit -m 'feat: finished Hyatt cutaway UI v6.1 [skip ci]' || exit 0
+          git push
