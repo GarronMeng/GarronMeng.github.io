@@ -11,3 +11,23 @@ test('入住、午夜唯一结算、多晚跨日、扩建与主管连续运行',
  s.metrics.cash=200000;for(let i=0;i<4;i++)execute(s,{type:'expand'});assert.ok(s.floors.some(f=>f.label==='8F'&&f.role==='guest'));assert.equal(rooms(s).length,21);
  const ids=new Set(s.guests.filter(g=>g.roomId).map(g=>g.roomId));assert.equal(ids.size,s.guests.filter(g=>g.roomId).length);
 });
+
+test('解除21间限制、投资活动结算、领奖幂等及旧存档兼容',async()=>{
+ const {scores,milestones}=await import('../src/core/progression');
+ const {loadGame,SAVE_KEY}=await import('../src/core/save');
+ const s=newGame(),g=s.game!;s.metrics.cash=1000000;
+ for(let i=0;i<9;i++)execute(s,{type:'expand'});
+ assert.equal(rooms(s).length,36);assert.equal(new Set(s.floors.map(f=>f.id)).size,s.floors.length);
+ const f=s.entities['facility-gym'];assert.equal(f.kind,'facility');if(f.kind!=='facility')throw Error();const capacity=f.capacity;
+ execute(s,{type:'invest',id:f.id});assert.equal(f.level,2);assert.equal(f.capacity,capacity+4);
+ execute(s,{type:'hire',id:'house'});execute(s,{type:'train',id:'house'});assert.equal(g.managers.house,2);
+ execute(s,{type:'campaign'});const afterCampaign=s.metrics.cash;execute(s,{type:'campaign'});assert.equal(s.metrics.cash,afterCampaign);
+ execute(s,{type:'activity',id:'fitness'});const afterActivity=s.metrics.cash;execute(s,{type:'activity',id:'rooftop'});assert.equal(s.metrics.cash,afterActivity);
+ advanceGame(s,120);assert.equal(g.development!.activity,undefined);assert.equal(g.development!.counts.activity,1);
+ const m=milestones(s).find(m=>m.id==='rooms-24')!;assert.ok(m.progress>=m.goal);execute(s,{type:'claim-career',id:m.id});const afterClaim=s.metrics.cash;execute(s,{type:'claim-career',id:m.id});assert.equal(s.metrics.cash,afterClaim);
+ assert.ok(scores(s).total>=0&&scores(s).total<=100);
+ const old=structuredClone(s);delete old.game!.development;const raw=JSON.stringify(old);
+ Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:(key:string)=>key===SAVE_KEY?raw:null}});
+ const restored=loadGame();assert.equal(rooms(restored).length,36);assert.equal(restored.metrics.cash,s.metrics.cash);assert.ok(restored.game!.development);
+ delete (globalThis as {localStorage?:unknown}).localStorage;
+});
