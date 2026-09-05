@@ -63,3 +63,4 @@ function drawRoomPreview'''
           git add games/jinwan-youtao/index.html
           git commit -m 'feat: 2.5D Hyatt visual finish v6.3 [skip ci]' || exit 0
           git push
+# trigger
