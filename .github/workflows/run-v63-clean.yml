@@ -15,17 +15,17 @@ jobs:
           python-version: '3.x'
       - run: python tools/jinwan_v63_patch.py
       - run: |
-          node --check <(python - <<'PY'
+          python - <<'PY' > /tmp/game.js
           from pathlib import Path
           import re
           s=Path('games/jinwan-youtao/index.html').read_text()
           print('\n'.join(re.findall(r'<script(?:[^>]*)>([\s\S]*?)</script>',s)))
           PY
-          )
-        shell: bash
+          node --check /tmp/game.js
       - run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add games/jinwan-youtao/index.html
           git commit -m 'feat: 2.5D Hyatt visual finish v6.3 [skip ci]' || exit 0
           git push
+# trigger
