@@ -33,6 +33,8 @@ export function roomFactory(room:Room):T.Group {
   box(g,1.59,.94,-.64,.35,.28,.04,m.screen);chair(g,1.65,.06,Math.PI);lamp(g,2,.82,-.62,.66);
  }
  plant(g,2.05,1.05,.63);
+ if((room.level??1)>1){artwork(g,-2.05,1.6,-1.38,.38,.56,room.level);plant(g,-2.05,.35,.55);}
+ if((room.level??1)>2)box(g,0,2.12,-1.3,4.55,.035,.055,m.gold);
  box(g,-2.12,.52,.95,.22,1,.28,m.walnut); // luggage rack
  if(room.status==='reserved'){box(g,1.2,.48,1.48,.25,.29,.1,m.gold);}
  if(room.status==='cleaning'){

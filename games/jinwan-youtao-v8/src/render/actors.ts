@@ -1,7 +1,7 @@
 import * as T from 'three';
 import {box,cyl,orb,shadow} from './primitives';
 import {materials as m,colorMaterial} from './materials';
-export interface Actor {group:T.Group;left:T.Group;right:T.Group;start:number;end:number;floorY:number;z:number;phase:number;walking:boolean;thought:string;}
+export interface Actor {group:T.Group;left:T.Group;right:T.Group;start:number;end:number;floorY:number;z:number;phase:number;walking:boolean;thought:string;guestId?:string;}
 export function actorFactory(color:number):{group:T.Group;left:T.Group;right:T.Group}{
  const group=new T.Group();const suit=colorMaterial(color);
  const leg=(x:number)=>{const g=new T.Group();g.position.set(x,.31,0);group.add(g);box(g,0,-.11,0,.085,.26,.1,m.navy);box(g,0,-.245,.035,.11,.07,.17,m.black);return g;};

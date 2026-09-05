@@ -1,5 +1,6 @@
 import type {PreviewState,Store} from './types';
 import {createVisualFixture} from './fixture';
+import {advanceGame,execute,newGame} from '../core/game';
 function freeze<T>(value:T):T {if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.freeze(value);for(const v of Object.values(value))freeze(v);}return value;}
 export function createStore(initial:PreviewState=createVisualFixture()):Store {
  let state=freeze(structuredClone(initial)); const listeners=new Set<(state:Readonly<PreviewState>)=>void>();
@@ -8,5 +9,8 @@ export function createStore(initial:PreviewState=createVisualFixture()):Store {
  select(id){if(id!==null&&!state.entities[id])throw new Error('Unknown entity: '+id);patch({selectedId:id,visited:id?[...new Set([...state.visited,id])]:state.visited});},
  focusFloor(id){if(!state.floors.some(f=>f.id===id))throw new Error('Unknown floor: '+id);patch({focusedFloorId:id});},
  setSpeed(speed){if(![1,2,4].includes(speed))throw new Error('Invalid speed');patch({speed})},
- setAtmosphere(atmosphere){if(!['dusk','night','day'].includes(atmosphere))throw new Error('Invalid atmosphere');patch({atmosphere})}};
+ setAtmosphere(atmosphere){if(!['dusk','night','day'].includes(atmosphere))throw new Error('Invalid atmosphere');patch({atmosphere})},
+ dispatch(command){const next=structuredClone(state);execute(next,command);patch(next)},
+ advance(minutes){if(!state.game||state.game.paused)return;const next=structuredClone(state);advanceGame(next,minutes);patch(next)},
+ reset(){patch(newGame())}};
 }

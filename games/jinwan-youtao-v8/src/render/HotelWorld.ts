@@ -17,6 +17,7 @@ export class HotelWorld {
  private bubbles:{el:HTMLButtonElement;actor:Actor;index:number}[]=[];private floorLabels:{el:HTMLElement;id:string}[]=[];
  private halo=new T.Group();private scroll:HTMLElement;private spacer:HTMLElement;private scale=20;private raf=0;private ro:ResizeObserver;
  private cleanups:(()=>void)[]=[];private time=0;private last=0;private lastPaint=0;private paused=false;private visible=true;
+ private visualKey='';
  constructor(private host:HTMLElement,private store:Store){
   this.layout=sceneLayout(store.getState());this.scroll=host.querySelector('.world-scroll')!;this.spacer=host.querySelector('.world-spacer')!;
   this.renderer=new T.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
@@ -26,7 +27,7 @@ export class HotelWorld {
   this.overlay=document.createElement('div');this.overlay.className='world-labels';this.scroll.append(this.overlay);
   this.scene.add(this.root,this.light,this.ambient);this.light.castShadow=true;this.light.position.set(-7,23,16);this.light.target.position.set(0,9,-.4);this.scene.add(this.light.target);
   Object.assign(this.light.shadow.camera,{left:-13,right:13,top:15,bottom:-15,near:.5,far:65});this.light.shadow.mapSize.set(2048,2048);this.light.shadow.bias=-.0005;this.light.shadow.normalBias=.018;
-  this.build();this.scene.add(this.halo);this.bind();this.ro=new ResizeObserver(()=>this.resize());this.ro.observe(host);this.resize();this.update(store.getState());
+  this.build();this.visualKey=this.key(store.getState());this.scene.add(this.halo);this.bind();this.ro=new ResizeObserver(()=>this.resize());this.ro.observe(host);this.resize();this.update(store.getState());
   this.cleanups.push(store.subscribe(s=>this.update(s)));this.raf=requestAnimationFrame(this.frame);
  }
  private build(){
@@ -69,7 +70,7 @@ export class HotelWorld {
    const a=actorFactory(color);const actor:Actor={...a,start,end,z,floorY:y+.07,phase:this.actors.length*1.618,walking,thought};this.scene.add(a.group);this.actors.push(actor);
    const bubble=document.createElement('button');bubble.className='thought';bubble.textContent=thought;bubble.setAttribute('aria-label','住客想法：'+thought);bubble.onclick=()=>{const id=this.store.getState().floors.find(f=>f.id===floorId)?.entityIds[0];if(id)this.store.select(id);};this.overlay.append(bubble);this.bubbles.push({el:bubble,actor,index:this.actors.length});
   };
-  s.guests.forEach(g=>add(g.floorId,g.route[0],g.route[1],g.z??1.12,g.color,g.thought,g.route[0]!==g.route[1]));
+  s.guests.forEach(g=>{add(g.floorId,g.route[0],g.route[1],g.z??1.12,g.color,g.thought,g.route[0]!==g.route[1]);this.actors[this.actors.length-1].guestId=g.id;});
   const selectMat=new T.MeshBasicMaterial({color:0xffd78d,transparent:true,opacity:.9,depthTest:false});
   box(this.halo,0,0,0,4.7,.025,.025,selectMat);box(this.halo,0,2.31,0,4.7,.025,.025,selectMat);box(this.halo,-2.35,1.15,0,.025,2.31,.025,selectMat);box(this.halo,2.35,1.15,0,.025,2.31,.025,selectMat);this.halo.visible=false;
  }
@@ -100,10 +101,19 @@ export class HotelWorld {
   const r=this.overlay.querySelector<HTMLElement>('[data-anchor=roof]');if(r)this.position(r,new T.Vector3(3.2,this.layout.height-.85,-.9));
  }
  private update(s:Readonly<PreviewState>){
+  const key=this.key(s);if(key!==this.visualKey){this.visualKey=key;this.root.traverse(o=>{if(o instanceof T.InstancedMesh)o.dispose();});this.scene.remove(this.root);this.actors.forEach(a=>a.group.removeFromParent());this.colliders.forEach(c=>{c.geometry.dispose();(c.material as T.Material).dispose();});this.colliders=[];this.actors=[];this.bubbles=[];this.labels=[];this.floorLabels=[];this.overlay.replaceChildren();this.halo.clear();this.root=new T.Group();this.scene.add(this.root);this.layout=sceneLayout(s);this.build();this.resize();}
+  this.syncGuests(s);
   this.host.dataset.atmosphere=s.atmosphere;this.light.intensity=s.atmosphere==='night'?1.65:s.atmosphere==='day'?3.6:2.6;this.ambient.intensity=s.atmosphere==='night'?1.35:s.atmosphere==='day'?2.7:2.1;
   this.ambient.color.setHex(s.atmosphere==='night'?0x6b99c1:0xbdd5ed);
   this.labels.forEach(b=>{const selected=b.dataset.entityId===s.selectedId;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
-  const a=this.layout.entities.find(a=>a.id===s.selectedId);this.halo.visible=!!a;if(a){const e=s.entities[a.id];this.halo.scale.x=e.kind==='room'?1:3.1;this.halo.position.set(a.position.x,a.position.y,2.05);}
+  const a=this.layout.entities.find(a=>a.id===(s.selectedId??s.game?.events[0]?.target));this.halo.visible=!!a;if(a){const e=s.entities[a.id];this.halo.scale.x=e.kind==='room'?1:3.1;this.halo.position.set(a.position.x,a.position.y,2.05);}
+ }
+ private key(s:Readonly<PreviewState>){return s.floors.map(f=>f.id).join(',')+'|'+Object.values(s.entities).filter(e=>e.kind==='room').map(e=>e.kind==='room'?e.status+':'+e.level:'').join(',');}
+ private syncGuests(s:Readonly<PreviewState>){
+  for(const a of [...this.actors])if(!s.guests.some(g=>g.id===a.guestId)){a.group.removeFromParent();this.actors=this.actors.filter(x=>x!==a);this.bubbles.filter(b=>b.actor===a).forEach(b=>b.el.remove());this.bubbles=this.bubbles.filter(b=>b.actor!==a);}
+  for(const g of s.guests){let a=this.actors.find(a=>a.guestId===g.id);if(!a){const parts=actorFactory(g.color);a={...parts,guestId:g.id,start:0,end:0,floorY:0,z:1.12,phase:this.actors.length*1.618,walking:true,thought:g.thought};this.scene.add(a.group);this.actors.push(a);const el=document.createElement('button');el.className='thought';el.onclick=()=>this.store.select(g.roomId??'facility-lobby');this.overlay.append(el);this.bubbles.push({el,actor:a,index:this.actors.length});}
+   a.start=g.route[0];a.end=g.route[1];a.z=g.z??1.12;a.floorY=(this.layout.floorY.get(g.floorId)??0)+.07;a.walking=a.start!==a.end;a.thought=g.thought;const b=this.bubbles.find(b=>b.actor===a);if(b){b.el.textContent=g.thought;b.el.setAttribute('aria-label','住客想法：'+g.thought);}
+  }
  }
  focusFloor(id:string){const y=this.layout.floorY.get(id);if(y===undefined)return;const full=parseFloat(this.spacer.style.height);const target=full-(y+1.3)*this.scale-this.host.clientHeight/2;this.scroll.scrollTo({top:Math.max(0,target),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
  private frame=(now:number)=>{
