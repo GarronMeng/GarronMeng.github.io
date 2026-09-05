@@ -1,0 +1,257 @@
+name: Patch Jinwan Youtao v5.9 quests
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v59-quests.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Add task and achievement system
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path=Path('games/jinwan-youtao/index.html')
+          s=path.read_text(encoding='utf-8')
+          if "var QUEST_SYSTEM_VERSION='5.9'" in s:
+              print('v5.9 already applied')
+              raise SystemExit(0)
+
+          def need(old,new,label):
+              global s
+              if old not in s:
+                  raise RuntimeError('missing '+label)
+              s=s.replace(old,new,1)
+
+          # Version marker.
+          need("var GAMEPLAY_PASS='5.8';", "var GAMEPLAY_PASS='5.8';\nvar QUEST_SYSTEM_VERSION='5.9';", 'gameplay marker')
+
+          css=r'''
+/* v5.9 Task Hub: one guided mainline, three daily tasks, persistent achievements */
+.goalstrip.questready{border-color:#c89a43;background:#fff8e8;box-shadow:0 0 0 2px rgba(200,154,67,.12)}
+#questSheet{padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.questhead{display:flex;justify-content:space-between;align-items:flex-start;padding:3px 2px 9px}.questhead h3{margin:0;font-size:18px}.questhead small{display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.35}.questclose{border:0;background:#eee7de;border-radius:999px;width:31px;height:31px;font-size:19px;color:#5d554e}
+.questtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px}.questtab{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 3px;font-size:8.5px;font-weight:900;color:#625c55}.questtab.on{background:var(--navy);border-color:var(--navy);color:#fff}.questtab b{display:inline-block;min-width:15px;margin-left:2px;border-radius:999px;background:#b6934f;color:#fff;padding:1px 4px;font-size:7px}
+.questsummary{padding:10px 11px;border:1px solid #dfd1b7;background:#fff9ed;border-radius:13px;margin-bottom:9px}.questsummary strong{display:block;font-size:12px}.questsummary span{display:block;margin-top:4px;font-size:8.5px;color:#74685b;line-height:1.4}
+.questtrack{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0 11px}.questnode{height:28px;border-radius:9px;background:#e4ddd3;color:#7d756c;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:9px}.questnode.done{background:#738b77;color:#fff}.questnode.now{background:#b6934f;color:#fff;box-shadow:0 0 0 3px rgba(182,147,79,.13)}
+.questboard{display:flex;flex-direction:column;gap:7px}.questcard{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 11px}.questcard.locked{opacity:.46}.questcard.done{background:#f3f8f3;border-color:#bacbbb}.questcard.ready{border-color:#d2aa5e;background:#fffaf0}.questrow{display:flex;justify-content:space-between;gap:8px}.questcopy{min-width:0;flex:1}.questcopy strong{display:block;font-size:11px;line-height:1.25}.questcopy small{display:block;margin-top:4px;font-size:8.3px;line-height:1.4;color:var(--muted)}.questreward{flex:0 0 auto;font-size:8px;font-weight:900;color:#8a6a2f;white-space:nowrap}.questprogress{height:6px;background:#e9e3db;border-radius:99px;overflow:hidden;margin-top:8px}.questprogress i{display:block;height:100%;background:#b6934f;border-radius:99px}.questmeta{display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:8px;color:#746c63}.questactions{display:flex;gap:5px;margin-left:auto}.questclaim,.questgo{border:0;border-radius:9px;padding:6px 9px;font-size:8px;font-weight:950}.questclaim{background:#21364c;color:#fff}.questgo{background:#eee7de;color:#564f47}.questdone{font-weight:950;color:#63806a}.achievementgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.achievementgrid .questcard{min-height:118px}.achievementgrid .questcopy small{min-height:34px}
+.questbonus{margin-top:2px;text-align:center;font-size:8.5px;color:#806535;background:#fff8e8;border:1px dashed #d7b978;border-radius:10px;padding:7px}.questempty{text-align:center;padding:20px 10px;color:var(--muted);font-size:9px}
+'''
+          pos=s.rfind('</style>')
+          if pos<0: raise RuntimeError('style close not found')
+          s=s[:pos]+css+s[pos:]
+
+          quest_html=r'''
+  <div class="sheet" id="questSheet">
+    <div class="questhead"><div><h3>📋 值班手册</h3><small id="questSummary">主线、今日任务和长期成就。</small></div><button class="questclose" data-close-sheet>×</button></div>
+    <div class="questtabs">
+      <button class="questtab on" data-quest-tab="main">主线 <b id="questMainCount">0</b></button>
+      <button class="questtab" data-quest-tab="daily">今日 <b id="questDailyCount">0</b></button>
+      <button class="questtab" data-quest-tab="achievements">成就 <b id="questAchievementCount">0</b></button>
+      <button class="questtab" data-quest-tab="report">日报</button>
+    </div>
+    <div class="questboard" id="questBoard"></div>
+  </div>
+'''
+          script_pos=s.rfind('<script>')
+          if script_pos<0: raise RuntimeError('main script not found')
+          s=s[:script_pos]+quest_html+s[script_pos:]
+
+          js=r'''
+function ensureQuestState(){
+  if(!state.questClaims)state.questClaims={};
+  if(!state.achievementClaims)state.achievementClaims={};
+  if(!state.questSeenReady)state.questSeenReady={};
+  if(!state.daily)state.daily={};
+  if(!state.daily.taskClaims)state.daily.taskClaims={};
+  if(typeof state.daily.taskSetBonus!=='boolean')state.daily.taskSetBonus=false;
+  if(!state.stats)state.stats={};
+  if(typeof state.stats.stayoverNights!=='number')state.stats.stayoverNights=0;
+  if(typeof state.stats.zeroComplaintDays!=='number')state.stats.zeroComplaintDays=0;
+  if(!state.questTab)state.questTab='main';
+}
+function questRewardText(r){var a=[];if(r&&r.cash)a.push('¥'+r.cash);if(r&&r.perk)a.push('礼遇券 ×'+r.perk);return a.join(' · ')||'已记录'}
+function questSaleRoomCount(){return state.rooms.filter(function(r){return roomUnlocked(r)&&(r.type==='standard'||r.type==='suite')}).length}
+function mainQuestDefs(){
+  ensureQuestState();
+  return[
+    {id:'first_guest',title:'第一位住客',desc:'完成第一次入住，先熟悉前台与房态。',target:1,progress:function(){return Math.min(1,state.stats.nights||0)},route:'front',reward:{cash:250}},
+    {id:'first_revenue',title:'第一笔房费',desc:'让住客完成一次住宿并产生收入。',target:350,progress:function(){return Math.min(350,state.stats.totalRevenue||0)},route:'wait',reward:{cash:300}},
+    {id:'stayover',title:'留住房量',desc:'经历第一次 Stayover，理解“今天住进来，明天还占房”。',target:1,progress:function(){return Math.min(1,Math.max(state.stats.stayoverNights||0,state.day>=3?1:0))},route:'wait',reward:{cash:350,perk:1}},
+    {id:'add_room',title:'给酒店留余量',desc:'把可售客房扩到至少 5 间。',target:5,progress:function(){return Math.min(5,questSaleRoomCount())},route:'hotel',reward:{cash:450}},
+    {id:'hk_capacity',title:'第一次补人',desc:'把 Housekeeping 提升到 2 组，开始解决翻房瓶颈。',target:2,progress:function(){return Math.min(2,state.staffHK||0)},route:'ops',reward:{cash:500}},
+    {id:'delegate_front',title:'把重复工作交出去',desc:'招聘 Front Office Manager，让普通会员事务开始自动处理。',target:1,progress:function(){return managerHired('front')?1:0},route:'ops',reward:{cash:650,perk:1}},
+    {id:'first_week',title:'完成第一周',desc:'经营到 Day 8，完成第一次完整周度循环。',target:8,progress:function(){return Math.min(8,state.day||1)},route:'report',reward:{cash:900,perk:1}}
+  ];
+}
+function mainQuestIndex(){var q=mainQuestDefs(),i;for(i=0;i<q.length;i++)if(!state.questClaims[q[i].id])return i;return q.length}
+function dailyTaskDefs(){
+  ensureQuestState();var p=state.daily.plan||makeDayPlan(state.day,state.brand,state.daily.themeKey),d=state.day,third,pass=0,passes=currentDailyPasses(),i;
+  for(i=0;i<passes.length;i++)if(passes[i])pass++;
+  if(d<=2)third={id:'front',title:'完成 1 次会员接待',desc:'处理一次前台升级事项，熟悉会员权益取舍。',target:1,progress:function(){return Math.min(1,(state.daily.approved||0)+(state.daily.denied||0))},route:'front'};
+  else if(d===3)third={id:'inventory',title:'保留 2 间可售房',desc:'房荒前先留安全余量。',target:2,progress:function(){return Math.min(2,saleRooms().length)},route:'hotel'};
+  else if(d===4)third={id:'house',title:'Housekeeping ≥ 2 组',desc:'先把翻房能力补起来。',target:2,progress:function(){return Math.min(2,state.staffHK||0)},route:'ops'};
+  else if(d===5)third={id:'frontmgr',title:'Front Office Manager 到岗',desc:'让重复前台事务离开 GM Desk。',target:1,progress:function(){return managerHired('front')?1:0},route:'ops'};
+  else if(d===6)third={id:'arrivals',title:'接待 4 位住客',desc:'观察工作日与周末客群差异。',target:4,progress:function(){return Math.min(4,state.daily.arrivals||0)},route:'wait'};
+  else if(d===7)third={id:'score',title:'今日至少达标 3 项',desc:'第一次周度考核，先守住基本盘。',target:3,progress:function(){return Math.min(3,pass)},route:'report'};
+  else third={id:'arrivals',title:'完成 '+Math.max(3,p.nights)+' 位到店接待',desc:'保持客流、房态和服务节奏稳定。',target:Math.max(3,p.nights),progress:function(){return Math.min(Math.max(3,p.nights),state.daily.arrivals||0)},route:'wait'};
+  return[
+    {id:'revenue',title:'达成今日营收',desc:'目标 ¥'+p.revenue+'。',target:p.revenue,progress:function(){return Math.min(p.revenue,Math.round(state.income||0))},route:'wait',reward:{cash:120}},
+    {id:'nights',title:'完成今日房晚',desc:'目标 '+p.nights+' 夜。',target:p.nights,progress:function(){return Math.min(p.nights,state.daily.checkouts||0)},route:'wait',reward:{cash:120}},
+    Object.assign(third,{reward:{cash:160}})
+  ];
+}
+function achievementDefs(){
+  ensureQuestState();
+  return[
+    {id:'duty',title:'初次值班',desc:'累计 1 个房晚。',target:1,progress:function(){return Math.min(1,state.stats.nights||0)},reward:{cash:250}},
+    {id:'suite',title:'套房调度员',desc:'成功批准 5 次升套。',target:5,progress:function(){return Math.min(5,state.stats.approved||0)},reward:{cash:400}},
+    {id:'stay',title:'连住酒店',desc:'累计形成 5 个 Stayover 房晚。',target:5,progress:function(){return Math.min(5,state.stats.stayoverNights||0)},reward:{cash:450}},
+    {id:'clean',title:'零客诉的一天',desc:'完成 1 个零客诉营业日。',target:1,progress:function(){return Math.min(1,state.stats.zeroComplaintDays||0)},reward:{cash:350,perk:1}},
+    {id:'streak',title:'三日稳态',desc:'连续 3 天完成至少 3/4 经营目标。',target:3,progress:function(){return Math.min(3,state.streak||0)},reward:{cash:600}},
+    {id:'renovation',title:'空间焕新',desc:'完成 3 次永久空间升级。',target:3,progress:function(){return Math.min(3,state.stats.renovations||0)},reward:{cash:600}},
+    {id:'team',title:'部门成型',desc:'招聘 3 位部门负责人。',target:3,progress:function(){return Math.min(3,hiredManagerCount())},reward:{cash:700,perk:1}},
+    {id:'auto',title:'自动运转',desc:'累计自动解决 10 件 Routine Task。',target:10,progress:function(){return Math.min(10,state.stats.autoResolved||0)},reward:{cash:800}},
+    {id:'loyal',title:'熟客回流',desc:'累计迎回 3 位熟客。',target:3,progress:function(){return Math.min(3,state.stats.returningGuests||0)},reward:{cash:650}},
+    {id:'brands',title:'品牌经营者',desc:'经营 3 个不同品牌。',target:3,progress:function(){return Math.min(3,Object.keys(state.opened||{}).length)},reward:{cash:900,perk:1}}
+  ];
+}
+function questPct(v,t){return Math.max(0,Math.min(100,Math.round((t?v/t:0)*100)))}
+function questReadyCount(){
+  ensureQuestState();var n=0,i,q=mainQuestDefs(),idx=mainQuestIndex(),d=dailyTaskDefs(),a=achievementDefs();
+  if(idx<q.length&&q[idx].progress()>=q[idx].target)n++;
+  for(i=0;i<d.length;i++)if(!state.daily.taskClaims[d[i].id]&&d[i].progress()>=d[i].target)n++;
+  for(i=0;i<a.length;i++)if(!state.achievementClaims[a[i].id]&&a[i].progress()>=a[i].target)n++;
+  return n;
+}
+function grantQuestReward(r,label){
+  if(!r)return;if(r.cash)state.cash+=r.cash;if(r.perk){state.perks=(state.perks||0)+r.perk;state.stats.perksEarned=(state.stats.perksEarned||0)+r.perk}showToast('🎁 '+label+' · '+questRewardText(r));saveState(true);updateUI();
+}
+function claimQuest(kind,id){
+  ensureQuestState();var list=kind==='main'?mainQuestDefs():kind==='daily'?dailyTaskDefs():achievementDefs(),i,q=null;
+  for(i=0;i<list.length;i++)if(list[i].id===id){q=list[i];break}if(!q||q.progress()<q.target)return;
+  if(kind==='main'){if(mainQuestIndex()!==i||state.questClaims[id])return;state.questClaims[id]=true}
+  else if(kind==='daily'){if(state.daily.taskClaims[id])return;state.daily.taskClaims[id]=true}
+  else{if(state.achievementClaims[id])return;state.achievementClaims[id]=true}
+  grantQuestReward(q.reward,q.title);
+  if(kind==='daily'){var d=dailyTaskDefs(),all=true;for(i=0;i<d.length;i++)if(!state.daily.taskClaims[d[i].id])all=false;if(all&&!state.daily.taskSetBonus){state.daily.taskSetBonus=true;state.perks=(state.perks||0)+1;state.stats.perksEarned=(state.stats.perksEarned||0)+1;showToast('✨ 今日任务全部完成 · 礼遇券 +1')}}
+  renderQuestSheet(state.questTab||kind);
+}
+function questGo(route){
+  closeSheets(true);
+  if(route==='front'){if(state.executiveQueue.length||state.frontQueue.length)openFront();else showToast('🛎 下一位需要判断的住客到店时，前台会亮起。');return}
+  if(route==='hotel'){if(!featureUnlocked('space')){showToast('🔒 '+featureUnlockText('space'));return}buildPropertyCards();toggleSheet('inventorySheet');return}
+  if(route==='ops'){if(!featureUnlocked('ops')){showToast('🔒 '+featureUnlockText('ops'));return}buildLeadershipCards();updateOps();toggleSheet('opsSheet');return}
+  if(route==='report'){updateReport();toggleSheet('reportSheet');return}
+  showToast('▶ 继续营业，任务进度会自动累计。');
+}
+function taskCardHtml(q,kind,stateName,locked){
+  var v=q.progress(),pct=questPct(v,q.target),claimed=stateName==='done',ready=stateName==='ready',buttons='';
+  if(ready)buttons='<button class="questclaim" data-quest-claim="'+kind+':'+q.id+'">领取</button>';
+  else if(!claimed&&!locked)buttons='<button class="questgo" data-quest-go="'+(q.route||'wait')+'">前往</button>';
+  else if(claimed)buttons='<span class="questdone">✓ 已领取</span>';
+  return '<div class="questcard '+(locked?'locked ':claimed?'done ':ready?'ready ':'')+'"><div class="questrow"><div class="questcopy"><strong>'+q.title+'</strong><small>'+q.desc+'</small></div><div class="questreward">'+questRewardText(q.reward)+'</div></div><div class="questprogress"><i style="width:'+pct+'%"></i></div><div class="questmeta"><span>'+Math.min(v,q.target)+' / '+q.target+'</span><div class="questactions">'+buttons+'</div></div></div>';
+}
+function renderQuestSheet(tab){
+  ensureQuestState();state.questTab=tab||state.questTab||'main';if(state.questTab==='report'){updateReport();toggleSheet('reportSheet');return}
+  var board=$('questBoard');if(!board)return;var main=mainQuestDefs(),daily=dailyTaskDefs(),achs=achievementDefs(),idx=mainQuestIndex(),i,html='',claimedMain=idx,claimedDaily=0,claimedAch=0;
+  for(i=0;i<daily.length;i++)if(state.daily.taskClaims[daily[i].id])claimedDaily++;
+  for(i=0;i<achs.length;i++)if(state.achievementClaims[achs[i].id])claimedAch++;
+  if($('questSummary'))$('questSummary').textContent='主线 '+claimedMain+'/'+main.length+' · 今日 '+claimedDaily+'/'+daily.length+' · 成就 '+claimedAch+'/'+achs.length;
+  if($('questMainCount'))$('questMainCount').textContent=claimedMain+'/'+main.length;
+  if($('questDailyCount'))$('questDailyCount').textContent=claimedDaily+'/'+daily.length;
+  if($('questAchievementCount'))$('questAchievementCount').textContent=claimedAch+'/'+achs.length;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-quest-tab]'),function(b){b.classList.toggle('on',b.getAttribute('data-quest-tab')===state.questTab)});
+  if(state.questTab==='main'){
+    html='<div class="questsummary"><strong>GM 成长路线</strong><span>一次只推进一个关键动作。完成后领取奖励，再解锁下一步。</span></div><div class="questtrack">';
+    for(i=0;i<main.length;i++)html+='<div class="questnode '+(i<idx?'done':i===idx?'now':'')+'">'+(i<idx?'✓':i+1)+'</div>';html+='</div>';
+    for(i=0;i<main.length;i++){var st=state.questClaims[main[i].id]?'done':i===idx&&main[i].progress()>=main[i].target?'ready':'open';html+=taskCardHtml(main[i],'main',st,i>idx)}
+    if(idx>=main.length)html+='<div class="questbonus">主线训练完成。接下来由「今日任务」负责给你经营方向，「成就」记录长期玩法。</div>';
+  }else if(state.questTab==='daily'){
+    html='<div class="questsummary"><strong>Day '+state.day+' · 今日三件事</strong><span>每天只给 3 个清晰目标。全部完成额外获得礼遇券 ×1。</span></div>';
+    for(i=0;i<daily.length;i++)html+=taskCardHtml(daily[i],'daily',state.daily.taskClaims[daily[i].id]?'done':daily[i].progress()>=daily[i].target?'ready':'open',false);
+    html+='<div class="questbonus">当天结束时，已经完成但忘记领取的现金奖励会自动入账。</div>';
+  }else{
+    html='<div class="questsummary"><strong>长期成就</strong><span>成就不要求按顺序完成，用来提示这套经营系统里值得追求的长期行为。</span></div><div class="achievementgrid">';
+    for(i=0;i<achs.length;i++)html+=taskCardHtml(achs[i],'achievements',state.achievementClaims[achs[i].id]?'done':achs[i].progress()>=achs[i].target?'ready':'open',false);html+='</div>';
+  }
+  board.innerHTML=html;
+}
+function openQuestSheet(tab){renderQuestSheet(tab||'main');if(!$('questSheet').classList.contains('show'))toggleSheet('questSheet')}
+function settleDailyTaskRewards(){
+  ensureQuestState();var d=dailyTaskDefs(),i,cash=0,done=0,perk=0;for(i=0;i<d.length;i++){if(d[i].progress()>=d[i].target){done++;if(!state.daily.taskClaims[d[i].id]){state.daily.taskClaims[d[i].id]=true;cash+=(d[i].reward&&d[i].reward.cash)||0}}}if(cash)state.cash+=cash;if(done===d.length&&!state.daily.taskSetBonus){state.daily.taskSetBonus=true;perk=1;state.perks=(state.perks||0)+1;state.stats.perksEarned=(state.stats.perksEarned||0)+1}return{cash:cash,perk:perk};
+}
+function updateQuestIndicator(){
+  ensureQuestState();var q=mainQuestDefs(),idx=mainQuestIndex(),ready=questReadyCount(),g=$('goalStrip'),rb=$('reportBtn');
+  if(g){if(idx<q.length){var m=q[idx],v=m.progress(),done=v>=m.target;g.innerHTML='<span><b>任务</b> · '+m.title+'</span><span class="right">'+(done?'领取 '+questRewardText(m.reward):Math.min(v,m.target)+'/'+m.target)+' ›</span>';g.title=m.desc}else g.innerHTML='<span><b>任务</b> · 主线完成</span><span class="right">今日 / 成就 ›</span>';g.classList.toggle('questready',ready>0)}
+  if(rb){rb.innerHTML='<span>📋</span>任务'+(ready?'<small>'+ready+' 可领</small>':'');rb.classList.toggle('alert',ready>0)}
+}
+'''
+          anchor='function occupancy(){'
+          if anchor not in s: raise RuntimeError('occupancy anchor missing')
+          s=s.replace(anchor,js+'\n'+anchor,1)
+
+          # Track stayovers and clean days for achievements.
+          need("state.day++;var unlocks=unlockAnnouncement(state.day);", "if(state.daily.complaints===0)state.stats.zeroComplaintDays=(state.stats.zeroComplaintDays||0)+1;state.day++;var unlocks=unlockAnnouncement(state.day);", 'zero complaint tracker')
+          need("if(carryNights){state.daily.checkouts+=carryNights;state.daily.highlight='🛏 '+carryNights+' 间 Stayover 进入新的一天。'}", "if(carryNights){state.daily.checkouts+=carryNights;state.stats.stayoverNights=(state.stats.stayoverNights||0)+carryNights;state.daily.highlight='🛏 '+carryNights+' 间 Stayover 进入新的一天。'}", 'stayover tracker')
+
+          # Settle forgotten completed daily rewards before the day rolls over.
+          need("function newDay(){var oldDay=state.day,res=dailyResults()", "function newDay(){var taskSettle=settleDailyTaskRewards(),oldDay=state.day,res=dailyResults()", 'newDay start')
+          marker="if(unlocks&&unlocks.length)body+='\\n✨ '+unlocks.join(' · ');"
+          need(marker, marker+"if(taskSettle.cash||taskSettle.perk)body+='\\n📋 任务奖励自动入账：'+(taskSettle.cash?'¥'+taskSettle.cash:'')+(taskSettle.perk?(taskSettle.cash?' · ':'')+'礼遇券 ×'+taskSettle.perk:'');", 'daily task settlement note')
+
+          # Integrate the task hub without adding another permanent bottom-nav slot.
+          need("$('reportBtn').addEventListener('click',function(){updateReport();toggleSheet('reportSheet')});", "$('reportBtn').addEventListener('click',function(){openQuestSheet('main')});", 'report button listener')
+          need("$('goalStrip').addEventListener('click',function(){updateReport();toggleSheet('reportSheet')});", "$('goalStrip').addEventListener('click',function(){openQuestSheet('main')});", 'goal strip listener')
+          need("['inventorySheet','opsSheet','portfolioSheet','reportSheet','logSheet']", "['inventorySheet','opsSheet','portfolioSheet','reportSheet','logSheet','questSheet']", 'closeSheets list')
+          need("syncFeatureLocks();updateOps();updateSceneHUD();checkVictory()", "syncFeatureLocks();updateOps();updateSceneHUD();updateQuestIndicator();checkVictory()", 'updateUI quest hook')
+
+          # Quest sheet delegated interactions.
+          bind="document.querySelectorAll('[data-close-sheet]').forEach(function(b){b.addEventListener('click',function(){closeSheets(true)})});"
+          quest_bind=bind+"\nif($('questSheet'))$('questSheet').addEventListener('click',function(e){var t=e.target.closest('[data-quest-tab],[data-quest-claim],[data-quest-go]');if(!t)return;if(t.hasAttribute('data-quest-tab')){var tab=t.getAttribute('data-quest-tab');if(tab==='report'){updateReport();toggleSheet('reportSheet')}else renderQuestSheet(tab);return}if(t.hasAttribute('data-quest-claim')){var p=t.getAttribute('data-quest-claim').split(':');claimQuest(p[0],p[1]);return}if(t.hasAttribute('data-quest-go'))questGo(t.getAttribute('data-quest-go'))});"
+          need(bind,quest_bind,'quest delegated listener')
+
+          # New-game reload should point at this version.
+          s=s.replace("?v=560&fresh=", "?v=590&fresh=", 1)
+
+          # Validate no player-facing implementation note slipped in and required hooks exist.
+          required=["QUEST_SYSTEM_VERSION='5.9'",'id="questSheet"','function updateQuestIndicator()','function achievementDefs()','function settleDailyTaskRewards()']
+          for x in required:
+              if x not in s: raise RuntimeError('missing generated marker '+x)
+          bad=['银河信号漫游','参考崩铁','prompt','提示词','ChatGPT']
+          for x in bad:
+              if x in quest_html+js: raise RuntimeError('player-facing reference leak '+x)
+
+          path.write_text(s,encoding='utf-8')
+          PY
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('games/jinwan-youtao/index.html').read_text(encoding='utf-8')
+          blocks=re.findall(r'<script>(.*?)</script>',s,re.S)
+          if not blocks: raise SystemExit('no script block')
+          Path('/tmp/jinwan.js').write_text('\n'.join(blocks),encoding='utf-8')
+          PY
+          node --check /tmp/jinwan.js
+          grep -q "QUEST_SYSTEM_VERSION='5.9'" games/jinwan-youtao/index.html
+          grep -q 'id="questSheet"' games/jinwan-youtao/index.html
+          grep -q '零客诉的一天' games/jinwan-youtao/index.html
+          git diff --check
+
+      - name: Commit v5.9
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html
+          git commit -m 'feat: add guided tasks and achievements v5.9 [skip ci]'
+          git push
