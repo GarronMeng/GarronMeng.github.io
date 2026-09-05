@@ -16,7 +16,7 @@ export function mountShell(root:HTMLElement,store:Store){
    const guest=s.guests.find(g=>g.id===e.guestId);
    show('HYATT PLACE · '+floor.label,`<h2>${e.number}<span>${e.type==='suite'?'开放式套房':e.type==='twin'?'双床客房':'大床客房'}</span></h2><div class="status-chip status-${e.status}">${ROOM_STATUS[e.status]}</div><dl><div><dt>住客</dt><dd>${guest?guest.name+' · '+guest.tier:'暂无在住客人'}</dd></div><div><dt>剩余住宿</dt><dd>${e.nightsLeft?e.nightsLeft+' 晚':'—'}</dd></div><div><dt>楼层</dt><dd>${floor.label} · ${floor.name}</dd></div></dl>${guest?'<blockquote>“'+guest.thought+'”</blockquote>':''}<p class="phase-note">当前为独立空间预览。接待、清洁与收益将在视觉验收后接入。</p><button class="primary" data-return="${floor.id}">回到 ${e.number} 的楼层</button>`);
   }else{
-   const meanings={lobby:'前台、等候区与行李车共同构成入住动线。',breakfast:'自助餐台、咖啡区与餐桌分别安排在真实空间中。',club:'吧台与休息区相连，住客能在酒廊中活动。',gym:'跑步机、单车、瑜伽区和毛巾架组成健身空间。',rooftop:'露台、遮阳伞、植物和座椅形成屋顶花园。'};
+   const meanings={spa:'水疗床、毛巾和柔和灯光组成独立休憩空间。',lobby:'前台、等候区与行李车共同构成入住动线。',breakfast:'自助餐台、咖啡区与餐桌分别安排在真实空间中。',club:'吧台与休息区相连，住客能在酒廊中活动。',gym:'跑步机、单车、瑜伽区和毛巾架组成健身空间。',rooftop:'露台、遮阳伞、植物和座椅形成屋顶花园。'};
    show('HYATT PLACE · '+floor.label,`<h2>${e.name}</h2><p>${meanings[e.role]}</p><dl><div><dt>使用人数（演示）</dt><dd>${e.usage} / ${e.capacity}</dd></div><div><dt>当班员工（演示）</dt><dd>${e.staffing} 人</dd></div><div><dt>服务品质 / 维护（演示）</dt><dd>${e.quality} / ${e.maintenance}</dd></div></dl><p class="phase-note">本阶段展示空间与交互，以上为场景样本数据。</p><button class="primary" data-return="${floor.id}">回到${e.name}</button>`);
   }
  };

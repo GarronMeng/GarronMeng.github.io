@@ -1,3 +1,6 @@
+import {initGuest,tickGuest,depart,checkoutMemory} from './guestAI';
+import {travel,beginMovementFrame,recordMovementFrame,shiftMovementFloors,hotelTime} from './guestMovement';
+import {cue} from './guestDialogue';
 import {dailyTasks,track,initDevelopment,developmentCommand,advanceDevelopment,scores} from './progression';
 import type {PreviewState,Command,Department,Guest,Room,LogCategory} from '../state/types';
 import {createVisualFixture} from '../state/fixture';
@@ -18,17 +21,17 @@ export function newGame():PreviewState {
  s.guests=s.guests.filter(g=>g.staff||g.roomId);s.game={day:1,minute:480,paused:false,seed:20260905,nextId:100,nextArrival:490,nextEvent:650,price:650,positioning:'business',weather:'sunny',stock:32,clubStock:25,managers:{front:0,house:0,engineering:0,fnb:0,revenue:0},logs:[],events:[],tasks:tasks(1),reports:[],reportOpen:false,revenue:0,expense:0,nights:0,arrivals:0,upgrades:0,complaints:0,lost:0,repLoss:0,roomMinutes:0,soldMinutes:0,closedMinutes:0,memory:{},level:1,notice:'欢迎接班：前台接待，空房翻房，套房留给合适的人。'};
  for(const guest of s.guests)if(guest.roomId){const r=s.entities[guest.roomId] as Room;guest.stayLength=r.nightsLeft;guest.checkoutDay=1+r.nightsLeft;guest.rate=r.type==='suite'?900:650;guest.satisfaction=90;guest.segment='商务';}
  for(const r of rooms(s)){r.level=1;if(r.status==='cleaning')r.timer=20;}
- initDevelopment(s);arrival(s);log(s,'部门','Hyatt Place 正式开业。4× 已开放；关闭面板后时间继续。');updateUsage(s);return s;
+ initDevelopment(s);s.guests.forEach(g=>initGuest(s,g));arrival(s);log(s,'部门','Hyatt Place 正式开业。4× 已开放；关闭面板后时间继续。');updateUsage(s);return s;
 }
 function arrival(s:PreviewState){const g=s.game!,r=random(s),name=['陈','林','何','张','周','王','李','赵'][Math.floor(random(s)*8)]+'先生';
  const tier=r<.27?'Globalist':r<.5?'Explorist':r<.8?'Member':'普通客';const holiday=g.positioning==='resort'||((g.day-1)%7>=4&&random(s)<.65);
  const stay=holiday?2+Math.floor(random(s)*4):random(s)<.22?5+Math.floor(random(s)*3):1+Math.floor(random(s)*3);
  const q:Guest={id:'guest-'+g.nextId++,name,tier,floorId:'floor-lobby',thought:tier==='Globalist'?'今晚有套吗？':'想住 '+stay+' 晚',color:0x36566a,route:[-2.5,2.5],z:1.7,segment:holiday?'度假':stay>=5?'长住':'商务',stayLength:stay,patience:100+g.managers.front*50+((s.entities['facility-lobby'].kind==='facility'?s.entities['facility-lobby'].level:1)??1)*10,satisfaction:90+(g.memory[name]??0)};
- s.guests.push(q);g.arrivals++;log(s,'入住',`${name} · ${tier} 到店，计划 ${stay} 晚${g.memory[name]?'，一位熟客回来了':''}。`,'facility-lobby');
+ initGuest(s,q);q.goh=tier==='Globalist'&&random(s)<.12;q.sua=tier==='Globalist'&&!q.goh&&random(s)<.15;cue(s,q,'arrival');s.guests.push(q);g.arrivals++;log(s,'入住',`${name} · ${tier} 到店，计划 ${stay} 晚${g.memory[name]?'，一位熟客回来了':''}。`,'facility-lobby');
 }
-export const queue=(s:Readonly<PreviewState>)=>s.guests.filter(g=>!g.staff&&!g.roomId);
-export function updateUsage(s:PreviewState){for(const e of Object.values(s.entities))if(e.kind==='facility'){e.usage=s.guests.filter(g=>!g.staff&&g.floorId===e.floorId).length;e.staffing=s.guests.filter(g=>g.staff&&g.floorId===e.floorId).length;}}
-function home(s:PreviewState,g:Guest){if(!g.roomId)return;const r=s.entities[g.roomId] as Room;g.floorId=r.floorId;const x=(Number(r.number)%100-2)*4.93;g.route=[x-.8,x+.8];g.z=1.12;g.visitUntil=undefined;g.thought=r.type==='suite'?'这个房间真宽敞':'住得很舒服';}
+export const queue=(s:Readonly<PreviewState>)=>s.guests.filter(g=>!g.staff&&!g.roomId&&!g.departing);
+export function updateUsage(s:PreviewState){for(const e of Object.values(s.entities))if(e.kind==='facility'){e.usage=s.guests.filter(g=>!g.staff&&!g.departing&&g.floorId===e.floorId&&g.movement?.position.phase==='public'&&!g.movement.steps.length).length;e.staffing=s.guests.filter(g=>g.staff&&g.floorId===e.floorId).length;}}
+function home(s:PreviewState,g:Guest){if(g.roomId)travel(s,g,g.roomId);}
 function settle(s:PreviewState){const g=s.game!,rs=rooms(s);let revenue=0,nights=0;
  for(const guest of s.guests)if(guest.roomId){revenue+=guest.rate??g.price;nights++;}income(s,revenue);g.nights=nights;
  const cost=380+rs.length*65+Object.values(g.managers).reduce((a,b)=>a+b*180,0);s.metrics.cash-=cost;g.expense+=cost;
@@ -41,6 +44,8 @@ function settle(s:PreviewState){const g=s.game!,rs=rooms(s);let revenue=0,nights
 }
 function nextDay(s:PreviewState){const g=s.game!;g.day++;g.minute=420;g.nextArrival=450;g.nextEvent=600;g.weather=random(s)<.25?'rain':'sunny';g.revenue=g.expense=g.nights=g.arrivals=g.upgrades=g.complaints=g.lost=g.repLoss=g.roomMinutes=g.soldMinutes=g.closedMinutes=0;g.reportOpen=false;g.paused=false;g.tasks=tasks(g.day);for(const r of rooms(s))if(r.guestId){const guest=s.guests.find(a=>a.id===r.guestId);r.nightsLeft=Math.max(0,(guest?.checkoutDay??g.day)-g.day);}if(g.managers.revenue)g.price=Math.round((demand(s)>1.1?750:590)*(1+g.level*.04+(g.managers.revenue-1)*.06));log(s,'部门',`${weekday(g.day)} 开始。${g.weather==='rain'?'今天有雨。':''}预计需求 ${Math.round(demand(s)*100)}%。`);}
 export function advanceGame(s:PreviewState,minutes:number){const g=s.game;if(!g||g.paused)return;
+ const effects={income:(n:number)=>income(s,n),reputation:(n:number)=>reputation(s,n),log:(category:LogCategory,text:string,target?:string)=>log(s,category,text,target),progress:(id:string,n=1)=>progress(s,id,n)};
+ beginMovementFrame(s);
  for(let t=0;t<minutes&&!g.paused;t++){
   g.minute++;advanceDevelopment(s);const rs=rooms(s);g.roomMinutes+=rs.length;g.soldMinutes+=rs.filter(r=>r.status==='occupied').length;g.closedMinutes+=rs.filter(r=>['dirty','cleaning','maintenance'].includes(r.status)).length;
   s.atmosphere=g.minute<1020?'day':g.minute<1170?'dusk':'night';
@@ -50,16 +55,14 @@ export function advanceGame(s:PreviewState,minutes:number){const g=s.game;if(!g|
   }
   for(const guest of [...s.guests]){
    if(guest.staff)continue;
-   if(!guest.roomId){guest.patience=(guest.patience??100)-1;if(guest.patience<=0){s.guests=s.guests.filter(a=>a.id!==guest.id);g.lost++;g.complaints++;reputation(s,-1);log(s,'客诉',`${guest.name} 等待过久离店，失去一笔预订。`,'facility-lobby');}continue;}
-   const r=s.entities[guest.roomId] as Room;
-   if((guest.checkoutDay??99)<=g.day&&g.minute>=660){r.status='dirty';r.guestId=undefined;r.nightsLeft=0;g.memory[guest.name]=(guest.satisfaction??90)>=80?Math.min(5,(g.memory[guest.name]??0)+1):0;s.guests=s.guests.filter(a=>a.id!==guest.id);log(s,'入住',`${guest.name} 退房，${r.number} 等待翻房。`,r.id);continue;}
-   if(guest.visitUntil&&g.minute>=guest.visitUntil)home(s,guest);
-   if(!guest.visitUntil&&g.minute%45===0){let role=g.minute<630?'breakfast':g.minute>=1020&&g.minute<1260?'club':g.minute>=1260?'rooftop':'gym';if(role==='club'&&guest.tier==='普通客')role='rooftop';const f=s.entities['facility-'+role];if(f?.kind==='facility'&&random(s)<.6){
-    if(f.usage>=f.capacity){guest.thought='这里有点挤';guest.satisfaction=(guest.satisfaction??90)-1;continue;}
-    guest.floorId=f.floorId;guest.route=[-5+random(s)*3,2+random(s)*3];guest.z=1.2;guest.visitUntil=g.minute+35;guest.thought={breakfast:'来一杯咖啡',club:'酒廊休息一下',rooftop:'这风景真好',gym:'运动一下'}[role]??'休息一下';
-    if(role==='breakfast'||role==='club'){const key=role==='breakfast'?'stock':'clubStock';if(g[key]>0){g[key]--;guest.satisfaction=Math.min(100,(guest.satisfaction??90)+(f.level??1));if(role==='club'&&guest.tier!=='Globalist'){const n=Math.round(80*(1+((f.level??1)-1)*.2));income(s,n);track(s,'ancillary',n);};}else{guest.thought='怎么没东西吃了';guest.satisfaction=(guest.satisfaction??90)-5;if(g.minute%90===0){g.complaints++;reputation(s,-1);log(s,'客诉',`${f.name} 缺货，${guest.name} 不满意。`,f.id);}}}else if(role==='rooftop'||role==='gym'){const n=Math.round((role==='gym'?20:45)*(1+((f.level??1)-1)*.2));income(s,n);track(s,'ancillary',n);guest.satisfaction=Math.min(100,(guest.satisfaction??90)+(f.level??1));}
-    f.maintenance=Math.max(0,f.maintenance-.1);updateUsage(s);
-   }}
+   tickGuest(s,guest,()=>random(s),effects);recordMovementFrame(guest);
+   if(guest.departing){if(guest.exitAt!==undefined&&hotelTime(s)-guest.exitAt>30)s.guests=s.guests.filter(a=>a.id!==guest.id);continue;}
+   if(!guest.roomId){guest.patience=(guest.patience??100)-1;if(guest.patience<=0){depart(s,guest);g.lost++;g.complaints++;reputation(s,-1);log(s,'客诉',`${guest.name} 等待过久离店，失去一笔预订。`,'facility-lobby');}continue;}
+   const r=s.entities[guest.roomId] as Room,checkoutMinute=guest.late==='honor'?960:guest.late==='deny'||guest.late==='pending'?840:660;
+   if((guest.checkoutDay??99)<=g.day&&g.minute>=checkoutMinute&&!guest.movement!.steps.length){
+    if(guest.late==='pending'){guest.late='deny';log(s,'客诉',`${guest.name} 的 4PM 未确认，按 14:00 退房。`,r.id);reputation(s,-1);}
+    checkoutMemory(s,guest,effects);r.status='dirty';r.guestId=undefined;r.nightsLeft=0;g.memory[guest.name]=(guest.satisfaction??90)>=80?Math.min(5,(g.memory[guest.name]??0)+1):0;guest.roomId=undefined;depart(s,guest);log(s,'入住',`${guest.name} 退房，${r.number} 等待 Housekeeping 翻房。`,r.id);
+   }
   }
   if(g.managers.front){const guest=queue(s)[0],r=rs.find(r=>r.status==='available'&&(guest?.tier==='Globalist'||r.type!=='suite'))??rs.find(r=>r.status==='available');if(guest&&r){execute(s,{type:'checkin',id:guest.id,roomId:r.id});progress(s,'delegate');}}
   if(g.managers.fnb&&g.minute%30===0){for(const key of ['stock','clubStock'] as const)if(g[key]<20&&pay(s,Math.max(140,260-g.managers.fnb*20))){g[key]+=40;progress(s,'delegate');log(s,'部门','餐饮主管已自动补货。','facility-breakfast');}}
@@ -75,9 +78,9 @@ export function advanceGame(s:PreviewState,minutes:number){const g=s.game;if(!g|
 export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if(developmentCommand(s,c))return;const e=c.id?s.entities[c.id]:undefined;const r=e?.kind==='room'?e:null;
  switch(c.type){
  case 'checkin':{const guest=queue(s).find(a=>a.id===c.id),room=s.entities[c.roomId??''];if(!guest||room?.kind!=='room'||!(room.status==='available'||room.status==='reserved'&&guest.tier==='Globalist')){g.notice='住客或房态已变化，请重新选择。';break;}
-  guest.roomId=room.id;guest.checkoutDay=g.day+(guest.stayLength??2);guest.rate=Math.round(g.price*(room.type==='suite'?(guest.tier==='Globalist'?1:1.45):1)*(1+((room.level??1)-1)*.1));guest.upgrades=room.type==='suite'&&guest.tier==='Globalist';if(guest.upgrades){g.upgrades++;progress(s,'vip');reputation(s,1);}else if(guest.tier==='Globalist'&&rooms(s).some(a=>a.type==='suite'&&a.status==='available'))reputation(s,-1);
-  room.status='occupied';room.guestId=guest.id;room.nightsLeft=guest.stayLength??2;home(s,guest);progress(s,'arrivals');log(s,'入住',`${guest.name} 入住 ${room.number} · ${room.nightsLeft} 晚 · ¥${guest.rate}/晚${guest.upgrades?'，会员升套':''}。`,room.id);break;}
- case 'reject':{const guest=queue(s).find(a=>a.id===c.id);if(guest){s.guests=s.guests.filter(a=>a.id!==guest.id);g.lost++;log(s,'入住',`已为 ${guest.name} 婉拒本次入住。`,'facility-lobby');}break;}
+  guest.roomId=room.id;guest.checkoutDay=g.day+(guest.stayLength??2);guest.rate=Math.round(g.price*(room.type==='suite'?(guest.tier==='Globalist'?1:1.45):1)*(1+((room.level??1)-1)*.1));guest.upgrades=room.type==='suite'&&guest.tier==='Globalist';guest.denied=guest.tier==='Globalist'&&room.type!=='suite';if(guest.upgrades){g.upgrades++;progress(s,'vip');reputation(s,1);}else if(guest.tier==='Globalist'&&rooms(s).some(a=>a.type==='suite'&&a.status==='available'))reputation(s,-1);
+  room.status='occupied';room.guestId=guest.id;room.nightsLeft=guest.stayLength??2;home(s,guest);cue(s,guest,guest.denied?'denied':'checkin');progress(s,'arrivals');log(s,'入住',`${guest.name} 入住 ${room.number} · ${room.nightsLeft} 晚 · ¥${guest.rate}/晚${guest.upgrades?'，会员升套':''}。`,room.id);break;}
+ case 'reject':{const guest=queue(s).find(a=>a.id===c.id);if(guest){depart(s,guest);cue(s,guest,'denied');g.lost++;log(s,'入住',`已为 ${guest.name} 婉拒本次入住。`,'facility-lobby');}break;}
  case 'clean':if(r?.status==='dirty'&&pay(s,90)){r.status='cleaning';r.timer=30;log(s,'房态',`${r.number} 开始清洁，约 30 游戏分钟。`,r.id);}break;
  case 'repair':if(r?.status==='maintenance'&&!r.timer&&pay(s,180)){r.timer=40;log(s,'房态',`${r.number} 开始维修。`,r.id);}else if(e?.kind==='facility'&&pay(s,200)){e.maintenance=100;log(s,'房态',`${e.name} 维护完成。`,e.id);}break;
  case 'upgrade':if(r?.status==='available'&&(r.level??1)<5&&pay(s,2500*(r.level??1))){r.level=(r.level??1)+1;progress(s,'upgrade');log(s,'升级',`${r.number} 装修至 ${r.level} 级，提高房价。`,r.id);}break;
@@ -86,7 +89,10 @@ export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if
  case 'hire':{const dept=c.id as Department;if(!Object.hasOwn(DEPARTMENTS,dept)||g.managers[dept])break;if(pay(s,3800)){g.managers[dept]=1;progress(s,'delegate');log(s,'部门',`${DEPARTMENTS[dept]}主管到岗，常规工作将按 SOP 自动处理。`);}break;}
  case 'stock':{const key=c.id==='club'?'clubStock':'stock';if(g[key]>=120){g.notice='库存充足，不必继续采购。';break;}if(pay(s,300)){g[key]=Math.min(160,g[key]+50);progress(s,'stock');log(s,'部门',`${key==='stock'?'早餐':'酒廊'}已补货 50 份。`,'facility-'+(key==='stock'?'breakfast':'club'));}break;}
  case 'resolve':{const event=g.events.find(a=>a.id===Number(c.id));if(!event)break;const dept=event.kind==='repair'?'engineering':event.kind==='supplies'?'fnb':'front';const sop=c.value==='sop';if(sop&&!g.managers[dept]){g.notice='需要先聘任对应部门主管。';break;}if(!pay(s,sop?150:350))break;g.events=g.events.filter(a=>a.id!==event.id);const room=s.entities[event.target];if(event.kind==='repair'&&room?.kind==='room'&&room.status==='maintenance'){room.status='available';room.timer=undefined;progress(s,'service');}if(event.kind==='supplies')g.stock+=25;progress(s,'resolve');reputation(s,sop?2:1);s.metrics.owner=Math.min(100,s.metrics.owner+1);if(sop)progress(s,'delegate');log(s,'部门',`${sop?'部门 SOP':'经理亲自协调'}解决「${event.title}」，口碑 +${sop?2:1}。`,event.target);break;}
- case 'expand':{const guestFloors=s.floors.filter(f=>f.role==='guest');if(!pay(s,10000+5000*(guestFloors.length-3)))break;const no=guestFloors.length+2,floor={id:'floor-'+no,number:no,label:no+'F',name:'客房',role:'guest' as const,entityIds:[] as string[]};for(let c=1;c<=3;c++){const number=String(no*100+c),id='room-'+number;floor.entityIds.push(id);s.entities[id]={id,kind:'room',floorId:floor.id,number,type:c===3?'suite':'king',status:'available',nightsLeft:0,level:1};}s.floors.splice(2+guestFloors.length,0,floor);s.floors.forEach((f,i)=>{f.number=i;f.label=f.role==='lobby'?'L':f.role==='rooftop'?'RF':i+'F';});g.level++;log(s,'升级',`${floor.label} 客房层竣工：新增 3 间客房，公区与屋顶同步上移。`,floor.entityIds[0]);break;}
+ case 'expand':{const guestFloors=s.floors.filter(f=>f.role==='guest');if(!pay(s,10000+5000*(guestFloors.length-3)))break;const no=guestFloors.length+2,floor={id:'floor-'+no,number:no,label:no+'F',name:'客房',role:'guest' as const,entityIds:[] as string[]};for(let c=1;c<=3;c++){const number=String(no*100+c),id='room-'+number;floor.entityIds.push(id);s.entities[id]={id,kind:'room',floorId:floor.id,number,type:c===3?'suite':'king',status:'available',nightsLeft:0,level:1};}shiftMovementFloors(s,2+guestFloors.length);s.floors.splice(2+guestFloors.length,0,floor);s.floors.forEach((f,i)=>{f.number=i;f.label=f.role==='lobby'?'L':f.role==='rooftop'?'RF':i+'F';});g.level++;log(s,'升级',`${floor.label} 客房层竣工：新增 3 间客房，公区与屋顶同步上移。`,floor.entityIds[0]);break;}
+ case 'late':{const guest=s.guests.find(g=>g.id===c.id);if(!guest?.roomId||guest.late!=='pending')break;guest.late=c.value==='honor'?'honor':'deny';guest.satisfaction=Math.max(0,Math.min(100,(guest.satisfaction??90)+(guest.late==='honor'?4:-3)));cue(s,guest,guest.late==='honor'?'late-honor':'late-deny');log(s,'入住',`${guest.name} 已确认 ${guest.late==='honor'?'4PM':'14:00'} 退房。`,guest.roomId);break;}
+ case 'guest-service':{const guest=s.guests.find(g=>g.id===c.id);if(!guest?.roomId||guest.serviceDone)break;if(pay(s,120)){guest.serviceDone=true;guest.satisfaction=Math.min(100,(guest.satisfaction??90)+6);cue(s,guest,'recovery');progress(s,'resolve');log(s,'部门',`${guest.name} 的个性化服务已安排：${guest.thought}`,guest.roomId);}break;}
+ case 'build-spa':{if(s.entities['facility-spa'])break;if(pay(s,12000)){const index=s.floors.findIndex(f=>f.role==='rooftop');shiftMovementFloors(s,index);s.floors.splice(index,0,{id:'floor-spa',number:index,label:index+'F',name:'水疗',role:'spa',entityIds:['facility-spa']});s.entities['facility-spa']={id:'facility-spa',kind:'facility',floorId:'floor-spa',role:'spa',name:'Spa 水疗',capacity:6,usage:0,staffing:0,quality:92,maintenance:100,level:1};s.floors.forEach((f,i)=>{f.number=i;f.label=f.role==='lobby'?'L':f.role==='rooftop'?'RF':i+'F';});log(s,'升级','Spa 水疗开业：住客会按偏好预约到访。','facility-spa');}break;}
  case 'price':g.price=Math.max(350,Math.min(1800,Math.round(Number(c.value)||650)));log(s,'收益',`新客挂牌价调整至 ¥${g.price}，已入住客人价格不变。`);break;
  case 'position':if(['business','resort','urban'].includes(String(c.value))){g.positioning=c.value as typeof g.positioning;log(s,'收益','酒店定位已调整，星期需求与住宿长度随之变化。');}break;
  case 'pause':g.paused=!g.paused;break;

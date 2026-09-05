@@ -51,6 +51,13 @@ export function facilityFactory(role:FacilityRole){const g=new T.Group();
   box(g,5.45,.68,-.8,2.8,.07,.58,m.black);for(let x=4.2;x<6.8;x+=.46){cyl(g,x,.82,-.8,.13,.16,m.black);}
   for(const x of [3.65,5.2])box(g,x,.12,.61,1.08,.025,1.68,m.teal);
   plant(g,6.93,.82,1.2);box(g,2.76,.4,-.87,.6,.7,.53,m.walnut);for(let i=0;i<3;i++)box(g,2.76,.79+i*.065,-.87,.46,.065,.4,m.white);
+ }else if(role==='spa'){
+  windows(g,-7.2,7.2);
+  for(const x of [-4.8,0,4.8]){
+   box(g,x,.4,0,1.7,.6,2.05,m.walnut);box(g,x,.76,0,1.8,.14,2.1,m.white);box(g,x,.87,-.6,1.15,.12,.45,m.white);
+   box(g,x,.86,.4,1.8,.03,.7,m.teal);plant(g,x+1.2,-.9,1.1);lamp(g,x-1.2,.05,-.9,1.4);
+   for(let i=0;i<3;i++)box(g,x+1.2,.15+i*.06,.75,.5,.06,.32,m.white);
+  }
  }else{
   box(g,0,.03,0,15,.14,3.6,m.wood);for(let x=-7.3;x<7.4;x+=.24)box(g,x,.11,0,.017,.006,3.45,m.walnut);
   for(const x of [-6.65,-2.45,2.8,6.9])plant(g,x,-.8,1.45);

@@ -1,3 +1,4 @@
+import {PERSONAS} from '../content/personas';
 import * as T from 'three';
 import type {Store,PreviewState} from '../state/types';
 import {FLOOR_HEIGHT} from '../content/place';
@@ -32,6 +33,7 @@ export class HotelWorld {
  }
  private build(){
   const s=this.store.getState();
+  this.light.position.y=this.layout.height+5;this.light.target.position.y=this.layout.height/2;this.light.shadow.camera.top=this.layout.height/2+5;this.light.shadow.camera.bottom=-this.layout.height/2-5;this.light.shadow.camera.far=this.layout.height+45;this.light.shadow.camera.updateProjectionMatrix();
   // Cool city outside the section. It is real geometry, not a backdrop image.
   for(let i=0;i<18;i++){
    const x=-19+i*2.3,h=3+(Math.sin(i*7)+1)*3.3,z=-6-(i%3)*2.4;
@@ -65,12 +67,6 @@ export class HotelWorld {
   batchStatic(this.root);
   const brand=document.createElement('div');brand.className='lobby-sign';brand.innerHTML='<i><b></b><b></b><b></b><b></b><b></b><b></b></i><span>HYATT PLACE</span>';brand.dataset.anchor='brand';this.overlay.append(brand);
   const topBrand=document.createElement('div');topBrand.className='roof-sign';topBrand.textContent='HYATT PLACE';topBrand.dataset.anchor='roof';this.overlay.append(topBrand);
-  const add=(floorId:string,start:number,end:number,z:number,color:number,thought:string,walking=true)=>{
-   const y=this.layout.floorY.get(floorId);if(y===undefined)return;
-   const a=actorFactory(color);const actor:Actor={...a,start,end,z,floorY:y+.07,phase:this.actors.length*1.618,walking,thought};this.scene.add(a.group);this.actors.push(actor);
-   const bubble=document.createElement('button');bubble.className='thought';bubble.textContent=thought;bubble.setAttribute('aria-label','住客想法：'+thought);bubble.onclick=()=>{const id=this.store.getState().floors.find(f=>f.id===floorId)?.entityIds[0];if(id)this.store.select(id);};this.overlay.append(bubble);this.bubbles.push({el:bubble,actor,index:this.actors.length});
-  };
-  s.guests.forEach(g=>{add(g.floorId,g.route[0],g.route[1],g.z??1.12,g.color,g.thought,g.route[0]!==g.route[1]);this.actors[this.actors.length-1].guestId=g.id;});
   const selectMat=new T.MeshBasicMaterial({color:0xffd78d,transparent:true,opacity:.9,depthTest:false});
   box(this.halo,0,0,0,4.7,.025,.025,selectMat);box(this.halo,0,2.31,0,4.7,.025,.025,selectMat);box(this.halo,-2.35,1.15,0,.025,2.31,.025,selectMat);box(this.halo,2.35,1.15,0,.025,2.31,.025,selectMat);this.halo.visible=false;
  }
@@ -101,7 +97,9 @@ export class HotelWorld {
   const r=this.overlay.querySelector<HTMLElement>('[data-anchor=roof]');if(r)this.position(r,new T.Vector3(3.2,this.layout.height-.85,-.9));
  }
  private update(s:Readonly<PreviewState>){
-  const key=this.key(s);if(key!==this.visualKey){this.visualKey=key;this.root.traverse(o=>{if(o instanceof T.InstancedMesh)o.dispose();});this.scene.remove(this.root);this.actors.forEach(a=>a.group.removeFromParent());this.colliders.forEach(c=>{c.geometry.dispose();(c.material as T.Material).dispose();});this.colliders=[];this.actors=[];this.bubbles=[];this.labels=[];this.floorLabels=[];this.overlay.replaceChildren();this.halo.clear();this.root=new T.Group();this.scene.add(this.root);this.layout=sceneLayout(s);this.build();this.resize();}
+  const key=this.key(s);if(key!==this.visualKey){this.visualKey=key;this.root.traverse(o=>{if(o instanceof T.InstancedMesh)o.dispose();});this.scene.remove(this.root);this.colliders.forEach(c=>{c.geometry.dispose();(c.material as T.Material).dispose();});this.colliders=[];this.labels=[];this.floorLabels=[];this.overlay.replaceChildren();this.halo.clear();this.root=new T.Group();this.scene.add(this.root);
+ const oldFloorIds=[...this.layout.floorY.keys()];const rebase=(p:T.Vector3)=>{const index=Math.floor((p.y-.07)/FLOOR_HEIGHT+.00001),id=oldFloorIds[index],next=s.floors.findIndex(f=>f.id===id);if(next>=0)p.y+=(next-index)*FLOOR_HEIGHT;};
+ this.actors.forEach(a=>{rebase(a.group.position);a.navigation?.points.forEach(rebase);});this.layout=sceneLayout(s);this.build();this.bubbles.forEach(b=>this.overlay.append(b.el));this.resize();}
   this.syncGuests(s);
   this.host.dataset.atmosphere=s.atmosphere;this.light.intensity=s.atmosphere==='night'?1.65:s.atmosphere==='day'?3.6:2.6;this.ambient.intensity=s.atmosphere==='night'?1.35:s.atmosphere==='day'?2.7:2.1;
   this.ambient.color.setHex(s.atmosphere==='night'?0x6b99c1:0xbdd5ed);
@@ -112,7 +110,16 @@ export class HotelWorld {
  private syncGuests(s:Readonly<PreviewState>){
   for(const a of [...this.actors])if(!s.guests.some(g=>g.id===a.guestId)){a.group.removeFromParent();this.actors=this.actors.filter(x=>x!==a);this.bubbles.filter(b=>b.actor===a).forEach(b=>b.el.remove());this.bubbles=this.bubbles.filter(b=>b.actor!==a);}
   for(const g of s.guests){let a=this.actors.find(a=>a.guestId===g.id);if(!a){const parts=actorFactory(g.color);a={...parts,guestId:g.id,start:0,end:0,floorY:0,z:1.12,phase:this.actors.length*1.618,walking:true,thought:g.thought};this.scene.add(a.group);this.actors.push(a);const el=document.createElement('button');el.className='thought';el.onclick=()=>this.store.select(g.roomId??'facility-lobby');this.overlay.append(el);this.bubbles.push({el,actor:a,index:this.actors.length});}
-   a.start=g.route[0];a.end=g.route[1];a.z=g.z??1.12;a.floorY=(this.layout.floorY.get(g.floorId)??0)+.07;a.walking=a.start!==a.end;a.thought=g.thought;const b=this.bubbles.find(b=>b.actor===a);if(b){b.el.textContent=g.thought;b.el.setAttribute('aria-label','住客想法：'+g.thought);}
+   a.start=g.route[0];a.end=g.route[1];a.z=g.z??1.12;a.floorY=(this.layout.floorY.get(g.floorId)??0)+.07;a.walking=a.start!==a.end;a.thought=g.thought;
+   if(g.movement){const m=g.movement;
+    if(!a.navigation){const p=m.trail[0]??m.position;a.group.position.set(p.x,p.level*FLOOR_HEIGHT+.07,p.z);}
+    if(a.navigation?.revision!==m.revision){const points=(m.trail.length?m.trail:[m.position]).map(p=>new T.Vector3(p.x,p.level*FLOOR_HEIGHT+.07,p.z));
+     // Finish any unpainted route before consuming a newer tick; never cut across a wall.
+     if(a.navigation&&a.navigation.elapsed<a.navigation.duration){const n=a.navigation,cursor=n.elapsed/n.duration*(n.points.length-1);points.unshift(...n.points.slice(Math.floor(cursor)+1));}
+     points.unshift(a.group.position.clone());a.navigation={revision:m.revision,points,elapsed:0,duration:1};
+    }
+   }
+const b=this.bubbles.find(b=>b.actor===a);if(b){b.el.textContent=(g.persona?PERSONAS[g.persona].name+'：':'')+g.thought;b.el.setAttribute('aria-label','住客想法：'+g.thought);}
   }
  }
  focusFloor(id:string){const y=this.layout.floorY.get(id);if(y===undefined)return;const full=parseFloat(this.spacer.style.height);const target=full-(y+1.3)*this.scale-this.host.clientHeight/2;this.scroll.scrollTo({top:Math.max(0,target),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
@@ -120,9 +127,9 @@ export class HotelWorld {
   this.raf=requestAnimationFrame(this.frame);if(this.paused||!this.visible)return;
   const dt=this.last?Math.min((now-this.last)/1000,.05):0;this.last=now;this.time+=dt*this.store.getState().speed;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  this.actors.forEach(a=>moveActor(a,reduced?0:this.time));
+  this.actors.forEach(a=>moveActor(a,reduced?0:this.time,dt));
   if(now-this.lastPaint>90){this.lastPaint=now;this.bubbles.forEach(({el,actor,index})=>{
-   const active=(Math.floor(this.time/5)+index)%7===0;el.style.display=active?'block':'none';if(active)this.position(el,actor.group.position.clone().add(new T.Vector3(-.6,1.25,0)));
+   const active=!!actor.thought&&(Math.floor(this.time/5)+index)%5===0;el.style.display=active?'block':'none';if(active)this.position(el,actor.group.position.clone().add(new T.Vector3(-.6,1.25,0)));
   });}
   this.renderer.render(this.scene,this.camera);
  };
