@@ -21,19 +21,22 @@ jobs:
           import re
           p=Path('games/jinwan-youtao/index.html')
           s=p.read_text(encoding='utf-8')
-          old=re.compile(r"function updateQuestIndicator\(\)\{.*?\n\}\n\nfunction occupancy\(\)",re.S)
-          new=r'''function updateQuestIndicator(){
-  ensureQuestState();var q=mainQuestDefs(),idx=mainQuestIndex(),ready=questReadyCount(),g=$('goalStrip'),rb=$('reportBtn'),phase=$('phaseLabel'),goal=$('dailyGoalText'),score=$('dailyScore');
-  if(g){
-    if(idx<q.length){var m=q[idx],v=m.progress(),done=v>=m.target;if(phase)phase.textContent='任务';if(goal)goal.textContent=m.title;if(score)score.textContent=done?'领取 '+questRewardText(m.reward):Math.min(v,m.target)+'/'+m.target;g.title=m.desc}
-    else{if(phase)phase.textContent='任务';if(goal)goal.textContent='主线完成';if(score)score.textContent='今日 / 成就 ›';g.title='查看今日任务和长期成就'}
-    g.classList.toggle('questready',ready>0)
-  }
-  if(rb){rb.innerHTML='<span>📋</span>任务'+(ready?'<small>'+ready+' 可领</small>':'');rb.classList.toggle('alert',ready>0)}
-}
-
-function occupancy()'''
-          s2,n=old.subn(new,s,count=1)
+          pat=re.compile(r"function updateQuestIndicator\(\)\{.*?\n\}\n\nfunction occupancy\(\)",re.S)
+          lines=[
+            "function updateQuestIndicator(){",
+            "  ensureQuestState();var q=mainQuestDefs(),idx=mainQuestIndex(),ready=questReadyCount(),g=$('goalStrip'),rb=$('reportBtn'),phase=$('phaseLabel'),goal=$('dailyGoalText'),score=$('dailyScore');",
+            "  if(g){",
+            "    if(idx<q.length){var m=q[idx],v=m.progress(),done=v>=m.target;if(phase)phase.textContent='任务';if(goal)goal.textContent=m.title;if(score)score.textContent=done?'领取 '+questRewardText(m.reward):Math.min(v,m.target)+'/'+m.target;g.title=m.desc}",
+            "    else{if(phase)phase.textContent='任务';if(goal)goal.textContent='主线完成';if(score)score.textContent='今日 / 成就 ›';g.title='查看今日任务和长期成就'}",
+            "    g.classList.toggle('questready',ready>0)",
+            "  }",
+            "  if(rb){rb.innerHTML='<span>📋</span>任务'+(ready?'<small>'+ready+' 可领</small>':'');rb.classList.toggle('alert',ready>0)}",
+            "}",
+            "",
+            "function occupancy()"
+          ]
+          new='\n'.join(lines)
+          s2,n=pat.subn(new,s,count=1)
           if n!=1: raise SystemExit('updateQuestIndicator patch target not found')
           s2=s2.replace("var QUEST_SYSTEM_VERSION='5.9';","var QUEST_SYSTEM_VERSION='5.9.1';",1)
           p.write_text(s2,encoding='utf-8')
