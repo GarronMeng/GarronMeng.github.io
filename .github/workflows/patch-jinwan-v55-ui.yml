@@ -1,0 +1,124 @@
+name: Patch Jinwan Youtao v5.5 UI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v55-ui.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply v5.5 UI architecture and reset fix
+        shell: bash
+        run: |
+          cat > /tmp/patch_v55.py <<'PY'
+          from pathlib import Path
+          import re, sys
+          path=Path(sys.argv[1] if len(sys.argv)>1 else 'games/jinwan-youtao/index.html')
+          text=path.read_text(encoding='utf-8')
+          
+          def need_replace(old,new,label):
+              global text
+              if old not in text:
+                  raise SystemExit('missing '+label)
+              text=text.replace(old,new,1)
+          
+          def need_sub(pattern,repl,label,flags=0):
+              global text
+              text2,n=re.subn(pattern,repl,text,count=1,flags=flags)
+              if n!=1:
+                  raise SystemExit(f'{label}: expected 1 match, got {n}')
+              text=text2
+          
+          # Version and save namespace
+          need_sub(r'<title>今晚有套吗？ v[0-9.]+</title>','<title>今晚有套吗？ v5.5</title>','title')
+          text=re.sub(r'<span class="versiontag">v[0-9.]+</span>','<span class="versiontag">v5.5</span>',text,count=1)
+          text=text.replace('你完成了 v5.4 的 GM 终局考核：','你完成了 v5.5 的 GM 终局考核：')
+          need_sub(r"var SAVE_KEY='[^']+',SCENARIO_SAVE_KEY='[^']+',SCENARIO_BEST_KEY='[^']+',LEGACY_SAVE_KEY='[^']+',OLDER_SAVE_KEY='[^']+',ANCIENT_SAVE_KEY='[^']+',ANCIENT2_SAVE_KEY='[^']+';",
+                   "var SAVE_KEY='jinwanyoutao_v55',SCENARIO_SAVE_KEY='jinwanyoutao_v55_scenario',SCENARIO_BEST_KEY='jinwanyoutao_v55_best',LEGACY_SAVE_KEY='jinwanyoutao_v51',OLDER_SAVE_KEY='jinwanyoutao_v50',ANCIENT_SAVE_KEY='jinwanyoutao_v47',ANCIENT2_SAVE_KEY='jinwanyoutao_v46';\\nvar resettingCareer=false;",
+                   'save namespace')
+          
+          # Top bar: only cash + tonight suite; move new-game into report tools.
+          need_sub(r'''      <div class="metrics">\n        <div class="pill">💰 ¥<span id="cash">7800</span></div>\n        <div class="pill warn">🛋 <span id="suiteCount">1</span></div>\n        <div class="pill good">👑 <span id="gloToday">0</span></div>\n        <div class="pill">🎁 <span id="perks">1</span></div>\n      </div>''',
+          '''      <div class="metrics">\n        <div class="pill">💰 ¥<span id="cash">7800</span></div>\n        <div class="pill warn">🛋 <span id="suiteCount">1</span> 套</div>\n        <span id="gloToday" hidden>0</span><span id="perks" hidden>1</span>\n      </div>''','metrics')
+          need_sub(r'''    <div class="propertyline"><div><b id="propertyName">Hyatt Place · Airport</b> · Day <b id="day">1</b> · <b id="clock">13:20</b> <span id="weather">☀️</span></div><div><span class="rolechip" id="roleLabel">Duty Manager</span><button class="newgamechip" id="newGameBtn" type="button">🆕 新档</button><span class="secondary-meta"> · 房晚 <b id="nights">0</b></span></div></div>''',
+          '''    <div class="propertyline"><div><b id="propertyName">Hyatt Place · Airport</b> · D<b id="day">1</b> · <b id="clock">13:20</b> <span id="weather">☀️</span></div><div><span class="rolechip" id="roleLabel">Duty Manager</span><span id="nights" hidden>0</span></div></div>''','propertyline')
+          need_sub(r'''    <button class="goalstrip" id="goalStrip"><span><b id="phaseLabel">试营业</b> · <b id="dailyScore">0/4</b> · <span id="dailyGoalText">¥0/900 · 0/2夜</span></span><span class="right"><span class="goal-label">董事会 </span><span id="winProgress">0/5</span> ›</span></button>''',
+          '''    <button class="goalstrip" id="goalStrip"><span><b id="phaseLabel">试营业</b> · <span id="dailyGoalText">¥0/900 · 0/2夜</span></span><span class="right"><b id="dailyScore">0/4</b> ›</span><span id="winProgress" hidden>0/5</span></button>''','goalstrip')
+          
+          # Stage: one visible control layer only.
+          need_sub(r'''    <div class="stagehud"><div class="stagechip" id="occChip">入住率 0%</div><div class="viewtoggle" id="viewToggle"><button class="on" data-view="2d">经典 2D</button><button data-view="3d">沉浸 3D</button></div><div class="stagechip" id="explorerChip">Brand Explorer 1/5</div></div>''',
+          '''    <div class="stagehud"><span id="occChip" hidden>入住率 0%</span><div class="viewtoggle" id="viewToggle"><button class="on" data-view="2d">2D</button><button data-view="3d">3D</button></div><span id="explorerChip" hidden>Brand Explorer 1/5</span></div>''','stagehud')
+          text=text.replace('<div class="sceneops" id="sceneOps">','<div class="sceneops" id="sceneOps" hidden>',1)
+          text=text.replace('<div class="scenecaption" id="sceneCaption">','<div class="scenecaption" id="sceneCaption" hidden>',1)
+          text=text.replace('<button class="propertybadge" id="propertyBadge" type="button">','<button class="propertybadge" id="propertyBadge" type="button" hidden>',1)
+          
+          # Bottom IA: 4 persistent actions. Brand lives inside Hotel.
+          old_bottom='''    <div class="actions">\n      <button class="action primary" id="frontBtn"><span>🛎️</span><b id="frontLabel">前台</b><small id="frontSub">需要你</small></button>\n      <button class="action" id="inventoryBtn"><span>🏗️</span>空间</button>\n      <button class="action" id="opsBtn"><span>⚙️</span>运营</button>\n      <button class="action" id="portfolioBtn"><span>🧭</span>品牌</button>\n      <button class="action" id="reportBtn"><span>🎯</span>目标</button>\n    </div>\n    <div class="feed" id="feed"><b>会员点评：</b> “机场转机很方便。早餐不错。<em>套房就随缘吧。</em>” ★★★★☆</div>\n    <div class="foot"><div>今日收入 <b>¥<span id="income">0</span></b> · ADR <b>¥<span id="adr">0</span></b> · RevPAR <b>¥<span id="revpar">0</span></b></div><div class="timecontrols"><span class="nightfast" id="nightFast">🌙 22:00 后自动快进</span><div class="speed"><button class="on" data-speed="1">1×</button><button data-speed="2">2×</button><button data-speed="4">4×</button></div></div></div>'''
+          new_bottom='''    <div class="actions">\n      <button class="action primary" id="frontBtn"><span>🛎️</span><b id="frontLabel">前台</b><small id="frontSub">需要你</small></button>\n      <button class="action" id="inventoryBtn"><span>🏨</span>酒店</button>\n      <button class="action" id="opsBtn"><span>⚙️</span>运营</button>\n      <button class="action" id="reportBtn"><span>📋</span>日报</button>\n      <button class="action" id="portfolioBtn" hidden><span>🧭</span>品牌</button>\n    </div>\n    <div class="feed" id="feed"><b>最近：</b> “机场转机很方便。早餐不错。<em>套房就随缘吧。</em>” ★★★★☆</div>\n    <div class="foot"><div>收入 <b>¥<span id="income">0</span></b> · ADR <b>¥<span id="adr">0</span></b><span id="revpar" hidden>0</span></div><div class="timecontrols"><span class="nightfast" id="nightFast">🌙 自动快进</span><div class="speed"><button class="on" data-speed="1">1×</button><button data-speed="2">2×</button><button data-speed="4">4×</button></div></div></div>'''
+          need_replace(old_bottom,new_bottom,'bottom IA')
+          
+          # Hotel hub: space is default, portfolio is a secondary destination.
+          need_replace('    <div class="section-title">Property Design · 空间焕新</div>',
+                       '    <div class="hubrow"><button class="hubbtn on" type="button">空间与设施</button><button class="hubbtn" id="openPortfolioFromHotel" type="button">品牌组合 ›</button></div>\\n    <div class="section-title">Property Design · 空间焕新</div>',
+                       'hotel hub')
+          
+          # Rebuild report information hierarchy completely.
+          start=text.index('  <div class="sheet" id="reportSheet">')
+          end=text.index('  <div class="sheet" id="logSheet">',start)
+          report='''  <div class="sheet" id="reportSheet">\n    <div class="sheethead"><div><h3>日报 · v5.5</h3><div class="sub">先看今天，再决定下一步。长期集团进度收进折叠区。</div></div><button class="sheetclose" data-close-sheet>×</button></div>\n    <div class="hubrow"><button class="hubbtn" id="reportLogBtn" type="button">📝 运营日志</button><button class="hubbtn danger" id="newGameSheetBtn" type="button">↻ 新开存档</button></div>\n\n    <div class="section-title">Today · 今日经营</div>\n    <div class="notice" id="difficultyNote"></div>\n    <div class="cards" id="dailyGoalCards"></div>\n    <div class="section-title">Plot · 今天发生了什么</div>\n    <div class="notice theme-notice" id="themeDetail"></div>\n    <div class="section-title">GM Desk · 需要你处理的事</div>\n    <div class="notice" id="gmDeskNote">组织成熟后，Routine Task 不再占用你的注意力。</div>\n    <div class="cards" id="opsHealthCards"></div>\n\n    <details class="reportdetails">\n      <summary>长期目标与集团进度 <span>›</span></summary>\n      <div class="section-title">Victory · 长期目标</div>\n      <div class="notice" id="victorySummary">完成 5 项终局目标即可胜利。</div>\n      <div class="cards" id="victoryCards"></div>\n      <div class="section-title">Property Design · 空间成熟度</div>\n      <div class="notice" id="propertyReportNote">装修不是纯外观：每个空间都会改变经营表现。</div>\n      <div class="cards" id="propertyProgressCards"></div>\n      <div class="section-title">Leadership · 组织成熟度</div>\n      <div class="cards" id="leadershipProgressCards"></div>\n      <div class="section-title">集团能力 · Meta Unlocks</div>\n      <div class="cards" id="metaCards"></div>\n    </details>\n\n    <details class="reportdetails">\n      <summary>挑战、熟客与战绩 <span>›</span></summary>\n      <div class="section-title">Scenario Mode · 5–10 分钟挑战</div>\n      <div class="notice" id="scenarioNote">同一套经营系统，给你一个更短、更狠的残局。</div>\n      <div class="cards" id="scenarioCards"></div>\n      <div class="section-title">Guest Memory · 熟客关系</div>\n      <div class="cards" id="guestMemoryCards"></div>\n      <div class="section-title">Insider Stats · 会籍战绩</div>\n      <div class="cards" id="reportCards"></div>\n    </details>\n\n    <details class="reportdetails">\n      <summary>分享与经理人格 <span>›</span></summary>\n      <div class="section-title">Daily Share Card</div>\n      <div class="notice" id="lastReportNote">第一天还没结束。先活过今晚。</div>\n      <div class="cards share-actions"><button class="card" id="shareCardBtn"><strong>📸 预览经营战报</strong><small>把今天的主题、升套率、名场面和经理人格做成一张竖版卡片。</small><span class="tag gold">生成图片</span></button><button class="card" id="postNoteBtn"><strong>📕 发到小红书</strong><small>真机小工具内直接带图打开笔记发布页；浏览器预览会显示战报。</small><span class="tag red">Post Note</span></button></div>\n      <div class="section-title">Manager Profile</div>\n      <div class="cards"><button class="card widecard" id="personalityBtn"><strong>📋 经理人格</strong><small>会员和业主分别怎么看你。</small><span class="tag gold">生成报告</span></button><button id="resetBtn" hidden></button></div>\n    </details>\n  </div>\n\n'''
+          text=text[:start]+report+text[end:]
+          
+          # v5.5 visual hierarchy overrides, appended last so they win.
+          css='''\n/* v5.5 UI reset: one hierarchy, four primary actions, fewer always-on metrics */\n.game-title small{display:none}.titleline{align-items:center}.game-title h1{font-size:18px}.metrics{flex-wrap:nowrap}.metrics .pill{margin-bottom:0;padding:5px 8px}.propertyline{margin-top:6px;font-size:9px}.rolechip{font-size:7px;padding:3px 5px}.statusgrid{grid-gap:5px;margin-top:6px}.meter{height:16px}.meter span{font-size:7.5px;top:1px}.goalstrip{margin-top:5px;padding:6px 8px;font-size:8.3px}.goalstrip .right{font-size:8px}.stage{height:100vw;min-height:330px;max-height:410px}.stagehud{justify-content:flex-end;left:auto;right:8px}.viewtoggle{box-shadow:none;background:rgba(251,248,242,.86)}.stage.mode3d .viewtoggle{background:rgba(13,21,29,.72)}.sceneops[hidden],.scenecaption[hidden],.propertybadge[hidden]{display:none!important}.hint{left:10px;right:10px;bottom:8px;padding:6px 8px;font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bottom{padding-top:7px}.actions{grid-template-columns:repeat(4,1fr);grid-gap:6px}.action{height:50px;font-size:9px}.action span{font-size:18px}.feed{min-height:0;height:28px;margin-top:6px;padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8.5px}.foot{margin-top:4px;min-height:24px;font-size:8.8px}.speed button{height:22px;width:29px}.nightfast{font-size:7px}.hubrow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:2px 0 11px}.hubbtn{border:1px solid var(--line);border-radius:11px;background:#fff;padding:9px 10px;color:var(--ink);font-size:9px;font-weight:900;text-align:left}.hubbtn.on{background:#eef2f5;border-color:#b9c5cf;color:#274156}.hubbtn.danger{background:#fff4f2;border-color:#e2b8b2;color:#8b443f}.visual3d .hubbtn{background:#1c2a35;border-color:#3a4a55;color:#dfe6ea}.visual3d .hubbtn.on{background:#263945}.visual3d .hubbtn.danger{background:#3b2928;border-color:#6e4743;color:#f0d6d2}.reportdetails{margin:10px 0;border:1px solid var(--line);border-radius:13px;background:#f7f3ed;overflow:hidden}.reportdetails summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:10px 11px;font-size:9px;font-weight:900;color:#544d46;cursor:pointer}.reportdetails summary::-webkit-details-marker{display:none}.reportdetails[open] summary{border-bottom:1px solid var(--line);background:#fff}.reportdetails>div,.reportdetails>.cards{margin-left:8px;margin-right:8px}.reportdetails .section-title{margin-left:8px;margin-right:8px}.visual3d .reportdetails{background:#17242f;border-color:#364650}.visual3d .reportdetails summary{color:#dfe6ea}.visual3d .reportdetails[open] summary{background:#1d2b35;border-color:#364650}@media(max-width:430px){.stage{height:96vw;min-height:320px;max-height:390px}.top{padding-bottom:7px}.actions{grid-template-columns:repeat(4,1fr)}}\n'''
+          text=text.replace('</style>',css+'</style>',1)
+          
+          # Concise event ticker.
+          need_sub(r"function updateFeed\(\)\{.*?\}","function updateFeed(){var msg=state.review.replace('套房','<em>套房</em>');$('feed').innerHTML='<b>最近：</b> '+msg+' · 点按回看日志'}",'updateFeed')
+          
+          # Reliable reset: block visibility-save race, clear all career namespaces, write an explicit fresh v5.5 state, then reload.
+          old_reset="function startNewCareer(){if(state.scenario&&state.scenario.active){if(confirm('先退出当前 Challenge，再新开档？'))exitScenario();return}if(!confirm('新开档会清除当前本地生涯进度，并从 Hyatt Place Day 1 重新开始。继续吗？'))return;try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem(LEGACY_SAVE_KEY);localStorage.removeItem(OLDER_SAVE_KEY);localStorage.removeItem(ANCIENT_SAVE_KEY);localStorage.removeItem(ANCIENT2_SAVE_KEY);localStorage.removeItem(SCENARIO_SAVE_KEY)}catch(e){}location.reload()}"
+          new_reset="function startNewCareer(){if(!confirm('新开存档会清除当前生涯进度，并从 Hyatt Place · Day 1 重新开始。挑战最佳成绩会保留。继续吗？'))return;resettingCareer=true;try{var keys=[],i,k;for(i=0;i<localStorage.length;i++){k=localStorage.key(i);if(k&&k.indexOf('jinwanyoutao_')===0&&k.indexOf('_best')<0)keys.push(k)}for(i=0;i<keys.length;i++)localStorage.removeItem(keys[i]);var fresh=freshState();localStorage.setItem(SAVE_KEY,JSON.stringify(fresh))}catch(e){}location.replace(location.pathname+'?v=550&fresh='+Date.now())}"
+          need_replace(old_reset,new_reset,'startNewCareer')
+          need_replace("document.addEventListener('visibilitychange',function(){saveState(true);if(!document.hidden)last=window.performance&&performance.now?performance.now():Date.now()});",
+                       "document.addEventListener('visibilitychange',function(){if(resettingCareer)return;saveState(true);if(!document.hidden)last=window.performance&&performance.now?performance.now():Date.now()});",
+                       'visibility guard')
+          listener_old="$('shareCardBtn').addEventListener('click',previewShareCard);$('postNoteBtn').addEventListener('click',postShareCard);$('personalityBtn').addEventListener('click',managerPersonality);$('resetBtn').addEventListener('click',startNewCareer);if($('newGameBtn'))$('newGameBtn').addEventListener('click',startNewCareer);"
+          listener_new=listener_old+"if($('newGameSheetBtn'))$('newGameSheetBtn').addEventListener('click',startNewCareer);if($('reportLogBtn'))$('reportLogBtn').addEventListener('click',openLogSheet);if($('openPortfolioFromHotel'))$('openPortfolioFromHotel').addEventListener('click',function(){if(!featureUnlocked('brand')){showToast('🔒 '+featureUnlockText('brand'));return}if(state.scenario&&state.scenario.active){showToast('⚡ Challenge 酒店固定，不能切换品牌。');return}buildBrandCards();toggleSheet('portfolioSheet')});"
+          need_replace(listener_old,listener_new,'new listeners')
+          
+          # Validate markup invariants.
+          required=['newGameSheetBtn','reportLogBtn','openPortfolioFromHotel','frontBtn','inventoryBtn','opsBtn','reportBtn','dailyGoalCards','victoryCards','scenarioCards','personalityBtn','resetBtn']
+          for rid in required:
+              if text.count('id="'+rid+'"')!=1:
+                  raise SystemExit('bad id count '+rid+' '+str(text.count('id="'+rid+'"')))
+          if 'id="portfolioBtn" hidden' not in text: raise SystemExit('portfolio not nested')
+          if '<title>今晚有套吗？ v5.5</title>' not in text: raise SystemExit('version missing')
+          path.write_text(text,encoding='utf-8')
+          print('patched',path,'bytes',len(text.encode('utf-8')))
+          PY
+          python /tmp/patch_v55.py games/jinwan-youtao/index.html
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('games/jinwan-youtao/index.html').read_text(encoding='utf-8')
+          s=text.index('<script>')+len('<script>')
+          e=text.rindex('</script>')
+          Path('/tmp/jinwan-v55.js').write_text(text[s:e],encoding='utf-8')
+          PY
+          node --check /tmp/jinwan-v55.js
+      - name: Commit v5.5
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+          else
+            git commit -m 'feat: simplify Jinwan UI and fix new save v5.5 [skip ci]'
+            git push
+          fi
