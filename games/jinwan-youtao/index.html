@@ -95,6 +95,10 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
 .stage:not(.mode3d) .propertybadge:not(.locked){display:block!important;top:44px;left:10px;transform:none}
 @media(max-width:430px){.stage:not(.mode3d){height:108vw;min-height:350px;max-height:430px}.stage:not(.mode3d) .propertybadge:not(.locked){top:42px;transform:scale(.96);transform-origin:left top}}
 
+
+/* v5.9.3 — contextual room interaction */
+.roomstatus{margin:4px 0 10px;line-height:1.5}.roomstatus strong{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}.roomstatus small{display:block;color:var(--muted);font-size:8.5px}.room-build-cards{grid-template-columns:1fr 1fr}.room-build-cards .card{min-height:112px}.visual3d .roomstatus strong{color:#fff}
+
 </style>
 </head>
 <body>
@@ -162,7 +166,7 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
     <div class="cards" id="propertyUpgradeCards"></div>
     <div class="section-title">Brand Signature Space · 品牌招牌空间</div>
     <div class="cards" id="signatureSpaceCards"></div>
-    <div class="section-title">Room &amp; Facility Build · 功能建造</div>
+    <div class="section-title" id="functionalBuildSection">Room &amp; Facility Build · 功能建造</div>
     <div class="cards">
       <button class="card" data-build="standard"><strong>🛏 Standard Room</strong><small>稳定现金流。会员不会专门为它写帖子。</small><span class="tag">建造 ¥700</span></button>
       <button class="card" data-build="suite"><strong>🛋 Standard Suite</strong><small>Globalist 的精神支柱，也是 Revenue Manager 的心头肉。</small><span class="tag gold">建造 ¥1500</span></button>
@@ -170,6 +174,19 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
       <button class="card" data-build="club"><strong>🥂 Club Lounge</strong><small>Happy Hour：会员的快乐，员工的战争。</small><span class="tag gold">建造 ¥1200</span></button>
       <button class="card" data-build="gym"><strong>🏋️ Gym</strong><small>面积可以很小，但照片一定要看起来很大。</small><span class="tag">建造 ¥850</span></button>
       <button class="card" data-build="spa"><strong>🧖 Spa</strong><small>Park Hyatt / Alila 的利润与氛围担当。</small><span class="tag">建造 ¥1350</span></button>
+    </div>
+  </div>
+
+  <div class="sheet" id="roomSheet">
+    <div class="sheethead"><div><h3 id="roomSheetTitle">房间 / Room</h3><div class="sub" id="roomSheetSub">查看这个房间的状态与用途。</div></div><button class="sheetclose" data-close-sheet>×</button></div>
+    <div class="notice roomstatus" id="roomStatusCard"></div>
+    <div id="roomBuildBlock">
+      <div class="section-title">建设这个房间</div>
+      <div class="cards room-build-cards">
+        <button class="card" data-room-build="standard"><strong>🛏 标准客房</strong><small>最基础的可售房。稳定增加房晚库存与收入。</small><span class="tag">建造 ¥700</span></button>
+        <button class="card" data-room-build="suite"><strong>🛋 套房</strong><small>用于 Globalist 升套与更高房价。</small><span class="tag gold">建造 ¥1500</span></button>
+      </div>
+      <button class="inspectbtn" id="roomMoreFacilitiesBtn" type="button">想把这里改成早餐厅 / 酒廊 / 健身房 / Spa →</button>
     </div>
   </div>
 
@@ -389,7 +406,7 @@ function freshState(){return{cash:7800,rep:68,owner:70,day:1,minute:13*60+20,spe
 function loadState(){var s=null,scenarioRaw=null;try{scenarioRaw=localStorage.getItem(SCENARIO_SAVE_KEY);var raw=scenarioRaw||localStorage.getItem(SAVE_KEY)||localStorage.getItem(LEGACY_SAVE_KEY)||localStorage.getItem(OLDER_SAVE_KEY)||localStorage.getItem(ANCIENT_SAVE_KEY)||localStorage.getItem(ANCIENT2_SAVE_KEY);if(raw)s=JSON.parse(raw)}catch(e){}if(!s)return freshState();var base=freshState(),k,stats=base.stats,daily=base.daily;for(k in s){if(Object.prototype.hasOwnProperty.call(s,k)&&k!=='stats'&&k!=='daily')base[k]=s[k]}if(s.stats){for(k in s.stats){if(Object.prototype.hasOwnProperty.call(s.stats,k))stats[k]=s.stats[k]}}if(s.daily){for(k in s.daily){if(Object.prototype.hasOwnProperty.call(s.daily,k))daily[k]=s.daily[k]}}base.stats=stats;base.daily=daily;base.streak=typeof s.streak==='number'?s.streak:0;base.victory=!!s.victory;base.guests=[];base.frontQueue=[];base.executiveQueue=[];base.paused=false;base.selectedRoom=null;if(!base.guestBook)base.guestBook={};if(!base.unlocksSeen)base.unlocksSeen={front:true,goal:true};if(!base.dailyHistory||!base.dailyHistory.length)base.dailyHistory=base.lastDayReport?[base.lastDayReport]:[];base.rooms=(s.rooms&&s.rooms.length===12)?s.rooms:freshRooms();for(k=0;k<base.rooms.length;k++){base.rooms[k].occupied=false;base.rooms[k].guest=null;base.rooms[k].cleaning=0;base.rooms[k].reserved=false}if(scenarioRaw&&base.scenario)base.scenario.active=true;return base}
 var state=loadState();if(TEST_MODE&&location.search.indexOf('view=3d')>=0)state.visualMode='3d';
 var GAMEPLAY_PASS='5.8';
-var QUEST_SYSTEM_VERSION='5.9.2';
+var QUEST_SYSTEM_VERSION='5.9.3';
 var WIN_REVENUE=26000;
 function challengeLevel(day){return Math.min(5,1+Math.floor((Math.max(1,day)-1)/5))}
 function difficulty(day){
@@ -830,11 +847,25 @@ function updateQuestIndicator(){
   if(rb){rb.innerHTML='<span>📋</span>任务'+(ready?'<small>'+ready+' 可领</small>':'');rb.classList.toggle('alert',ready>0)}
 }
 
+function roomCode(r){return (r.f+2)+'0'+(r.c+1)}
+function roomStateText(r){if(!r.type)return'EMPTY · 尚未建设';if(r.reserved)return'SUA LOCK · 已预留';if(r.occupied)return'IN HOUSE · 入住中';if(r.dirty)return r.cleaning>0?'CLEANING · 清扫中':'DIRTY · 待清扫';return'AVAILABLE · 可售'}
+function openRoomSheet(r){
+  state.selectedRoom=r;
+  closeSheets(false);
+  var code=roomCode(r),d=r.type?defs[r.type]:null,status=roomStateText(r),build=!r.type;
+  $('roomSheetTitle').textContent=code+' · '+(build?'空房间':'房间详情');
+  $('roomSheetSub').textContent=build?'这是一个未建设的房间格。先决定它要不要成为客房。':'这里显示这个房间本身的状态。';
+  $('roomStatusCard').innerHTML='<strong>'+(build?'⬜ '+code+' · 未建设':(d.icon+' '+code+' · '+d.label))+'</strong><small>'+status+(d&&d.rate?' · 基础房价 ¥'+Math.round(d.rate*brand().rate):'')+'</small>';
+  $('roomBuildBlock').hidden=!build;
+  $('roomSheet').classList.add('show');$('sheetBackdrop').classList.add('show');
+}
 function occupancy(){var rooms=state.rooms.filter(function(r){return r.type==='standard'||r.type==='suite'});return rooms.length?Math.round(rooms.filter(function(r){return r.occupied}).length/rooms.length*100):0}
 function updateOps(){$('hkCount').textContent=state.staffHK;$('breakfastStockText').textContent=Math.round(state.breakfastStock);$('loungeStockText').textContent=Math.round(state.loungeStock);$('breakfastStockFill').style.width=Math.max(0,state.breakfastStock)+'%';$('loungeStockFill').style.width=Math.max(0,state.loungeStock)+'%'}
 function updateUI(){ensureDaily();applyVisualMode();var occ=occupancy(),vis=Math.min(Object.keys(state.opened).length,5),sold=Math.max(1,state.daily.checkouts),adr=Math.round(state.income/sold),revpar=Math.round(adr*occ/100),p=state.daily.plan,passes=currentDailyPasses(),ds=0,i,t=activeTheme(),eq=state.frontQueue.length+(state.executiveQueue?state.executiveQueue.length:0),high=0,tasks=todayFocusTasks(),dow=dayOfWeekName(state.day);for(i=0;i<passes.length;i++)if(passes[i])ds++;if(state.executiveQueue)for(i=0;i<state.executiveQueue.length;i++)high=Math.max(high,state.executiveQueue[i].level||0);for(i=0;i<state.frontQueue.length;i++)high=Math.max(high,state.frontQueue[i].level||1);$('cash').textContent=Math.round(state.cash);$('suiteCount').textContent=suitesFree();$('gloToday').textContent=state.daily.glo;if($('perks'))$('perks').textContent=state.perks||0;$('day').textContent=state.day;$('nights').textContent=state.stats.nights;var h=Math.floor(state.minute/60),m=Math.floor(state.minute%60);$('clock').textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m;$('weather').textContent=state.weather==='rain'?'🌧️':'☀️';$('rep').textContent=Math.round(state.rep);$('owner').textContent=Math.round(state.owner);$('repFill').style.width=Math.max(0,Math.min(100,state.rep))+'%';$('ownerFill').style.width=Math.max(0,Math.min(100,state.owner))+'%';$('propertyName').textContent=brand().name+' · '+dow;if($('roleLabel'))$('roleLabel').textContent=careerName();$('occChip').textContent='入住率 '+occ+'%';$('explorerChip').textContent='Brand Explorer '+vis+'/5';$('income').textContent=Math.round(state.income);$('adr').textContent=isFinite(adr)?adr:0;$('revpar').textContent=isFinite(revpar)?revpar:0;$('phaseLabel').textContent=state.scenario&&state.scenario.active?scenarioDefs[state.scenario.key].icon+' CHALLENGE':t.icon+' '+t.short;$('dailyScore').textContent=ds+'/4';$('dailyGoalText').textContent=state.scenario&&state.scenario.active?scenarioDefs[state.scenario.key].goal:'🎯 '+tasks[0];$('winProgress').textContent=victoryCount()+'/5';$('goalStrip').title='今日任务：'+tasks.join(' / ');if($('frontLabel'))$('frontLabel').textContent=(managerHired('front')||careerLevel()>=2)?'升级事项':'前台';if($('frontSub'))$('frontSub').textContent=eq?(high>=4?'L4 · '+eq+'件':eq+' 件待处理'):(managerHired('front')?'Desk Clear':'需要你');$('frontBtn').classList.toggle('alert',eq>0);if(state.onboarded){$('hint').style.display='block';$('hint').textContent=eq?'🎯 '+tasks[0]:'🎯 '+tasks[0]}var nf=$('nightFast');if(nf){var active=autoNightActive();nf.classList.toggle('on',active);nf.textContent=active?'🌙 自动快进 8×':'🌙 22:00 后自动快进'}var ms=maxManualSpeed();if(state.speed>ms)state.speed=ms;document.querySelectorAll('[data-speed]').forEach(function(sb){var v=parseInt(sb.getAttribute('data-speed'),10),locked=v>ms;sb.disabled=locked;sb.title='' ;sb.classList.toggle('on',v===state.speed)});syncFeatureLocks();updateOps();updateSceneHUD();updateQuestIndicator();checkVictory()}
-canvas.addEventListener('pointerup',function(e){var rr=canvas.getBoundingClientRect(),x=e.clientX-rr.left,y=e.clientY-rr.top,r=state.rooms.filter(function(ro){var q=roomRect(ro);return x>=q.x&&x<=q.x+q.w&&y>=q.y&&y<=q.y+q.h})[0];if(r){if(!roomUnlocked(r)){showToast('🔒 这层尚未开放。进入 Regency / Grand Hyatt 后地图会继续向上生长。');return}state.selectedRoom=r;if(!r.type){if(!featureUnlocked('space')){state.selectedRoom=null;showToast('🔒 '+featureUnlockText('space'));return}closeSheets(false);$('inventorySheet').classList.add('show');$('sheetBackdrop').classList.add('show');showToast('已选择 '+(r.f+2)+'0'+(r.c+1)+' 空间')}else showToast((r.f+2)+'0'+(r.c+1)+' · '+defs[r.type].label+' · '+(r.reserved?'SUA LOCK':r.occupied?'IN HOUSE':r.dirty?'DIRTY':'AVAILABLE'))}});
-$('frontBtn').addEventListener('click',openFront);$('inventoryBtn').addEventListener('click',function(){if(!featureUnlocked('space')){showToast('🔒 '+featureUnlockText('space'));return}buildPropertyCards();toggleSheet('inventorySheet')});if($('propertyBadge'))$('propertyBadge').addEventListener('click',function(){if(!featureUnlocked('space')){showToast('🔒 '+featureUnlockText('space'));return}buildPropertyCards();toggleSheet('inventorySheet')});$('opsBtn').addEventListener('click',function(){if(!featureUnlocked('ops')){showToast('🔒 '+featureUnlockText('ops'));return}buildLeadershipCards();updateOps();toggleSheet('opsSheet')});$('portfolioBtn').addEventListener('click',function(){if(!featureUnlocked('brand')){showToast('🔒 '+featureUnlockText('brand'));return}if(state.scenario&&state.scenario.active){showToast('⚡ Challenge 酒店固定，不能切换品牌。');return}buildBrandCards();toggleSheet('portfolioSheet')});$('reportBtn').addEventListener('click',function(){openQuestSheet('main')});$('goalStrip').addEventListener('click',function(){openQuestSheet('main')});if($('logBtn'))$('logBtn').addEventListener('click',openLogSheet);if($('logNavBtn'))$('logNavBtn').addEventListener('click',openLogSheet);if($('feed'))$('feed').addEventListener('click',openLogSheet);
+canvas.addEventListener('pointerup',function(e){var rr=canvas.getBoundingClientRect(),x=e.clientX-rr.left,y=e.clientY-rr.top,r=state.rooms.filter(function(ro){var q=roomRect(ro);return x>=q.x&&x<=q.x+q.w&&y>=q.y&&y<=q.y+q.h})[0];if(r){if(!roomUnlocked(r)){showToast('🔒 这层尚未开放。进入 Regency / Grand Hyatt 后地图会继续向上生长。');return}if(!r.type&&!featureUnlocked('space')){state.selectedRoom=null;showToast('🔒 '+featureUnlockText('space'));return}openRoomSheet(r)}});
+$('frontBtn').addEventListener('click',openFront);$('inventoryBtn').addEventListener('click',function(){if(!featureUnlocked('space')){showToast('🔒 '+featureUnlockText('space'));return}state.selectedRoom=null;buildPropertyCards();toggleSheet('inventorySheet')});if($('propertyBadge'))$('propertyBadge').addEventListener('click',function(){if(!featureUnlocked('space')){showToast('🔒 '+featureUnlockText('space'));return}state.selectedRoom=null;buildPropertyCards();toggleSheet('inventorySheet')});$('opsBtn').addEventListener('click',function(){if(!featureUnlocked('ops')){showToast('🔒 '+featureUnlockText('ops'));return}buildLeadershipCards();updateOps();toggleSheet('opsSheet')});$('portfolioBtn').addEventListener('click',function(){if(!featureUnlocked('brand')){showToast('🔒 '+featureUnlockText('brand'));return}if(state.scenario&&state.scenario.active){showToast('⚡ Challenge 酒店固定，不能切换品牌。');return}buildBrandCards();toggleSheet('portfolioSheet')});$('reportBtn').addEventListener('click',function(){openQuestSheet('main')});$('goalStrip').addEventListener('click',function(){openQuestSheet('main')});if($('logBtn'))$('logBtn').addEventListener('click',openLogSheet);if($('logNavBtn'))$('logNavBtn').addEventListener('click',openLogSheet);if($('feed'))$('feed').addEventListener('click',openLogSheet);
+document.querySelectorAll('[data-room-build]').forEach(function(btn){btn.addEventListener('click',function(){var type=btn.getAttribute('data-room-build'),src=document.querySelector('[data-build="'+type+'"]');if(src)src.click()})});
+if($('roomMoreFacilitiesBtn'))$('roomMoreFacilitiesBtn').addEventListener('click',function(){var selected=state.selectedRoom;buildPropertyCards();closeSheets(false);state.selectedRoom=selected;$('inventorySheet').classList.add('show');$('sheetBackdrop').classList.add('show');var sh=$('inventorySheet'),target=$('functionalBuildSection');if(sh&&target)sh.scrollTop=Math.max(0,target.offsetTop-80)});
 document.querySelectorAll('[data-build]').forEach(function(btn){btn.addEventListener('click',function(){if(state.scenario&&state.scenario.active){showToast('⚡ Challenge 固定房型，不能临时扩建。');return}var type=btn.getAttribute('data-build'),r=state.selectedRoom||state.rooms.filter(function(x){return !x.type})[0];if(!r||r.type||!roomUnlocked(r)){showToast('先点一个已解锁的 EMPTY 空间。');return}var d=defs[type];if(state.cash<d.cost){showToast('业主说：预算没有。');return}state.cash-=d.cost;state.expense+=d.cost;state.stats.totalExpense+=d.cost;r.type=type;state.selectedRoom=null;closeSheets();$('hint').style.display='none';var gain=(type==='standard'?'可售房 +1 · 满房日约 +¥'+Math.round(d.rate*brand().rate):(type==='suite'?'套房库存 +1 · 房价 ¥'+Math.round(d.rate*brand().rate):'设施能力已启用'));if(type==='standard'||type==='suite')changeOwner(1);state.daily.highlight='✅ '+d.label+' 投入使用：'+gain;showToast('✅ '+d.label+' 投入使用 · '+gain);updateUI();saveState(true)})});
 function recordRevenue(amount){amount=Math.round(amount);state.cash+=amount;state.income+=amount;state.stats.totalRevenue+=amount}
 function spend(cost,label,fn){if(state.cash<cost){showToast('预算不足。Revenue Manager 露出了微笑。');return}state.cash-=cost;state.expense+=cost;state.stats.totalExpense+=cost;fn();showToast(label+' · -¥'+cost);updateUI();saveState(true)}
