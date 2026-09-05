@@ -1,0 +1,207 @@
+name: Patch Jinwan Youtao v5.8 gameplay
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v58-gameplay.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Patch early-game pacing, guidance and rewards
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path=Path('games/jinwan-youtao/index.html')
+          s=path.read_text(encoding='utf-8')
+          if "var GAMEPLAY_PASS='5.8'" in s:
+              print('v5.8 already applied')
+              raise SystemExit(0)
+
+          def rf(name, body):
+              global s
+              pat=r"function "+re.escape(name)+r"\([^\n]*?\)\{.*?\n(?=function [A-Za-z_$])"
+              ns,n=re.subn(pat, body.rstrip()+"\n", s, count=1, flags=re.S)
+              if n!=1:
+                  raise RuntimeError(f'function not found: {name}')
+              s=ns
+
+          # Marker only; not player-facing.
+          s=s.replace('var WIN_REVENUE=26000;', "var GAMEPLAY_PASS='5.8';\nvar WIN_REVENUE=26000;", 1)
+
+          rf('difficulty', r'''function difficulty(day){
+            if(day<=7){
+              var labels=['','开门营业','稳住房态','第一次房荒','运营接管','开始授权','客群变化','周度考核'];
+              var spawn=[0,.016,.020,.024,.029,.034,.039,.044][day];
+              var maxGuests=[0,4,5,5,6,6,7,7][day];
+              var glo=[0,0,.01,.02,.03,.04,.05,.06][day];
+              var sua=[0,.04,.05,.06,.07,.08,.09,.10][day];
+              var late=[0,.008,.010,.012,.016,.020,.024,.028][day];
+              var service=[0,.012,.016,.020,.026,.032,.038,.044][day];
+              var fb=[0,7,8,9,10,11,12,13][day];
+              var clean=[0,5.0,5.4,5.8,6.2,6.7,7.1,7.5][day];
+              return{label:labels[day],spawn:spawn,maxGuests:maxGuests,glo:glo,sua:sua,late:late,service:service,fb:fb,clean:clean};
+            }
+            var lv=challengeLevel(day)-1;
+            return{label:['试营业','会籍升温','旺季压力','满房边缘','旗舰考核'][lv],spawn:[.026,.038,.050,.063,.076][lv],maxGuests:[6,7,8,9,10][lv],glo:[0,.03,.06,.10,.14][lv],sua:[.08,.11,.14,.17,.20][lv],late:[.02,.03,.04,.05,.06][lv],service:[.03,.04,.05,.06,.07][lv],fb:[10,12,14,16,18][lv],clean:[6.5,7.5,8.5,9.5,10.5][lv]};
+          }''')
+
+          rf('makeDayPlan', r'''function makeDayPlan(day,brandKey,themeKey){
+            var b=brands[brandKey]||brands.place,t=themeByKey(themeKey||themeKeyForDay(day,brandKey));
+            if(day<=7){
+              var rev=[0,650,850,1050,1300,1500,1750,1950][day];
+              var nights=[0,2,2,3,3,4,4,5][day];
+              var rep=[0,64,64,65,65,66,66,67][day];
+              var owner=[0,64,64,64,65,65,66,66][day];
+              var factor=.92+b.rate*.18;
+              return{phase:difficulty(day).label,revenue:round50(rev*factor),nights:nights,rep:rep,owner:owner};
+            }
+            var lv=challengeLevel(day)-1,intra=(day-1)%3,baseRevenue=[800,1200,1750,2300,3000][lv]+intra*150,rateFactor=.9+b.rate*.25;
+            return{phase:difficulty(day).label,revenue:round50(baseRevenue*rateFactor*t.revenue),nights:Math.max(1,[2,3,4,5,6][lv]+(t===themes.convention?1:0)),rep:[58,61,64,68,72][lv]+Math.min(intra,1)+t.repGoal,owner:[62,64,66,68,70][lv]+Math.min(intra,1)+t.ownerGoal};
+          }''')
+
+          rf('todayFocusTasks', r'''function todayFocusTasks(){
+            var eq=state.frontQueue.length+(state.executiveQueue?state.executiveQueue.length:0),dirty=state.rooms.filter(function(r){return roomUnlocked(r)&&r.dirty}).length,stayovers=state.guests.filter(function(g){return g&&g.room&&g.phase==='stay'&&(g.bookedNights||1)<(g.tripNights||1)}).length,free=saleRooms().length,d=state.day;
+            if(eq>0)return['先处理前台待办 '+eq+' 件：客人等着入住或确认权益'];
+            if(d===1){
+              if(state.stats.nights<1)return['先完成第一位客人的入住：点「前台」'];
+              if(free<=1)return['给今晚留余量：点一个 EMPTY 房间，新建 1 间 Standard'];
+              return['看懂第一天：入住 → 房间被占 → 退房入账'];
+            }
+            if(d===2)return['留意 Stayover：'+stayovers+' 间会继续占房，至少保留 1 间可售房'];
+            if(d===3)return[free<2?'房量开始吃紧：新增 1 间 Standard，避免今晚无房可卖':'把可售房维持在 2 间以上，为明晚留余量'];
+            if(d===4){
+              if(dirty>=2)return['打开「运营」：脏房 '+dirty+' 间，先补 Housekeeping'];
+              if(state.breakfastStock<45)return['打开「运营」：早餐库存偏低，先补货再迎接下一波'];
+              return['第一次运营检查：看翻房、早餐库存和前台排队'];
+            }
+            if(d===5){
+              if(departmentUnlocked('front')&&!managerHired('front'))return['招聘 Front Office Manager：让普通会籍请求开始自动处理'];
+              return['把重复事务交给团队：今天尽量少亲自救火'];
+            }
+            if(d===6)return[dayOfWeekName(d)+' · '+brandDemandNote(state.brand,d)+'：开始按客群节奏准备房量'];
+            if(d===7)return['周度考核：守住 5 个房晚，并至少留 1 间套房机动'];
+            if(suitesFree()===0&&state.daily.glo>=2)return['套房已经用尽：优先处理高会籍，别再随手放套'];
+            if(dirty>=2&&!managerHired('house'))return['脏房 '+dirty+' 间：补 Housekeeping 或招聘客房部负责人'];
+            if(state.breakfastStock<40)return['早餐库存偏低：先补货，避免高峰变成客诉'];
+            return[brandDemandNote(state.brand,d)+'：保持可售房、前台队列和现金流稳定'];
+          }''')
+
+          # 4x should be real 4x; pacing is controlled by demand, not artificial time slowdown.
+          if re.search(r'function onboardingTimeRate\(',s):
+              rf('onboardingTimeRate', "function onboardingTimeRate(){return 9}")
+          if re.search(r'function onboardingDemandFactor\(',s):
+              rf('onboardingDemandFactor', "function onboardingDemandFactor(){if(state.scenario&&state.scenario.active)return 1;return state.day===1?.65:state.day===2?.78:state.day===3?.88:state.day===4?.96:state.day<=7?1.02:1}")
+          if re.search(r'function maxManualSpeed\(',s):
+              rf('maxManualSpeed', "function maxManualSpeed(){return 4}")
+
+          rf('reputationDailyCap', "function reputationDailyCap(){if(state.scenario&&state.scenario.active)return 12;if(state.day<=3)return 3;if(state.day<=7)return 5;return 8}")
+          rf('repPenalty', "function repPenalty(n){var cap=state.day<=3?2:state.day<=7?3:4,mult=state.day<=3?.50:.65;return Math.max(1,Math.min(cap,Math.round(Math.abs(n)*mult)))}")
+
+          # Existing saves in the first week get a one-time safety correction, not a full reset.
+          s=s.replace("if(!state.balance54Applied){state.rep=Math.max(50,Math.round(state.rep||0));state.owner=Math.round(state.owner||0);state.balance54Applied=true;}",
+                      "if(!state.balance54Applied){state.rep=Math.max(50,Math.round(state.rep||0));state.owner=Math.round(state.owner||0);state.balance54Applied=true;}if(!state.earlyPass58Applied){if(state.day<=7){state.rep=Math.max(62,Math.round(state.rep||0));state.owner=Math.max(60,Math.round(state.owner||0));}state.earlyPass58Applied=true;}",1)
+
+          # Day 1-2: no random crisis. Day 3-4 can get a surprise, but not an OOO incident yet.
+          s=s.replace("function surpriseEvent(){if(state.daily.surpriseDone", "function surpriseEvent(){if(state.day<=2)return;if(state.daily.surpriseDone",1)
+          s=s.replace("}else if(r<.5){var room=saleRooms()[0];", "}else if(r<.5&&state.day>=5){var room=saleRooms()[0];",1)
+          s=s.replace("spawnGuest('Globalist');setTimeout(function(){spawnGuest('Globalist')},700);", "spawnGuest('Globalist');if(state.day>=4)setTimeout(function(){spawnGuest('Globalist')},700);",1)
+          s=s.replace("state.breakfastStock=Math.max(0,state.breakfastStock-28);", "state.breakfastStock=Math.max(0,state.breakfastStock-(state.day<=4?15:28));",1)
+
+          # Stronger and clearer early settlement rewards; no early reputation spiral from a weak first day.
+          old="if(res.score===4){bonus=350+oldDay*25;recordRevenue(bonus);state.rep=Math.min(100,state.rep+1);state.owner=Math.min(100,state.owner+1);grantPerks(1)}else if(res.score===3){bonus=150+oldDay*10;recordRevenue(bonus);if(state.streak>=2&&Math.random()<.35){grantPerks(1)}}else if(res.score<=1){state.owner=Math.max(0,state.owner-3);changeRep(-1);penalty='\\n⚠️ 只完成 '+res.score+'/4：业主 -3、会员口碑 -1。'}"
+          new="if(res.score===4){bonus=oldDay<=3?500:oldDay<=7?420:350+oldDay*25;recordRevenue(bonus);state.rep=Math.min(100,state.rep+(oldDay<=7?2:1));state.owner=Math.min(100,state.owner+1);grantPerks(1)}else if(res.score===3){bonus=oldDay<=3?300:oldDay<=7?220:150+oldDay*10;recordRevenue(bonus);if(state.streak>=2&&Math.random()<.35){grantPerks(1)}}else if(res.score===2&&oldDay<=3){bonus=120;recordRevenue(bonus);penalty='\\n✓ 试营业基本盘已守住，给你一笔 ¥120 稳定运营奖励。'}else if(res.score<=1){if(oldDay<=3){state.owner=Math.max(0,state.owner-1);penalty='\\n⚠️ 今天有点乱，但没有形成口碑惩罚。明天先把一个重点做好。'}else{state.owner=Math.max(0,state.owner-3);changeRep(-1);penalty='\\n⚠️ 只完成 '+res.score+'/4：业主 -3、会员口碑 -1。'}}"
+          if old not in s:
+              raise RuntimeError('newDay reward block not found')
+          s=s.replace(old,new,1)
+
+          # Morning review tells the player exactly one thing to do next.
+          marker="if(unlocks&&unlocks.length)body+='\\n✨ '+unlocks.join(' · ');"
+          s=s.replace(marker, "body+='\\n🎯 今日重点：'+todayFocusTasks()[0];"+marker,1)
+
+          # First three morning briefings are deliberately simple; policy complexity arrives later.
+          brief_start="function showMorningBriefing(r){state.stats.briefings++;state.daily.briefingDone=true;"
+          brief_new="function showMorningBriefing(r){if(state.day<=3){state.stats.briefings++;state.daily.briefingDone=true;showModal('MORNING BRIEF','Day '+state.day,'🎯 '+todayFocusTasks()[0]+'\\n\\n今天只盯这一件事。房态稳定后再考虑其他投入。',[{title:'开始营业',impact:'今日重点已明确',sub:'1× / 2× / 4× 可随时切换。',best:true,fn:function(){}}],r.score);$('modalScore').innerHTML=settlementHtml(r.report||state.lastDayReport);return}state.stats.briefings++;state.daily.briefingDone=true;"
+          if brief_start not in s:
+              raise RuntimeError('showMorningBriefing start not found')
+          s=s.replace(brief_start,brief_new,1)
+
+          # Primary goal strip and yellow hint show one directive, not a stack of advice.
+          s=s.replace("$('dailyGoalText').textContent=state.scenario&&state.scenario.active?scenarioDefs[state.scenario.key].goal:'¥'+Math.round(state.income)+'/'+p.revenue+' · '+state.daily.checkouts+'/'+p.nights+'夜 · '+brandDemandNote(state.brand,state.day);",
+                      "$('dailyGoalText').textContent=state.scenario&&state.scenario.active?scenarioDefs[state.scenario.key].goal:'🎯 '+tasks[0];",1)
+          s=s.replace("$('hint').textContent=eq?'先处理前台 / 升级事项，空档再做：'+tasks.slice(0,2).join(' · '):'今日任务：'+tasks.join(' · ')",
+                      "$('hint').textContent=eq?'🎯 '+tasks[0]:'🎯 '+tasks[0]",1)
+
+          # First sale becomes a visible milestone; subsequent check-ins still show room and stay length.
+          old_assign="if(gu.mattress)showToast('🧮 Mattress Run：客人看起来只是来拿 +1 night 的。');else showToast((gu.returning?'↩ 熟客 · ':'')+(gu.goh?'✨ GOH · ':'')+gu.tier+' → '+(r.f+2)+'0'+(r.c+1)+(upgraded?' · 升套':'')+' · '+gu.tripNights+' 晚')"
+          new_assign="if(gu.mattress)showToast('🧮 Mattress Run：客人看起来只是来拿 +1 night 的。');else if(!state.unlocksSeen.firstStay){state.unlocksSeen.firstStay=true;changeOwner(1);state.daily.highlight='✅ 第一间房卖出：'+(r.f+2)+'0'+(r.c+1)+' · '+gu.tripNights+' 晚';showToast('✅ 第一间房卖出 · '+gu.tripNights+' 晚入住 · 业主 +1')}else showToast((gu.returning?'↩ 熟客 · ':'')+(gu.goh?'✨ GOH · ':'')+gu.tier+' → '+(r.f+2)+'0'+(r.c+1)+(upgraded?' · 升套':'')+' · '+gu.tripNights+' 晚')"
+          if old_assign not in s:
+              raise RuntimeError('assignRoom feedback not found')
+          s=s.replace(old_assign,new_assign,1)
+
+          # Early checkout makes the revenue loop legible.
+          s=s.replace("recordRevenue(pay);state.stats.checkouts++;", "recordRevenue(pay);state.stats.checkouts++;if(state.day<=7)showToast('💰 退房入账 +¥'+pay+' · 今日收入 ¥'+Math.round(state.income));",1)
+
+          # Building should communicate capability gained, not only cash spent.
+          old_build="showToast('建成 '+d.label+' · -¥'+d.cost);updateUI();saveState(true)"
+          new_build="var gain=(type==='standard'?'可售房 +1 · 满房日约 +¥'+Math.round(d.rate*brand().rate):(type==='suite'?'套房库存 +1 · 房价 ¥'+Math.round(d.rate*brand().rate):'设施能力已启用'));if(type==='standard'||type==='suite')changeOwner(1);state.daily.highlight='✅ '+d.label+' 投入使用：'+gain;showToast('✅ '+d.label+' 投入使用 · '+gain);updateUI();saveState(true)"
+          if old_build not in s:
+              raise RuntimeError('build feedback not found')
+          s=s.replace(old_build,new_build,1)
+
+          # Hiring a department head is a major capability unlock.
+          s=s.replace("showToast(d.icon+' '+d.person+' 到岗：'+d.passive);buildLeadershipCards();", "state.daily.highlight='✅ '+d.name+' 到岗：'+d.passive;showToast('✅ '+d.icon+' '+d.person+' 到岗 · '+d.passive);buildLeadershipCards();",1)
+
+          # Welcome screen starts with one job, not a description of the whole game.
+          old_welcome="第一位 Globalist 即将到店。先处理他的入住，再根据房态决定是否扩房、补人或调整价格。\\n\\n空间、部门与品牌权限会随任期逐步开放。速度可随时切换 1× / 2× / 4×。\\n\\n随着团队到岗，日常事项会逐步转由部门 SOP 处理，GM 只介入异常与高价值客。"
+          new_welcome="第一班只做两件事：接待客人、看懂房态。\\n\\n先点「前台」处理第一位 Globalist；等他入住后，再看今晚还剩几间房。\\n\\n1× / 2× / 4× 从开局就能切换。其他职责会在真正需要时开放。"
+          if old_welcome in s:
+              s=s.replace(old_welcome,new_welcome,1)
+          s=s.replace("fn:function(){spawnGuest('Globalist');setTimeout(function(){spawnGuest()},3600)}", "fn:function(){spawnGuest('Globalist','chill');setTimeout(function(){spawnGuest()},4200)}",1)
+
+          # Day-1 straightforward upgrade is visually recommended as the learning path.
+          s=s.replace("sub:'确定的会员体验，代价是少一间可以卖高价的套房。',fn:function(){", "sub:'确定的会员体验，代价是少一间可以卖高价的套房。',best:state.day===1&&free>0,fn:function(){",1)
+
+          # Fresh-save cache bust should point at this gameplay build.
+          s=s.replace("location.pathname+'?v=560&fresh='+Date.now()", "location.pathname+'?v=580&fresh='+Date.now()",1)
+
+          path.write_text(s,encoding='utf-8')
+          print('patched v5.8')
+          PY
+      - name: Validate standalone game
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('games/jinwan-youtao/index.html').read_text(encoding='utf-8')
+          assert "var GAMEPLAY_PASS='5.8'" in s
+          assert "function maxManualSpeed(){return 4}" in s
+          assert "第一班只做两件事" in s
+          assert "今日重点" in s
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,re.S)
+          js='\n'.join(scripts)
+          Path('/tmp/jinwan-v58.js').write_text(js,encoding='utf-8')
+          print('html bytes',len(s),'js bytes',len(js))
+          PY
+          node --check /tmp/jinwan-v58.js
+      - name: Commit v5.8
+        shell: bash
+        run: |
+          if git diff --quiet -- games/jinwan-youtao/index.html; then
+            echo 'No changes'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html
+          git commit -m 'feat: smooth early-game progression and feedback v5.8 [skip ci]'
+          git push
