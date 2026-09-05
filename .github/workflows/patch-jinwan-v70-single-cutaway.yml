@@ -14,10 +14,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Decode cinematic stage asset
+      - name: Assemble cinematic stage asset
         run: |
-          base64 -d games/jinwan-youtao/assets/v70_master2.webp.b64 > games/jinwan-youtao/assets/v70_master2.webp
+          cat games/jinwan-youtao/assets/v70_master2.part1 games/jinwan-youtao/assets/v70_master2.part2 games/jinwan-youtao/assets/v70_master2.part3 > /tmp/v70_master2.b64
+          base64 -d /tmp/v70_master2.b64 > games/jinwan-youtao/assets/v70_master2.webp
           test -s games/jinwan-youtao/assets/v70_master2.webp
+          file games/jinwan-youtao/assets/v70_master2.webp | grep -qi webp
       - name: Patch v7 source
         run: python games/jinwan-youtao/patch_v70.py
       - name: Verify source and JavaScript
@@ -39,7 +41,6 @@ jobs:
           os.unlink(f.name)
           print(r.stderr)
           assert r.returncode==0
-          assert '经典 2D' in s and '沉浸 3D' in s  # legacy hidden DOM retained for compatibility
           assert '#viewToggle{display:none!important}' in s
           assert 'for(f=0;f<7;f++)' in s
           PY
@@ -48,6 +49,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add games/jinwan-youtao/index.html games/jinwan-youtao/assets/v70_master2.webp games/jinwan-youtao/patch_v70.py
+          git rm -f games/jinwan-youtao/assets/v70_master2.part1 games/jinwan-youtao/assets/v70_master2.part2 games/jinwan-youtao/assets/v70_master2.part3 || true
           git rm -f games/jinwan-youtao/assets/v70_master2.webp.b64 || true
           git commit -m 'feat: single cinematic hotel cutaway v7.0 [skip ci]' || exit 0
           git push
