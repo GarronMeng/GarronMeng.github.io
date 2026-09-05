@@ -86,6 +86,15 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
 .questsummary{padding:10px 11px;border:1px solid #dfd1b7;background:#fff9ed;border-radius:13px;margin-bottom:9px}.questsummary strong{display:block;font-size:12px}.questsummary span{display:block;margin-top:4px;font-size:8.5px;color:#74685b;line-height:1.4}
 .questtrack{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0 11px}.questnode{height:28px;border-radius:9px;background:#e4ddd3;color:#7d756c;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:9px}.questnode.done{background:#738b77;color:#fff}.questnode.now{background:#b6934f;color:#fff;box-shadow:0 0 0 3px rgba(182,147,79,.13)}
 .questboard{display:flex;flex-direction:column;gap:7px}.questcard{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 11px}.questcard.locked{opacity:.46}.questcard.done{background:#f3f8f3;border-color:#bacbbb}.questcard.ready{border-color:#d2aa5e;background:#fffaf0}.questrow{display:flex;justify-content:space-between;gap:8px}.questcopy{min-width:0;flex:1}.questcopy strong{display:block;font-size:11px;line-height:1.25}.questcopy small{display:block;margin-top:4px;font-size:8.3px;line-height:1.4;color:var(--muted)}.questreward{flex:0 0 auto;font-size:8px;font-weight:900;color:#8a6a2f;white-space:nowrap}.questprogress{height:6px;background:#e9e3db;border-radius:99px;overflow:hidden;margin-top:8px}.questprogress i{display:block;height:100%;background:#b6934f;border-radius:99px}.questmeta{display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:8px;color:#746c63}.questactions{display:flex;gap:5px;margin-left:auto}.questclaim,.questgo{border:0;border-radius:9px;padding:6px 9px;font-size:8px;font-weight:950}.questclaim{background:#21364c;color:#fff}.questgo{background:#eee7de;color:#564f47}.questdone{font-weight:950;color:#63806a}.achievementgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.achievementgrid .questcard{min-height:118px}.achievementgrid .questcopy small{min-height:34px}.questbonus{margin-top:2px;text-align:center;font-size:8.5px;color:#806535;background:#fff8e8;border:1px dashed #d7b978;border-radius:10px;padding:7px}
+/* v5.9.2 room scene: restore the richer classic 2D presentation */
+.stage:not(.mode3d){height:108vw;min-height:350px;max-height:430px}
+.stage:not(.mode3d) .stagehud{left:10px;right:10px;justify-content:space-between}
+.stage:not(.mode3d) .stagechip{display:block!important;padding:5px 7px;font-size:8.4px;background:rgba(251,248,242,.92);border:1px solid rgba(120,109,96,.22);box-shadow:0 4px 12px rgba(0,0,0,.07)}
+.stage:not(.mode3d) .viewtoggle{box-shadow:0 4px 12px rgba(0,0,0,.06);background:rgba(251,248,242,.92)}
+.stage:not(.mode3d) .viewtoggle button{padding:4px 8px;font-size:7.8px}
+.stage:not(.mode3d) .propertybadge:not(.locked){display:block!important;top:44px;left:10px;transform:none}
+@media(max-width:430px){.stage:not(.mode3d){height:108vw;min-height:350px;max-height:430px}.stage:not(.mode3d) .propertybadge:not(.locked){top:42px;transform:scale(.96);transform-origin:left top}}
+
 </style>
 </head>
 <body>
@@ -121,13 +130,13 @@ canvas{position:absolute;left:0;right:0;top:0;bottom:0;display:block;width:100%;
       </div>
     </div>
     <div class="scene3d" id="scene3d"></div><canvas id="game"></canvas><canvas id="people3d"></canvas>
-    <div class="stagehud"><span id="occChip" hidden>入住率 0%</span><div class="viewtoggle" id="viewToggle"><button class="on" data-view="2d">2D</button><button data-view="3d">3D</button></div><span id="explorerChip" hidden>Brand Explorer 1/5</span></div>
+    <div class="stagehud"><div class="stagechip" id="occChip">入住率 0%</div><div class="viewtoggle" id="viewToggle"><button class="on" data-view="2d">经典 2D</button><button data-view="3d">沉浸 3D</button></div><div class="stagechip" id="explorerChip">Brand Explorer 1/5</div></div>
     <div class="sceneops" id="sceneOps" hidden><div class="sceneop"><b id="sceneSuite">🛋 1</b><small>可用套房</small></div><div class="sceneop"><b id="sceneQueue">🚨 0</b><small>待升级事项</small></div><div class="sceneop"><b id="sceneDirty">🧹 0</b><small>待翻房</small></div><div class="sceneop"><b id="sceneVip">👑 0</b><small>今日 Globalist</small></div></div>
     <div class="scenecaption" id="sceneCaption" hidden><strong id="sceneTitle">Hyatt Place · Work / Life Base</strong><small id="sceneDesc">轻量、高周转、早餐与 24/7 日常。</small></div>
     <div class="scenereveal" id="sceneReveal"><em id="sceneRevealEye">VISUAL UPGRADE</em><strong id="sceneRevealTitle">HYATT PLACE</strong><small id="sceneRevealDesc"></small></div>
     <div class="constructionhud" id="constructionHud"><div class="constructiontop"><b id="constructionTitle">🏗️ 空间焕新施工中</b><span id="constructionPct">0%</span></div><small id="constructionSub">施工期间相关区域运营效率会暂时下降。</small><div class="constructionbar"><i id="constructionFill"></i></div></div>
     <div class="designhotspots" id="designHotspots"><button class="designhotspot hot-facade" data-hotspot="facade" aria-label="外立面">🏙</button><button class="designhotspot hot-lobby" data-hotspot="lobby" aria-label="大堂">🛎</button><button class="designhotspot hot-rooms" data-hotspot="rooms" aria-label="客房">🛏</button><button class="designhotspot hot-public" data-hotspot="public" aria-label="公区">🥂</button><button class="designhotspot hot-rooftop" data-hotspot="rooftop" aria-label="屋顶">🌆</button></div>
-    <button class="propertybadge" id="propertyBadge" type="button" hidden>🏨 <b id="propertyPrestige">BASIC 0/15</b><span class="dots" id="propertyDots">○○○</span></button>
+    <button class="propertybadge" id="propertyBadge" type="button">🏨 <b id="propertyPrestige">BASIC 0/15</b><span class="dots" id="propertyDots">○○○</span></button>
     <div class="hint" id="hint">Globalist 到前台了。点「前台」决定：今晚到底有没有套？</div><div class="viewnote">3D 沉浸模式 · 经营逻辑完全相同</div>
   </div>
 
@@ -380,7 +389,7 @@ function freshState(){return{cash:7800,rep:68,owner:70,day:1,minute:13*60+20,spe
 function loadState(){var s=null,scenarioRaw=null;try{scenarioRaw=localStorage.getItem(SCENARIO_SAVE_KEY);var raw=scenarioRaw||localStorage.getItem(SAVE_KEY)||localStorage.getItem(LEGACY_SAVE_KEY)||localStorage.getItem(OLDER_SAVE_KEY)||localStorage.getItem(ANCIENT_SAVE_KEY)||localStorage.getItem(ANCIENT2_SAVE_KEY);if(raw)s=JSON.parse(raw)}catch(e){}if(!s)return freshState();var base=freshState(),k,stats=base.stats,daily=base.daily;for(k in s){if(Object.prototype.hasOwnProperty.call(s,k)&&k!=='stats'&&k!=='daily')base[k]=s[k]}if(s.stats){for(k in s.stats){if(Object.prototype.hasOwnProperty.call(s.stats,k))stats[k]=s.stats[k]}}if(s.daily){for(k in s.daily){if(Object.prototype.hasOwnProperty.call(s.daily,k))daily[k]=s.daily[k]}}base.stats=stats;base.daily=daily;base.streak=typeof s.streak==='number'?s.streak:0;base.victory=!!s.victory;base.guests=[];base.frontQueue=[];base.executiveQueue=[];base.paused=false;base.selectedRoom=null;if(!base.guestBook)base.guestBook={};if(!base.unlocksSeen)base.unlocksSeen={front:true,goal:true};if(!base.dailyHistory||!base.dailyHistory.length)base.dailyHistory=base.lastDayReport?[base.lastDayReport]:[];base.rooms=(s.rooms&&s.rooms.length===12)?s.rooms:freshRooms();for(k=0;k<base.rooms.length;k++){base.rooms[k].occupied=false;base.rooms[k].guest=null;base.rooms[k].cleaning=0;base.rooms[k].reserved=false}if(scenarioRaw&&base.scenario)base.scenario.active=true;return base}
 var state=loadState();if(TEST_MODE&&location.search.indexOf('view=3d')>=0)state.visualMode='3d';
 var GAMEPLAY_PASS='5.8';
-var QUEST_SYSTEM_VERSION='5.9.1';
+var QUEST_SYSTEM_VERSION='5.9.2';
 var WIN_REVENUE=26000;
 function challengeLevel(day){return Math.min(5,1+Math.floor((Math.max(1,day)-1)/5))}
 function difficulty(day){
