@@ -1,0 +1,25 @@
+name: Run patch Jinwan v6.2
+on:
+  push:
+    paths:
+      - '.github/workflows/run-patch-jinwan-v62.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply canonical v6.2 patch
+        run: python .github/scripts/patch_jinwan_v62.py
+      - name: Commit source
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add games/jinwan-youtao/index.html
+          git commit -m 'fix: rebuild canonical hotel cutaway v6.2 [skip ci]' || exit 0
+          git push
