@@ -1,3 +1,4 @@
+import {lateLabel} from './guestRequests';
 import type {Facility,Guest,Persona,PreviewState,LogCategory} from '../state/types';
 import {PERSONAS} from '../content/personas';
 import {cue,speak,memoryKey} from './guestDialogue';
@@ -27,10 +28,10 @@ export function destinationWeights(s:Readonly<PreviewState>,g:Guest){const minut
  }return weights;
 }
 function visit(s:PreviewState,g:Guest,f:Facility,e:GuestEffects){g.lastVisit=f.id;
- if(publicLoad(s,f.id)>f.capacity){cue(s,g,'full');travel(s,g,g.roomId!);return;}
+ if(publicLoad(s,f.id)>f.capacity){g.experience={place:f.id,kind:'full',at:hotelTime(s)};cue(s,g,'full');travel(s,g,g.roomId!);return;}
  const meal=f.role==='breakfast'||f.role==='club',key=f.role==='breakfast'?'stock':'clubStock';
- if(meal&&s.game![key]<=0){g.satisfaction=Math.max(0,(g.satisfaction??90)-5);s.game!.complaints++;e.reputation(-1);cue(s,g,'shortage');e.log('客诉',g.name+'：'+g.thought,f.id);return;}
- if(meal)s.game![key]--;
+ if(meal&&s.game![key]<=0){g.experience={place:f.id,kind:'shortage',at:hotelTime(s)};g.satisfaction=Math.max(0,(g.satisfaction??90)-5);s.game!.complaints++;e.reputation(-1);cue(s,g,'shortage');e.log('客诉',g.name+'：'+g.thought,f.id);return;}
+ g.experience={place:f.id,kind:'served',at:hotelTime(s)};if(meal)s.game![key]--;
  const rate=f.role==='club'?(g.tier==='Globalist'||g.goh?0:80):f.role==='gym'?20:f.role==='spa'?280:f.role==='rooftop'?45:0;
  const n=Math.round(rate*(1+((f.level??1)-1)*.2)*(g.persona==='whale'?1.5:1));if(n){e.income(n);e.progress('ancillary',n);}
  g.satisfaction=Math.min(100,(g.satisfaction??90)+(f.level??1));f.maintenance=Math.max(0,f.maintenance-.1);g.speech??={next:0,recent:[]};g.speech.next=0;speak(s,g);
@@ -40,8 +41,8 @@ export function tickGuest(s:PreviewState,g:Guest,random:()=>number,e:GuestEffect
  if(g.departing){if(arrived&&m.destination==='exit')g.exitAt=now;if(!m.steps.length&&m.destination!=='exit')travel(s,g,'exit');speak(s,g);return;}
  if(!g.roomId){speak(s,g);return;}
  if(arrived){const f=s.entities[m.destination];if(f?.kind==='facility')visit(s,g,f,e);}
- if(g.late==='pending'&&s.game!.managers.front){const occupied=Object.values(s.entities).filter(r=>r.kind==='room'&&r.status==='occupied').length,total=Object.values(s.entities).filter(r=>r.kind==='room').length;g.late=occupied/total<.88?'honor':'deny';cue(s,g,g.late==='honor'?'late-honor':'late-deny');e.log('部门',g.name+'：Front Office 确认 '+(g.late==='honor'?'4PM':'14:00')+' 退房。',g.roomId);}
- if(!g.late&&g.checkoutDay===s.game!.day+1&&s.game!.minute>=1080&&(g.tier==='Globalist'||g.persona==='family')){g.late='pending';cue(s,g,'late');e.log('入住',g.name+'：明天能 4PM 吗？',g.roomId);}
+ if(!g.late&&((g.checkoutDay===s.game!.day+1&&s.game!.minute>=1080)||(g.checkoutDay===s.game!.day&&s.game!.minute>=540))&&(g.tier==='Globalist'||g.tier==='Explorist'||g.persona==='family')){g.lateHour=g.tier==='Globalist'?16:14;g.late='pending';cue(s,g,'late');e.log('入住',g.name+' · '+g.tier+'：'+(g.checkoutDay===s.game!.day?'今天':'明天')+'能 '+lateLabel(g)+' 退房吗？',g.roomId);}
+ if(g.late==='pending'&&!s.game!.tasks.some(t=>t.id==='late-decision'))s.game!.tasks.push({id:'late-decision',title:'完成一次会员晚退协商',goal:1,progress:0,reward:500,claimed:false,target:'events'});
  if(!m.steps.length&&now>=m.nextDecision){
   if(m.destination!==g.roomId){travel(s,g,g.roomId);}
   else{const choices=destinationWeights(s,g);let pick=random()*choices.reduce((a,b)=>a+b.weight,0);let dest=g.roomId;for(const c of choices){pick-=c.weight;if(pick<=0){dest=c.id;break;}}

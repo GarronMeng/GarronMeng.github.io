@@ -1,4 +1,3 @@
-import {PERSONAS} from '../content/personas';
 import * as T from 'three';
 import type {Store,PreviewState} from '../state/types';
 import {FLOOR_HEIGHT} from '../content/place';
@@ -109,7 +108,7 @@ export class HotelWorld {
  private key(s:Readonly<PreviewState>){return s.floors.map(f=>f.id).join(',')+'|'+Object.values(s.entities).filter(e=>e.kind==='room').map(e=>e.kind==='room'?e.status+':'+e.level:'').join(',');}
  private syncGuests(s:Readonly<PreviewState>){
   for(const a of [...this.actors])if(!s.guests.some(g=>g.id===a.guestId)){a.group.removeFromParent();this.actors=this.actors.filter(x=>x!==a);this.bubbles.filter(b=>b.actor===a).forEach(b=>b.el.remove());this.bubbles=this.bubbles.filter(b=>b.actor!==a);}
-  for(const g of s.guests){let a=this.actors.find(a=>a.guestId===g.id);if(!a){const parts=actorFactory(g.color);a={...parts,guestId:g.id,start:0,end:0,floorY:0,z:1.12,phase:this.actors.length*1.618,walking:true,thought:g.thought};this.scene.add(a.group);this.actors.push(a);const el=document.createElement('button');el.className='thought';el.onclick=()=>this.store.select(g.roomId??'facility-lobby');this.overlay.append(el);this.bubbles.push({el,actor:a,index:this.actors.length});}
+  for(const g of s.guests){let a=this.actors.find(a=>a.guestId===g.id);if(!a){const parts=actorFactory(g.color,g.persona);a={...parts,guestId:g.id,start:0,end:0,floorY:0,z:1.12,phase:this.actors.length*1.618,walking:true,thought:g.thought};this.scene.add(a.group);this.actors.push(a);const el=document.createElement('button');el.className='thought';el.onclick=()=>this.store.select(g.roomId??'facility-lobby');this.overlay.append(el);this.bubbles.push({el,actor:a,index:this.actors.length});}
    a.start=g.route[0];a.end=g.route[1];a.z=g.z??1.12;a.floorY=(this.layout.floorY.get(g.floorId)??0)+.07;a.walking=a.start!==a.end;a.thought=g.thought;
    if(g.movement){const m=g.movement;
     if(!a.navigation){const p=m.trail[0]??m.position;a.group.position.set(p.x,p.level*FLOOR_HEIGHT+.07,p.z);}
@@ -119,7 +118,7 @@ export class HotelWorld {
      points.unshift(a.group.position.clone());a.navigation={revision:m.revision,points,elapsed:0,duration:1};
     }
    }
-const b=this.bubbles.find(b=>b.actor===a);if(b){b.el.textContent=(g.persona?PERSONAS[g.persona].name+'：':'')+g.thought;b.el.setAttribute('aria-label','住客想法：'+g.thought);}
+const b=this.bubbles.find(b=>b.actor===a);if(b){b.el.textContent=g.thought;b.el.setAttribute('aria-label','住客想法：'+g.thought);}
   }
  }
  focusFloor(id:string){const y=this.layout.floorY.get(id);if(y===undefined)return;const full=parseFloat(this.spacer.style.height);const target=full-(y+1.3)*this.scale-this.host.clientHeight/2;this.scroll.scrollTo({top:Math.max(0,target),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
