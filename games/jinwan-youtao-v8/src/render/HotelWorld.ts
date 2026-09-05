@@ -17,9 +17,9 @@ export class HotelWorld {
  private bubbles:{el:HTMLButtonElement;actor:Actor;index:number}[]=[];private floorLabels:{el:HTMLElement;id:string}[]=[];
  private halo=new T.Group();private scroll:HTMLElement;private spacer:HTMLElement;private scale=20;private raf=0;private ro:ResizeObserver;
  private cleanups:(()=>void)[]=[];private time=0;private last=0;private lastPaint=0;private paused=false;private visible=true;
- private visualKey='';
+ private visualKey='';private lastUpgrade=0;private speechSlot=-1;private speaker='';
  constructor(private host:HTMLElement,private store:Store){
-  this.layout=sceneLayout(store.getState());this.scroll=host.querySelector('.world-scroll')!;this.spacer=host.querySelector('.world-spacer')!;
+  this.lastUpgrade=store.getState().game?.upgradeEffect?.id??0;this.layout=sceneLayout(store.getState());this.scroll=host.querySelector('.world-scroll')!;this.spacer=host.querySelector('.world-spacer')!;
   this.renderer=new T.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
   this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=T.PCFSoftShadowMap;
   this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.16;
@@ -53,10 +53,10 @@ export class HotelWorld {
    }
    floor.entityIds.forEach(id=>{
     const e=s.entities[id],a=this.layout.entities.find(a=>a.id===id)!;
-    const eg=e.kind==='room'?roomFactory(e):facilityFactory(e.role);eg.name=id;eg.userData.entityId=id;eg.position.x=a.position.x;fg.add(eg);
+    const eg=e.kind==='room'?roomFactory(e):facilityFactory(e.role);if(e.kind==='facility'&&(e.level??1)>1){for(let i=1;i<(e.level??1);i++)plant(eg,-6.8+i*.45,-.95,.5+i*.1);}eg.name=id;eg.userData.entityId=id;eg.position.x=a.position.x;fg.add(eg);
     const collider=createEntityCollider(id,e.kind==='room'?4.65:14.6,floor.role==='rooftop'?2.1:2.3);eg.add(collider);this.colliders.push(collider);
     if(e.kind==='room'){
-     const b=document.createElement('button');b.className='room-label status-'+e.status;b.textContent=e.number;b.dataset.entityId=id;b.setAttribute('aria-label',e.number+' 房间');b.onclick=()=>this.store.select(id);this.labels.push(b);this.overlay.append(b);
+     const b=document.createElement('button');b.className='room-label status-'+e.status;b.textContent=e.status==='unbuilt'?'＋':e.number;b.dataset.entityId=id;b.setAttribute('aria-label',e.number+' 房间');b.onclick=()=>this.store.select(id);this.labels.push(b);this.overlay.append(b);
     }else{
      const b=document.createElement('button');b.className='facility-label';b.dataset.entityId=id;b.textContent=e.name;b.setAttribute('aria-label','查看'+e.name);b.onclick=()=>this.store.select(id);this.labels.push(b);this.overlay.append(b);
     }
@@ -100,12 +100,14 @@ export class HotelWorld {
  const oldFloorIds=[...this.layout.floorY.keys()];const rebase=(p:T.Vector3)=>{const index=Math.floor((p.y-.07)/FLOOR_HEIGHT+.00001),id=oldFloorIds[index],next=s.floors.findIndex(f=>f.id===id);if(next>=0)p.y+=(next-index)*FLOOR_HEIGHT;};
  this.actors.forEach(a=>{rebase(a.group.position);a.navigation?.points.forEach(rebase);});this.layout=sceneLayout(s);this.build();this.bubbles.forEach(b=>this.overlay.append(b.el));this.resize();}
   this.syncGuests(s);
+  const effect=s.game?.upgradeEffect;if(effect&&effect.id!==this.lastUpgrade){this.lastUpgrade=effect.id;const label=this.labels.find(b=>b.dataset.entityId===effect.entityId);if(label){label.classList.add('upgraded');setTimeout(()=>label.classList.remove('upgraded'),3500);}}
+
   this.host.dataset.atmosphere=s.atmosphere;this.light.intensity=s.atmosphere==='night'?1.65:s.atmosphere==='day'?3.6:2.6;this.ambient.intensity=s.atmosphere==='night'?1.35:s.atmosphere==='day'?2.7:2.1;
   this.ambient.color.setHex(s.atmosphere==='night'?0x6b99c1:0xbdd5ed);
   this.labels.forEach(b=>{const selected=b.dataset.entityId===s.selectedId;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
   const a=this.layout.entities.find(a=>a.id===(s.selectedId??s.game?.events[0]?.target));this.halo.visible=!!a;if(a){const e=s.entities[a.id];this.halo.scale.x=e.kind==='room'?1:3.1;this.halo.position.set(a.position.x,a.position.y,2.05);}
  }
- private key(s:Readonly<PreviewState>){return s.floors.map(f=>f.id).join(',')+'|'+Object.values(s.entities).filter(e=>e.kind==='room').map(e=>e.kind==='room'?e.status+':'+e.level:'').join(',');}
+ private key(s:Readonly<PreviewState>){return s.floors.map(f=>f.id).join(',')+'|'+Object.values(s.entities).map(e=>e.kind==='room'?e.status+':'+e.level+':'+e.category+':'+e.bed:e.level??1).join(',');}
  private syncGuests(s:Readonly<PreviewState>){
   for(const a of [...this.actors])if(!s.guests.some(g=>g.id===a.guestId)){a.group.removeFromParent();this.actors=this.actors.filter(x=>x!==a);this.bubbles.filter(b=>b.actor===a).forEach(b=>b.el.remove());this.bubbles=this.bubbles.filter(b=>b.actor!==a);}
   for(const g of s.guests){let a=this.actors.find(a=>a.guestId===g.id);if(!a){const parts=actorFactory(g.color,g.persona);a={...parts,guestId:g.id,start:0,end:0,floorY:0,z:1.12,phase:this.actors.length*1.618,walking:true,thought:g.thought};this.scene.add(a.group);this.actors.push(a);const el=document.createElement('button');el.className='thought';el.onclick=()=>this.store.select(g.roomId??'facility-lobby');this.overlay.append(el);this.bubbles.push({el,actor:a,index:this.actors.length});}
@@ -127,9 +129,11 @@ const b=this.bubbles.find(b=>b.actor===a);if(b){b.el.textContent=g.thought;b.el.
   const dt=this.last?Math.min((now-this.last)/1000,.05):0;this.last=now;this.time+=dt*this.store.getState().speed;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   this.actors.forEach(a=>moveActor(a,reduced?0:this.time,dt));
-  if(now-this.lastPaint>90){this.lastPaint=now;this.bubbles.forEach(({el,actor,index})=>{
-   const active=!!actor.thought&&(Math.floor(this.time/5)+index)%5===0;el.style.display=active?'block':'none';if(active)this.position(el,actor.group.position.clone().add(new T.Vector3(-.6,1.25,0)));
-  });}
+  if(now-this.lastPaint>90){this.lastPaint=now;const state=this.store.getState(),slot=Math.floor(now/8000);
+   const eligible=this.bubbles.filter(({actor})=>{const guest=state.guests.find(g=>g.id===actor.guestId),p=this.project(actor.group.position);return !!actor.thought&&guest?.movement?.position.phase!=='elevator'&&actor.group.position.x<7.2&&p.y>20&&p.y<this.host.clientHeight-25;});
+   if(slot!==this.speechSlot){this.speechSlot=slot;this.speaker=eligible.length?eligible[slot%eligible.length].actor.guestId??'':'';}
+   this.bubbles.forEach(({el,actor})=>{const active=now%8000<4200&&actor.guestId===this.speaker&&eligible.some(b=>b.actor===actor);el.style.display=active?'block':'none';if(active){const p=this.project(actor.group.position.clone().add(new T.Vector3(-.6,1.25,0)));el.hidden=false;const x=Math.max(6,Math.min(this.host.clientWidth-el.offsetWidth-6,p.x)),y=Math.max(6,Math.min(this.host.clientHeight-el.offsetHeight-6,p.y));el.style.transform=`translate(${x}px,${y+this.scroll.scrollTop}px)`;}});
+  }
   this.renderer.render(this.scene,this.camera);
  };
  dispose(){cancelAnimationFrame(this.raf);this.ro.disconnect();this.cleanups.forEach(fn=>fn());this.renderer.dispose();this.colliders.forEach(c=>{c.geometry.dispose();(c.material as T.Material).dispose()});Object.values(geometries).forEach(g=>g.dispose());disposeMaterials();this.overlay.remove();}

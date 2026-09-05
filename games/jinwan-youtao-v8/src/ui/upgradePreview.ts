@@ -1,3 +1,4 @@
+import {standardSuite} from '../content/roomTypes';
 import type {PreviewState,Room,Department} from '../state/types';
 import {roomRate,roomUpgradeCost,houseMinutes,engineeringMinutes,supplyCost,revenuePrice} from '../core/economy';
 const money=(n:number)=>'¥'+Math.round(n).toLocaleString('en-US');
@@ -5,7 +6,7 @@ const compare=(label:string,before:number,after:number,unit:string)=>`<div class
 export function roomPreview(s:Readonly<PreviewState>,r:Room){const level=r.level??1;if(level>=5)return '<p>装修已满级</p>';const g=s.game!,next={...r,level:level+1},cost=roomUpgradeCost(level),before=roomRate(g.price,r),after=roomRate(g.price,next),delta=after-before;
  const occupancy=g.reports.at(-1)?.occupancy??(100*Object.values(s.entities).filter(r=>r.kind==='room'&&r.status==='occupied').length/Math.max(1,Object.values(s.entities).filter(r=>r.kind==='room').length));
  const low=roomRate(g.price,next,true)-roomRate(g.price,r,true),daily=delta*occupancy/100;
- return `<details class="upgrade-preview" open><summary>装修 Lv.${level} → ${level+1} · ${money(cost)}</summary>${compare('新客每晚房价',before,after,' 元')}${r.type==='suite'?`<p>会员免费升套价：${money(roomRate(g.price,r,true))} → ${money(roomRate(g.price,next,true))}</p>`:''}<p>每售出一晚多收 ${money(low)}${low!==delta?'–'+money(delta):''}；约 ${Math.ceil(cost/delta)}${low!==delta?'–'+Math.ceil(cost/low):''} 个售出房晚收回装修费。</p><p>按${g.reports.length?'最近一天':'当前'}入住率 ${Math.round(occupancy)}%、${r.type==='suite'?'普通付费客':'当前挂牌价'}估算：每天多收 ${money(daily)}${daily>0?'，约 '+Math.ceil(cost/daily)+' 天回本':'，暂无法估算回本天数'}。</p><small>已入住订单价格不变；预估假设房价、入住率保持不变。</small></details>`;
+ return `<details class="upgrade-preview"><summary>装修 Lv.${level} → ${level+1} · ${money(cost)}</summary>${compare('新客每晚房价',before,after,' 元')}${standardSuite(r)?`<p>会员免费升套价：${money(roomRate(g.price,r,true))} → ${money(roomRate(g.price,next,true))}</p>`:''}<p>每售出一晚多收 ${money(low)}${low!==delta?'–'+money(delta):''}；约 ${Math.ceil(cost/delta)}${low!==delta?'–'+Math.ceil(cost/low):''} 个售出房晚收回装修费。</p><p>按${g.reports.length?'最近一天':'当前'}入住率 ${Math.round(occupancy)}%、${standardSuite(r)?'普通付费客':'当前挂牌价'}估算：每天多收 ${money(daily)}${daily>0?'，约 '+Math.ceil(cost/daily)+' 天回本':'，暂无法估算回本天数'}。</p><small>已入住订单价格不变；预估假设房价、入住率保持不变。</small></details>`;
 }
 export function managerPreview(s:Readonly<PreviewState>,id:Department,name:string,base:number){const g=s.game!,level=g.managers[id],next=Math.min(3,level+1),cost=level?4500*level:3800;
  let effect='',note='';

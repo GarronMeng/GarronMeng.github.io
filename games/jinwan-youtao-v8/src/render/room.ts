@@ -1,3 +1,4 @@
+import {roomTier,roomBed,isSuite} from '../content/roomTypes';
 import * as T from 'three';
 import {box,cyl,plant,lamp,sofa,chair,artwork,table,shadow} from './primitives';
 import {materials as m} from './materials';
@@ -13,8 +14,8 @@ export function roomFactory(room:Room):T.Group {
  box(g,1.6,1.25,-1.35,1.08,.04,.04,m.gold);
  for(let x=1.03;x<1.26;x+=.06)box(g,x,1.28,-1.23,.04,1.94,.13,m.white);
  box(g,0,2.27,-1.27,4.53,.06,.065,m.glow);
- if(room.status==='unbuilt'){for(const x of [-1.3,0,1.3])box(g,x,.28,.1,.75,.5,.8,m.stone);return g;}
- const suite=room.type==='suite',twin=room.type==='twin';
+ if(room.status==='unbuilt'){box(g,0,.12,0,3.8,.08,2.5,m.stone);return g;}
+ const suite=isSuite(room),twin=roomBed(room)==='twin';
  box(g,-.67,.078,.07,2.85,.02,2.66,m.carpet);
  const bed=(x:number,w:number)=>{
   box(g,x,.28,-.03,w+.09,.39,1.9,m.walnut);
@@ -32,6 +33,8 @@ export function roomFactory(room:Room):T.Group {
   box(g,1.61,.76,-.57,1.1,.1,.57,m.walnut);for(const x of [1.19,2.03])box(g,x,.37,-.57,.05,.75,.46,m.gold);
   box(g,1.59,.94,-.64,.35,.28,.04,m.screen);chair(g,1.65,.06,Math.PI);lamp(g,2,.82,-.62,.66);
  }
+ if(roomTier(room)==='view'||roomTier(room)==='premium'){box(g,0,1.45,-1.4,4.15,1.65,.025,m.window);for(const x of [-2,0,2])box(g,x,1.45,-1.35,.045,1.7,.045,m.gold);}
+ if(roomTier(room)==='premium'){box(g,0,2.1,-1.25,4.5,.08,.08,m.gold);artwork(g,-1.6,1.8,-1.3,.8,.4,99);plant(g,1.95,.55,1.15);}
  plant(g,2.05,1.05,.63);
  if((room.level??1)>1){artwork(g,-2.05,1.6,-1.38,.38,.56,room.level);plant(g,-2.05,.35,.55);}
  if((room.level??1)>2)box(g,0,2.12,-1.3,4.55,.035,.055,m.gold);

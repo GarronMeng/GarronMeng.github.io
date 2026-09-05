@@ -1,3 +1,4 @@
+import {standardSuite} from '../content/roomTypes';
 import {lateLabel,fallbackHour} from './guestRequests';
 import type {Guest,PreviewState} from '../state/types';
 import {PERSONAS} from '../content/personas';
@@ -7,7 +8,7 @@ export function cue(s:PreviewState,g:Guest,event:string){g.speech??={next:0,rece
 export function speak(s:PreviewState,g:Guest){if(g.staff)return;const now=hotelTime(s),speech=g.speech??={next:0,recent:[]},m=g.movement;
  const role=s.floors.find(f=>f.id===g.floorId)?.role??'lobby',moving=!!m?.steps.length,event=(speech.eventUntil??0)>=now?speech.event:'';
  const context=[m?.position.phase,moving,role,event,g.late,g.upgrades,g.departing,g.experience?.kind].join(':');if(now<speech.next&&speech.context===context)return;speech.context=context;
- const key=g.persona??'chill',app=Object.values(s.entities).filter(e=>e.kind==='room'&&e.type==='suite'&&e.status==='available').length;
+ const key=g.persona??'chill',app=Object.values(s.entities).filter(e=>e.kind==='room'&&standardSuite(e)&&e.status==='available').length;
  let lines:string[]=[];
  if(event==='checkout'&&g.departing)lines=[key==='points'?'Checkout 完了，接下来守着 QN 到账。':key==='forum'?'住完了，可以发完整 DP 了。':'房退好了，去大堂拿行李。'];
  else if(event==='checkin'&&g.roomId)lines=[g.upgrades?'这次真给 Standard Suite 了。':'房卡拿到了，先上楼看看。'];
@@ -15,6 +16,7 @@ export function speak(s:PreviewState,g:Guest){if(g.staff)return;const now=hotelT
  else if(event==='late-honor'&&g.late==='honor')lines=[lateLabel(g)+' 确认了，终于能从容收行李。'];
  else if(event==='late-deny'&&g.late==='deny')lines=['协商到 '+fallbackHour(g)+':00 退房，得把下午行程挪一挪。'];
  else if(event==='recovery'&&g.serviceDone)lines=[key==='points'?'QN / bonus 已经帮我核对过了。':'专属服务安排了，这一段也会写进 DP。'];
+ else if(event==='renovation'&&!moving)lines=['这里刚升级了，看起来更舒服了。'];
  else if(moving)lines=[m?.position.phase==='elevator'?(key==='planner'?'这段电梯时间记一下，团队得分批。':'还在电梯里，等到层再出去。'):(key==='road'?'顺着走廊过去，别走错房间。':'沿着走廊慢慢走。')];
  else if(g.departing)lines=['该出发了，最后检查一下行李。'];
  else if(!g.roomId)lines=[PERSONAS[key].quote,...(g.sua?['SUA 带好了，今晚能确认 Standard Suite 吗？']:[])];

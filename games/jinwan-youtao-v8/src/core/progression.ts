@@ -1,3 +1,4 @@
+import {upgradeFeedback} from './upgradeFeedback';
 import type {PreviewState,Command,Task,Department} from '../state/types';
 import {rooms} from '../state/selectors';
 export function initDevelopment(s:PreviewState){return s.game!.development??=( {counts:{},claimed:[],campaignUntil:0,activityDay:0,scores:[]} );}
@@ -17,7 +18,7 @@ export const ACTIVITIES={coffee:{name:'咖啡品鉴',role:'breakfast',cost:600,s
 function note(s:PreviewState,text:string){const g=s.game!;g.notice=text;g.logs.push({id:g.nextId++,day:g.day,minute:g.minute,category:'升级',text});}
 function spend(s:PreviewState,cost:number){if(s.metrics.cash<cost){s.game!.notice='现金不足，需要 ¥'+cost;return false;}s.metrics.cash-=cost;s.game!.expense+=cost;return true;}
 export function developmentCommand(s:PreviewState,c:Command){if(!['invest','train','campaign','activity','claim-career'].includes(c.type))return false;const g=s.game!,d=initDevelopment(s);
- if(c.type==='invest'){const f=s.entities[c.id??''];if(f?.kind!=='facility')return true;const level=f.level??1;if(level>=5){g.notice='该公区已达 5 级。';return true;}if(spend(s,3500*level)){f.level=level+1;f.capacity+=4;f.quality=Math.min(100,f.quality+5);f.maintenance=100;track(s,'upgrade');note(s,f.name+'升级至 '+f.level+' 级：容量 +4，体验与消费收入提升。');}}
+ if(c.type==='invest'){const f=s.entities[c.id??''];if(f?.kind!=='facility')return true;const level=f.level??1;if(level>=5){g.notice='该公区已达 5 级。';return true;}if(spend(s,3500*level)){f.level=level+1;upgradeFeedback(s,f.id);f.capacity+=4;f.quality=Math.min(100,f.quality+5);f.maintenance=100;track(s,'upgrade');note(s,f.name+'升级至 '+f.level+' 级：容量 +4，体验与消费收入提升。');}}
  if(c.type==='train'){const dept=c.id as Department;if(!Object.hasOwn(g.managers,dept))return true;const l=g.managers[dept];if(l<1||l>=3){g.notice='先聘任主管；培训上限为 3 级。';return true;}if(spend(s,4500*l)){g.managers[dept]++;note(s,'主管培训完成：服务效率提升，每日工资增加 ¥180。');}}
  if(c.type==='campaign'){if(d.campaignUntil>=g.day){g.notice='当前推广仍在进行。';return true;}if(spend(s,2200)){d.campaignUntil=g.day+2;note(s,'启动三日推广：今日及后两日客流 +35%。请准备足够客房。');}}
  if(c.type==='activity'){const a=ACTIVITIES[c.id as keyof typeof ACTIVITIES];if(!a)return true;if(d.activityDay===g.day||d.activity){g.notice='每日只能安排一场主题活动。';return true;}if(g.minute>1260){g.notice='活动筹备需要 2 小时，请明日安排。';return true;}const key=c.id==='coffee'?'stock':'clubStock';if(g[key]<a.stock){g.notice='活动库存不足，请先补货。';return true;}if(spend(s,a.cost)){g[key]-=a.stock;d.activityDay=g.day;d.activity={id:c.id!,ends:g.day*1440+g.minute+120};note(s,a.name+'筹备中，2 小时后按在住人数、定位、天气和公区等级结算。');}}
