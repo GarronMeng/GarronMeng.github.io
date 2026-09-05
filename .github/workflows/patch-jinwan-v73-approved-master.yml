@@ -20,14 +20,15 @@ jobs:
           from pathlib import Path
           import base64, hashlib
           root=Path('games/jinwan-youtao/assets')
-          s=''.join((root/f'v70_master2.part{i}').read_text().strip() for i in (1,2,3))
+          s=''.join((root/'v70_master2.full.b64').read_text().split())
           raw=base64.b64decode(s, validate=True)
           assert len(raw)==35226, len(raw)
           assert raw[:4]==b'RIFF' and raw[8:12]==b'WEBP'
           out=root/'v70_master2.webp'
           out.write_bytes(raw)
-          print('webp bytes',len(raw),'sha1',hashlib.sha1(raw).hexdigest())
-          assert hashlib.sha1(raw).hexdigest()=='cde73a6bb1eee610b657709d33f7b2a5604d20b5'
+          digest=hashlib.sha1(raw).hexdigest()
+          print('webp bytes',len(raw),'sha1',digest)
+          assert digest=='cde73a6bb1eee610b657709d33f7b2a5604d20b5'
           PY
       - name: Patch v7.3 UI
         run: python games/jinwan-youtao/patch_v73.py
