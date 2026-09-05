@@ -1,0 +1,53 @@
+name: Patch Jinwan v7 single cinematic cutaway
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v70-single-cutaway.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Decode cinematic stage asset
+        run: |
+          base64 -d games/jinwan-youtao/assets/v70_master2.webp.b64 > games/jinwan-youtao/assets/v70_master2.webp
+          test -s games/jinwan-youtao/assets/v70_master2.webp
+      - name: Patch v7 source
+        run: python games/jinwan-youtao/patch_v70.py
+      - name: Verify source and JavaScript
+        run: |
+          grep -q "QUEST_SYSTEM_VERSION='7.0.0'" games/jinwan-youtao/index.html
+          grep -q 'id="v70-single-cutaway-css"' games/jinwan-youtao/index.html
+          grep -q 'id="v70-single-cutaway-js"' games/jinwan-youtao/index.html
+          grep -q 'v70_master2.webp' games/jinwan-youtao/index.html
+          ! grep -q 'id="v65-true3d-css"' games/jinwan-youtao/index.html
+          ! grep -q 'id="v66-reference-ui"' games/jinwan-youtao/index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile, os
+          s=Path('games/jinwan-youtao/index.html').read_text()
+          scripts=re.findall(r'<script(?:[^>]*)>([\s\S]*?)</script>',s)
+          js='\n'.join(scripts)
+          f=tempfile.NamedTemporaryFile(delete=False,suffix='.js',mode='w',encoding='utf-8');f.write(js);f.close()
+          r=subprocess.run(['node','--check',f.name],capture_output=True,text=True)
+          os.unlink(f.name)
+          print(r.stderr)
+          assert r.returncode==0
+          assert '经典 2D' in s and '沉浸 3D' in s  # legacy hidden DOM retained for compatibility
+          assert '#viewToggle{display:none!important}' in s
+          assert 'for(f=0;f<7;f++)' in s
+          PY
+      - name: Commit finished game
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add games/jinwan-youtao/index.html games/jinwan-youtao/assets/v70_master2.webp games/jinwan-youtao/patch_v70.py
+          git rm -f games/jinwan-youtao/assets/v70_master2.webp.b64 || true
+          git commit -m 'feat: single cinematic hotel cutaway v7.0 [skip ci]' || exit 0
+          git push
