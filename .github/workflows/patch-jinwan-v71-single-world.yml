@@ -1,0 +1,49 @@
+name: Patch Jinwan v7.1 single hotel world
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v71-single-world.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Patch v7.1 source
+        run: python games/jinwan-youtao/patch_v71.py
+      - name: Verify source and JavaScript
+        run: |
+          grep -q "QUEST_SYSTEM_VERSION='7.1.0'" games/jinwan-youtao/index.html
+          grep -q 'id="v71-single-hotel-css"' games/jinwan-youtao/index.html
+          grep -q 'id="v71-single-hotel-js"' games/jinwan-youtao/index.html
+          grep -q 'assets/v66_reference_tower.svg?v=711' games/jinwan-youtao/index.html
+          grep -q '#app.v71-world #viewToggle' games/jinwan-youtao/index.html
+          grep -q 'aspect-ratio:400/900' games/jinwan-youtao/index.html
+          grep -q "window.mapFloorCount=function" games/jinwan-youtao/index.html
+          grep -q "for(var f=0;f<7;f++)" games/jinwan-youtao/index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile, os
+          s=Path('games/jinwan-youtao/index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script(?:[^>]*)>([\s\S]*?)</script>',s)
+          js='\n'.join(scripts)
+          f=tempfile.NamedTemporaryFile(delete=False,suffix='.js',mode='w',encoding='utf-8');f.write(js);f.close()
+          r=subprocess.run(['node','--check',f.name],capture_output=True,text=True)
+          os.unlink(f.name)
+          print(r.stderr)
+          assert r.returncode==0
+          assert '#app.v71-world #viewToggle' in s
+          assert 'v71Hotel' in s and 'v71Rail' in s
+          PY
+      - name: Commit finished game
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add games/jinwan-youtao/index.html games/jinwan-youtao/patch_v71.py
+          git commit -m 'feat: single hotel world v7.1 [skip ci]' || exit 0
+          git push
