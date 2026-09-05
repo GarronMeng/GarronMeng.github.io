@@ -1,0 +1,49 @@
+name: Patch Jinwan v7.2 hardboot visual world
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-jinwan-v72-hardboot.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Patch source
+        run: python games/jinwan-youtao/patch_v72.py
+      - name: Verify architecture
+        run: |
+          grep -q "QUEST_SYSTEM_VERSION='7.2.0'" games/jinwan-youtao/index.html
+          grep -q 'data-build="7.2.0"' games/jinwan-youtao/index.html
+          grep -q 'id="v72-hardboot-css"' games/jinwan-youtao/index.html
+          grep -q 'id="v72-hardboot-js"' games/jinwan-youtao/index.html
+          grep -q 'window.__JYT__=' games/jinwan-youtao/index.html
+          grep -q 'id="v72Hotel"' games/jinwan-youtao/index.html
+          ! grep -q 'id="v65-true3d-js"' games/jinwan-youtao/index.html
+          ! grep -q 'id="v66-reference-ui-js"' games/jinwan-youtao/index.html
+          ! grep -q 'id="v71-single-hotel-js"' games/jinwan-youtao/index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re,subprocess,tempfile,os
+          s=Path('games/jinwan-youtao/index.html').read_text()
+          scripts=re.findall(r'<script(?:[^>]*)>([\s\S]*?)</script>',s)
+          f=tempfile.NamedTemporaryFile(delete=False,suffix='.js',mode='w',encoding='utf-8')
+          f.write('\n'.join(scripts));f.close()
+          r=subprocess.run(['node','--check',f.name],capture_output=True,text=True)
+          os.unlink(f.name)
+          print(r.stderr)
+          assert r.returncode==0
+          assert s.index('window.__JYT__=') < s.index('})();\n</script>')
+          PY
+      - name: Commit game
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add games/jinwan-youtao/index.html games/jinwan-youtao/patch_v72.py
+          git commit -m 'fix: hardboot hotel world v7.2 [skip ci]' || exit 0
+          git push
