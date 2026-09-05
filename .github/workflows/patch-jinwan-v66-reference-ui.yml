@@ -1,0 +1,56 @@
+name: Patch Jinwan v6.6 reference-matched UI
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'games/jinwan-youtao/patch_v66.py'
+      - '.github/workflows/patch-jinwan-v66-reference-ui.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Restore approved tower visual asset
+        run: |
+          mkdir -p games/jinwan-youtao/assets
+          curl -fsSL 'https://raw.githubusercontent.com/GarronMeng/GarronMeng.github.io/a188ff3ddf9116a933218d21d620c99c3041fafa/games/jinwan-youtao/assets/v65_scene_tower.webp.b64' -o /tmp/v66_tower.b64
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          raw=Path('/tmp/v66_tower.b64').read_text().strip()
+          data=base64.b64decode(raw, validate=True)
+          assert data[:4]==b'RIFF' and data[8:12]==b'WEBP', 'invalid WebP reference asset'
+          assert len(data)>50000, f'reference asset too small: {len(data)}'
+          Path('games/jinwan-youtao/assets/v66_reference_tower.webp').write_bytes(data)
+          print('reference tower bytes',len(data))
+          PY
+      - name: Apply v6.6 UI architecture
+        run: python games/jinwan-youtao/patch_v66.py
+      - name: Validate final game
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('games/jinwan-youtao/index.html').read_text()
+          assert "QUEST_SYSTEM_VERSION='6.6.0'" in s
+          assert 'v66-reference-ui' in s and 'v66ReferenceStage' in s
+          assert 'assets/v66_reference_tower.webp' in s
+          m=re.search(r'<script id="v66-reference-ui-js">([\s\S]*?)</script>',s)
+          assert m
+          Path('/tmp/v66.js').write_text(m.group(1))
+          PY
+          node --check /tmp/v66.js
+      - name: Commit patched game
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/jinwan-youtao/index.html games/jinwan-youtao/assets/v66_reference_tower.webp
+          if ! git diff --cached --quiet; then
+            git commit -m 'feat: reference-matched immersive UI v6.6 [skip ci]'
+            git push
+          fi
