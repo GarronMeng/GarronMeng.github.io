@@ -17,7 +17,7 @@ export class HotelWorld {
  private bubbles:{el:HTMLButtonElement;actor:Actor;index:number}[]=[];private floorLabels:{el:HTMLElement;id:string}[]=[];
  private halo=new T.Group();private scroll:HTMLElement;private spacer:HTMLElement;private scale=20;private raf=0;private ro:ResizeObserver;
  private cleanups:(()=>void)[]=[];private time=0;private last=0;private lastPaint=0;private paused=false;private visible=true;
- private visualKey='';private lastUpgrade=0;private speechSlot=-1;private speaker='';
+ private faultLights:T.Object3D[]=[];private visualKey='';private lastUpgrade=0;private speechSlot=-1;private speaker='';
  constructor(private host:HTMLElement,private store:Store){
   this.lastUpgrade=store.getState().game?.upgradeEffect?.id??0;this.layout=sceneLayout(store.getState());this.scroll=host.querySelector('.world-scroll')!;this.spacer=host.querySelector('.world-spacer')!;
   this.renderer=new T.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
@@ -53,17 +53,17 @@ export class HotelWorld {
    }
    floor.entityIds.forEach(id=>{
     const e=s.entities[id],a=this.layout.entities.find(a=>a.id===id)!;
-    const eg=e.kind==='room'?roomFactory(e):facilityFactory(e.role);if(e.kind==='facility'&&(e.level??1)>1){for(let i=1;i<(e.level??1);i++)plant(eg,-6.8+i*.45,-.95,.5+i*.1);}eg.name=id;eg.userData.entityId=id;eg.position.x=a.position.x;fg.add(eg);
+    const eg=e.kind==='room'?roomFactory(floor.construction?{...e,construction:floor.construction}:e):facilityFactory(e.role,e.level??1,e.role==='breakfast'?s.game?.stock??100:e.role==='club'?s.game?.clubStock??100:100,!!e.construction);if(e.kind==='facility'&&(e.level??1)>1){for(let i=1;i<(e.level??1);i++)plant(eg,-6.8+i*.45,-.95,.5+i*.1);}eg.name=id;eg.userData.entityId=id;eg.position.x=a.position.x;fg.add(eg);
     const collider=createEntityCollider(id,e.kind==='room'?4.65:14.6,floor.role==='rooftop'?2.1:2.3);eg.add(collider);this.colliders.push(collider);
     if(e.kind==='room'){
-     const b=document.createElement('button');b.className='room-label status-'+e.status;b.textContent=e.status==='unbuilt'?'＋':e.number;b.dataset.entityId=id;b.setAttribute('aria-label',e.number+' 房间');b.onclick=()=>this.store.select(id);this.labels.push(b);this.overlay.append(b);
+     const b=document.createElement('button');b.className='room-label status-'+e.status+(e.status==='maintenance'&&!e.construction?' fault':'')+(e.suaBookingId?' sua':'');b.textContent=floor.construction?'施工':e.suaBookingId?e.number+' SUA':e.status==='unbuilt'?'＋':e.number;b.dataset.entityId=id;b.setAttribute('aria-label',e.number+' 房间');b.onclick=()=>this.store.select(id);this.labels.push(b);this.overlay.append(b);
     }else{
-     const b=document.createElement('button');b.className='facility-label';b.dataset.entityId=id;b.textContent=e.name;b.setAttribute('aria-label','查看'+e.name);b.onclick=()=>this.store.select(id);this.labels.push(b);this.overlay.append(b);
+     const b=document.createElement('button');b.className='facility-label'+((e.role==='breakfast'&&(s.game?.stock??1)<=0||e.role==='club'&&(s.game?.clubStock??1)<=0)?' shortage':'');b.dataset.entityId=id;b.textContent=e.name+(e.construction?' · 施工中':e.role==='breakfast'&&(s.game?.stock??1)<=0?' · 缺货':e.role==='club'&&(s.game?.clubStock??1)<=0?' · 断菜':'');b.setAttribute('aria-label','查看'+e.name);b.onclick=()=>this.store.select(id);this.labels.push(b);this.overlay.append(b);
     }
    });
    const l=document.createElement('div');l.className='floor-marker';l.innerHTML=`<strong>${floor.label}</strong><span>${floor.name}</span>`;this.overlay.append(l);this.floorLabels.push({el:l,id:floor.id});
   });
-  batchStatic(this.root);
+  batchStatic(this.root);this.faultLights=[];this.root.traverse(o=>{if(o.name==='fault-lamp')this.faultLights.push(o);});
   const brand=document.createElement('div');brand.className='lobby-sign';brand.innerHTML='<i><b></b><b></b><b></b><b></b><b></b><b></b></i><span>HYATT PLACE</span>';brand.dataset.anchor='brand';this.overlay.append(brand);
   const topBrand=document.createElement('div');topBrand.className='roof-sign';topBrand.textContent='HYATT PLACE';topBrand.dataset.anchor='roof';this.overlay.append(topBrand);
   const selectMat=new T.MeshBasicMaterial({color:0xffd78d,transparent:true,opacity:.9,depthTest:false});
@@ -100,17 +100,17 @@ export class HotelWorld {
  const oldFloorIds=[...this.layout.floorY.keys()];const rebase=(p:T.Vector3)=>{const index=Math.floor((p.y-.07)/FLOOR_HEIGHT+.00001),id=oldFloorIds[index],next=s.floors.findIndex(f=>f.id===id);if(next>=0)p.y+=(next-index)*FLOOR_HEIGHT;};
  this.actors.forEach(a=>{rebase(a.group.position);a.navigation?.points.forEach(rebase);});this.layout=sceneLayout(s);this.build();this.bubbles.forEach(b=>this.overlay.append(b.el));this.resize();}
   this.syncGuests(s);
-  const effect=s.game?.upgradeEffect;if(effect&&effect.id!==this.lastUpgrade){this.lastUpgrade=effect.id;const label=this.labels.find(b=>b.dataset.entityId===effect.entityId);if(label){label.classList.add('upgraded');setTimeout(()=>label.classList.remove('upgraded'),3500);}}
+  const effect=s.game?.upgradeEffect;if(effect&&effect.id!==this.lastUpgrade){this.lastUpgrade=effect.id;const label=this.labels.find(b=>b.dataset.entityId===effect.entityId);if(label){const entity=s.entities[effect.entityId],floor=s.floors.find(f=>f.id===entity.floorId);label.dataset.feedback=entity.construction||floor?.construction?'施工开始':'竣工开放';label.classList.add('upgraded');setTimeout(()=>label.classList.remove('upgraded'),3500);}}
 
   this.host.dataset.atmosphere=s.atmosphere;this.light.intensity=s.atmosphere==='night'?1.65:s.atmosphere==='day'?3.6:2.6;this.ambient.intensity=s.atmosphere==='night'?1.35:s.atmosphere==='day'?2.7:2.1;
   this.ambient.color.setHex(s.atmosphere==='night'?0x6b99c1:0xbdd5ed);
   this.labels.forEach(b=>{const selected=b.dataset.entityId===s.selectedId;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});
   const a=this.layout.entities.find(a=>a.id===(s.selectedId??s.game?.events[0]?.target));this.halo.visible=!!a;if(a){const e=s.entities[a.id];this.halo.scale.x=e.kind==='room'?1:3.1;this.halo.position.set(a.position.x,a.position.y,2.05);}
  }
- private key(s:Readonly<PreviewState>){return s.floors.map(f=>f.id).join(',')+'|'+Object.values(s.entities).map(e=>e.kind==='room'?e.status+':'+e.level+':'+e.category+':'+e.bed:e.level??1).join(',');}
+ private key(s:Readonly<PreviewState>){return s.floors.map(f=>f.id+':'+!!f.construction).join(',')+'|'+((s.game?.stock??1)>0)+':'+((s.game?.clubStock??1)>0)+'|'+Object.values(s.entities).map(e=>e.kind==='room'?e.status+':'+e.level+':'+e.category+':'+e.bed+':'+!!e.construction+':'+!!e.suaBookingId+':'+!!e.extraBed:(e.level??1)+':'+!!e.construction).join(',');}
  private syncGuests(s:Readonly<PreviewState>){
   for(const a of [...this.actors])if(!s.guests.some(g=>g.id===a.guestId)){a.group.removeFromParent();this.actors=this.actors.filter(x=>x!==a);this.bubbles.filter(b=>b.actor===a).forEach(b=>b.el.remove());this.bubbles=this.bubbles.filter(b=>b.actor!==a);}
-  for(const g of s.guests){let a=this.actors.find(a=>a.guestId===g.id);if(!a){const parts=actorFactory(g.color,g.persona);a={...parts,guestId:g.id,start:0,end:0,floorY:0,z:1.12,phase:this.actors.length*1.618,walking:true,thought:g.thought};this.scene.add(a.group);this.actors.push(a);const el=document.createElement('button');el.className='thought';el.onclick=()=>this.store.select(g.roomId??'facility-lobby');this.overlay.append(el);this.bubbles.push({el,actor:a,index:this.actors.length});}
+  for(const g of s.guests){let a=this.actors.find(a=>a.guestId===g.id);if(!a){const parts=actorFactory(g.color,g.persona,g.staffRole);a={...parts,guestId:g.id,start:0,end:0,floorY:0,z:1.12,phase:this.actors.length*1.618,walking:true,thought:g.thought};this.scene.add(a.group);this.actors.push(a);const el=document.createElement('button');el.className='thought';el.onclick=()=>this.store.select(g.roomId??'facility-lobby');this.overlay.append(el);this.bubbles.push({el,actor:a,index:this.actors.length});}
    a.start=g.route[0];a.end=g.route[1];a.z=g.z??1.12;a.floorY=(this.layout.floorY.get(g.floorId)??0)+.07;a.walking=a.start!==a.end;a.thought=g.thought;
    if(g.movement){const m=g.movement;
     if(!a.navigation){const p=m.trail[0]??m.position;a.group.position.set(p.x,p.level*FLOOR_HEIGHT+.07,p.z);}
@@ -134,6 +134,7 @@ const b=this.bubbles.find(b=>b.actor===a);if(b){b.el.textContent=g.thought;b.el.
    if(slot!==this.speechSlot){this.speechSlot=slot;this.speaker=eligible.length?eligible[slot%eligible.length].actor.guestId??'':'';}
    this.bubbles.forEach(({el,actor})=>{const active=now%8000<4200&&actor.guestId===this.speaker&&eligible.some(b=>b.actor===actor);el.style.display=active?'block':'none';if(active){const p=this.project(actor.group.position.clone().add(new T.Vector3(-.6,1.25,0)));el.hidden=false;const x=Math.max(6,Math.min(this.host.clientWidth-el.offsetWidth-6,p.x)),y=Math.max(6,Math.min(this.host.clientHeight-el.offsetHeight-6,p.y));el.style.transform=`translate(${x}px,${y+this.scroll.scrollTop}px)`;}});
   }
+  this.faultLights.forEach(light=>{light.visible=Math.sin(now/140)>-.2;});
   this.renderer.render(this.scene,this.camera);
  };
  dispose(){cancelAnimationFrame(this.raf);this.ro.disconnect();this.cleanups.forEach(fn=>fn());this.renderer.dispose();this.colliders.forEach(c=>{c.geometry.dispose();(c.material as T.Material).dispose()});Object.values(geometries).forEach(g=>g.dispose());disposeMaterials();this.overlay.remove();}

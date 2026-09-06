@@ -2,7 +2,7 @@ import type {Guest,PreviewState,WalkPoint} from '../state/types';
 const CORRIDOR=2.12,LIFT=7.94;
 export const hotelTime=(s:Readonly<PreviewState>)=>s.game!.day*1440+s.game!.minute;
 export function ensureMovement(s:PreviewState,g:Guest){
- if(g.staff||g.movement)return;
+ if((g.staff&&!g.staffRole)||g.movement)return;
  const level=Math.max(0,s.floors.findIndex(f=>f.id===g.floorId));
  const position:WalkPoint={x:(g.route[0]+g.route[1])/2,z:g.z??1.12,level,phase:g.roomId&&s.entities[g.roomId]?.floorId===g.floorId?'room':'public'};
  g.movement={position,steps:[],destination:g.roomId&&position.phase==='room'?g.roomId:'facility-'+(s.floors[level]?.role??'lobby'),arrived:true,nextDecision:hotelTime(s)+20+hash(g.id)%75,trail:[],revision:0};

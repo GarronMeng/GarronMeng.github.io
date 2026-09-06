@@ -1,9 +1,11 @@
+import {mountHotelAudio} from './render/hotelAudio';
 import './ui/style.css';
 import {createStore} from './state/store';
 import {mountShell} from './ui/shell';
 import {HotelWorld} from './render/HotelWorld';
 import {loadGame,saveGame,SAVE_KEY} from './core/save';
 const store=createStore(loadGame());const shell=mountShell(document.querySelector('#app')!,store);
+mountHotelAudio(document.querySelector('#app')!,store);
 let resetting=false,saveBlocked=store.getState().game!.notice.startsWith('存档读取失败');
 const save=()=>{if(!resetting&&!saveBlocked&&!saveGame(store.getState())){saveBlocked=true;alert('存档未能写入，请在运营面板导出备份，避免关闭页面后丢失进度。');}};
 setInterval(()=>{if(!document.hidden&&!document.querySelector('dialog[open]'))store.advance(4*store.getState().speed);},1000);

@@ -17,6 +17,7 @@ export function speak(s:PreviewState,g:Guest){if(g.staff)return;const now=hotelT
  else if(event==='late-deny'&&g.late==='deny')lines=['协商到 '+fallbackHour(g)+':00 退房，得把下午行程挪一挪。'];
  else if(event==='recovery'&&g.serviceDone)lines=[key==='points'?'QN / bonus 已经帮我核对过了。':'专属服务安排了，这一段也会写进 DP。'];
  else if(event==='renovation'&&!moving)lines=['这里刚升级了，看起来更舒服了。'];
+ else if(g.waitingFor)lines=[g.experience?.kind==='shortage'?'餐台还空着，我先等等补菜。':'前面还有人，轮到我再进去。'];
  else if(moving)lines=[m?.position.phase==='elevator'?(key==='planner'?'这段电梯时间记一下，团队得分批。':'还在电梯里，等到层再出去。'):(key==='road'?'顺着走廊过去，别走错房间。':'沿着走廊慢慢走。')];
  else if(g.departing)lines=['该出发了，最后检查一下行李。'];
  else if(!g.roomId)lines=[PERSONAS[key].quote,...(g.sua?['SUA 带好了，今晚能确认 Standard Suite 吗？']:[])];
@@ -32,6 +33,7 @@ export function speak(s:PreviewState,g:Guest){if(g.staff)return;const now=hotelT
  if(!moving&&g.roomId&&!g.departing){
   if(g.late==='pending')lines.unshift((g.checkoutDay===s.game!.day?'今天':'明天')+'能 '+lateLabel(g)+' 吗？先确认一下。');
   if(role==='guest'&&!g.upgrades&&app>0&&['hunter','forum'].includes(key))lines.push(`App 上还有 ${app} 间套，先问问 Front Office。`);
+  const profile=s.game!.operations?.profiles[g.profileId??''];if(role==='guest'&&profile&&profile.visits>0)lines.push(profile.trust>=2?'这家以后可以常住，下次带朋友来。':profile.history.at(-1)?.text.includes('套房')?'上次那个套房问题，今天解决了吗？':'再来住一次，看看这次体验。');
   const memory=s.game!.guestMemory?.[memoryKey(g)];if(role==='guest'&&memory?.visits)lines.push(memory.satisfaction<80?'上次住得不太顺，这次再看看。':memory.denied?'上次没拿到套，这次按实际体验写 DP。':'上次住得不错，这次又回来了。');
  }
  const recent=s.game!.dialogueRecent??={};for(const [text,at] of Object.entries(recent))if(now-at>240)delete recent[text];

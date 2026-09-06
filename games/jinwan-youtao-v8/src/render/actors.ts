@@ -1,9 +1,9 @@
-import type {Persona} from '../state/types';
+import type {Persona,Department} from '../state/types';
 import * as T from 'three';
 import {box,cyl,orb,shadow} from './primitives';
 import {materials as m,colorMaterial} from './materials';
 export interface Actor {group:T.Group;left:T.Group;right:T.Group;start:number;end:number;floorY:number;z:number;phase:number;walking:boolean;thought:string;guestId?:string;navigation?:{revision:number;points:T.Vector3[];elapsed:number;duration:number};}
-export function actorFactory(color:number,persona?:Persona):{group:T.Group;left:T.Group;right:T.Group}{
+export function actorFactory(color:number,persona?:Persona,staffRole?:Department):{group:T.Group;left:T.Group;right:T.Group}{
  const group=new T.Group();const palette:Record<Persona,number>={chill:0x98a989,road:0x213d57,family:0xd39452,points:0x507a77,hunter:0x674666,forum:0x66759b,creator:0xe4d6b4,proposal:0x752b3e,planner:0x35575b,whale:0xb9a287,auditplus:0x454a50};const suit=colorMaterial(persona?palette[persona]:color);
  const leg=(x:number)=>{const g=new T.Group();g.position.set(x,.31,0);group.add(g);box(g,0,-.11,0,.085,.26,.1,m.navy);box(g,0,-.245,.035,.11,.07,.17,m.black);return g;};
  const left=leg(-.08),right=leg(.08);
@@ -23,6 +23,9 @@ export function actorFactory(color:number,persona?:Persona):{group:T.Group;left:
  if(persona==='planner'){box(group,-.24,.47,.08,.19,.27,.04,m.teal);box(group,0,.54,.12,.08,.11,.015,m.white);}
  if(persona==='whale'){box(group,0,.59,.12,.04,.09,.025,m.gold);box(group,.2,.36,.055,.08,.04,.09,m.gold);orb(group,0,.96,-.04,.2,.075,.18,m.hair);}
  if(persona==='auditplus'){box(group,-.24,.47,.09,.19,.26,.04,m.walnut);box(group,-.24,.49,.12,.14,.19,.012,m.white);box(group,.23,.45,.09,.012,.17,.012,m.gold);}
+ if(staffRole==='house'){box(group,.43,.36,.2,.4,.55,.4,m.navy);box(group,.43,.68,.2,.45,.05,.45,m.gold);for(let i=0;i<3;i++)box(group,.43,.75+i*.065,.2,.32,.06,.3,m.white);for(const x of [.28,.58])orb(group,x,.08,.2,.07,.07,.07,m.black);}
+ if(staffRole==='engineering'){box(group,.3,.35,.05,.24,.2,.16,m.rust);box(group,.3,.5,.05,.13,.035,.04,m.gold);cyl(group,0,1.0,0,.21,.07,m.gold);}
+ if(staffRole==='fnb'){box(group,.4,.35,.2,.4,.08,.5,m.gold);box(group,.4,.62,.2,.4,.08,.5,m.gold);for(const x of [.28,.5])cyl(group,x,.73,.2,.09,.15,m.white);cyl(group,0,1.0,0,.17,.15,m.white);}
  shadow(group,0,0,.47,.3);
  return {group,left,right};
 }

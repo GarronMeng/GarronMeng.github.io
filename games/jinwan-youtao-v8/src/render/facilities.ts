@@ -7,8 +7,9 @@ function panelledWall(g:T.Object3D,role:FacilityRole){box(g,0,1.2,-1.54,14.65,2.
 function windows(g:T.Object3D,start:number,end:number){box(g,(start+end)/2,1.23,-1.4,end-start,2.14,.04,m.window);for(let x=start;x<=end+.01;x+=.72)box(g,x,1.23,-1.32,.045,2.17,.06,m.gold);box(g,(start+end)/2,1.25,-1.31,end-start,.04,.06,m.gold);}
 function dining(g:T.Object3D,x:number,z:number){table(g,x,z,.44);chair(g,x-.63,z,Math.PI/2);chair(g,x+.63,z,-Math.PI/2);cups(g,x-.18,.87,z);cups(g,x+.18,.87,z);cyl(g,x,.83,z,.065,.12,m.gold);}
 function shelves(g:T.Object3D,x:number,w:number){box(g,x,1.23,-1.35,w,1.86,.18,m.walnut);for(let y=.53;y<2;y+=.39){box(g,x,y,-1.14,w,.04,.42,m.gold);box(g,x,y+.035,-1.18,w-.1,.025,.05,m.glow);for(let j=0;j<Math.floor(w/.23);j++){const xx=x-w/2+.16+j*.23;cyl(g,xx,y+.13,-1.08,.048,.23,j%3?m.green:m.rust);cyl(g,xx,y+.27,-1.08,.019,.07,m.gold);}}}
-export function facilityFactory(role:FacilityRole){const g=new T.Group();
+export function facilityFactory(role:FacilityRole,level=1,stock=100,building=false){const g=new T.Group();
  if(role!=='rooftop'){panelledWall(g,role);box(g,0,.04,0,14.66,.08,3.15,role==='lobby'?m.stone:m.wood);box(g,0,2.31,-1.21,14.5,.04,.07,m.glow);}
+ if(building){for(const x of [-6,-3,0,3,6])box(g,x,1.1,1.4,.08,2.2,.08,m.gold);for(const y of [.5,1.5,2.1])box(g,0,y,1.4,14,.08,.08,m.gold);box(g,0,.8,1.5,14,.65,.04,m.navy);return g;}
  if(role==='lobby'){
   windows(g,4.3,7.2);box(g,0,1.35,-1.33,6.7,1.8,.11,m.stone);
   box(g,0,.48,.5,6.2,.84,.62,m.walnut);box(g,0,.94,.5,6.45,.12,.83,m.stone);box(g,0,.15,.86,6.08,.075,.035,m.glow);
@@ -26,7 +27,7 @@ export function facilityFactory(role:FacilityRole){const g=new T.Group();
  }else if(role==='breakfast'){
   windows(g,4.3,7.2);shelves(g,0,4.5);
   box(g,0,.52,-.15,5,.9,.8,m.walnut);box(g,0,1.01,-.15,5.2,.12,.97,m.stone);
-  for(const x of [-1.7,-.7,.3]){box(g,x,1.14,-.17,.66,.14,.45,m.gold);box(g,x,1.24,-.17,.6,.08,.38,m.white);}
+  for(const x of (stock>0?[-1.7,-.7,.3]:[])){box(g,x,1.14,-.17,.66,.14,.45,m.gold);box(g,x,1.24,-.17,.6,.08,.38,m.white);}
   box(g,1.5,1.29,-.24,.43,.53,.38,m.black);cyl(g,2.1,1.28,-.2,.15,.4,m.glass);cyl(g,2.1,1.13,-.2,.145,.09,m.rust);
   for(const x of [-5.55,-3.4,3.8,6])dining(g,x,.68);
   for(const x of [-5.55,-3.4,0,3.8,6])pendant(g,x,.5);
@@ -34,7 +35,7 @@ export function facilityFactory(role:FacilityRole){const g=new T.Group();
  }else if(role==='club'){
   windows(g,-7.2,-3.8);windows(g,3.8,7.2);shelves(g,0,5.4);
   box(g,0,.58,-.24,5.55,1.02,.58,m.walnut);box(g,0,1.12,-.24,5.8,.11,.79,m.stone);box(g,0,.25,.071,5.5,.05,.035,m.glow);
-  for(const x of [-1.8,-.6,.6,1.8]){cyl(g,x,.6,.6,.24,.12,m.teal);cyl(g,x,.28,.6,.035,.58,m.gold);cups(g,x,1.24,-.15);pendant(g,x,-.24);}
+  for(const x of [-1.8,-.6,.6,1.8]){cyl(g,x,.6,.6,.24,.12,m.teal);cyl(g,x,.28,.6,.035,.58,m.gold);if(stock>0)cups(g,x,1.24,-.15);pendant(g,x,-.24);}
   sofa(g,-5.6,-.54,0,2.05,m.teal);table(g,-5.6,.57,.5);chair(g,-4.38,.75,-Math.PI/3,m.rust);
   sofa(g,5.25,-.54,0,2.1,m.rust);table(g,5.25,.6,.52);chair(g,6.52,.7,-Math.PI/3,m.teal);
   plant(g,-6.9,.68,1.2);plant(g,6.9,-.8,1.25);lamp(g,-4.15,.05,-.8,1.6);
@@ -69,6 +70,34 @@ export function facilityFactory(role:FacilityRole){const g=new T.Group();
   for(const x of [-7.35,7.35])box(g,x,.43,0,.055,.8,3.5,m.gold);
   for(let x=-7.3;x<=7.3;x+=1.46)cyl(g,x,.43,1.7,.018,.8,m.gold);
   box(g,0,.8,1.7,14.7,.035,.035,m.gold);box(g,0,.46,1.7,14.7,.65,.014,m.glass);
+ }
+ if(level>=2){
+  if(role==='lobby'){sofa(g,-5.6,.8,0,1.8,m.teal);table(g,-4.25,.8,.35);}
+  if(role==='breakfast'){box(g,2.8,1.1,-.6,.65,.5,.45,m.screen);cups(g,2.8,1.44,-.6);}
+  if(role==='club'){shelves(g,5.8,1.2);lamp(g,3.3,.05,-.8,1.8);}
+  if(role==='gym'){for(const x of [3.7,4.6,5.5])box(g,x,.15,.5,.6,.09,1.8,m.rust);}
+  if(role==='spa'){for(const x of [-2.5,2.5])box(g,x,1.15,-.7,.06,2.1,1.3,m.wood);}
+  if(role==='rooftop'){sofa(g,0,.55,0,2.2,m.rust);}
+ }
+ if(level>=3){
+  if(role==='lobby'){artwork(g,0,1.6,-1.17,3.5,.65,3);box(g,0,.94,.5,6.45,.12,.83,m.gold);}
+  if(role==='breakfast'){box(g,0,.55,.05,5.4,1,.8,m.stone);if(stock>0)for(const x of [-1.8,0,1.8])cyl(g,x,1.12,.05,.25,.12,m.gold);}
+  if(role==='club'){sofa(g,-5.5,.4,0,2.8,m.white);artwork(g,0,1.85,-1.05,2.7,.45,2);}
+  if(role==='gym'){box(g,4.9,1.15,-1.23,4,1.85,.05,m.glass);for(const x of [3.1,6.5])box(g,x,1,.0,.08,1.8,.08,m.gold);box(g,4.8,1.85,0,3.6,.08,.08,m.gold);}
+  if(role==='spa'){for(const x of [-4.8,0,4.8]){box(g,x,.88,.4,1.8,.04,.8,m.white);lamp(g,x+1.05,.75,.8,.8);}}
+  if(role==='rooftop'){for(const x of [-6.8,6.8])box(g,x,1.3,-.9,.12,2.6,.12,m.walnut);for(let x=-6.8;x<=6.8;x+=.7)box(g,x,2.5,-.3,.12,.1,2.2,m.walnut);}
+ }
+ if(level>=4){
+  box(g,0,.12,-.15,14,.03,2.9,m.stone);
+  for(const x of [-6.6,6.6]){artwork(g,x,1.55,-1.15,.7,1.1,4);lamp(g,x,.05,.85,1.7);}
+  if(role==='spa'){box(g,0,.4,.4,2.5,.55,1.5,m.white);box(g,0,.7,.4,2.1,.03,1.1,m.window);}
+  if(role==='breakfast'||role==='club'){for(const x of [-2,2]){box(g,x,1.55,-.6,.025,.85,.025,m.gold);cyl(g,x,1.95,-.6,.25,.06,m.gold);}}
+  if(role==='gym'){box(g,0,.3,.3,1.4,.25,1.8,m.black);box(g,0,1.25,-.4,1.2,.6,.12,m.screen);}
+ }
+ if(level>=5){
+  if(role!=='rooftop'){for(const x of [-5,-2.5,0,2.5,5]){pendant(g,x,.5,2.05);box(g,x,2.27,0,2.2,.045,2.6,m.walnut);}box(g,0,2.23,1.2,14,.04,.04,m.glow);}
+  else{box(g,0,.35,-.5,3.6,.5,1.1,m.stone);box(g,0,.62,-.5,3.3,.04,.9,m.window);for(const x of [-6,-3,3,6])lamp(g,x,.05,.8,1.3);}
+  for(let x=-6.5;x<7;x+=1.3)box(g,x,.15,1.55,.5,.02,.2,m.gold);
  }
  return g;
 }
