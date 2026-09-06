@@ -1,3 +1,4 @@
+import {portrait} from './portraits';
 import {standardSuite} from '../content/roomTypes';
 import type {PreviewState,Room,Department} from '../state/types';
 import {roomRate,roomUpgradeCost,houseMinutes,engineeringMinutes,supplyCost,revenuePrice} from '../core/economy';
@@ -15,5 +16,5 @@ export function managerPreview(s:Readonly<PreviewState>,id:Department,name:strin
  if(id==='engineering'){effect=compare('常规维修用时',engineeringMinutes(level),engineeringMinutes(next),' 分钟');note=level?'增加一位工程员工，维修费用仍为 ¥100/间；另需到场时间。':'自动维修 ¥100/间，手动 ¥180/间；事件维修按诉求流程处理。';}
  if(id==='fnb'){effect=compare('采购单价（每 40 份）',level?supplyCost(level):240,supplyCost(next),' 元');note=level?'每批节省 ¥20；每天新增工资 ¥180，超过 9 批后才产生净节省，另需回收培训费。':'库存低于 20 时安排配送，员工到餐台完成补货才入库；与手动采购每份同价。';}
  if(id==='revenue'){effect=compare('同一需求下自动报价',level?revenuePrice(base,g.level,level):g.price,revenuePrice(base,g.level,next),' 元');note='次日定价时生效；按当前需求档预览。需求和天气变化会改变报价，提价也可能减少客流。';}
- return `<details class="manager-card"><summary><span>${name}主管 · ${level?'Lv.'+level:'未聘任'}</span><small>${level>=3?'已满级':'查看效果 ›'}</small></summary>${level>=3?'<p>已完成全部培训。</p>':`${effect}<p>${note}</p><p>投入 ${money(cost)} · 工资 ${money(level*180)} → ${money(next*180)}/天</p><button class="game-action" data-action="${level?'train':'hire'}" data-id="${id}">${level?'培训至 Lv.'+next:'聘任主管'} · ${money(cost)}</button>`}</details>`;
+ return `<details class="manager-card"><summary class="person-summary">${portrait(id)}<span>${name}主管 · ${level?'Lv.'+level:'未聘任'}</span><small>${level>=3?'已满级':'查看效果 ›'}</small></summary>${level>=3?'<p>已完成全部培训。</p>':`${effect}<p>${note}</p><p>投入 ${money(cost)} · 工资 ${money(level*180)} → ${money(next*180)}/天</p><button class="game-action" data-action="${level?'train':'hire'}" data-id="${id}">${level?'培训至 Lv.'+next:'聘任主管'} · ${money(cost)}</button>`}</details>`;
 }

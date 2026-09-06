@@ -23,3 +23,11 @@ test('客史按稳定身份累计，错误服务产生差评，满意回访形�
  const s=newGame(),g=s.guests.find(g=>g.roomId)!;g.challenge={kind:'family',resolved:false};g.satisfaction=95;execute(s,{type:'guest-choice',id:g.id,value:'gift'});assert.equal(g.challenge.outcome,'未解决核心诉求');guestStory(s,g);const p=s.game!.operations!.profiles[g.profileId!]!;assert.equal(p.trust,-1);assert.match(p.history.at(-1)!.text,/差 DP/);
  g.challenge=undefined;g.denied=false;g.satisfaction=95;for(let i=0;i<3;i++)guestStory(s,g);assert.equal(p.trust,2);assert.match(p.history.at(-1)!.text,/介绍朋友/);
 });
+
+test('待办先引导入住，入住后可落实诉求并留下明确结果',async()=>{
+ const {challengeCards}=await import('../src/ui/managementViews');
+ const s=newGame();execute(s,{type:'brief-start'});const g=queue(s)[0];assert.ok(g);g.challenge={kind:'family',resolved:false};
+ const cash=s.metrics.cash;execute(s,{type:'guest-choice',id:g.id,value:'family'});assert.equal(s.metrics.cash,cash);assert.equal(g.challenge.resolved,false);assert.match(challengeCards(s),new RegExp('data-guest="'+g.id+'"'));
+ const room=rooms(s).find(r=>r.status==='available')!;execute(s,{type:'checkin',id:g.id,roomId:room.id});assert.equal(g.roomId,room.id);assert.match(challengeCards(s),/安排家庭服务/);
+ s.game!.stock=10;const before=s.metrics.cash;execute(s,{type:'guest-choice',id:g.id,value:'family'});assert.equal(g.challenge.resolved,true);assert.equal(s.game!.stock,4);assert.equal(s.metrics.cash,before-180);assert.ok(room.extraBed);assert.ok(s.game!.notice.includes(g.name));assert.ok(!challengeCards(s).includes('data-id="'+g.id+'"'));
+});
