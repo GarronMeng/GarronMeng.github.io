@@ -12,7 +12,7 @@ test('晨会锁定确认预订、保留报价、赔付幂等与每日交班',()=
  const first=[...o.bookings].sort((a,b)=>a.eta-b.eta)[0];advanceGame(s,first.eta-g.minute+1);const guest=queue(s).find(v=>v.reservationId===first.id)!;assert.ok(guest);
  const room=rooms(s).find(r=>r.id===first.roomId)??rooms(s).find(r=>r.status==='available')!;execute(s,{type:'checkin',id:guest.id,roomId:room.id});assert.equal(guest.rate,roomRate(first.rate,room,guest.tier==='Globalist'));
  const lost=o.bookings.find(b=>b.id!==first.id)!;const sample={...guest,id:'test-loss',reservationId:lost.id};const cash=s.metrics.cash;loseBooking(s,sample);loseBooking(s,sample);assert.equal(s.metrics.cash,cash-600);
- s.metrics.cash=100000;for(const id of ['front','house','engineering','fnb','revenue'])execute(s,{type:'hire',id});advanceGame(s,1600);assert.equal(g.reportOpen,true);assert.ok(g.reports.at(-1)?.forecastOccupancy!==undefined);execute(s,{type:'continue'});assert.equal(o.briefOpen,true);assert.equal(o.day,2);assert.ok(s.guests.some(v=>v.staffRole==='house'));
+ s.metrics.cash=100000;for(const id of ['front','house','engineering','fnb','revenue'])execute(s,{type:'hire',id});advanceGame(s,1600);assert.equal(g.evening?.open,true);execute(s,{type:'evening-close'});advanceGame(s,300);assert.equal(g.reportOpen,true);assert.ok(g.reports.at(-1)?.forecastOccupancy!==undefined);execute(s,{type:'continue'});assert.equal(o.briefOpen,true);assert.equal(o.day,2);assert.ok(s.guests.some(v=>v.staffRole==='house'));
 });
 test('施工期间不可配置或出售，竣工后升级；员工必须到场后完成',()=>{
  const s=newGame();s.metrics.cash=100000;execute(s,{type:'expand'});const f=s.floors.find(f=>f.construction)!;const slot=s.entities[f.entityIds[0]];if(slot.kind!=='room')throw Error();execute(s,{type:'configure-room',id:slot.id,value:'suite:twin'});assert.equal(slot.status,'unbuilt');
@@ -30,4 +30,10 @@ test('待办先引导入住，入住后可落实诉求并留下明确结果',asy
  const cash=s.metrics.cash;execute(s,{type:'guest-choice',id:g.id,value:'family'});assert.equal(s.metrics.cash,cash);assert.equal(g.challenge.resolved,false);assert.match(challengeCards(s),new RegExp('data-guest="'+g.id+'"'));
  const room=rooms(s).find(r=>r.status==='available')!;execute(s,{type:'checkin',id:g.id,roomId:room.id});assert.equal(g.roomId,room.id);assert.match(challengeCards(s),/安排家庭服务/);
  s.game!.stock=10;const before=s.metrics.cash;execute(s,{type:'guest-choice',id:g.id,value:'family'});assert.equal(g.challenge.resolved,true);assert.equal(s.game!.stock,4);assert.equal(s.metrics.cash,before-180);assert.ok(room.extraBed);assert.ok(s.game!.notice.includes(g.name));assert.ok(!challengeCards(s).includes('data-id="'+g.id+'"'));
+});
+
+test('20 点复盘只触发一次，快照不重复入账且翌日 8 点晨会',()=>{
+ const s=newGame();execute(s,{type:'brief-start'});s.game!.minute=1199;advanceGame(s,4);const g=s.game!,r=g.evening!;assert.equal(g.minute,1200);assert.equal(r.open,true);assert.equal(g.paused,true);assert.equal(g.reportOpen,false);
+ const cash=s.metrics.cash,snapshot=JSON.stringify(r);advanceGame(s,100);assert.equal(s.metrics.cash,cash);assert.equal(JSON.stringify(r),snapshot);
+ execute(s,{type:'evening-close'});advanceGame(s,1);assert.equal(g.minute,1201);assert.equal(r.open,false);assert.equal(g.evening,r);advanceGame(s,240);assert.equal(g.reportOpen,true);execute(s,{type:'continue'});assert.equal(g.minute,480);assert.equal(g.operations!.briefOpen,true);
 });

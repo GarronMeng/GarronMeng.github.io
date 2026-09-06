@@ -1,3 +1,4 @@
+import {captureEvening} from './evening';
 import {initOperations,prepareMorning,bookingArrivals,attachProfile,loseBooking,guestStory,operationsCommand,walkinEstimate} from './operations';
 import {tickWorkforce,staffAssigned} from './workforce';
 import {tickConstruction} from './construction';
@@ -50,7 +51,7 @@ function settle(s:PreviewState){const g=s.game!,rs=rooms(s);let revenue=0,nights
  if(g.reports.length>30)g.reports.shift();reputation(s,g.complaints===0?3:1);s.metrics.owner=Math.max(0,Math.min(100,s.metrics.owner+(g.revenue>=g.expense?2:-3)));
  log(s,'收益',`Day ${g.day}：收入 ¥${g.revenue}，成本 ¥${g.expense}，入住率 ${occupancy}%。`);g.reportOpen=true;g.paused=true;
 }
-function nextDay(s:PreviewState){const g=s.game!;g.day++;g.minute=420;g.nextArrival=450;g.nextEvent=600;g.weather=random(s)<.25?'rain':'sunny';g.revenue=g.expense=g.nights=g.arrivals=g.upgrades=g.complaints=g.lost=g.repLoss=g.roomMinutes=g.soldMinutes=g.closedMinutes=0;g.reportOpen=false;g.paused=false;g.tasks=tasks(g.day);for(const r of rooms(s))if(r.guestId){const guest=s.guests.find(a=>a.id===r.guestId);r.nightsLeft=Math.max(0,(guest?.checkoutDay??g.day)-g.day);}if(g.managers.revenue)g.price=revenuePrice(demand(s)>1.1?750:590,g.level,g.managers.revenue);prepareMorning(s);log(s,'部门',`${weekday(g.day)} 开始。${g.weather==='rain'?'今天有雨。':''}预计需求 ${Math.round(demand(s)*100)}%。`);}
+function nextDay(s:PreviewState){const g=s.game!;g.day++;g.minute=480;g.nextArrival=490;g.nextEvent=600;g.weather=random(s)<.25?'rain':'sunny';g.revenue=g.expense=g.nights=g.arrivals=g.upgrades=g.complaints=g.lost=g.repLoss=g.roomMinutes=g.soldMinutes=g.closedMinutes=0;g.reportOpen=false;g.paused=false;g.tasks=tasks(g.day);for(const r of rooms(s))if(r.guestId){const guest=s.guests.find(a=>a.id===r.guestId);r.nightsLeft=Math.max(0,(guest?.checkoutDay??g.day)-g.day);}if(g.managers.revenue)g.price=revenuePrice(demand(s)>1.1?750:590,g.level,g.managers.revenue);prepareMorning(s);log(s,'部门',`${weekday(g.day)} 开始。${g.weather==='rain'?'今天有雨。':''}预计需求 ${Math.round(demand(s)*100)}%。`);}
 export function advanceGame(s:PreviewState,minutes:number){const g=s.game;if(!g||g.paused)return;
  const effects={income:(n:number)=>income(s,n),reputation:(n:number)=>reputation(s,n),log:(category:LogCategory,text:string,target?:string)=>log(s,category,text,target),progress:(id:string,n=1)=>progress(s,id,n)};
  beginMovementFrame(s);
@@ -77,6 +78,7 @@ export function advanceGame(s:PreviewState,minutes:number){const g=s.game;if(!g|
    if(!g.events.some(e=>e.kind===kind)){if(kind==='repair'&&r)r.status='maintenance';if(kind==='supplies')g.stock=Math.min(g.stock,4);const titles={repair:'设备故障，需要工程协助',complaint:'住客希望安静一点',supplies:'早餐供应临时波动',vip:'常客期待额外关照'};g.events.push({id:g.nextId++,kind,title:titles[kind],target,expires:g.day*1440+g.minute+120});log(s,'客诉',titles[kind],target);}g.nextEvent=g.minute+180+Math.round(random(s)*90);
   }
   for(const event of [...g.events]){const dept=event.kind==='repair'?'engineering':event.kind==='supplies'?'fnb':'front';if(event.kind!=='repair'&&event.kind!=='supplies'&&g.managers[dept]&&s.metrics.cash>=150){execute(s,{type:'resolve',id:String(event.id),value:'sop'});}else if(!staffAssigned(s,event.target)&&g.day*1440+g.minute>=event.expires){g.events=g.events.filter(e=>e.id!==event.id);g.complaints++;reputation(s,-2);log(s,'客诉',`未及时处理：${event.title}`,event.target);}}
+  captureEvening(s);
   if(g.minute>=1440)settle(s);
  }
  updateUsage(s);
@@ -103,6 +105,7 @@ export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if
  case 'price':g.price=Math.max(350,Math.min(1800,Math.round(Number(c.value)||650)));log(s,'收益',`新客挂牌价调整至 ¥${g.price}，已入住客人价格不变。`);break;
  case 'position':if(['business','resort','urban'].includes(String(c.value))){g.positioning=c.value as typeof g.positioning;log(s,'收益','酒店定位已调整，星期需求与住宿长度随之变化。');}break;
  case 'pause':g.paused=!g.paused;break;
+ case 'evening-close':if(g.evening?.open){g.evening.open=false;g.paused=false;}break;
  case 'continue':if(g.reportOpen)nextDay(s);break;
  case 'claim':{const task=g.tasks.find(t=>t.id===c.id);if(task&&!task.claimed&&task.progress>=task.goal){task.claimed=true;income(s,task.reward);log(s,'收益',`完成「${task.title}」，奖励 ¥${task.reward}。`);}break;}
  }updateUsage(s);
