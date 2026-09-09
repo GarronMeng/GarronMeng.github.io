@@ -1,5 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js';
-import { createVFXSystem } from './vfx-system.js?v=0709a';
+import { createVFXSystem } from './vfx-system.js?v=0709b';
 
 window.__RW3D_FAILED=false;clearTimeout(window.__rw3dTimer);
 
@@ -60,11 +60,11 @@ function buildActor(data,enemy){
   else if(data.type==='ranger'){const bow=addMesh(weapon,new THREE.TorusGeometry(.24,.022,6,16,Math.PI),material(0xc49459,.6,.15),[0,.05,0],[0,Math.PI/2,0]);bow.rotation.z=-Math.PI/2}
   else if(data.type==='medic'){addMesh(weapon,new THREE.BoxGeometry(.34,.12,.12),material(0xdcecff,.35,.4),[0,.04,0]);addMesh(weapon,new THREE.BoxGeometry(.10,.34,.12),material(0xdcecff,.35,.4),[0,.04,0])}
   else addMesh(weapon,new THREE.BoxGeometry(.06,.62,.09),material(0xe6d09b,.28,.7),[0,.04,0],[0,0,-.55]);
-  const hpBar=new THREE.Group();hpBar.position.set(0,1.62,.02);hpBar.visible=false;g.add(hpBar);addMesh(hpBar,new THREE.PlaneGeometry(.68,.075),new THREE.MeshBasicMaterial({color:0x10151e,transparent:true,opacity:.9}));const hpFill=addMesh(hpBar,new THREE.PlaneGeometry(.62,.045),new THREE.MeshBasicMaterial({color:enemy?0xdf6872:0x63d49b}),[0,0,.006]);g.userData.hpFill=hpFill;
+  const hpBar=new THREE.Group();hpBar.position.set(0,1.62,.02);hpBar.visible=false;g.add(hpBar);addMesh(hpBar,new THREE.PlaneGeometry(.68,.075),new THREE.MeshBasicMaterial({color:0x10151e,transparent:true,opacity:.92,depthTest:false,depthWrite:false}));const hpFill=addMesh(hpBar,new THREE.PlaneGeometry(.62,.045),new THREE.MeshBasicMaterial({color:enemy?0xdf6872:0x63d49b,depthTest:false,depthWrite:false}),[0,0,.006]);g.userData.hpBar=hpBar;g.userData.hpFill=hpFill;
   if(data.star>=2&&!enemy){const ring=addMesh(g,new THREE.TorusGeometry(.37,.025,8,24),new THREE.MeshBasicMaterial({color:data.star>=3?0xf2cf72:0x78baff,transparent:true,opacity:.65}),[0,.06,0],[Math.PI/2,0,0]);g.userData.starRing=ring}
   if(data.type==='boss')g.scale.setScalar(1.42);if(data.type==='brute')g.scale.setScalar(1.16);return g
 }
-function pos(i,enemy,battle=false){const ally=[[-1.55,-1.3],[-1.55,1.08],[-2.32,-.72],[-2.32,.72],[-3.05,-1.18],[-3.05,1.02]],foe=[[1.58,-1.28],[1.58,1.08],[2.35,-.7],[2.35,.72],[3.08,-1.16],[3.08,1.02]];const a=(enemy?foe:ally)[i]||[enemy?3.1:-3.1,0];const spread=battle?1:1.06;return{x:a[0]*spread,z:a[1]}}
+function pos(i,enemy,battle=false){const ally=[[-1.20,-1.50],[-1.20,1.50],[-2.40,-1.00],[-2.40,1.00],[-3.60,-.50],[-3.60,.50]],foe=[[1.20,-1.50],[1.20,1.50],[2.40,-1.00],[2.40,1.00],[3.60,-.50],[3.60,.50]];const a=(enemy?foe:ally)[i]||[enemy?3.6:-3.6,0];const spread=battle?1:1.03;return{x:a[0]*spread,z:a[1]}}
 function ensureStarRing(g,star){if(!g||g.userData.enemy)return;let ring=g.userData.starRing;if(star>=2&&!ring){ring=addMesh(g,new THREE.TorusGeometry(.37,.025,8,24),new THREE.MeshBasicMaterial({color:star>=3?0xf2cf72:0x78baff,transparent:true,opacity:.65}),[0,.06,0],[Math.PI/2,0,0]);g.userData.starRing=ring}else if(ring&&star>=2){ring.material.color.setHex(star>=3?0xf2cf72:0x78baff);ring.material.opacity=star>=3?.82:.65}else if(ring&&star<2){g.remove(ring);ring.geometry.dispose();ring.material.dispose();g.userData.starRing=null}}
 function stateActors(){const st=window.__RW_GET_STATE?.();if(!st||st.screen==='menu')return[];if(st.phase==='battle'&&st.battle)return[...st.battle.allies.map((data,i)=>({data,i,enemy:false})),...st.battle.enemies.map((data,i)=>({data,i,enemy:true}))];return st.units.map((data,i)=>({data:{...data,maxHp:data.hp,hp:data.hp,shield:0,dead:false},i,enemy:false}))}
 function disposeObject(g){g.traverse(o=>{o.geometry?.dispose?.();if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose?.())})}
@@ -75,7 +75,7 @@ function syncActors(){
   for(const item of stateActors()){
     const d=item.data;keep.add(d.id);const p=pos(item.i,item.enemy,stNow?.phase==='battle');let g=actors.get(d.id);
     if(!g){g=buildActor(d,item.enemy);g.position.set(item.enemy?4.75:-4.75,0,p.z);g.userData.entering=1;actors.set(d.id,g);scene.add(g)}
-    const wasDead=!!g.userData.dead;g.userData.homeX=p.x;g.userData.homeZ=p.z;g.userData.dead=d.hp<=0||d.dead;g.userData.targetY=g.userData.dead?-.28:0;g.userData.kind=d.type;g.userData.star=d.star||0;g.userData.inBattle=stNow?.phase==='battle';ensureStarRing(g,g.userData.star);
+    const wasDead=!!g.userData.dead;g.userData.homeX=p.x;g.userData.homeZ=p.z;g.userData.dead=d.hp<=0||d.dead;g.userData.targetY=g.userData.dead?-.28:0;g.userData.kind=d.type;g.userData.star=d.star||0;g.userData.inBattle=stNow?.phase==='battle';if(g.userData.hpBar)g.userData.hpBar.visible=!!g.userData.inBattle&&!g.userData.dead;ensureStarRing(g,g.userData.star);
     const ratio=Math.max(0,Math.min(1,(d.hp||0)/(d.maxHp||d.hp||1)));if(g.userData.hpFill){g.userData.hpFill.scale.x=Math.max(.001,ratio);g.userData.hpFill.position.x=-.31*(1-ratio)}
     if(!wasDead&&g.userData.dead){g.userData.deathBurst=1;addImpact(g.position.clone().add(new THREE.Vector3(0,.04,0)),item.enemy?0xd95b68:0x6ea8ff,d.type==='boss'?.48:.28)}
   }
@@ -85,7 +85,7 @@ function resize(){if(!renderer||!stage)return;const w=Math.max(1,stage.clientWid
 function ensureRenderer(){if(renderer)return;canvas=document.createElement('canvas');canvas.id='three-stage';canvas.setAttribute('aria-hidden','true');renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,Math.min(innerWidth||999,innerHeight||999)<520?1.35:1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setClearColor(0x000000,0);buildWorld();vfxSystem=createVFXSystem({scene,actors,timer,shake:v=>shake=Math.max(shake,v)});timer.reset()}
 function mount(){if(!API.enabled)return;const host=document.querySelector('.three-layer'),nextStage=host?.closest('.stage');if(!host||!nextStage){pause();return}ensureRenderer();if(canvas.parentElement!==host)host.appendChild(canvas);if(stage!==nextStage){ro?.disconnect();stage=nextStage;ro=new ResizeObserver(resize);ro.observe(stage);resize()}syncActors();let q=nextStage.querySelector('.vfx-quality');if(!q){q=document.createElement('div');q.className='vfx-quality';nextStage.appendChild(q)}q.textContent=`VFX ${vfxSystem?.quality||'AUTO'}`;document.body.classList.add('rw-three-active');if(!raf)animate()}
 function pause(){if(raf){cancelAnimationFrame(raf);raf=0}document.body.classList.remove('rw-three-active')}
-function destroy(){pause();ro?.disconnect();ro=null;for(const g of actors.values())disposeObject(g);actors.clear();for(const b of bolts){scene?.remove(b.o);b.o.geometry?.dispose?.();b.o.material?.dispose?.()}bolts.length=0;for(const e of impacts){scene?.remove(e.o);e.o.geometry?.dispose?.();e.o.material?.dispose?.()}impacts.length=0;vfxSystem?.dispose?.();vfxSystem=null;if(scene)scene.traverse(o=>{o.geometry?.dispose?.();if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose?.())});renderer?.dispose?.();timer.dispose?.();renderer=null;scene=null;camera=null;canvas=null;stage=null}
+function destroy(){pause();ro?.disconnect();ro=null;for(const g of actors.values())disposeObject(g);actors.clear();for(const b of bolts){scene?.remove(b.o);b.o.geometry?.dispose?.();b.o.material?.dispose?.()}bolts.length=0;for(const e of impacts){scene?.remove(e.o);e.o.geometry?.dispose?.();e.o.material?.dispose?.()}impacts.length=0;if(scene)scene.traverse(o=>{o.geometry?.dispose?.();if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose?.())});vfxSystem?.dispose?.();vfxSystem=null;renderer?.dispose?.();timer.dispose?.();renderer=null;scene=null;camera=null;canvas=null;stage=null}
 
 function bossShock(g){if(!scene||!g)return;shake=Math.max(shake,.22);for(let i=0;i<4;i++)setTimeout(()=>addImpact(g.position.clone().add(new THREE.Vector3(0,.03,0)),0xba5b82,.38+i*.14),i*65)}
 function spawnBolt({src,tgt,kind,good,srcType}){
@@ -113,12 +113,12 @@ function animate(ts){
     const bob=g.userData.dead?0:Math.sin(t*2.5+ix*.8)*.03;g.position.y+=((g.userData.targetY??0)+bob-g.position.y)*.18;
     let targetScale=baseScale;if(g.userData.entering)targetScale*=.92;if(g.userData.hit){targetScale*=1+.07*g.userData.hit;g.userData.hit=Math.max(0,g.userData.hit-.13)}if(g.userData.levelPulse){targetScale*=1+.22*g.userData.levelPulse;g.userData.levelPulse=Math.max(0,g.userData.levelPulse-.035)}
     if(g.userData.dead){const targetRot=g.userData.enemy?-1.2:1.2;g.rotation.z+=(targetRot-g.rotation.z)*.09;targetScale*=.62}else g.rotation.z*=.82;g.scale.lerp(new THREE.Vector3(targetScale,targetScale,targetScale),.15);
-    if(g.userData.starRing)g.userData.starRing.rotation.z=t*1.15;const w=g.userData.weapon;if(w){const sw=g.userData.swing||0;if(sw>0){w.rotation.z=Math.sin((1-sw)*Math.PI)*-.95;g.userData.swing=Math.max(0,sw-.14*battleSpeed)}else w.rotation.z*=.76}ix++
+    if(g.userData.starRing)g.userData.starRing.rotation.z=t*1.15;if(g.userData.hpBar&&camera){g.userData.hpBar.visible=!!g.userData.inBattle&&!g.userData.dead;g.userData.hpBar.quaternion.copy(g.quaternion).invert().multiply(camera.quaternion)}const w=g.userData.weapon;if(w){const sw=g.userData.swing||0;if(sw>0){w.rotation.z=Math.sin((1-sw)*Math.PI)*-.95;g.userData.swing=Math.max(0,sw-.14*battleSpeed)}else w.rotation.z*=.76}ix++
   }
   for(let i=bolts.length-1;i>=0;i--){const b=bolts[i];b.t+=.082*battleSpeed;const q=Math.min(1,b.t),target=b.target;if(target?.parent)b.b=target.position.clone().add(new THREE.Vector3(0,.85,0));const end=b.b||b.a;b.o.position.lerpVectors(b.a,end,q);b.o.position.y+=Math.sin(Math.PI*q)*.34;if(q>=1){if(target?.parent){markHit(target,b.heal?.45:1);addImpact(target.position.clone().add(new THREE.Vector3(0,.04,0)),b.color,b.heal?.16:.2)}scene.remove(b.o);b.o.geometry.dispose();b.o.material.dispose();bolts.splice(i,1)}}
   for(let i=impacts.length-1;i>=0;i--){const e=impacts[i];e.t+=.085*battleSpeed;e.o.scale.setScalar(1+e.t*1.8);e.o.material.opacity=Math.max(0,.72*(1-e.t));if(e.t>=1){scene.remove(e.o);e.o.geometry.dispose();e.o.material.dispose();impacts.splice(i,1)}}
   if(shake>0){shake*=.82;camera.position.set(cameraBase.x+(Math.random()-.5)*shake,cameraBase.y+(Math.random()-.5)*shake*.35,cameraBase.z);camera.lookAt(0,.72,0)}else if(camera.position.distanceTo(cameraBase)>.001){camera.position.lerp(cameraBase,.2);camera.lookAt(0,.72,0)}
-  vfxSystem?.update(dt,t);updateHudLabels();renderer.render(scene,camera)
+  vfxSystem?.update(dt,t);renderer.render(scene,camera)
 }
 
 window.addEventListener('rwfx',e=>spawnBolt(e.detail));
