@@ -1,0 +1,20 @@
+/* v0.7 VFX & Alignment Pass */
+.stage{height:258px}
+.stage-footer{z-index:18}
+.stage-msg{z-index:17;max-width:50%;backdrop-filter:blur(7px)}
+.three-layer{z-index:2}
+.combat-layer{position:absolute;inset:0;z-index:6;pointer-events:none}
+.rw-three-active .combatant{opacity:1!important;width:74px!important;z-index:12!important;pointer-events:none;transition:none!important;filter:none!important;text-align:center}
+.rw-three-active .combatant .sprite{display:none!important}
+.rw-three-active .combatant .unit-name{display:block;max-width:70px;margin:0 auto;padding:2px 5px;border-radius:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#edf5ff;font-size:7px;font-weight:800;letter-spacing:.01em;background:rgba(6,10,16,.66);border:1px solid rgba(255,255,255,.06);text-shadow:0 1px 3px #000;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.rw-three-active .combatant.enemy-side .unit-name{color:#ffd8dc;background:rgba(24,8,14,.68)}
+.rw-three-active .combatant .mini-hp{height:5px;margin:3px 7px 0;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.68);box-shadow:0 2px 6px rgba(0,0,0,.34)}
+.rw-three-active .combatant .mini-hp>i{box-shadow:0 0 8px rgba(95,223,159,.28)}
+.rw-three-active .combatant.enemy-side .mini-hp>i{box-shadow:0 0 8px rgba(239,102,117,.26)}
+.rw-three-active .combatant .star{right:4px;top:-11px;padding:1px 3px;border-radius:5px;color:#ffe292;font-size:7px;font-weight:900;background:rgba(12,12,15,.62);text-shadow:0 0 5px rgba(255,218,111,.35)}
+.rw-three-active .combatant .mini-shield{left:3px;top:-10px;color:#8fd2ff;text-shadow:0 0 5px rgba(82,181,255,.45)}
+.rw-three-active .combatant.dead{opacity:.3!important}
+.rw-three-active .stage{background:radial-gradient(circle at 76% 30%,rgba(114,92,203,.12),transparent 22%),linear-gradient(180deg,#121b2a 0%,#17243a 46%,#0d151e 47%,#0a1018 100%)}
+.rw-three-active .castle,.rw-three-active .portal,.rw-three-active .lane,.rw-three-active .moon{opacity:.12}
+.vfx-quality{position:absolute;right:9px;top:9px;z-index:16;padding:3px 5px;border-radius:999px;background:rgba(7,11,17,.58);border:1px solid rgba(255,255,255,.05);font-size:6px;color:#8291aa;letter-spacing:.08em;pointer-events:none}
+@media(max-width:390px){.stage{height:246px}.rw-three-active .combatant{width:66px!important}.rw-three-active .combatant .unit-name{max-width:62px;font-size:6.5px}.rw-three-active .combatant .mini-hp{margin-left:6px;margin-right:6px}.stage-msg{max-width:46%;font-size:7px}}
