@@ -1,0 +1,17 @@
+@media(max-width:390px){#app{padding-left:7px;padding-right:7px}.stage{height:205px}.cell{height:63px}.ucard,.empty-card{min-width:92px;width:92px}.choices{grid-template-columns:1fr}.menu-machine{opacity:.45;right:8px}.menu-title p{width:215px}.brand span{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+/* v0.4 refinements */
+.machine-meta{display:flex;align-items:center;gap:5px}.odds{padding:5px 7px;border-radius:999px;background:rgba(117,159,255,.08);border:1px solid rgba(117,159,255,.16);color:#9fc3ff;font-size:8px;font-weight:900}.stage-actions{display:flex;gap:6px;align-items:center}.speed-cta{min-width:42px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#171f2d;color:#aebbd0;font-size:9px;font-weight:900}.speed-cta:disabled{opacity:.35}.feedbar{height:3px;margin-top:6px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}.feedbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#6fa8ff,#f1cd7d)}.ucard.legendary{border-color:rgba(247,223,135,.5);background:linear-gradient(180deg,rgba(247,223,135,.11),#151d2a);box-shadow:inset 0 0 18px rgba(247,223,135,.05)}.ucard.legendary .uname{color:#f7df87}.jackpot.prism{background:radial-gradient(circle,rgba(247,223,135,.24),rgba(167,125,243,.12) 35%,transparent 64%)}.jackpot.prism div{background:linear-gradient(135deg,#f6e49b,#d8a75b 35%,#c0a0ff 72%,#8bbcff);box-shadow:0 0 36px rgba(222,199,255,.52)}.choice{position:relative}.choice.recommended{border-color:rgba(242,206,123,.5);box-shadow:inset 0 0 0 1px rgba(242,206,123,.08)}.recommend{position:absolute;right:8px;top:8px;padding:3px 5px;border-radius:999px;background:#f0cf83;color:#21170c;font-size:7px;font-weight:1000}.hudbox.gold .v{font-variant-numeric:tabular-nums}@media(max-width:390px){.machine-meta{gap:3px}.odds,.cost{font-size:7px}.stage-actions{gap:4px}.speed-cta{min-width:36px}.menu-title p{width:205px}.menu-machine{transform:scale(.9);transform-origin:right bottom}}
+
+/* v0.5 Three.js enhancement layer — v0.4 gameplay preserved */
+.three-layer{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .22s ease}
+.three-layer canvas{display:block;width:100%;height:100%}
+.rw-three-active .three-layer{opacity:1}
+.rw-three-active .stage>.moon,
+.rw-three-active .stage>.castle,
+.rw-three-active .stage>.portal,
+.rw-three-active .stage>.lane{opacity:0}
+.rw-three-active .combatant .sprite{opacity:0}
+.three-toggle{min-width:54px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#171f2d;color:#aebbd0;font-size:9px;font-weight:900}
+.three-toggle.active{color:#101826;background:linear-gradient(180deg,#d9e8ff,#9fc2f5);border-color:rgba(180,212,255,.6)}
+.three-toggle:disabled{opacity:.35}
