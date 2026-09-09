@@ -1,0 +1,20 @@
+/* v0.11 architecture refactor deliberately reuses the frozen v0.10 visual baseline.
+   Vite resolves and bundles these repo-local styles into dist; no runtime CDN dependency. */
+@import '../../reel-wardens-v05-three/style-1.css';
+@import '../../reel-wardens-v05-three/style-2.css';
+@import '../../reel-wardens-v05-three/style-3.css';
+@import '../../reel-wardens-v05-three/style-4.css';
+@import '../../reel-wardens-v05-three/style-5.css';
+@import '../../reel-wardens-v06/v06.css';
+@import '../../reel-wardens-v06/v06-hotfix.css';
+@import '../../reel-wardens-v07/v07.css';
+@import '../../reel-wardens-v08/v08.css';
+@import '../../reel-wardens-v09/v09.css';
+@import '../../reel-wardens-v10/v10.css';
+
+#app{min-height:100dvh}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2}
+.stage[data-three="on"] .combat-layer .combatant{opacity:0;visibility:hidden}
+.arch-badge{font-size:6px;color:#69768b;text-align:center;margin-top:8px}
+.debug-diag{position:fixed;right:4px;top:4px;z-index:99;font:9px monospace;background:#000b;color:#aef;padding:4px 6px;border-radius:6px;pointer-events:none}
+.hidden{display:none!important}
