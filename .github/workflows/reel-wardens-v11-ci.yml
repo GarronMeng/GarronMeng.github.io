@@ -26,7 +26,14 @@ jobs:
       - name: Deterministic logic smoke
         run: npm run test:logic
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        run: |
+          # GitHub's Ubuntu image may carry a Google Chrome apt source whose
+          # repository metadata can be temporarily out of sync. Playwright
+          # does not need that repository; remove only that source so
+          # `--with-deps` can install system libraries deterministically.
+          sudo grep -rlZ 'dl.google.com/linux/chrome-stable/deb' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null \
+            | sudo xargs -0 -r sed -i '\|dl.google.com/linux/chrome-stable/deb|d'
+          npx playwright install --with-deps chromium
       - name: Browser smoke — mobile and desktop
         run: npm test
       - name: Visual evidence — active play and battle
