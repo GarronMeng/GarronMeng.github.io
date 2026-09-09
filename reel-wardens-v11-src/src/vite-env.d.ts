@@ -1,0 +1,3 @@
+/// <reference types="vite/client" />
+declare global {interface Window {__THREE_GAME_TEST_HOOKS__?:{seed:(value:number)=>void;setState:(name:string)=>unknown;setPausedForScreenshot:(v:boolean)=>void;setReducedMotion:(v:boolean)=>void;hideDebugUi:(v:boolean)=>void;action:(action:string,payload?:Record<string,string>)=>void;snapshot:()=>unknown;};__THREE_GAME_DIAGNOSTICS__?:{frame:number;wave:number;phase:string;screen:string;gold:number;heart:number;units:number;spinCount:number;reelSpinning:boolean;battle:boolean;renderer:{calls:number;triangles:number;geometries:number;textures:number};canvas:{width:number;height:number;dpr:number}};}}
+export {};

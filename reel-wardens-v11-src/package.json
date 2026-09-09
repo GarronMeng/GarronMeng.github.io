@@ -1,0 +1,17 @@
+{
+  "name": "reel-wardens-v11-refactor",
+  "version": "0.11.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "playwright test tests/smoke.spec.ts",
+    "test:logic": "rm -rf .logic-build && tsc -p tsconfig.logic.json && node -e \"require('fs').writeFileSync('.logic-build/package.json','{\\\"type\\\":\\\"commonjs\\\"}')\" && node .logic-build/tests/logic-smoke.js",
+    "verify:visual": "playwright test tests/visual.spec.ts",
+    "verify": "npm run build && npm run test:logic && npm test"
+  },
+  "dependencies": {"three": "0.184.0"},
+  "devDependencies": {"@playwright/test": "1.60.0","@types/node": "25.9.0","@types/three": "0.184.1","typescript": "6.0.3","vite": "8.0.13"}
+}
