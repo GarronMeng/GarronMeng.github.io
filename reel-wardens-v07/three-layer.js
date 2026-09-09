@@ -60,7 +60,34 @@ function buildActor(data,enemy){
   else if(data.type==='ranger'){const bow=addMesh(weapon,new THREE.TorusGeometry(.24,.022,6,16,Math.PI),material(0xc49459,.6,.15),[0,.05,0],[0,Math.PI/2,0]);bow.rotation.z=-Math.PI/2}
   else if(data.type==='medic'){addMesh(weapon,new THREE.BoxGeometry(.34,.12,.12),material(0xdcecff,.35,.4),[0,.04,0]);addMesh(weapon,new THREE.BoxGeometry(.10,.34,.12),material(0xdcecff,.35,.4),[0,.04,0])}
   else addMesh(weapon,new THREE.BoxGeometry(.06,.62,.09),material(0xe6d09b,.28,.7),[0,.04,0],[0,0,-.55]);
-  const hpBar=new THREE.Group();hpBar.position.set(0,1.62,.02);hpBar.visible=false;g.add(hpBar);addMesh(hpBar,new THREE.PlaneGeometry(.68,.075),new THREE.MeshBasicMaterial({color:0x10151e,transparent:true,opacity:.92,depthTest:false,depthWrite:false}));const hpFill=addMesh(hpBar,new THREE.PlaneGeometry(.62,.045),new THREE.MeshBasicMaterial({color:enemy?0xdf6872:0x63d49b,depthTest:false,depthWrite:false}),[0,0,.006]);g.userData.hpBar=hpBar;g.userData.hpFill=hpFill;
+  const hpBar=new THREE.Group();
+  hpBar.position.set(0,1.62,.02);
+  hpBar.visible=false;
+  hpBar.renderOrder=2000;
+  g.add(hpBar);
+  const frameMat=new THREE.MeshBasicMaterial({color:0xc9d6ec,transparent:true,opacity:.92,depthTest:false,depthWrite:false,side:THREE.DoubleSide});
+  frameMat.toneMapped=false;
+  const bgMat=new THREE.MeshBasicMaterial({color:0x10151e,transparent:true,opacity:.88,depthTest:false,depthWrite:false,side:THREE.DoubleSide});
+  bgMat.toneMapped=false;
+  const fillMat=new THREE.MeshBasicMaterial({color:enemy?0xdf6872:0x63d49b,transparent:true,opacity:1,depthTest:false,depthWrite:false,side:THREE.DoubleSide});
+  fillMat.toneMapped=false;
+  const hpFrame=addMesh(hpBar,new THREE.PlaneGeometry(.72,.09),frameMat,[0,0,-.004]);
+  hpFrame.renderOrder=2000;
+  const hpBg=addMesh(hpBar,new THREE.PlaneGeometry(.68,.06),bgMat,[0,0,0]);
+  hpBg.renderOrder=2001;
+  const fillPivot=new THREE.Group();
+  fillPivot.position.set(-.31,0,.008);
+  fillPivot.renderOrder=2002;
+  hpBar.add(fillPivot);
+  const fillGeo=new THREE.PlaneGeometry(.62,.044);
+  fillGeo.translate(.31,0,0);
+  const hpFill=new THREE.Mesh(fillGeo,fillMat);
+  hpFill.renderOrder=2002;
+  fillPivot.add(hpFill);
+  g.userData.hpBar=hpBar;
+  g.userData.hpBg=hpBg;
+  g.userData.hpFill=hpFill;
+  g.userData.hpFillPivot=fillPivot;
   if(data.star>=2&&!enemy){const ring=addMesh(g,new THREE.TorusGeometry(.37,.025,8,24),new THREE.MeshBasicMaterial({color:data.star>=3?0xf2cf72:0x78baff,transparent:true,opacity:.65}),[0,.06,0],[Math.PI/2,0,0]);g.userData.starRing=ring}
   if(data.type==='boss')g.scale.setScalar(1.42);if(data.type==='brute')g.scale.setScalar(1.16);return g
 }
@@ -76,7 +103,17 @@ function syncActors(){
     const d=item.data;keep.add(d.id);const p=pos(item.i,item.enemy,stNow?.phase==='battle');let g=actors.get(d.id);
     if(!g){g=buildActor(d,item.enemy);g.position.set(item.enemy?4.75:-4.75,0,p.z);g.userData.entering=1;actors.set(d.id,g);scene.add(g)}
     const wasDead=!!g.userData.dead;g.userData.homeX=p.x;g.userData.homeZ=p.z;g.userData.dead=d.hp<=0||d.dead;g.userData.targetY=g.userData.dead?-.28:0;g.userData.kind=d.type;g.userData.star=d.star||0;g.userData.inBattle=stNow?.phase==='battle';if(g.userData.hpBar)g.userData.hpBar.visible=!!g.userData.inBattle&&!g.userData.dead;ensureStarRing(g,g.userData.star);
-    const ratio=Math.max(0,Math.min(1,(d.hp||0)/(d.maxHp||d.hp||1)));if(g.userData.hpFill){g.userData.hpFill.scale.x=Math.max(.001,ratio);g.userData.hpFill.position.x=-.31*(1-ratio)}
+    const ratio=Math.max(0,Math.min(1,(d.hp||0)/(d.maxHp||d.hp||1)));
+    if(g.userData.hpFill){
+      const safeRatio=Math.max(.045,ratio);
+      g.userData.hpFill.scale.x=safeRatio;
+      if(g.userData.hpFillPivot)g.userData.hpFillPivot.visible=ratio>0;
+      const color=item.enemy
+        ? (ratio>.6?0xdf6872:ratio>.3?0xf29b54:0xffe066)
+        : (ratio>.6?0x63d49b:ratio>.3?0xf0c75e:0xff8a70);
+      g.userData.hpFill.material.color.setHex(color);
+      g.userData.hpFill.material.opacity=g.userData.dead?0:1;
+    }
     if(!wasDead&&g.userData.dead){g.userData.deathBurst=1;addImpact(g.position.clone().add(new THREE.Vector3(0,.04,0)),item.enemy?0xd95b68:0x6ea8ff,d.type==='boss'?.48:.28)}
   }
   for(const [id,g] of actors)if(!keep.has(id)){scene.remove(g);disposeObject(g);actors.delete(id)}
