@@ -1,0 +1,42 @@
+name: Reel Wardens v0.11 Refactor CI
+on:
+  push:
+    branches: [reel-wardens-v11-refactor]
+    paths:
+      - 'reel-wardens-v11-src/**'
+      - '.github/workflows/reel-wardens-v11-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: reel-wardens-v11-src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install pinned dependencies
+        run: npm install --no-audit --no-fund
+      - name: TypeScript + production build
+        run: npm run build
+      - name: Deterministic logic smoke
+        run: npm run test:logic
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser smoke — mobile and desktop
+        run: npm test
+      - name: Visual evidence — active play and battle
+        run: npm run verify:visual
+      - name: Upload production dist and Playwright evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel-wardens-v11-evidence
+          path: |
+            reel-wardens-v11-src/dist
+            reel-wardens-v11-src/test-results
+          if-no-files-found: warn
