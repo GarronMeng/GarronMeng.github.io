@@ -22,21 +22,21 @@
     },
     {
       "date": "2026-09-28",
-      "title": "Nusa Dua → Ubud → Seminyak",
-      "notes": "行李随包车，不先去 KLEO 再折返 Ubud。",
-      "stops": ["Grand Hyatt Bali", "Ubud", "KLEO Seminyak"]
+      "title": "Grand Hyatt → Serangan → Nusa Penida｜Kelingking",
+      "notes": "11:35–11:45 左右从 Grand Hyatt Bali 退房；Serangan 13:30 船到 Banjar Nyuh；下午只看 Kelingking 上方 viewpoint 45–60 分钟；晚上首选 Māua Nusa Penida。",
+      "stops": ["Grand Hyatt Bali", "Serangan Harbour", "Banjar Nyuh Harbour", "Kelingking Beach", "Māua Nusa Penida"]
     },
     {
       "date": "2026-09-29",
-      "title": "Nusa Penida 一日往返",
-      "notes": "西线陆地或浮潜择一为主；提前 48h 看海况。",
-      "stops": ["KLEO Seminyak", "Sanur Harbour", "Nusa Penida"]
+      "title": "Māua → Diamond Beach → Sanur → Seminyak",
+      "notes": "正常早餐后约 09:00 退房；上午只看 Diamond Beach；下午从 Banjar Nyuh 回 Sanur，再去 Seminyak。住宿 KLEO / Potato Head 待定。",
+      "stops": ["Māua Nusa Penida", "Diamond Beach", "Banjar Nyuh Harbour", "Sanur Harbour", "Seminyak / Petitenget"]
     },
     {
       "date": "2026-09-30",
       "title": "巴厘岛 → 泗水 → Bromo",
-      "notes": "抵达泗水后直接进山，核心是保证睡眠。",
-      "stops": ["KLEO Seminyak", "DPS", "SUB", "Manis ae"]
+      "notes": "从 Seminyak / Petitenget 前往 DPS；抵达泗水后直接进山，核心是保证睡眠。",
+      "stops": ["Seminyak / Petitenget", "DPS", "SUB", "Manis ae"]
     },
     {
       "date": "2026-10-01",
@@ -81,10 +81,16 @@
     {"key":"DPS","name":"I Gusti Ngurah Rai International Airport","lat":-8.7482,"lng":115.1673,"type":"airport"},
     {"key":"Grand Hyatt Bali","name":"Grand Hyatt Bali","lat":-8.8034,"lng":115.2332,"type":"accommodation"},
     {"key":"Uluwatu","name":"Uluwatu","lat":-8.8151,"lng":115.0876,"type":"area"},
-    {"key":"Ubud","name":"Ubud","lat":-8.5064,"lng":115.263,"type":"area"},
-    {"key":"KLEO Seminyak","name":"KLEO Seminyak","lat":-8.68065,"lng":115.15235,"type":"accommodation"},
+    {"key":"Ubud","name":"Ubud","lat":-8.5064,"lng":115.263,"type":"optional"},
+    {"key":"Serangan Harbour","name":"Serangan Harbour","lat":-8.7216,"lng":115.2388,"type":"transport"},
+    {"key":"Banjar Nyuh Harbour","name":"Banjar Nyuh Harbour","lat":-8.67816,"lng":115.48845,"type":"transport"},
+    {"key":"Kelingking Beach","name":"Kelingking Beach","lat":-8.7509,"lng":115.4748,"type":"attraction"},
+    {"key":"Māua Nusa Penida","name":"Māua Nusa Penida","lat":-8.70255,"lng":115.475,"type":"accommodation"},
+    {"key":"Diamond Beach","name":"Diamond Beach","lat":-8.77615,"lng":115.61857,"type":"attraction"},
     {"key":"Sanur Harbour","name":"Sanur Harbour","lat":-8.6722,"lng":115.2646,"type":"transport"},
-    {"key":"Nusa Penida","name":"Nusa Penida","lat":-8.7389,"lng":115.4872,"type":"attraction"},
+    {"key":"Seminyak / Petitenget","name":"Seminyak / Petitenget","lat":-8.6807,"lng":115.1524,"type":"area"},
+    {"key":"KLEO Seminyak","name":"KLEO Seminyak - JdV by Hyatt","lat":-8.680715,"lng":115.15264,"type":"optional_accommodation"},
+    {"key":"Desa Potato Head","name":"Desa Potato Head Bali","lat":-8.680351,"lng":115.150103,"type":"optional_accommodation"},
     {"key":"SUB","name":"Juanda International Airport","lat":-7.3798,"lng":112.7869,"type":"airport"},
     {"key":"Manis ae","name":"Manis ae","lat":-7.9045,"lng":113.0108,"type":"accommodation"},
     {"key":"Mount Bromo","name":"Mount Bromo","lat":-7.908,"lng":112.9485,"type":"attraction"},
@@ -119,6 +125,11 @@
     "10/6 Cathay Pacific CX608"
   ],
   "unresolved": [
+    "9/28 Marina Group Serangan 13:30 → Banjar Nyuh 船票",
+    "Māua Nusa Penida 9/28 一晚",
+    "Nusa Penida 9/28–9/29 两天司机 / 私家车",
+    "9/29 Banjar Nyuh → Sanur 14:30 左右返程船",
+    "9/29 Seminyak 住宿：KLEO / Potato Head",
     "Jaya House 10/5 late checkout / 退房后继续使用设施",
     "两个人 10/5 SPA 时段",
     "Larryta 10/5 约23:00 sleeper",
