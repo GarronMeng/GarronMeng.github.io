@@ -11,23 +11,72 @@
     "category": {"type": "string", "enum": ["attraction", "experience", "food", "shopping", "hotel", "transport", "other"]},
     "status": {"type": "string", "enum": ["confirmed", "scheduled", "optional", "cancelled", "unresolved"]},
     "dayNumber": {"type": ["integer", "null"]},
+    "coordinates": {
+      "type": ["object", "null"],
+      "properties": {
+        "lat": {"type": "number", "minimum": -90, "maximum": 90},
+        "lng": {"type": "number", "minimum": -180, "maximum": 180}
+      },
+      "required": ["lat", "lng"],
+      "additionalProperties": false
+    },
     "suggestedDurationMinutes": {"type": ["integer", "null"], "minimum": 0},
     "mapsQuery": {"type": ["string", "null"]},
     "xiaohongshuQuery": {"type": ["string", "null"]},
     "whyGo": {"type": ["string", "null"]},
     "whatToSee": {"type": ["string", "null"]},
     "skipAdvice": {"type": ["string", "null"]},
+    "practicalNote": {"type": ["string", "null"]},
+    "timeGuard": {"type": ["string", "null"]},
     "photoTip": {"type": ["string", "null"]},
+    "shootingPlan": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["moment", "how"],
+        "properties": {
+          "moment": {"type": "string"},
+          "how": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
     "riskLevel": {"type": ["string", "null"], "enum": ["low", "medium", "high", null]},
+    "selectionMeta": {
+      "type": ["object", "null"],
+      "properties": {
+        "preferenceMatch": {"type": ["integer", "null"], "minimum": 0, "maximum": 5},
+        "destinationDistinctiveness": {"type": ["integer", "null"], "minimum": 0, "maximum": 5},
+        "routeFit": {"type": ["integer", "null"], "minimum": 0, "maximum": 5},
+        "practicalConfidence": {"type": ["integer", "null"], "minimum": 0, "maximum": 5},
+        "timeCost": {"type": ["integer", "null"], "minimum": 0, "maximum": 5},
+        "frozen": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "image": {
+      "type": ["object", "null"],
+      "properties": {
+        "url": {"type": ["string", "null"]},
+        "sourceUrl": {"type": ["string", "null"]},
+        "verifiedAt": {"type": ["string", "null"], "format": "date"}
+      },
+      "additionalProperties": false
+    },
     "liveFacts": {
       "type": "object",
       "properties": {
         "openingHours": {"type": ["string", "null"]},
         "price": {"type": ["string", "null"]},
         "rating": {"type": ["number", "null"]},
+        "reviewCount": {"type": ["integer", "null"], "minimum": 0},
         "lastVerified": {"type": ["string", "null"], "format": "date"},
-        "source": {"type": ["string", "null"]}
-      }
+        "source": {"type": ["string", "null"]},
+        "sourceUrl": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
     }
-  }
+  },
+  "additionalProperties": true
 }
