@@ -1,4 +1,4 @@
 {
-  "compilerOptions":{"target":"ES2022","module":"CommonJS","moduleResolution":"Node","strict":true,"skipLibCheck":true,"esModuleInterop":true,"outDir":".logic-build","rootDir":"."},
+  "compilerOptions":{"target":"ES2022","module":"CommonJS","moduleResolution":"Node","strict":true,"skipLibCheck":true,"esModuleInterop":true,"outDir":".logic-build","rootDir":".","ignoreDeprecations":"6.0"},
   "include":["src/core/**/*.ts","src/data/**/*.ts","src/game/createState.ts","src/systems/**/*.ts","tests/logic-smoke.ts"]
 }
