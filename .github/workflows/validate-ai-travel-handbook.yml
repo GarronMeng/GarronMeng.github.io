@@ -1,24 +1,86 @@
-name: Validate AI Travel Handbook TREK Plugin
+name: Validate AI Travel Handbook
 
 on:
   push:
+    branches: [master]
     paths:
+      - 'bali/**'
+      - 'skills/ai-travel-handbook/**'
+      - 'trek-migration/**'
       - 'trek-plugins/ai-travel-handbook/**'
       - '.github/workflows/validate-ai-travel-handbook.yml'
   pull_request:
     paths:
+      - 'bali/**'
+      - 'skills/ai-travel-handbook/**'
+      - 'trek-migration/**'
       - 'trek-plugins/ai-travel-handbook/**'
 
 jobs:
-  validate:
+  handbook:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: trek-plugins/ai-travel-handbook
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check browser JavaScript syntax
+        run: |
+          node --check bali/app.js
+          node --check bali/itinerary-overrides.js
+          node --check bali/photos.js
+          node --check bali/auth.js
+          node --check bali/data.js
+          node --check bali/guide-data.js
+
+      - name: Check migration and schema JSON
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for p in [
+              Path('trek-migration/project-bali.json'),
+              Path('skills/ai-travel-handbook/schemas/place.schema.json'),
+              Path('skills/ai-travel-handbook/schemas/trip.schema.json'),
+          ]:
+              with p.open(encoding='utf-8') as f:
+                  json.load(f)
+              print('OK', p)
+          PY
+
+      - name: Check required pages and current asset versions
+        run: |
+          test -f bali/index.html
+          test -f bali/penida/index.html
+          test -f bali/angkor/index.html
+          grep -q 'itinerary-overrides.js?v=3' bali/index.html
+          grep -q 'app.js?v=8' bali/index.html
+          grep -q 'photos.js?v=2' bali/index.html
+          grep -q 'handbook.css?v=2' bali/index.html
+          grep -q './penida/' bali/index.html
+
+      - name: Block stale Penida itinerary
+        run: |
+          grep -q 'Serangan' trek-migration/project-bali.json
+          grep -q 'Kelingking Beach' trek-migration/project-bali.json
+          grep -q 'Māua Nusa Penida' trek-migration/project-bali.json
+          grep -q 'Diamond Beach' trek-migration/project-bali.json
+          if grep -q 'Nusa Dua → Ubud → Seminyak' trek-migration/project-bali.json; then
+            echo 'Stale D3 itinerary found in TREK migration'
+            exit 1
+          fi
+
+  trek-plugin:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Validate TREK plugin
+        working-directory: trek-plugins/ai-travel-handbook
         run: npx -y trek-plugin-sdk validate
