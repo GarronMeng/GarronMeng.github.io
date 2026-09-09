@@ -27,12 +27,18 @@ jobs:
         run: npm run test:logic
       - name: Install Chromium
         run: |
-          # GitHub's Ubuntu image may carry a Google Chrome apt source whose
-          # repository metadata can be temporarily out of sync. Playwright
-          # does not need that repository; remove only that source so
-          # `--with-deps` can install system libraries deterministically.
-          sudo grep -rlZ 'dl.google.com/linux/chrome-stable/deb' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null \
-            | sudo xargs -0 -r sed -i '\|dl.google.com/linux/chrome-stable/deb|d'
+          # The hosted Ubuntu image can contain a Google Chrome apt source with
+          # temporarily inconsistent repository metadata. Playwright does not
+          # require that source. Disable the whole source file (important for
+          # deb822 .sources files) before asking Playwright to install deps.
+          for source_file in /etc/apt/sources.list.d/*; do
+            if [ -f "$source_file" ] && grep -q 'dl.google.com/linux/chrome-stable/deb' "$source_file"; then
+              sudo rm -f "$source_file"
+            fi
+          done
+          if [ -f /etc/apt/sources.list ] && grep -q 'dl.google.com/linux/chrome-stable/deb' /etc/apt/sources.list; then
+            sudo sed -i '\|dl.google.com/linux/chrome-stable/deb|d' /etc/apt/sources.list
+          fi
           npx playwright install --with-deps chromium
       - name: Browser smoke — mobile and desktop
         run: npm test
