@@ -1,0 +1,79 @@
+name: Generate Travel Handbook Store Asset
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/generate-travel-handbook-store-asset.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Pillow
+        run: python -m pip install --quiet pillow
+      - name: Generate 16 by 9 store screenshot
+        run: |
+          python - <<'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          from pathlib import Path
+          import os
+
+          W,H=1600,900
+          img=Image.new('RGB',(W,H),(242,246,243))
+          d=ImageDraw.Draw(img)
+          def f(size,bold=False):
+              p='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf' if bold else '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+              return ImageFont.truetype(p,size)
+          ink=(28,57,50); green=(15,108,92); dark=(23,63,54); muted=(103,121,113); line=(219,230,224); white=(255,253,249); soft=(235,245,240); warn=(255,243,232)
+          d.rectangle((0,0,W,72),fill=dark)
+          d.text((40,20),'TREK',font=f(30,True),fill='white')
+          d.text((130,24),'AI Travel Handbook',font=f(23,True),fill=(220,246,238))
+          d.rounded_rectangle((1325,17,1558,55),18,fill='white'); d.text((1363,27),'Project Bali',font=f(16,True),fill=green)
+          d.rounded_rectangle((28,95,300,870),24,fill=white,outline=line,width=2)
+          d.text((55,125),'PROJECT BALI',font=f(14,True),fill=green); d.text((55,153),'Sep 26 - Oct 06',font=f(13),fill=muted)
+          y=210
+          for label,active in [('Today',True),('Explore',False),('Prepare',False)]:
+              d.rounded_rectangle((48,y,280,y+54),14,fill=soft if active else white)
+              d.ellipse((62,y+17,78,y+33),fill=green if active else (160,175,168)); d.text((92,y+16),label,font=f(16,True),fill=ink); y+=68
+          d.text((55,440),'TODAY',font=f(12,True),fill=muted)
+          for i,t in enumerate(['11:45 Grand Hyatt checkout','13:30 Fast ferry','15:45 Kelingking','17:15 Maua check-in']): d.text((55,472+i*27),t,font=f(12),fill=ink)
+          d.text((340,108),'Today · Sep 28',font=f(17,True),fill=green)
+          d.text((340,143),'Nusa Dua → Serangan → Nusa Penida',font=f(32,True),fill=ink)
+          d.text((340,188),'What to do, when to leave, and what comes next.',font=f(15),fill=muted)
+          d.rounded_rectangle((340,230,1555,330),22,fill=white,outline=line,width=2)
+          route=['Grand Hyatt','Serangan','Banjar Nyuh','Kelingking','Maua']; xs=[395,650,900,1155,1435]
+          for i,(x,name) in enumerate(zip(xs,route)):
+              if i<len(xs)-1:d.line((x+20,275,xs[i+1]-22,275),fill=(166,202,190),width=5)
+              d.ellipse((x-9,266,x+9,284),fill=green); d.text((x-45,295),name,font=f(12,True),fill=ink)
+          cards=[('13:30','Marina Fast Ferry','Check in and hand over luggage before taking a break.','After 13:00 stay in the boarding area.'),('15:45','Kelingking viewpoint','Main viewpoint only. Do not descend to the beach.','Leave by 16:45–17:00 · 45–60 min is enough.'),('17:15','Maua Nusa Penida','Check in, pool, shower and dinner. No extra stops.','If delayed, cut sunset waiting first.')]
+          y=360
+          for i,(tm,title,note,guard) in enumerate(cards):
+              d.rounded_rectangle((340,y,1160,y+145),20,fill=white,outline=line,width=2)
+              d.text((365,y+22),tm,font=f(15,True),fill=green); d.text((455,y+18),title,font=f(19,True),fill=ink); d.text((455,y+50),note,font=f(13),fill=muted)
+              d.rounded_rectangle((455,y+82,1115,y+124),12,fill=warn if i==1 else soft); d.text((470,y+94),'TIME GUARD',font=f(10,True),fill=green); d.text((590,y+92),guard,font=f(12),fill=ink); y+=160
+          d.rounded_rectangle((1190,360,1555,835),20,fill=white,outline=line,width=2); d.text((1220,390),'Quick actions',font=f(18,True),fill=ink)
+          for i,lab in enumerate(['Google Maps route','Xiaohongshu place','Penida Focus']):
+              yy=430+i*52; d.rounded_rectangle((1220,yy,1525,yy+38),12,fill=green if i==0 else soft); d.text((1240,yy+10),lab,font=f(12,True),fill='white' if i==0 else green)
+          d.text((1220,610),'Reference photos',font=f(16,True),fill=ink)
+          for r in range(2):
+              for c in range(2):
+                  x=1220+c*145; yy=645+r*82; d.rounded_rectangle((x,yy,x+130,yy+70),10,fill=(230,237,233),outline=line); d.line((x+15,yy+52,x+55,yy+22,x+90,yy+48,x+116,yy+26),fill=(126,160,149),width=4)
+          d.text((1220,810),'Tap to open · local device only',font=f(11),fill=muted)
+          out=Path('trek-plugins/ai-travel-handbook/docs/screenshot.png'); out.parent.mkdir(parents=True,exist_ok=True); img.save(out,'PNG',optimize=True)
+          PY
+      - name: Commit store screenshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add trek-plugins/ai-travel-handbook/docs/screenshot.png
+          git diff --cached --quiet && exit 0
+          git commit -m 'Add TREK plugin store screenshot'
+          git push
