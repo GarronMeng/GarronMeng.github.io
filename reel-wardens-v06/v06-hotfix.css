@@ -1,0 +1,6 @@
+/* v0.6 final alignment: per-column reel states */
+.reelcol{transition:filter .18s ease,transform .18s ease,opacity .18s ease}
+.reelcol.stopped{filter:saturate(1.06)}
+.reelcol.rolling{filter:brightness(.86) saturate(.8)}
+.reelcol.tension{filter:brightness(1.12) saturate(1.2);animation:lastReelTension .34s ease-in-out infinite alternate}
+@keyframes lastReelTension{to{transform:translateY(-1px);filter:brightness(1.25) saturate(1.35);box-shadow:0 0 18px rgba(242,206,123,.18)}}
