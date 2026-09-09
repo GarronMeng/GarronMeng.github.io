@@ -25,7 +25,7 @@ jobs:
         run: npm run build
       - name: Deterministic logic smoke
         run: npm run test:logic
-      - name: Install Chromium
+      - name: Install Playwright browsers
         run: |
           # The hosted Ubuntu image can contain a Google Chrome apt source with
           # temporarily inconsistent repository metadata. Playwright does not
@@ -39,7 +39,8 @@ jobs:
           if [ -f /etc/apt/sources.list ] && grep -q 'dl.google.com/linux/chrome-stable/deb' /etc/apt/sources.list; then
             sudo sed -i '\|dl.google.com/linux/chrome-stable/deb|d' /etc/apt/sources.list
           fi
-          npx playwright install --with-deps chromium
+          # Desktop project uses Chromium; the iPhone 13 project uses WebKit.
+          npx playwright install --with-deps chromium webkit
       - name: Browser smoke — mobile and desktop
         run: npm test
       - name: Visual evidence — active play and battle
