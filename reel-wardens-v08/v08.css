@@ -1,0 +1,14 @@
+/* v0.8 replica pass */
+.ucard.replica{min-width:132px;width:132px;padding:9px;min-height:158px}
+.ucard.replica .uname{font-size:11px}
+.ucard.replica .ustats{display:flex;gap:5px;flex-wrap:wrap;color:#c6d2e5}
+.random-stats{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.rstat{font-size:6.5px;line-height:1;padding:4px 5px;border-radius:999px;background:rgba(110,168,255,.08);border:1px solid rgba(110,168,255,.17);color:#bcd4ff;white-space:nowrap}
+.imprint-line{margin-top:7px;padding-top:6px;border-top:1px solid rgba(255,255,255,.055);min-height:31px}
+.imprint-line b{display:block;font-size:8px;color:#f2d28a}.imprint-line span{display:block;font-size:6.5px;color:#8290a6;margin-top:2px;line-height:1.25}
+.evo-line{margin-top:6px;font-size:6.5px;color:#a5b4cb;padding:4px 5px;background:rgba(255,255,255,.035);border-radius:7px}
+.absorb-overlay{z-index:70}.absorb-sheet{padding-bottom:max(18px,env(safe-area-inset-bottom))}
+.absorb-pair{display:grid;grid-template-columns:1fr 32px 1fr;align-items:center;gap:8px;margin-top:14px}.absorb-arrow{text-align:center;font-size:18px;color:#f2cf7c}
+.absorb-unit{padding:10px;border-radius:12px;background:#111a27;border:1px solid rgba(255,255,255,.08)}.absorb-unit.source{border-color:rgba(232,103,114,.25)}.absorb-unit.target{border-color:rgba(100,212,160,.28)}.absorb-unit small{display:block;font-size:6px;color:#75849a;letter-spacing:.12em}.absorb-unit b{display:block;font-size:12px;margin-top:4px}.absorb-unit span{display:block;font-size:7px;color:#9ba9bd;margin-top:4px}
+.transfer-grid{display:grid;grid-template-columns:1fr .62fr;gap:7px;margin-top:10px}.transfer-grid>div{padding:8px;border-radius:10px;background:#0f1722;border:1px solid rgba(255,255,255,.055)}.transfer-grid .wide{grid-column:1/-1}.transfer-grid span{display:block;font-size:6.5px;color:#77869d}.transfer-grid b{display:block;font-size:8.5px;line-height:1.35;margin-top:3px;color:#d8e2f3}.absorb-actions{display:grid;grid-template-columns:.8fr 1.2fr;gap:8px;margin-top:12px}
+@media(max-width:390px){.ucard.replica{min-width:124px;width:124px}.rstat{font-size:6px}}
