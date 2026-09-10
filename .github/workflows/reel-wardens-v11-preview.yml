@@ -1,0 +1,58 @@
+name: Publish Reel Wardens v0.11 Preview
+
+on:
+  push:
+    branches: [reel-wardens-v11-refactor]
+    paths:
+      - '.github/workflows/reel-wardens-v11-preview.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout verified v0.11 source
+        uses: actions/checkout@v4
+        with:
+          ref: 5554617816f9b6616853b074610a8ce9933be5ed
+          path: source
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build exact verified commit
+        working-directory: source/reel-wardens-v11-src
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+      - name: Checkout Pages master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: pages
+          fetch-depth: 0
+
+      - name: Publish isolated preview directory
+        run: |
+          rm -rf pages/reel-wardens-v11-preview
+          mkdir -p pages/reel-wardens-v11-preview
+          cp -a source/reel-wardens-v11-src/dist/. pages/reel-wardens-v11-preview/
+          printf '%s\n' 'source_commit=5554617816f9b6616853b074610a8ce9933be5ed' > pages/reel-wardens-v11-preview/BUILD.txt
+          printf '%s\n' 'ci_run=34388752374' >> pages/reel-wardens-v11-preview/BUILD.txt
+          cd pages
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reel-wardens-v11-preview
+          if git diff --cached --quiet; then
+            echo 'Preview already matches verified build.'
+            exit 0
+          fi
+          git commit -m 'Publish Reel Wardens v0.11 verified preview [skip ci]'
+          git pull --rebase origin master
+          git push origin HEAD:master
