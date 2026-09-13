@@ -1,3 +1,4 @@
+import {hubView,workList} from './managementHub';
 import {entityAdvice,priority,teachingView,teachingSteps,frontView} from './managementUx';
 import {personCard} from './portraits';
 import {eveningView,briefView,bookingsView,historyView,challengeCards} from './managementViews';
@@ -11,23 +12,42 @@ import {rooms,roomSlots,availableSuites,occupiedRooms} from '../state/selectors'
 import {ROOM_STATUS} from '../content/place';
 import {queue,weekday,clock,demand,DEPARTMENTS} from '../core/game';
 import './gameplay.css';
+import './managementHub.css';
 const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const money=(v:number)=>'¥'+Math.round(v).toLocaleString('en-US');
 const action=(label:string,type:string,id='',value='')=>`<button class="game-action" data-action="${esc(type)}" data-id="${esc(id)}" data-value="${esc(value)}">${esc(label)}</button>`;
 export function mountGameplay(root:HTMLElement,store:Store){
  const $=(q:string)=>root.querySelector<HTMLElement>(q)!;const dialog=root.querySelector<HTMLDialogElement>('dialog')!,content=$('#sheet-content'),eye=$('#sheet-eye');let view='',selected='',hotelFloor='',logFilter='全部',focusFloor:(id:string)=>void=()=>{},previousFocus:HTMLElement|null=null;
+ const menuTabs=[['hub','经营'],['hotel','客房'],['front','客人'],['operations','团队'],['development','设施']] as const;
+ const tabs=()=>menuTabs.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-pressed="${view===id}">${label}</button>`).join('');
+ $('.main-nav').innerHTML=tabs();
+ const menuNav=document.createElement('nav');menuNav.className='sheet-navigation';menuNav.setAttribute('aria-label','管理菜单');content.before(menuNav);
+ type Place={view:string;selected:string;key:string};
+ let shown:Place|null=null,goingBack=false;
+ const history:Place[]=[];
+ const bookmarks=new Map<string,{scroll:number;open:string[]}>();
+ const remember=()=>{if(shown)bookmarks.set(shown.key,{scroll:dialog.scrollTop,open:[...content.querySelectorAll<HTMLDetailsElement>('details[open]')].map(d=>d.querySelector('summary')?.textContent??'')});};
  $('.preview-badge').outerHTML='<button class="preview-badge score-button" data-open="score" aria-label="查看经营评分"></button>';$('.world-caption').textContent='轻点空间 · 处理今天的经营';$('.weather').title='切换日夜预览';
  $('.property-name small').id='game-time';$('.today-hint').setAttribute('data-open','tasks');$('.event-strip').removeAttribute('data-focus');$('.event-strip').setAttribute('data-open','events');
  $('.speed-control').insertAdjacentHTML('beforeend',action('Ⅱ','pause'));$('.speed-control').setAttribute('aria-label','经营速度');
  root.querySelectorAll('[data-speed]').forEach(el=>el.setAttribute('aria-label',el.getAttribute('data-speed')+'倍经营速度'));
  const feedback=document.createElement('p');feedback.className='action-feedback';feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');feedback.hidden=true;content.before(feedback);
  const notify=()=>{feedback.textContent=store.getState().game!.notice;feedback.hidden=!feedback.textContent;};
- const close=()=>{view='';selected='';if(store.getState().game!.evening?.open)store.dispatch({type:'evening-close'});if(store.getState().game!.operations?.briefOpen)store.dispatch({type:'brief-start'});dialog.close();store.select(null);previousFocus?.focus();};
+ const close=()=>{remember();shown=null;history.length=0;view='';selected='';if(store.getState().game!.evening?.open)store.dispatch({type:'evening-close'});if(store.getState().game!.operations?.briefOpen)store.dispatch({type:'brief-start'});dialog.close();store.select(null);previousFocus?.focus();};
  const dismiss=()=>{if(store.getState().game!.reportOpen){store.dispatch({type:'continue'});view='brief';render();return;}if(store.getState().game!.operations?.briefOpen)store.dispatch({type:'brief-start'});close();};
  let backdropDown=false;const outside=(x:number,y:number)=>{const r=dialog.getBoundingClientRect();return x<r.left||x>r.right||y<r.top||y>r.bottom;};
  dialog.addEventListener('pointerdown',e=>{backdropDown=e.target===dialog&&outside(e.clientX,e.clientY);});
  dialog.addEventListener('click',e=>{if(backdropDown&&e.target===dialog&&outside(e.clientX,e.clientY))dismiss();backdropDown=false;});
- const show=(title:string,body:string)=>{eye.textContent=title;content.innerHTML=(view==='entity'?entityAdvice(store.getState(),selected):priority(store.getState(),view))+body;if(!dialog.open){previousFocus=document.activeElement as HTMLElement;dialog.showModal();}};
+ const show=(title:string,body:string)=>{
+  const key=view+(view==='entity'?':'+selected:'');remember();
+  if(shown&&shown.key!==key&&!goingBack){history.push(shown);if(history.length>20)history.shift();}goingBack=false;
+  shown={view,selected,key};eye.textContent=title;
+  menuNav.innerHTML=`<div class="menu-tabs">${tabs()}</div>${history.length?'<button class="menu-back" data-menu-back="true">‹ 返回上一页 · 保留位置</button>':''}`;
+  content.innerHTML=(view==='entity'?entityAdvice(store.getState(),selected):priority(store.getState(),view))+body;
+  const saved=bookmarks.get(key);if(saved)content.querySelectorAll<HTMLDetailsElement>('details').forEach(d=>d.open=saved.open.includes(d.querySelector('summary')?.textContent??''));
+  if(!dialog.open){previousFocus=document.activeElement as HTMLElement;dialog.showModal();}
+  dialog.scrollTop=saved?.scroll??0;
+ };
  const roomView=(id:string)=>{const s=store.getState(),e=s.entities[id];if(!e)return;
   if(e.construction||s.floors.find(f=>f.id===e.floorId)?.construction){const c=e.construction??s.floors.find(f=>f.id===e.floorId)!.construction!;show('施工现场',`<h2>${e.kind==='room'?e.number:e.name} · 封闭施工</h2><progress max="${c.total}" value="${c.total-c.remaining}"></progress><p>剩余 ${c.remaining} 游戏分钟，竣工后开放。</p>`);return;}
   if(e.kind==='room'&&e.status==='unbuilt'){show('配置客房 · '+e.number,`<h2>选择房型</h2><p>普通配置已含在楼层造价中；其他房型支付差价。</p><div class="room-options">${Object.entries(ROOM_TIERS).map(([key,t])=>`<section><strong>${t.name}</strong><small>新客 ${money(s.game!.price*t.factor)}/晚起 · ${t.cost?money(t.cost):'已含'}</small><div>${action('大床','configure-room',id,key+':king')}${action('双床','configure-room',id,key+':twin')}</div></section>`).join('')}</div><small>标准套房可供会员免费升套；尊享套房按付费房价出售。</small>`);return;}
@@ -36,10 +56,12 @@ export function mountGameplay(root:HTMLElement,store:Store){
 
  };
  const render=()=>{const s=store.getState(),g=s.game!;
+  if(view==='hub'){show('MANAGEMENT · 经营',hubView(s));return;}
+  if(view==='worklist'){show('ACTION CENTER · 现场事项',`<h2>按轻重缓急处理</h2>${workList(s,Number.MAX_SAFE_INTEGER)}`);return;}
   if(view==='teaching'){show('DEPARTMENT HEAD · 带教',teachingView(s)||'<h2>三日带教已结束</h2><p>各部门仍会根据现场情况给你建议。</p>');return;}
   if(view==='entity'){roomView(selected);return;}
   if(view==='evening'){show('EVENING REVIEW',eveningView(s));return;}
-  if(view==='brief'){show('MORNING BRIEF',briefView(s));return;}
+  if(view==='brief'){show('MORNING BRIEF',briefView(s).replace('<details class="manager-card">',workList(s,2)+'<details class="manager-card">'));return;}
   if(view==='bookings'){show('RESERVATIONS',bookingsView(s));return;}
   if(view==='history'){show('GUEST HISTORY',historyView(s));return;}
   if(view==='front')show('FRONT OFFICE',frontView(s));
@@ -55,7 +77,8 @@ export function mountGameplay(root:HTMLElement,store:Store){
  root.addEventListener('change',ev=>{const target=ev.target as HTMLSelectElement;if(target.id==='hotel-floor-select'){hotelFloor=target.value;render();}});
  root.addEventListener('click',ev=>{const b=(ev.target as HTMLElement).closest<HTMLElement>('button');if(!b)return;
   if(b.matches('.close-sheet')){dismiss();return;}
-  if(b.dataset.open){view=b.dataset.open;feedback.hidden=true;render();if(b.dataset.guest){const select=document.getElementById('assign-'+b.dataset.guest);select?.closest('.person-card')?.scrollIntoView({block:'nearest'});select?.focus({preventScroll:true});}return;}
+  if(b.dataset.menuBack){const previous=history.pop();if(previous){goingBack=true;view=previous.view;selected=previous.selected;feedback.hidden=true;render();}return;}
+  if(b.dataset.open){if(b.dataset.rootMenu){remember();shown=null;history.length=0;}view=b.dataset.open;feedback.hidden=true;render();if(b.dataset.guest){const id=b.dataset.guest;const target=document.getElementById('assign-'+id)??[...content.querySelectorAll<HTMLElement>('[data-id]')].find(v=>v.dataset.id===id);if(target){let parent=target.parentElement;while(parent&&parent!==content){if(parent instanceof HTMLDetailsElement)parent.open=true;parent=parent.parentElement;}target.closest('.person-card')?.scrollIntoView({block:'nearest'});target.focus({preventScroll:true});}}return;}
   if(b.dataset.reveal){const d=[...content.querySelectorAll<HTMLDetailsElement>('details')].find(v=>v.querySelector('summary')?.textContent?.startsWith('今日决策'));if(d){d.open=true;d.scrollIntoView({block:'start'});}return;}
   if(b.dataset.speed){store.setSpeed(Number(b.dataset.speed) as 1|2|4);return;}
   if(b.dataset.entity){selected=b.dataset.entity;const e=store.getState().entities[selected];if(e)focusFloor(e.floorId);view='entity';store.select(selected);render();return;}
