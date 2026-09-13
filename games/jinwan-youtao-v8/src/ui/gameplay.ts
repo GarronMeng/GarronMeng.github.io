@@ -1,4 +1,5 @@
 import {hubView,workList} from './managementHub';
+import {menuIcon,spaceIllustration} from './designSystem';
 import {entityAdvice,priority,teachingView,teachingSteps,frontView} from './managementUx';
 import {personCard} from './portraits';
 import {eveningView,briefView,bookingsView,historyView,challengeCards} from './managementViews';
@@ -13,13 +14,14 @@ import {ROOM_STATUS} from '../content/place';
 import {queue,weekday,clock,demand,DEPARTMENTS} from '../core/game';
 import './gameplay.css';
 import './managementHub.css';
+import './hotelDesign.css';
 const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const money=(v:number)=>'¥'+Math.round(v).toLocaleString('en-US');
 const action=(label:string,type:string,id='',value='')=>`<button class="game-action" data-action="${esc(type)}" data-id="${esc(id)}" data-value="${esc(value)}">${esc(label)}</button>`;
 export function mountGameplay(root:HTMLElement,store:Store){
  const $=(q:string)=>root.querySelector<HTMLElement>(q)!;const dialog=root.querySelector<HTMLDialogElement>('dialog')!,content=$('#sheet-content'),eye=$('#sheet-eye');let view='',selected='',hotelFloor='',logFilter='全部',focusFloor:(id:string)=>void=()=>{},previousFocus:HTMLElement|null=null;
  const menuTabs=[['hub','经营'],['hotel','客房'],['front','客人'],['operations','团队'],['development','设施']] as const;
- const tabs=()=>menuTabs.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-pressed="${view===id}">${label}</button>`).join('');
+ const tabs=()=>menuTabs.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-pressed="${view===id}">${menuIcon(id)}<span>${label}</span></button>`).join('');
  $('.main-nav').innerHTML=tabs();
  const menuNav=document.createElement('nav');menuNav.className='sheet-navigation';menuNav.setAttribute('aria-label','管理菜单');content.before(menuNav);
  type Place={view:string;selected:string;key:string};
@@ -42,8 +44,14 @@ export function mountGameplay(root:HTMLElement,store:Store){
   const key=view+(view==='entity'?':'+selected:'');remember();
   if(shown&&shown.key!==key&&!goingBack){history.push(shown);if(history.length>20)history.shift();}goingBack=false;
   shown={view,selected,key};eye.textContent=title;
+  $('.main-nav').innerHTML=tabs();
   menuNav.innerHTML=`<div class="menu-tabs">${tabs()}</div>${history.length?'<button class="menu-back" data-menu-back="true">‹ 返回上一页 · 保留位置</button>':''}`;
   content.innerHTML=(view==='entity'?entityAdvice(store.getState(),selected):priority(store.getState(),view))+body;
+  dialog.dataset.view=view;
+  const heading=content.querySelector('h2');if(heading)content.prepend(heading);
+  content.querySelectorAll('.room-choice,.room-options section,.room-grid button').forEach(el=>el.insertAdjacentHTML('afterbegin',`<span class="room-preview-art">${spaceIllustration('hotel')}</span>`));
+  content.querySelectorAll<HTMLElement>('.work-item').forEach(el=>el.insertAdjacentHTML('afterbegin',`<span class="work-symbol">${menuIcon(el.querySelector('[data-action="clean"]')?'hotel':el.querySelector('[data-action="stock"]')?'development':'tasks')}</span>`));
+  content.querySelectorAll<HTMLButtonElement>('.choice-grid button:first-child,.person-body button[data-action="late"][data-value="honor"],.person-body button[data-action="checkin"]').forEach(el=>el.classList.add('decision-primary'));
   const saved=bookmarks.get(key);if(saved)content.querySelectorAll<HTMLDetailsElement>('details').forEach(d=>d.open=saved.open.includes(d.querySelector('summary')?.textContent??''));
   if(!dialog.open){previousFocus=document.activeElement as HTMLElement;dialog.showModal();}
   dialog.scrollTop=saved?.scroll??0;

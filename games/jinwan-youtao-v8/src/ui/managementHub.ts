@@ -1,7 +1,8 @@
 import type {PreviewState} from '../state/types';
+import {menuIcon,spaceIllustration} from './designSystem';
 import {rooms} from '../state/selectors';
 const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
-const link=(title:string,detail:string,target:string)=>`<button class="hub-tile" data-open="${target}"><strong>${title}</strong><small>${detail}</small><span aria-hidden="true">↗</span></button>`;
+const link=(title:string,detail:string,target:string)=>`<button class="hub-tile" data-open="${target}">${menuIcon(target)}<div class="tile-copy"><strong>${title}</strong><small>${detail}</small></div><div class="tile-scene">${spaceIllustration(target)}</div><span class="tile-arrow" aria-hidden="true">›</span></button>`;
 export function workItems(s:Readonly<PreviewState>){const g=s.game!;return [
  ...g.events.map(e=>({key:'event-'+e.id,title:e.title,detail:`剩余 ${Math.max(0,e.expires-g.day*1440-g.minute)} 分钟`,urgent:true,button:`<button class="game-action" data-entity="${esc(e.target)}">现场</button><button class="game-action" data-action="resolve" data-id="${e.id}" data-value="gm">亲自处理 · ¥350</button>`,note:'直接协调支出较高；授权方案在待办详情中。'})),
  ...rooms(s).filter(r=>r.status==='dirty').map(r=>({key:r.id,title:r.number+' · 待翻房',detail:'客房部 · 清洁后才可出售',urgent:false,button:`<button class="game-action" data-action="clean" data-id="${r.id}">清洁 · ¥90</button>`,note:'约 30 游戏分钟；等待主管可节省手动清洁费。'})),
