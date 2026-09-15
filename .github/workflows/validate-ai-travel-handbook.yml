@@ -30,9 +30,8 @@ jobs:
 
       - name: Check browser JavaScript syntax
         run: |
-          node --check bali/app.js
+          node --check bali/skill-replica.js
           node --check bali/itinerary-overrides.js
-          node --check bali/photos.js
           node --check bali/auth.js
           node --check bali/data.js
           node --check bali/guide-data.js
@@ -52,16 +51,23 @@ jobs:
               print('OK', p)
           PY
 
-      - name: Check required pages and current asset versions
+      - name: Check canonical handbook shell
         run: |
           test -f bali/index.html
+          test -f bali/skill-replica.css
+          test -f bali/skill-replica.js
           test -f bali/penida/index.html
           test -f bali/angkor/index.html
-          grep -q 'itinerary-overrides.js?v=3' bali/index.html
-          grep -q 'app.js?v=8' bali/index.html
-          grep -q 'photos.js?v=2' bali/index.html
-          grep -q 'handbook.css?v=2' bali/index.html
-          grep -q './penida/' bali/index.html
+          grep -q 'skill-replica.css?v=1' bali/index.html
+          grep -q 'skill-replica.js?v=1' bali/index.html
+          grep -q 'id="ch01"' bali/index.html
+          grep -q 'id="ch08"' bali/index.html
+          grep -q 'id="tripMode"' bali/index.html
+          grep -q './penida/' bali/skill-replica.js
+          grep -q './angkor/' bali/skill-replica.js
+          grep -q 'xhsdiscover://search/result' bali/skill-replica.js
+          grep -q 'data-vault-open' bali/skill-replica.js
+          grep -q 'project-bali-ledger' bali/skill-replica.js
 
       - name: Block stale Penida itinerary
         run: |
