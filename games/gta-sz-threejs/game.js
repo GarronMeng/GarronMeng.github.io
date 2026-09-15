@@ -456,6 +456,7 @@ function applyKeyboard() {
   const up = keyMap.has('KeyW') || keyMap.has('ArrowUp');
   const down = keyMap.has('KeyS') || keyMap.has('ArrowDown');
   if (left || right) input.steer = (right ? 1 : 0) - (left ? 1 : 0);
+  else if (steerPointer === null) input.steer = 0;
   input.throttle = up ? 1 : input.throttle;
   input.brake = down ? 1 : input.brake;
   input.handbrake = keyMap.has('Space') ? 1 : input.handbrake;
