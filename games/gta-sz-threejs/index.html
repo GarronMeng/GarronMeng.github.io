@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="theme-color" content="#0d1317" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="screen-orientation" content="landscape" />
+  <meta name="description" content="Three.js 手机横屏深圳开放世界驾驶原型" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./style.css" />
+  <title>深城疾驰 · Three.js Mobile</title>
+</head>
+<body>
+  <canvas id="game" aria-label="深圳开放世界驾驶游戏"></canvas>
+
+  <div id="portrait-lock" class="portrait-lock">
+    <div class="rotate-icon">↻</div>
+    <strong>请将手机横过来</strong>
+    <span>本游戏按横屏触控设计</span>
+  </div>
+
+  <div id="start-screen" class="start-screen">
+    <div class="start-card">
+      <div class="eyebrow">THREE.JS MOBILE PROTOTYPE</div>
+      <h1>深城疾驰</h1>
+      <p>从深圳湾出发，沿滨海大道穿过南山、福田与罗湖。</p>
+      <button id="start-btn" class="primary-btn">横屏开始</button>
+      <div class="start-notes">左侧转向 · 右侧油门/刹车 · 支持 WASD</div>
+    </div>
+  </div>
+
+  <div id="hud" class="hud hidden">
+    <div class="top-left panel">
+      <div class="location-line"><span id="district">南山</span><span class="dot">·</span><span id="road">滨海大道</span></div>
+      <div class="speed-row"><span id="speed">0</span><span class="unit">km/h</span></div>
+      <div class="status-row"><span id="drive-mode">公路</span><span id="fps">60 FPS</span></div>
+    </div>
+
+    <div class="mission panel">
+      <div class="mission-kicker">当前目的地</div>
+      <div class="mission-main">平安金融中心 <span id="distance">1.2 km</span></div>
+      <div class="mission-bar"><i id="mission-progress"></i></div>
+    </div>
+
+    <div class="top-actions">
+      <button id="camera-btn" class="icon-btn">镜头</button>
+      <button id="light-btn" class="icon-btn">昼夜</button>
+      <button id="map-btn" class="icon-btn">地图</button>
+    </div>
+
+    <canvas id="minimap" width="320" height="200"></canvas>
+
+    <div id="steer-zone" class="steer-zone">
+      <div class="steer-ring"></div>
+      <div id="steer-thumb" class="steer-thumb"></div>
+    </div>
+
+    <div class="pedals">
+      <button id="brake-btn" class="pedal brake">刹车</button>
+      <button id="gas-btn" class="pedal gas">油门</button>
+    </div>
+
+    <button id="handbrake-btn" class="handbrake">漂移</button>
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
