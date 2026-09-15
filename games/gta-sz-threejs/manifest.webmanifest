@@ -1,0 +1,10 @@
+{
+  "name": "深城疾驰 · Three.js Mobile",
+  "short_name": "深城疾驰",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#081014",
+  "theme_color": "#081014",
+  "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
