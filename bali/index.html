@@ -3,20 +3,126 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0d6b5d">
-<title>Project Bali｜AI Travel Handbook</title>
+<meta name="theme-color" content="#173f36">
+<title>Project Bali｜旅行手册</title>
+<meta name="description" content="9/26–10/6 Bali、East Java、Singapore、Cambodia 旅行手册">
 <script src="./auth.js?v=2"></script>
-<link rel="stylesheet" href="./app.css?v=6">
-<link rel="stylesheet" href="./handbook.css?v=2">
+<link rel="stylesheet" href="./skill-replica.css?v=1">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 </head>
-<body><main class="page">
-<section class="hero"><div class="eyebrow">AI Travel Handbook · Project Bali</div><h1>Project Bali</h1><h2>9/26–10/6｜Bali → East Java → Singapore → Cambodia → Hong Kong</h2><p>出发前用来规划，旅行中直接告诉你今天去哪、几点到、停多久、拍什么、下一站怎么走。</p><div class="chips"><span class="chip">11 Days</span><span class="chip">Travel Mode</span><span class="chip">Explore</span><span class="chip">Checklist</span><span class="chip">Route Map</span></div></section>
-<nav class="appnav" id="appnav" aria-label="旅行手册导航"><button data-view="trip" class="active"><b>Trip</b><span>完整路书</span></button><button data-view="today"><b>Today</b><span>旅行模式</span></button><button data-view="explore"><b>Explore</b><span>吃玩买</span></button><button data-view="prepare"><b>Prepare</b><span>行前准备</span></button></nav>
-<section class="view active" id="view-trip"><div class="alert"><strong>返程关键：</strong>10/5 晚上从暹粒坐 Larryta sleeper 夜巴，不住金边；10/6 清晨抵金边后直接去 Techo International Airport（KTI），乘 CX608 11:25 → HKG 15:15。</div><section class="grid"><aside class="panel"><div class="ptitle">每日路书 <small>点击展开</small></div><div class="pbody" id="days"><div class="loading">正在载入路书…</div></div></aside><section class="panel"><div class="ptitle">路线地图 <small>D1–D11 可切换</small></div><div class="maptools" id="maptools"></div><div class="mapstage"><div id="mapFallback"><svg viewBox="0 0 800 520" role="img" aria-label="路线地图载入中"><rect width="800" height="520" fill="#edf5ef"/><text x="400" y="250" text-anchor="middle" fill="#47655d" font-size="18">正在载入路线…</text></svg></div><div id="map"></div><div class="mapstatus" id="mapstatus">备用路线图</div></div><div class="mapnote">线路图永远可见；在线底图加载成功后自动切换成交互地图。<a id="gmaps" href="#" target="_blank" rel="noopener">在 Google Maps 查看当天路线</a></div></section><aside><section class="panel"><div class="ptitle">现在最需要确认 <small>P0</small></div><div class="pbody"><div class="pri" id="p0list"></div></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">佩尼达专题 <small>9/28–9/29</small></div><div class="focus-card"><b>Nusa Penida Focus</b><p>Serangan 去程、Kelingking 45–60 分钟、Māua 过夜、Diamond Beach 和 Sanur 返程。</p><a href="./penida/">打开佩尼达专题 →</a></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">吴哥专题 <small>10/4</small></div><div class="focus-card"><b>Angkor Focus</b><p>四个核心点、完整时间轴、每站看什么、备选景点和返回酒店时间。</p><a href="./angkor/">打开吴哥专题 →</a></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">已确认 / 已购 <small>当前</small></div><div class="pbody confirmed" id="confirmed"></div></section></aside></section><section class="subgrid"><section class="panel"><div class="ptitle">11 天主线 <small>一眼看完</small></div><div class="pbody tablewrap" id="triptable"></div></section><section class="panel"><div class="ptitle">路线原则 <small>减少疲劳</small></div><div class="pbody rules"><div class="rule"><b>强体验前后留恢复。</b><br>Nusa Penida、Bromo、吴哥日出之后不继续堆重行程。</div><div class="rule"><b>复杂目的地做专题。</b><br>佩尼达与吴哥已拆成独立专题；现场只看对应当天真正需要的信息。</div><div class="rule"><b>每站有明确止损。</b><br>不为了“都到了”硬拖时间；关键站明确停留上限、最晚离开时间和删减规则。</div><div class="rule"><b>信息可降级。</b><br>地图服务失效时仍保留路线、地址和跳转入口。</div></div></section></section></section>
-<section class="view" id="view-today"><section class="today-hero panel"><div><div class="today-kicker" id="todayKicker">Travel Mode</div><h2 id="todayTitle">今日行程</h2><p id="todayDesc"></p></div><div class="day-switch"><label for="daySelect">预览日期</label><select id="daySelect"></select></div></section><div class="today-grid"><section class="panel"><div class="ptitle">今天怎么走 <small id="todayDate"></small></div><div class="live-list" id="liveList"></div></section><aside><section class="panel"><div class="ptitle">今日快捷入口 <small>现场使用</small></div><div class="quickbox" id="todayQuick"></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">今日顺路推荐 <small>不绕路</small></div><div class="mini-cards" id="todayNearby"></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">参考样片 <small>当前设备</small></div><div class="photo-ref"><label class="photo-upload">＋ 上传今天的参考照片<input id="photoInput" type="file" accept="image/*" multiple></label><div class="photo-help">适合保存想模仿的机位、穿搭和构图；切换到对应日期时自动显示，可点开全屏查看。</div><div class="photo-gallery" id="photoGallery"></div></div></section></aside></div></section>
-<section class="view" id="view-explore"><section class="panel explore-head"><div><div class="today-kicker">Explore</div><h2>想临时换项目，就从这里选</h2><p>已排入日程和自由备选分开显示；每个地点都可以直接打开 Google Maps 或小红书搜索。</p></div><div class="filterbar" id="filterbar"></div></section><div class="place-grid" id="placeGrid"></div><section class="threegrid"><section class="panel"><div class="ptitle">体验项目 <small>风险提示</small></div><div class="compact-list" id="experienceList"></div></section><section class="panel"><div class="ptitle">餐饮解决方案 <small>按区域</small></div><div class="compact-list" id="foodList"></div></section><section class="panel"><div class="ptitle">顺路购物 <small>伴手礼</small></div><div class="compact-list" id="shoppingList"></div></section></section></section>
-<section class="view" id="view-prepare"><div class="prepare-grid"><section class="panel"><div class="ptitle">行前准备清单 <small id="checkProgress">0%</small></div><div class="checkgroups" id="checkGroups"></div></section><aside><section class="panel"><div class="ptitle">语言锦囊 <small>高频够用</small></div><div class="language" id="language"></div></section><section class="panel" style="margin-top:13px"><div class="ptitle">旅游贴士 <small>现场提醒</small></div><div class="tiplist" id="tipList"></div></section></aside></div></section>
-<div class="foot">一起看世界，留下我们的故事 ♥</div></main>
-<script src="./data.js?v=3"></script><script src="./guide-data.js?v=1"></script><script src="./itinerary-overrides.js?v=3"></script><script src="./app.js?v=8"></script><script src="./photos.js?v=2"></script>
-</body></html>
+<body data-handbook-destination="Project Bali">
+<aside class="chapter-rail" aria-label="章节导航"><small>PROJECT BALI</small><strong>旅行手册</strong><nav id="chapterRail"></nav></aside>
+
+<header class="hero">
+  <div class="shell hero-inner">
+    <div class="eyebrow">PROJECT BALI · 26 SEP — 06 OCT</div>
+    <h1>海岛、火山与高棉清晨<small>ITINERARY</small></h1>
+    <p class="lede">Bali → East Java → Singapore → Siem Reap → Phnom Penh → Hong Kong。11 天 / 10 晚，沿已确认交通与住宿展开。</p>
+    <div class="hero-meta"><span>2 Travelers</span><span>11 Days</span><span>Travel Mode</span><span>Mini Routes</span><span>Local Vault</span></div>
+  </div>
+</header>
+
+<div class="shell time-anchors" id="timeAnchors"></div>
+
+<section class="directory" id="contents">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">00</div><div><div class="eyebrow" style="color:#bd6246">CONTENTS</div><h2>八个章节，一份手册</h2><p>出发前完整阅读；旅行中点右下角「旅行模式」，只看当天路线、资料、摄影和记账。</p></div></div>
+    <div class="directory-grid" id="directoryGrid"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch01">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">01</div><div><div class="eyebrow" style="color:#bd6246">DAILY ITINERARY</div><h2>每日行程</h2><p>每一天保留完整时间轴、路线顺序、地图入口与可调整站点。</p></div></div>
+    <div class="day-list" id="itineraryDays"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch02">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">02</div><div><div class="eyebrow" style="color:#bd6246">SIGHTS</div><h2>景点与地标</h2><p>已排入日程与自由备选分开显示。临时换项目时从这里挑，不用重新翻整份路书。</p></div></div>
+    <div class="grid-cards" id="sightGrid"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch03">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">03</div><div><div class="eyebrow" style="color:#bd6246">SHOPPING</div><h2>购物与伴手礼</h2><p>只保留顺路的市场、手工艺与轻量采购，不单独为了购物跨区折返。</p></div></div>
+    <div class="grid-cards" id="shoppingGrid"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch04">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">04</div><div><div class="eyebrow" style="color:#bd6246">EXPERIENCES</div><h2>体验</h2><p>海岛、火山、SPA、文化项目与演出集中在这里，风险和当天适配度优先于“打卡数量”。</p></div></div>
+    <div class="grid-cards" id="experienceGrid"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch05">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">05</div><div><div class="eyebrow" style="color:#bd6246">FOOD GUIDE</div><h2>沿路线吃，不追餐厅</h2><p>先掌握不同目的地的点餐逻辑，再看当天最省力的餐饮选择。</p></div></div>
+    <details class="fold" style="margin-bottom:28px"><summary>第一次到这些地方，菜单先怎么看</summary><div class="fold-body"><div class="grid-cards" id="foodPrimer"></div></div></details>
+    <h3 style="font:600 24px Georgia,'Songti SC',serif;margin:0 0 18px">四个代表性当地味道</h3>
+    <div class="grid-cards" id="snackGrid" style="margin-bottom:34px"></div>
+    <h3 style="font:600 24px Georgia,'Songti SC',serif;margin:0 0 18px">这趟实际怎么解决吃饭</h3>
+    <div class="grid-cards" id="foodGrid"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch06">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">06</div><div><div class="eyebrow" style="color:#bd6246">BEFORE DEPARTURE</div><h2>行前准备 <span id="checkProgress" style="font:700 13px Arial;color:#bd6246"></span></h2><p>勾选状态保存在当前设备。优先处理交通、预约、证件与高强度日装备。</p></div></div>
+    <div class="check-grid" id="checkGrid"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch07">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">07</div><div><div class="eyebrow" style="color:#bd6246">LANGUAGE</div><h2>语言锦囊</h2><p>印尼语、高棉语加英语备用。重点覆盖酒店、司机、码头、餐厅和问题处理。</p></div></div>
+    <div class="lang-grid" id="languageGrid"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch08">
+  <div class="shell">
+    <div class="section-head"><div class="section-no">08</div><div><div class="eyebrow" style="color:#bd6246">LOCAL NOTES</div><h2>当地须知</h2><p>天气、文化礼仪、交通、安全与支付，按现场决策方式整理。</p></div></div>
+    <div class="folds" id="localNotes"></div>
+  </div>
+</section>
+
+<footer class="foot">一起看世界，留下我们的故事</footer>
+<button class="trip-launch" id="tripLaunch" type="button">旅行模式</button>
+
+<div class="trip-mode" id="tripMode" aria-hidden="true">
+  <div class="trip-panel">
+    <header class="trip-head">
+      <div class="trip-head-top"><div><h2 id="tripTitle">今日行程</h2><div id="tripSub" style="font-size:11px;color:#697b74;margin-top:3px"></div></div><button class="icon-btn" id="tripClose" type="button" aria-label="关闭">×</button></div>
+      <div class="day-tabs" id="tripDayTabs"></div>
+      <nav class="trip-nav" aria-label="旅行模式页面"><button type="button" data-trip-page="itinerary" class="active">行程</button><button type="button" data-trip-page="map-page">路线图</button><button type="button" data-trip-page="photo">摄影</button><button type="button" data-trip-page="ledger">记账</button></nav>
+    </header>
+    <main class="trip-body"><section class="trip-page active" id="trip-itinerary"></section><section class="trip-page" id="trip-map-page"></section><section class="trip-page" id="trip-photo"></section><section class="trip-page" id="trip-ledger"></section></main>
+  </div>
+</div>
+
+<div class="modal" id="vaultModal" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><h3 id="vaultTitle">站点资料仓</h3><button class="icon-btn" id="vaultClose" type="button">×</button></div>
+    <p style="font-size:11px;color:#697b74">保存小红书分享文字/链接、网页链接、PDF、门票、价格截图或票据。当前版本只保存在这台设备。</p>
+    <label for="vaultName">按钮名称</label><input id="vaultName" placeholder="例如：船票 / 小红书攻略 / 门票">
+    <label for="vaultUrl">链接或分享文字</label><textarea id="vaultUrl" rows="3" placeholder="粘贴网页链接、小红书分享链接或分享文字"></textarea>
+    <label for="vaultFile">图片 / PDF（单个 ≤20 MB）</label><input id="vaultFile" type="file" accept="image/*,.pdf,application/pdf">
+    <div class="modal-actions"><button type="button" id="vaultCancel">取消</button><button class="primary" type="button" id="vaultSave">保存</button></div>
+    <div id="vaultList" style="margin-top:18px"></div><div id="vaultPreview" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<div class="modal" id="photoViewer" role="dialog" aria-modal="true" style="align-items:center;background:rgba(0,0,0,.88)"><button type="button" data-close-photo class="icon-btn" style="position:absolute;right:18px;top:calc(18px + env(safe-area-inset-top));z-index:2">×</button><img id="photoViewerImg" alt="参考样片" style="max-width:94vw;max-height:88vh;object-fit:contain"></div>
+<div class="toast" id="toast"></div>
+
+<script src="./data.js?v=3"></script>
+<script src="./guide-data.js?v=1"></script>
+<script src="./itinerary-overrides.js?v=3"></script>
+<script src="./skill-replica.js?v=1"></script>
+</body>
+</html>
