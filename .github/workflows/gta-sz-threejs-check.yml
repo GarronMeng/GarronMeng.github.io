@@ -1,10 +1,14 @@
 name: GTA SZ Three.js check
+
 on:
   push:
     paths:
       - 'games/gta-sz-threejs/**'
       - '.github/workflows/gta-sz-threejs-check.yml'
-  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'games/gta-sz-threejs/**'
+
 jobs:
   syntax:
     runs-on: ubuntu-latest
@@ -12,6 +16,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
-      - name: Check game JavaScript syntax
-        run: node --check games/gta-sz-threejs/game.js
+          node-version: 24
+      - name: Check modules
+        run: |
+          node --check games/gta-sz-threejs/city-runtime.js
+          node --check games/gta-sz-threejs/game-v3.js

@@ -26,11 +26,11 @@
 
   <div id="start-screen" class="start-screen">
     <div class="start-card">
-      <div class="eyebrow">OPEN ROADS / THREE.JS MOBILE</div>
+      <div class="eyebrow">SHENZHEN / OPEN ROADS / THREE.JS</div>
       <h1>深城纪</h1>
-      <p>深圳湾 · 南山 · 福田 · 罗湖。驾驶、下车步行、坦克、无人机与飞机模式统一进入同一个城市。</p>
-      <button id="start-btn" class="primary-btn">进入城市</button>
-      <div class="start-notes">建议横屏 · 左侧控制方向/移动 · 右侧控制动作<br>玩法与交互目标对齐 linranff/GTA_SZ；未开放再分发的代码与角色资产不直接复制</div>
+      <p>深圳湾 · 南山 · 福田 · 罗湖。使用 GTA_SZ 同源城市数据，在手机横屏中驾驶、步行与飞行。</p>
+      <button id="start-btn" class="primary-btn">载入真实深圳…</button>
+      <div class="start-notes">真实城市数据准备中<br>道路/建筑 © OpenStreetMap contributors · ODbL 1.0</div>
     </div>
   </div>
 
@@ -83,12 +83,13 @@
       <div class="map-card panel">
         <div class="map-title">深圳城市地图 <button id="map-close">关闭</button></div>
         <canvas id="map-large" width="960" height="540"></canvas>
+        <div style="margin-top:8px;font-size:9px;color:rgba(255,255,255,.45);text-align:right">© OpenStreetMap contributors · ODbL 1.0 · GTA_SZ data pipeline</div>
       </div>
     </div>
 
     <div id="toast" class="toast"></div>
   </div>
 
-  <script type="module" src="./game.js"></script>
+  <script type="module" src="./game-v3.js"></script>
 </body>
 </html>
