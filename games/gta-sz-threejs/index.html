@@ -3,33 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <meta name="theme-color" content="#0d1317" />
+  <meta name="theme-color" content="#091015" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="screen-orientation" content="landscape" />
-  <meta name="description" content="Three.js 手机横屏深圳开放世界驾驶原型" />
+  <meta name="description" content="Three.js 手机横屏深圳开放世界探索原型" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./style.css" />
-  <title>深城疾驰 · Three.js Mobile</title>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"}}</script>
+  <title>深城纪 · Three.js Mobile</title>
 </head>
 <body>
-  <canvas id="game" aria-label="深圳开放世界驾驶游戏"></canvas>
+  <canvas id="game" aria-label="深圳开放世界探索游戏"></canvas>
 
   <div id="portrait-lock" class="portrait-lock">
     <div class="rotate-icon">↻</div>
     <strong>请将手机横过来</strong>
-    <span>本游戏按横屏触控设计</span>
+    <span>本版本按横屏触控设计</span>
   </div>
 
   <div id="start-screen" class="start-screen">
     <div class="start-card">
-      <div class="eyebrow">THREE.JS MOBILE PROTOTYPE</div>
-      <h1>深城疾驰</h1>
-      <p>从深圳湾出发，沿滨海大道穿过南山、福田与罗湖。</p>
-      <button id="start-btn" class="primary-btn">横屏开始</button>
-      <div class="start-notes">左侧转向 · 右侧油门/刹车 · 支持 WASD<br>Inspired by linranff/GTA_SZ · clean-room Three.js rebuild</div>
+      <div class="eyebrow">OPEN ROADS / THREE.JS MOBILE</div>
+      <h1>深城纪</h1>
+      <p>深圳湾 · 南山 · 福田 · 罗湖。驾驶、下车步行、坦克、无人机与飞机模式统一进入同一个城市。</p>
+      <button id="start-btn" class="primary-btn">进入城市</button>
+      <div class="start-notes">建议横屏 · 左侧控制方向/移动 · 右侧控制动作<br>玩法与交互目标对齐 linranff/GTA_SZ；未开放再分发的代码与角色资产不直接复制</div>
     </div>
   </div>
 
@@ -37,34 +38,54 @@
     <div class="top-left panel">
       <div class="location-line"><span id="district">南山</span><span class="dot">·</span><span id="road">滨海大道</span></div>
       <div class="speed-row"><span id="speed">0</span><span class="unit">km/h</span></div>
-      <div class="status-row"><span id="drive-mode">公路</span><span id="fps">60 FPS</span></div>
+      <div class="status-row"><span id="drive-mode">驾驶</span><span id="fps">60 FPS</span></div>
     </div>
 
-    <div class="mission panel">
-      <div class="mission-kicker">当前目的地</div>
-      <div class="mission-main">平安金融中心 <span id="distance">1.2 km</span></div>
-      <div class="mission-bar"><i id="mission-progress"></i></div>
+    <div class="top-center panel compact-status">
+      <span id="lighting-label">黄昏</span>
+      <span class="sep">/</span>
+      <span id="camera-label">追踪镜头</span>
     </div>
 
     <div class="top-actions">
-      <button id="camera-btn" class="icon-btn">镜头</button>
-      <button id="light-btn" class="icon-btn">昼夜</button>
-      <button id="map-btn" class="icon-btn">地图</button>
+      <button id="camera-btn" class="icon-btn">C 镜头</button>
+      <button id="light-btn" class="icon-btn">L 光照</button>
+      <button id="map-btn" class="icon-btn">M 地图</button>
     </div>
 
-    <canvas id="minimap" width="320" height="200"></canvas>
+    <canvas id="minimap" width="360" height="220"></canvas>
 
     <div id="steer-zone" class="steer-zone">
       <div class="steer-ring"></div>
       <div id="steer-thumb" class="steer-thumb"></div>
     </div>
 
-    <div class="pedals">
+    <div class="mode-actions">
+      <button id="enter-btn" class="mode-btn">F 上下车</button>
+      <button id="vehicle-btn" class="mode-btn">T 坦克</button>
+      <button id="observer-btn" class="mode-btn">G 观景</button>
+      <button id="flight-btn" class="mode-btn">B 飞机</button>
+    </div>
+
+    <div class="pedals" id="pedals">
       <button id="brake-btn" class="pedal brake">刹车</button>
       <button id="gas-btn" class="pedal gas">油门</button>
     </div>
+    <button id="handbrake-btn" class="handbrake">手刹</button>
+    <button id="action-btn" class="action-btn hidden">动作</button>
 
-    <button id="handbrake-btn" class="handbrake">漂移</button>
+    <section id="quicktips" class="quicktips panel">
+      <div class="quicktips-mode" id="quicktips-mode">驾驶</div>
+      <div class="quicktips-list" id="quicktips-list"></div>
+    </section>
+
+    <div id="full-map" class="full-map hidden">
+      <div class="map-card panel">
+        <div class="map-title">深圳城市地图 <button id="map-close">关闭</button></div>
+        <canvas id="map-large" width="960" height="540"></canvas>
+      </div>
+    </div>
+
     <div id="toast" class="toast"></div>
   </div>
 
