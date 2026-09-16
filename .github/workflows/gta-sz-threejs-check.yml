@@ -1,0 +1,17 @@
+name: GTA SZ Three.js check
+on:
+  push:
+    paths:
+      - 'games/gta-sz-threejs/**'
+      - '.github/workflows/gta-sz-threejs-check.yml'
+  workflow_dispatch:
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check game JavaScript syntax
+        run: node --check games/gta-sz-threejs/game.js
