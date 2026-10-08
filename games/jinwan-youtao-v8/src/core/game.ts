@@ -1,3 +1,4 @@
+import {hospitalityCommand} from './hospitality';
 import {captureEvening} from './evening';
 import {initCampaign,campaignCommand,tickCampaign} from './campaign';
 import {initOperations,prepareMorning,bookingArrivals,attachProfile,loseBooking,guestStory,operationsCommand,walkinEstimate} from './operations';
@@ -84,7 +85,7 @@ export function advanceGame(s:PreviewState,minutes:number){const g=s.game;if(!g|
  }
  updateUsage(s);
 }
-export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if(campaignCommand(s,c)||operationsCommand(s,c)||developmentCommand(s,c))return;const e=c.id?s.entities[c.id]:undefined;const r=e?.kind==='room'?e:null;
+export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if(hospitalityCommand(s,c)||campaignCommand(s,c)||operationsCommand(s,c)||developmentCommand(s,c))return;const e=c.id?s.entities[c.id]:undefined;const r=e?.kind==='room'?e:null;
  switch(c.type){
  case 'checkin':{const guest=queue(s).find(a=>a.id===c.id),room=s.entities[c.roomId??''];if(!guest||room?.kind!=='room'||!(room.status==='available'||room.status==='reserved'&&guest.tier==='Globalist'&&(!room.suaBookingId||room.suaBookingId===guest.reservationId))){g.notice='住客或房态已变化，请重新选择。';break;}
   guest.roomId=room.id;guest.checkoutDay=g.day+(guest.stayLength??2);guest.rate=guest.bookedRate??roomRate(g.price,room,guest.tier==='Globalist');guest.upgrades=standardSuite(room)&&guest.tier==='Globalist';guest.denied=guest.tier==='Globalist'&&!isSuite(room);if(guest.upgrades){g.upgrades++;progress(s,'vip');reputation(s,1);}else if(guest.tier==='Globalist'&&rooms(s).some(a=>standardSuite(a)&&a.status==='available'))reputation(s,-1);

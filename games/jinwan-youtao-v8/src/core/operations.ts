@@ -27,6 +27,7 @@ export function prepareMorning(s:PreviewState,open=true){const g=s.game!,o=initO
  for(let i=0;i<count;i++){let p=profiles.find(p=>!used.has(p.id)&&rand()<.5);if(!p)p=newProfile(s,rand());used.add(p.id);
   const source:Booking['source']=o.event==='expo'&&i<Math.ceil(count*.35)?'团单':rand()<.6?'APP':'平台';const holiday=g.positioning==='resort'||((g.day-1)%7>=5&&rand()<.6);
   const b:Booking={id:'booking-'+g.nextId++,profileId:p.id,source,eta:source==='团单'?840:780+Math.floor(rand()*330),nights:stayNights(holiday,rand(),rand()),rate:Math.round(g.price*(source==='团单'?.88:1)),segment:source==='团单'?'团队':holiday?'度假':'商务',status:'confirmed'};
+  if(i===0&&g.day%2===1)b.occasion='birthday';
   if(i<2){b.challenge=p.persona==='auditplus'?'audit':p.persona==='family'?'family':p.tier==='Globalist'?'sua':'quiet';}
   if(b.challenge==='sua'){const r=rooms(s).find(r=>standardSuite(r)&&r.status==='available'&&!r.suaBookingId);if(r){b.sua=true;b.roomId=r.id;r.suaBookingId=b.id;r.status='reserved';}else b.challenge='quiet';}
   o.bookings.push(b);
@@ -39,6 +40,7 @@ export function bookingArrivals(s:PreviewState,arrive:(b:Booking)=>void){const o
 export function attachProfile(s:PreviewState,g:Guest,b?:Booking){const o=initOperations(s);let p=b?o.profiles[b.profileId]:undefined;if(!p)p=newProfile(s,(hash(g.id)%100)/100);
  g.profileId=p.id;g.name=p.name;g.persona=p.persona;g.tier=p.tier;g.source=b?.source??'Walk-in';g.reservationId=b?.id;g.bookedRate=b?.rate;g.sua=!!b?.sua;g.spend=0;
  if(b){g.segment=b.segment;g.stayLength=b.nights;if(b.challenge)g.challenge={kind:b.challenge,resolved:false};}else o.walkinArrivals++;
+ if(b?.occasion==='birthday'||!b&&o.walkinArrivals===1&&s.game!.day%2===1)g.occasion={kind:'birthday',resolved:false};
  g.satisfaction=Math.max(65,Math.min(98,88+p.trust*2));
 }
 export function loseBooking(s:PreviewState,g:Guest){const o=initOperations(s),b=o.bookings.find(b=>b.id===g.reservationId);if(!b||b.status==='lost'||b.status==='checkedin')return;b.status='lost';o.lostBookings++;s.metrics.cash-=600;s.game!.expense+=600;s.metrics.reputation=Math.max(0,s.metrics.reputation-2);operationsLog(s,g.name+' 的确认预订未兑现：安置补偿 ¥600，口碑 -2。','客诉','facility-lobby');

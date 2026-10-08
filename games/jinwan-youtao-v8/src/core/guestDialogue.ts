@@ -10,7 +10,8 @@ export function speak(s:PreviewState,g:Guest){if(g.staff)return;const now=hotelT
  const context=[m?.position.phase,moving,role,event,g.late,g.upgrades,g.departing,g.experience?.kind].join(':');if(now<speech.next&&speech.context===context)return;speech.context=context;
  const key=g.persona??'chill',app=Object.values(s.entities).filter(e=>e.kind==='room'&&standardSuite(e)&&e.status==='available').length;
  let lines:string[]=[];
- if(event==='checkout'&&g.departing)lines=[key==='points'?'Checkout 完了，接下来守着 QN 到账。':key==='forum'?'住完了，可以发完整 DP 了。':'房退好了，去大堂拿行李。'];
+ if(event==='birthday'&&g.occasion?.resolved)lines=[g.occasion.outcome??'生日安排已确认。'];
+ else if(event==='checkout'&&g.departing)lines=[key==='points'?'Checkout 完了，接下来守着 QN 到账。':key==='forum'?'住完了，可以发完整 DP 了。':'房退好了，去大堂拿行李。'];
  else if(event==='checkin'&&g.roomId)lines=[g.upgrades?'这次真给 Standard Suite 了。':'房卡拿到了，先上楼看看。'];
  else if(event==='denied')lines=[!g.roomId?'这次没住成，换一家问问。':app?'App 上有套，不代表你有套。今天懂了。':'今天 Standard Suite 没库存，这条 DP 得注明。'];
  else if(event==='late-honor'&&g.late==='honor')lines=[lateLabel(g)+' 确认了，终于能从容收行李。'];

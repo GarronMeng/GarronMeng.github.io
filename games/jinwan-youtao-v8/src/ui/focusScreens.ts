@@ -3,13 +3,15 @@ import {rooms,roomSlots} from '../state/selectors';
 import {roomName,standardSuite,ROOM_TIERS} from '../content/roomTypes';
 import {roomRate,houseMinutes,engineeringMinutes} from '../core/economy';
 import {forecast} from '../core/operations';
+import {ACTIVITIES} from '../core/progression';
+import {birthdayOptions} from '../core/hospitality';
 import {campaignGoal} from '../core/campaign';
 import {portrait} from './portraits';
 import {spaceIllustration} from './designSystem';
 import {workItems} from './managementHub';
 import {lateLabel,fallbackHour} from '../core/guestRequests';
-export interface FocusSelection {room?:string;floor?:string;department?:Department;facility?:string;guest?:string;event?:string;roomPage:number;eventPage:number;guestPage:number;taskPage:number;meeting:string;category:string;bed:string;}
-export const focusSelection=():FocusSelection=>({roomPage:0,eventPage:0,guestPage:0,taskPage:0,meeting:'overview',category:'standard',bed:'king'});
+export interface FocusSelection {room?:string;floor?:string;department?:Department;facility?:string;guest?:string;event?:string;roomPage:number;eventPage:number;guestPage:number;taskPage:number;meeting:string;category:string;bed:string;activity:string;}
+export const focusSelection=():FocusSelection=>({roomPage:0,eventPage:0,guestPage:0,taskPage:0,meeting:'overview',activity:'coffee',category:'standard',bed:'king'});
 const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const money=(n:number)=>'¥'+Math.round(n).toLocaleString('en-US');
 const btn=(label:string,type:string,id='',value='',extra='')=>`<button class="game-action" data-action="${type}" data-id="${esc(id)}" data-value="${esc(value)}" ${extra}>${label}</button>`;
@@ -26,31 +28,40 @@ export function focusScreen(s:Readonly<PreviewState>,view:string,u:FocusSelectio
  if(view==='front'){
   const i=u.guest?Math.max(0,queue.findIndex(v=>v.id===u.guest)):Math.min(u.guestPage,Math.max(0,queue.length-1)),v=queue[i];
   if(!v)return frame('客人接待',head('front','目前无人排队','关上面板继续经营，客人到店后会提醒你。'),go('今日预订','bookings')+go('回到酒店','hub'));
-  const available=rs.filter(r=>r.status==='available'||r.status==='reserved'&&v.tier==='Globalist'&&(!r.suaBookingId||r.suaBookingId===v.reservationId)).sort((a,b)=>Number(!!b.suaBookingId&&b.suaBookingId===v.reservationId)-Number(!!a.suaBookingId&&a.suaBookingId===v.reservationId)||(v.tier==='Globalist'?Number(standardSuite(b))-Number(standardSuite(a)):Number(a.type==='suite')-Number(b.type==='suite')));
+  const available=rs.filter(r=>r.status==='available'||r.status==='reserved'&&v.tier==='Globalist'&&(!r.suaBookingId||r.suaBookingId===v.reservationId)).sort((a,b)=>Number(b.id===u.room)-Number(a.id===u.room)||Number(!!b.suaBookingId&&b.suaBookingId===v.reservationId)-Number(!!a.suaBookingId&&a.suaBookingId===v.reservationId)||(v.tier==='Globalist'?Number(standardSuite(b))-Number(standardSuite(a)):Number(a.type==='suite')-Number(b.type==='suite')));
   const page=Math.min(u.roomPage,Math.max(0,Math.ceil(available.length/2)-1));
   return frame('给这位客人一间房',pager('guestPage',i,queue.length)+`<div class="focus-person">${portrait(v)}<div><strong>${esc(v.name)} · ${esc(v.tier)}</strong><p>${esc(v.thought)}</p></div></div>`+metrics([['住宿',`${v.stayLength} 晚`],['耐心',`${v.patience} 分钟`],['来源',esc(v.source??'Walk-in')]])+`<div class="focus-room-choices">${available.slice(page*2,page*2+2).map(r=>`<button data-action="checkin" data-id="${esc(v.id)}" data-room="${r.id}">${spaceIllustration('hotel')}<strong>${r.number} · ${roomName(r)}</strong><small>${v.tier==='Globalist'&&standardSuite(r)?'免费升套 · 占用标准套库存':'点击安排入住'}</small></button>`).join('')||'<p>暂无空房，先清洁或查看预留。</p>'}</div>`+(available.length>2?pager('roomPage',page,Math.ceil(available.length/2)):'')+'<p class="focus-trade">拒绝确认预订需 ¥600 安置费；选房后立即入住。</p>',go('查看房态','hotel')+btn('婉拒本次','reject',v.id));
  }
  if(view==='events'||view==='worklist'){
   const cards:{id:string;body:string;actions:string}[]=[];
   for(const v of s.guests.filter(v=>!v.departing&&v.roomId)){
+   if(v.occasion&&!v.occasion.resolved){const o=birthdayOptions(s,v);cards.push({id:v.id+'-birthday',body:`<div class="focus-person">${portrait(v)}<div><strong>${esc(v.name)} · 今天过生日</strong><p>这趟专门来庆祝，早餐和房型还能有一点惊喜吗？</p></div></div>`+metrics([['早餐库存',g.stock+' 份'],['可售标准套',String(o.free)],['需保护预订',String(o.reserve)]])+`<div class="focus-decision"><h3>照顾这一晚，也要照顾其他承诺</h3><p>早餐 ¥160 / 2 份 · 体验 +8 · 业主 −1。</p><p>升套 ¥280 · 体验 +12 · 业主 −2；原房待翻房，套房按原房费住。</p><p class="focus-trade">${o.alreadySuite?'客人已住标准套房，可以改送早餐或祝福。':!o.suite?'现有套房需保护预订；不能重复承诺。':'送掉套房会减少后续付费销售和会员升套空间。'}手写卡免费，体验 +2；维持预订体验 −3。</p></div>`,actions:btn('送双人早餐','birthday-choice',v.id,'breakfast',!o.breakfast?'disabled':'')+btn('生日升套','birthday-choice',v.id,'suite',!o.suite?'disabled':'')+btn('手写生日卡','birthday-choice',v.id,'card')+btn('维持原预订','birthday-choice',v.id,'decline')});}
    if(v.challenge&&!v.challenge.resolved){const k=v.challenge.kind,copy={quiet:['需要安静的房间','quiet','有施工噪声时需要另有安静空房。'],sua:['核对 SUA 标准套房','inventory','已入住标准套才能兑现；欢迎礼不能替代。'],family:['早餐和加床一起安排','family',`需要 6 份早餐库存，当前 ${g.stock} 份。`],audit:['检查房间与服务流程','inspect','需客房、工程主管在岗，且无待修房。']}[k];cards.push({id:v.id,body:`<div class="focus-person">${portrait(v)}<div><strong>${esc(v.name)} · ${esc(v.tier)}</strong><p>${copy[0]}</p></div></div><div class="focus-decision"><h3>落实核心诉求</h3><p>${copy[2]}</p><p class="focus-trade">匹配安排 ¥180；欢迎礼 ¥100 可能仍让客人失望。</p></div>`,actions:btn('落实 · ¥180','guest-choice',v.id,copy[1])+btn('欢迎礼 · ¥100','guest-choice',v.id,'gift')+btn('不作安排','guest-choice',v.id,'decline')});}
    if(v.late==='pending')cards.push({id:v.id+'-late',body:`<div class="focus-person">${portrait(v)}<div><strong>${esc(v.name)} · ${esc(v.tier)}</strong><p>希望 ${lateLabel(v)} 退房</p></div></div><div class="focus-decision"><h3>留体验，还是留翻房时间？</h3><p>同意：体验 +4、口碑 +1、业主 -1。</p><p>协商：体验 -3、口碑 -1、业主 +1。</p><p class="focus-trade">退房后才能翻房；晚退会推迟下一位入住。</p></div>`,actions:btn('同意 '+lateLabel(v),'late',v.id,'honor')+btn('协商 '+fallbackHour(v)+':00','late',v.id,'deny')});
   }
   for(const e of g.events){const dept=e.kind==='repair'?'engineering':e.kind==='supplies'?'fnb':'front';cards.push({id:'event-'+e.id,body:head(dept,e.title,`剩余 ${Math.max(0,e.expires-g.day*1440-g.minute)} 游戏分钟。`)+`<div class="focus-decision"><h3>现在交给谁处理？</h3><p>亲自协调 ¥350；主管处理 ¥150。</p><p class="focus-trade">${g.managers[dept]?'主管已到岗，可以授权处理。':'对应主管尚未到岗；可先亲自处理，避免超时。'}</p></div>`,actions:btn('亲自处理 · ¥350','resolve',String(e.id),'gm')+(g.managers[dept]?btn('交给主管 · ¥150','resolve',String(e.id),'sop'):go('聘任主管','operations'))});}
   for(const w of pending.filter(w=>!cards.some(c=>c.id===w.key)&&!s.guests.some(v=>v.roomId&&v.id===w.key)))cards.push({id:w.key,body:head('front',w.title,w.detail)+`<div class="focus-decision"><p>${esc(w.note)}</p></div>`,actions:w.button});
-  const i=u.event?Math.max(0,cards.findIndex(v=>v.id===u.event)):Math.min(u.eventPage,Math.max(0,cards.length-1)),c=cards[i];
+  const i=u.event?Math.max(0,cards.findIndex(v=>v.id===u.event||v.id===u.event+'-birthday'||v.id===u.event+'-late')):Math.min(u.eventPage,Math.max(0,cards.length-1)),c=cards[i];
   return frame('逐件处理 · '+cards.length+' 项',c?pager('eventPage',i,cards.length)+c.body:head('front','待办全部处理完了','关上面板，回到酒店看决定如何发生。'),c?.actions??go('回到经营','hub'));
  }
  if(view==='hotel'||view==='entity'){
-  const floors=s.floors.filter(f=>f.role==='guest'),floor=s.floors.find(f=>f.id===(u.floor??s.entities[u.room??'']?.floorId))??floors[0];
+  const floors=s.floors.filter(f=>f.role==='guest'),floor=floors.find(f=>f.id===(u.floor??s.entities[u.room??'']?.floorId))??floors[0];
   if(!floor)return null;const slots=roomSlots(s).filter(r=>r.floorId===floor.id),r=slots.find(r=>r.id===u.room)??slots[0];if(!r)return null;u.room=r.id;u.floor=floor.id;
   const nav=tabs(floors.map(f=>choose(f.label,'floor',f.id,f.id===floor.id)).join(''))+`<div class="focus-room-map">${slots.map(v=>choose(v.number+'<small>'+({available:'可入住',occupied:'在住',dirty:'待清洁',cleaning:'清洁中',maintenance:'封闭',reserved:'已预留',unbuilt:'＋设置'}[v.status])+'</small>','room',v.id,v.id===r.id)).join('')}</div>`;
   const construction=r.construction??floor.construction;
   if(construction)return frame(r.number+' · 封闭施工',nav+`<div class="focus-space">${spaceIllustration('hotel')}</div>`+metrics([['剩余',construction.remaining+' 分钟'],['完成后','开放使用']]),go('扩建与全部参数','hotel-data'));
   if(r.status==='unbuilt')return frame(r.number+' · 设置房型',nav+tabs(Object.entries(ROOM_TIERS).map(([id,t])=>choose(t.name,'category',id,u.category===id)).join(''))+tabs(choose('大床','bed','king',u.bed==='king')+choose('双床','bed','twin',u.bed==='twin'))+metrics([['配置费用',money(ROOM_TIERS[u.category as keyof typeof ROOM_TIERS].cost)],['新客房价',money(g.price*ROOM_TIERS[u.category as keyof typeof ROOM_TIERS].factor)+'起']])+'<p class="focus-trade">标准套可供免费升套，尊享套按付费房价销售。</p>',btn('确认设置','configure-room',r.id,u.category+':'+u.bed));
   const v=s.guests.find(v=>v.id===r.guestId),level=r.level??1;
-  const actions=r.status==='dirty'?btn('清洁 · ¥90','clean',r.id):r.status==='maintenance'&&!r.timer?btn('维修 · ¥180','repair',r.id):r.status==='available'?go('安排入住','front')+(level<5?btn('装修 · '+money(level*2500),'upgrade',r.id):'')+(standardSuite(r)?btn('留给会员','reserve',r.id):''):r.status==='reserved'&&!r.suaBookingId?btn('释放预留','release',r.id):v?`<button class="game-action" data-open="events" data-guest="${v.id}">处理诉求</button>`:'';
+  const actions=r.status==='dirty'?btn('清洁 · ¥90','clean',r.id):r.status==='maintenance'&&!r.timer?btn('维修 · ¥180','repair',r.id):r.status==='available'?`<button class="game-action" data-open="front" data-assign-room="${r.id}">安排入住</button>`+(level<5?btn('装修 · '+money(level*2500),'upgrade',r.id):'')+(standardSuite(r)?btn('留给会员','reserve',r.id):''):r.status==='reserved'&&!r.suaBookingId?btn('释放预留','release',r.id):v?`<button class="game-action" data-open="events" data-guest="${v.id}">${v.occasion&&!v.occasion.resolved?'生日礼遇':'查看服务诉求'}</button>`:'';
   return frame(r.number+' · '+roomName(r),nav+`<div class="focus-space">${spaceIllustration('hotel')}<span>Lv.${level} · ${v?esc(v.name):'暂无住客'}</span></div>`+metrics([['每晚房费',money(v?.rate??roomRate(g.price,r))],['剩余住宿',r.nightsLeft+' 晚'],['升级增收',level<5?'每新客晚 +'+money(roomRate(g.price,{...r,level:level+1})-roomRate(g.price,r)):'已满级']])+`<p class="focus-trade">${r.status==='available'?'装修需停卖 90 分钟；已确认订单价格不变。':v?esc(v.thought):'等清洁或维修完成后，才能再次出售。'}</p>`,actions+go('房间明细','room-data'));
+ }
+ if(view==='hotel-data'){
+  const count=s.floors.filter(f=>f.role==='guest').length,cost=10000+5000*(count-3),building=s.floors.filter(f=>f.construction);
+  return frame('扩建 · 再高一层',`<div class="focus-space">${spaceIllustration('hotel')}<span>施工 → 竣工 → 手动设置房型</span></div>`+metrics([['建设费',money(cost)],['交付时间','4 小时'],['新增','3 个空位']])+head('engineering','扩建前先确认现金与需求','施工期间新楼层封闭；竣工后逐间选择房型，普通客房配置已含在造价中。')+`<p class="focus-trade">${building.length?building.length+' 层仍在施工。':''}相邻房间有噪声风险；已有空房较多时，可先改善现有客房。</p>`,btn('开工 · '+money(cost),'expand')+go('查看房态','hotel')+go('投资明细','hotel-archive'));
+ }
+ if(view==='development-data'){
+  const key=Object.hasOwn(ACTIVITIES,u.activity)?u.activity:'coffee',a=ACTIVITIES[key as keyof typeof ACTIVITIES],pending=g.development?.activity;
+  return frame('活动 · 投入一场体验',tabs(Object.entries(ACTIVITIES).map(([id,v])=>choose(v.name,'activity',id,id===key)).join(''))+head('fnb',a.name,a.description)+metrics([['筹备费',money(a.cost)],['准备时间','2 小时'],['每位收入',money(a.fee)]])+`<p class="focus-trade">${pending?'已有活动筹备中，等待现场结算。':'人数受在住客人、天气、定位与容量影响；收入不足筹备费时会亏损。'}每个营业日只能安排一场。</p>`,btn(pending?'正在筹备':'安排活动 · '+money(a.cost),'activity',key,'',pending||g.development?.activityDay===g.day?'disabled':'')+btn('三日推广 · ¥2,200','campaign')+go('查看设施','development'));
  }
  if(view==='operations'){
   const names:Record<Department,string>={front:'前厅',house:'客房',engineering:'工程',fnb:'餐饮',revenue:'收益'},d=u.department??'house',level=g.managers[d],cost=level?4500*level:3800;

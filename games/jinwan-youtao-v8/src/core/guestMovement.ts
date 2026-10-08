@@ -20,6 +20,12 @@ export function travel(s:PreviewState,g:Guest,destination:string){ensureMovement
  add(x,CORRIDOR,level,'corridor');add(x,z,level,exit?'exit':entity.kind==='room'?'room':'public');
  m.steps=points;m.destination=destination;m.arrived=false;m.nextDecision=hotelTime(s)+60;g.visitUntil=undefined;return true;
 }
+/** Finish the current continuous route before walking to a reassigned room. */
+export function queueTravel(s:PreviewState,g:Guest,destination:string){
+ ensureMovement(s,g);const m=g.movement!;if(!m.steps.length)return travel(s,g,destination);
+ const pending=m.steps,position=m.position;m.position={...pending[pending.length-1]};m.steps=[];
+ const ok=travel(s,g,destination);m.steps=[...pending,...m.steps];m.position=position;return ok;
+}
 export function stepMovement(s:PreviewState,g:Guest){const m=g.movement;if(!m||!m.steps.length)return false;
  const target=m.steps[0],p=m.position,dx=target.x-p.x,dz=target.z-p.z,dy=(target.level-p.level)*2.55,dist=Math.hypot(dx,dz,dy),speed=dy!==0?.85:.65;
  p.phase=target.phase;
