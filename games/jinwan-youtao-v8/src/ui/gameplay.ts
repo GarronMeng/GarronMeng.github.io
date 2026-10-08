@@ -13,6 +13,7 @@ import './managementHub.css';
 import './hotelDesign.css';
 import './focusScreens.css';
 import './managementShell.css';
+import './hotelMood.css';
 export function mountGameplay(root:HTMLElement,store:Store){
  const nav=new ManagementNavigation(),$=(q:string)=>root.querySelector<HTMLElement>(q)!;
  const dialog=root.querySelector<HTMLDialogElement>('dialog')!,content=$('#sheet-content'),eye=$('#sheet-eye');let focusFloor:(id:string)=>void=()=>{},previousFocus:HTMLElement|null=null;

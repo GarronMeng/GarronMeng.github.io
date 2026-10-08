@@ -1,3 +1,4 @@
+import {initDayPlan,commitDayPlan} from './dayLoop';
 import type {PreviewState,Guest,GuestProfile,Booking,Forecast,Command} from '../state/types';
 import {rooms} from '../state/selectors';
 import {standardSuite} from '../content/roomTypes';
@@ -34,7 +35,7 @@ export function prepareMorning(s:PreviewState,open=true){const g=s.game!,o=initO
  }
  // Loyal guests can bring a friend on a real, separately tracked booking.
  const advocate=profiles.find(p=>p.trust>=2&&p.visits>=2);if(advocate&&remaining>o.bookings.length){const p=newProfile(s,rand());p.referredBy=advocate.id;o.bookings.push({id:'booking-'+g.nextId++,profileId:p.id,source:'APP',eta:900,nights:1,rate:g.price,segment:'商务',status:'confirmed'});}
- o.briefOpen=open;o.forecast=forecast(s);if(open)g.paused=true;operationsLog(s,`早班准备：${o.bookings.length} 笔确认预订，${EXTERNAL[o.event]}。`);
+ o.briefOpen=open;o.forecast=forecast(s);initDayPlan(s);commitDayPlan(s);if(open)g.paused=true;operationsLog(s,`早班准备：${o.bookings.length} 笔确认预订，${EXTERNAL[o.event]}。`);
 }
 export function bookingArrivals(s:PreviewState,arrive:(b:Booking)=>void){const o=initOperations(s);for(const b of o.bookings)if(b.status==='confirmed'&&s.game!.minute>=b.eta){b.status='arrived';o.confirmedArrivals++;arrive(b);}}
 export function attachProfile(s:PreviewState,g:Guest,b?:Booking){const o=initOperations(s);let p=b?o.profiles[b.profileId]:undefined;if(!p)p=newProfile(s,(hash(g.id)%100)/100);
@@ -52,7 +53,7 @@ export function guestStory(s:PreviewState,g:Guest){const o=initOperations(s),p=o
  if(!good){s.metrics.reputation=Math.max(0,s.metrics.reputation-2);}else{s.metrics.reputation=Math.min(100,s.metrics.reputation+1);}operationsLog(s,p.name+'：'+text,'入住');
 }
 export function operationsCommand(s:PreviewState,c:Command){const g=s.game!,o=initOperations(s);
- if(c.type==='brief-start'){if(!o.briefOpen)return true;o.forecast=forecast(s);o.briefOpen=false;g.paused=false;operationsLog(s,`晨会决策已确认：Walk-in 挂牌 ¥${g.price}，预计入住率 ${o.forecast.occupancy}%。`);return true;}
+ if(c.type==='brief-start'){if(!o.briefOpen)return true;o.forecast=forecast(s);commitDayPlan(s);o.briefOpen=false;g.paused=false;operationsLog(s,`晨会决策已确认：Walk-in 挂牌 ¥${g.price}，预计入住率 ${o.forecast.occupancy}%。`);return true;}
  if(c.type==='suite-policy'){o.suitePolicy=c.value==='hold'?'hold':'sell';operationsLog(s,o.suitePolicy==='hold'?'前厅指令：保留最后一间标准套房给会员。':'前厅指令：标准套房开放销售；已锁 SUA 不变。');return true;}
  if(c.type==='guest-choice'){const guest=s.guests.find(v=>v.id===c.id),request=guest?.challenge;if(!guest||!request||request.resolved)return true;if(!guest.roomId){g.notice='先办理入住，再落实住客的特殊安排。';return true;}
   const appropriate=(request.kind==='quiet'&&c.value==='quiet')||(request.kind==='family'&&c.value==='family')||(request.kind==='audit'&&c.value==='inspect')||(request.kind==='sua'&&c.value==='inventory');const cost=c.value==='decline'?0:appropriate?180:100;

@@ -1,3 +1,4 @@
+import {dayPlanCommand,reviewDayPlan} from './dayLoop';
 import {hospitalityCommand} from './hospitality';
 import {captureEvening} from './evening';
 import {initCampaign,campaignCommand,tickCampaign} from './campaign';
@@ -48,7 +49,7 @@ function settle(s:PreviewState){const g=s.game!,rs=rooms(s);let revenue=0,nights
  const cost=380+rs.length*65+Object.values(g.managers).reduce((a,b)=>a+b*180,0);s.metrics.cash-=cost;g.expense+=cost;
  const occupancy=Math.round(100*g.soldMinutes/Math.max(1,g.roomMinutes)),adr=nights?Math.round(revenue/nights):0;
  const rec=g.stock<20?'早餐库存偏低，明早先补货。':demand(s)>1.1?'明日需求偏旺，先清洁脏房，保留一间套房。':'明日需求相对平稳，可下调价格或投资装修。';
- g.reports.push({day:g.day,revenue:g.revenue,expense:g.expense,adr,occupancy,revpar:Math.round(revenue/Math.max(1,rs.length)),upgrades:g.upgrades,complaints:g.complaints,lost:Math.round(g.closedMinutes/Math.max(1,g.roomMinutes)*100),recommendation:rec,forecastOccupancy:g.operations?.forecast?.occupancy,actualEveningOccupancy:Math.round(nights/Math.max(1,rs.length)*100),bookingsLost:g.operations?.lostBookings,score:scores(s).total});
+ g.reports.push({plan:reviewDayPlan(s,g.revenue-g.expense,'settled'),day:g.day,revenue:g.revenue,expense:g.expense,adr,occupancy,revpar:Math.round(revenue/Math.max(1,rs.length)),upgrades:g.upgrades,complaints:g.complaints,lost:Math.round(g.closedMinutes/Math.max(1,g.roomMinutes)*100),recommendation:rec,forecastOccupancy:g.operations?.forecast?.occupancy,actualEveningOccupancy:Math.round(nights/Math.max(1,rs.length)*100),bookingsLost:g.operations?.lostBookings,score:scores(s).total});
  const history=initDevelopment(s).scores;history.push({day:g.day,value:scores(s).total});if(history.length>30)history.shift();
  if(g.reports.length>30)g.reports.shift();reputation(s,g.complaints===0?3:1);s.metrics.owner=Math.max(0,Math.min(100,s.metrics.owner+(g.revenue>=g.expense?2:-3)));
  log(s,'收益',`Day ${g.day}：收入 ¥${g.revenue}，成本 ¥${g.expense}，入住率 ${occupancy}%。`);g.reportOpen=true;g.paused=true;
@@ -85,7 +86,7 @@ export function advanceGame(s:PreviewState,minutes:number){const g=s.game;if(!g|
  }
  updateUsage(s);
 }
-export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if(hospitalityCommand(s,c)||campaignCommand(s,c)||operationsCommand(s,c)||developmentCommand(s,c))return;const e=c.id?s.entities[c.id]:undefined;const r=e?.kind==='room'?e:null;
+export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if(dayPlanCommand(s,c)||hospitalityCommand(s,c)||campaignCommand(s,c)||operationsCommand(s,c)||developmentCommand(s,c))return;const e=c.id?s.entities[c.id]:undefined;const r=e?.kind==='room'?e:null;
  switch(c.type){
  case 'checkin':{const guest=queue(s).find(a=>a.id===c.id),room=s.entities[c.roomId??''];if(!guest||room?.kind!=='room'||!(room.status==='available'||room.status==='reserved'&&guest.tier==='Globalist'&&(!room.suaBookingId||room.suaBookingId===guest.reservationId))){g.notice='住客或房态已变化，请重新选择。';break;}
   guest.roomId=room.id;guest.checkoutDay=g.day+(guest.stayLength??2);guest.rate=guest.bookedRate??roomRate(g.price,room,guest.tier==='Globalist');guest.upgrades=standardSuite(room)&&guest.tier==='Globalist';guest.denied=guest.tier==='Globalist'&&!isSuite(room);if(guest.upgrades){g.upgrades++;progress(s,'vip');reputation(s,1);}else if(guest.tier==='Globalist'&&rooms(s).some(a=>standardSuite(a)&&a.status==='available'))reputation(s,-1);
