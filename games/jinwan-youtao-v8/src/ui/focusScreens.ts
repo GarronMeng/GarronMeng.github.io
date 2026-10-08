@@ -3,6 +3,7 @@ import {rooms,roomSlots} from '../state/selectors';
 import {roomName,standardSuite,ROOM_TIERS} from '../content/roomTypes';
 import {roomRate,houseMinutes,engineeringMinutes} from '../core/economy';
 import {forecast} from '../core/operations';
+import {campaignGoal} from '../core/campaign';
 import {portrait} from './portraits';
 import {spaceIllustration} from './designSystem';
 import {workItems} from './managementHub';
@@ -21,7 +22,7 @@ const frame=(title:string,body:string,actions:string)=>`<section class="focus-sc
 const pager=(key:string,index:number,total:number)=>`<div class="focus-pager">${choose('‹ 上一项',key,String(Math.max(0,index-1)))}<span>${total?index+1:0} / ${total}</span>${choose('下一项 ›',key,String(Math.min(Math.max(0,total-1),index+1)))}</div>`;
 export function focusScreen(s:Readonly<PreviewState>,view:string,u:FocusSelection):string|null{
  const g=s.game!,rs=rooms(s),queue=s.guests.filter(v=>!v.staff&&!v.departing&&!v.roomId),pending=workItems(s);
- if(view==='hub')return frame('今天怎么经营？',metrics([['现金',money(s.metrics.cash)],['在住',rs.filter(r=>r.status==='occupied').length+'/'+rs.length],['待处理',String(pending.length)]])+`<div class="focus-shortlist">${pending.slice(0,3).map(v=>`<div><span><strong>${esc(v.title)}</strong><small>${esc(v.detail)}</small></span>${v.button}</div>`).join('')||'<p>现场没有积压，可以继续经营。</p>'}</div>`+head('front','先处理眼前的三件事','做完一件，下一件自动补上；无需返回目录。'),go('08:00 晨会','brief')+go('全部待办','events')+go('20:00 复盘','evening'));
+ if(view==='hub')return frame('今天怎么经营？',metrics([['现金',money(s.metrics.cash)],['在住',rs.filter(r=>r.status==='occupied').length+'/'+rs.length],['待处理',String(pending.length)]])+`<div class="focus-shortlist">${pending.slice(0,3).map(v=>`<div><span><strong>${esc(v.title)}</strong><small>${esc(v.detail)}</small></span>${v.button}</div>`).join('')||'<p>现场没有积压，可以继续经营。</p>'}</div>`+head('front',campaignGoal(s)?.title??'酒店进入自由经营',campaignGoal(s)?campaignGoal(s)!.action+' · '+campaignGoal(s)!.progress+'/'+campaignGoal(s)!.goal:'继续培养熟客，完成长期里程碑。'),go('当前目标','tasks')+go('08:00 晨会','brief')+go('20:00 复盘','evening'));
  if(view==='front'){
   const i=u.guest?Math.max(0,queue.findIndex(v=>v.id===u.guest)):Math.min(u.guestPage,Math.max(0,queue.length-1)),v=queue[i];
   if(!v)return frame('客人接待',head('front','目前无人排队','关上面板继续经营，客人到店后会提醒你。'),go('今日预订','bookings')+go('回到酒店','hub'));
@@ -72,8 +73,15 @@ export function focusScreen(s:Readonly<PreviewState>,view:string,u:FocusSelectio
   return frame(view==='evening'?'20:00 · 今天经营得如何？':'Day '+day!.day+' · 日结',metrics(view==='evening'?[['预计净额',money(r!.projectedNet)],['入住率',r!.occupancy+'%'],['待办',String(r!.pending)]]:[['净额',money(day!.revenue-day!.expense)],['入住率',day!.occupancy+'%'],['客诉',String(day!.complaints)]])+head('revenue','今晚优先改进',summary??'保持服务节奏。')+'<p class="focus-trade">'+(view==='evening'?'这是 20:00 快照；预计房费还未入账。':'这是午夜结算结果。')+'</p>',go('客诉 / 明细',view==='evening'?'evening-data':'report-data')+(view==='evening'&&r?.open?btn('交给夜班 · 继续经营','evening-close'):g.reportOpen?btn('开始下一天','continue'):go('回到经营','hub')));
  }
  if(view==='tasks'){
-  const i=Math.min(u.taskPage,g.tasks.length-1),t=g.tasks[i];if(!t)return null;
-  return frame('今天的目标',pager('taskPage',i,g.tasks.length)+head('front',t.title,'把任务与眼前的酒店问题一起解决。')+metrics([['进度',t.progress+' / '+t.goal],['奖励',money(t.reward)]])+`<progress max="${t.goal}" value="${t.progress}"></progress>`,t.claimed?go('长期目标与带教','tasks-data'):(t.progress>=t.goal?btn('领取奖励','claim',t.id):go('去完成',t.target))+go('全部目标','tasks-data'));
+  const c=g.campaign,goal=campaignGoal(s),exam=c?.inspection,result=c?.result;
+  if(!goal)return frame('酒店成长路线 · 完成',head('revenue','五段经营检验全部通过','经营仍会继续。培养熟客、建设酒店，长期里程碑保留。')+metrics([['认证',String(c?.certificates.length??0)+' / 5']]),go('继续经营','hub')+go('支线与里程碑','tasks-data'));
+  const route=`<small class="campaign-route">酒店成长路线 · ${Math.min(5,(c?.chapter??0)+1)} / 5${c?.certificates.length?' · 已获 '+c.certificates.length+' 项认证':''}</small>`;
+  if(result)return frame(result.passed?'体验通过 · '+goal.exam:'需要改善 · '+goal.exam,route+head(goal.department,goal.title,result.advice)+metrics([['现场表现',String(result.score)],['通过标准',String(goal.threshold)]])+`<div class="inspection-scenes">${result.scenes.map(text=>`<p>${esc(text)}</p>`).join('')}</div><p class="focus-trade">${result.passed?'确认后进入下一段目标；日常经营不会重置。':'目标进度保留；免费重约，次日到店再检验。'}</p>`,result.passed?btn('进入下一阶段','continue-chapter'):go('先去改善',result.target)+btn('免费预约重试','book-inspection'));
+  if(exam){const remaining=Math.max(0,exam.due-g.day*1440-g.minute),elapsed=g.day*1440+g.minute-exam.due,step=Math.min(2,Math.max(0,Math.floor(elapsed/10)));
+   return frame(goal.exam+' · '+(exam.phase==='booked'?'已预约':'现场体验中'),route+head(goal.department,exam.phase==='booked'?'留出时间把酒店准备好':['Room Check · 客房巡检','F&B · 体验餐台','Front Office · 核对承诺'][step],exam.phase==='booked'?'检验看实际房态、住客体验、餐饮库存和诉求积压，现场还会有小幅波动。':'检验员按顺序体验酒店；尚未公布结果。')+metrics([['到店时间','Day '+Math.floor(exam.due/1440)+' · 18:00'],['等待',exam.phase==='booked'?remaining+' 分钟':Math.max(0,30-elapsed)+' 分钟后反馈'],['额外准备',exam.prepared?'已彩排 · +6':'可选 · ¥300']])+`<div class="inspection-timeline"><span class="${elapsed>=0?'active':''}">看房</span><span class="${elapsed>=10?'active':''}">用餐</span><span class="${elapsed>=20?'active':''}">服务</span></div><p class="focus-trade">彩排提高表现，但不能替代清洁、备货和兑现承诺。</p>`,(exam.phase==='booked'&&!exam.prepared?btn('现场彩排 · ¥300','prepare-inspection'):'')+go('检查房态','hotel')+go('备货与服务','operations'));
+  }
+  return frame(goal.title,route+head(goal.department,goal.action,goal.ready?'行动目标已完成。预约一次真实体验，检验今天的经营。':'先做好这一件事。目标跨天保留，完成后预约次日检验。')+metrics([['当前进度',goal.progress+' / '+goal.goal],['下一次检验',goal.exam]])+`<progress max="${goal.goal}" value="${goal.progress}" aria-label="${esc(goal.action)}"></progress><p class="focus-trade">日常支线奖金分段到账，完成后可领尾款；单任务奖金上限不变。</p>`,(goal.ready?btn('预约检验 · 次日 18:00','book-inspection'):go('去完成当前目标',goal.target))+go('支线奖励与带教','tasks-data'));
  }
+
  return null;
 }

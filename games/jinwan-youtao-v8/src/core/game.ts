@@ -1,4 +1,5 @@
 import {captureEvening} from './evening';
+import {initCampaign,campaignCommand,tickCampaign} from './campaign';
 import {initOperations,prepareMorning,bookingArrivals,attachProfile,loseBooking,guestStory,operationsCommand,walkinEstimate} from './operations';
 import {tickWorkforce,staffAssigned} from './workforce';
 import {tickConstruction} from './construction';
@@ -29,7 +30,7 @@ export function newGame():PreviewState {
  s.guests=s.guests.filter(g=>g.staff||g.roomId);s.game={day:1,minute:480,paused:false,seed:20260905,nextId:100,nextArrival:490,nextEvent:650,price:650,positioning:'business',weather:'sunny',stock:32,clubStock:25,managers:{front:0,house:0,engineering:0,fnb:0,revenue:0},logs:[],events:[],tasks:tasks(1),reports:[],reportOpen:false,revenue:0,expense:0,nights:0,arrivals:0,upgrades:0,complaints:0,lost:0,repLoss:0,roomMinutes:0,soldMinutes:0,closedMinutes:0,memory:{},level:1,notice:'欢迎接班：前台接待，空房翻房，套房留给合适的人。'};
  for(const guest of s.guests)if(guest.roomId){const r=s.entities[guest.roomId] as Room;guest.stayLength=r.nightsLeft;guest.checkoutDay=1+r.nightsLeft;guest.rate=standardSuite(r)?900:650;guest.satisfaction=90;guest.segment='商务';}
  for(const r of rooms(s)){r.level=1;if(r.status==='cleaning')r.timer=20;}
- initDevelopment(s);s.guests.forEach(g=>initGuest(s,g));arrival(s);prepareMorning(s);log(s,'部门','Hyatt Place 正式开业。4× 已开放；关闭面板后时间继续。');updateUsage(s);return s;
+ initDevelopment(s);initCampaign(s);s.guests.forEach(g=>initGuest(s,g));arrival(s);prepareMorning(s);log(s,'部门','Hyatt Place 正式开业。4× 已开放；关闭面板后时间继续。');updateUsage(s);return s;
 }
 function arrival(s:PreviewState,booking?:Booking){const g=s.game!,r=random(s),name=['陈','林','何','张','周','王','李','赵'][Math.floor(random(s)*8)]+'先生';
  const tier=r<.27?'Globalist':r<.5?'Explorist':r<.8?'Member':'普通客';const holiday=g.positioning==='resort'||((g.day-1)%7>=4&&random(s)<.65);
@@ -78,12 +79,12 @@ export function advanceGame(s:PreviewState,minutes:number){const g=s.game;if(!g|
    if(!g.events.some(e=>e.kind===kind)){if(kind==='repair'&&r)r.status='maintenance';if(kind==='supplies')g.stock=Math.min(g.stock,4);const titles={repair:'设备故障，需要工程协助',complaint:'住客希望安静一点',supplies:'早餐供应临时波动',vip:'常客期待额外关照'};g.events.push({id:g.nextId++,kind,title:titles[kind],target,expires:g.day*1440+g.minute+120});log(s,'客诉',titles[kind],target);}g.nextEvent=g.minute+180+Math.round(random(s)*90);
   }
   for(const event of [...g.events]){const dept=event.kind==='repair'?'engineering':event.kind==='supplies'?'fnb':'front';if(event.kind!=='repair'&&event.kind!=='supplies'&&g.managers[dept]&&s.metrics.cash>=150){execute(s,{type:'resolve',id:String(event.id),value:'sop'});}else if(!staffAssigned(s,event.target)&&g.day*1440+g.minute>=event.expires){g.events=g.events.filter(e=>e.id!==event.id);g.complaints++;reputation(s,-2);log(s,'客诉',`未及时处理：${event.title}`,event.target);}}
-  captureEvening(s);
+  tickCampaign(s);captureEvening(s);
   if(g.minute>=1440)settle(s);
  }
  updateUsage(s);
 }
-export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if(operationsCommand(s,c)||developmentCommand(s,c))return;const e=c.id?s.entities[c.id]:undefined;const r=e?.kind==='room'?e:null;
+export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if(campaignCommand(s,c)||operationsCommand(s,c)||developmentCommand(s,c))return;const e=c.id?s.entities[c.id]:undefined;const r=e?.kind==='room'?e:null;
  switch(c.type){
  case 'checkin':{const guest=queue(s).find(a=>a.id===c.id),room=s.entities[c.roomId??''];if(!guest||room?.kind!=='room'||!(room.status==='available'||room.status==='reserved'&&guest.tier==='Globalist'&&(!room.suaBookingId||room.suaBookingId===guest.reservationId))){g.notice='住客或房态已变化，请重新选择。';break;}
   guest.roomId=room.id;guest.checkoutDay=g.day+(guest.stayLength??2);guest.rate=guest.bookedRate??roomRate(g.price,room,guest.tier==='Globalist');guest.upgrades=standardSuite(room)&&guest.tier==='Globalist';guest.denied=guest.tier==='Globalist'&&!isSuite(room);if(guest.upgrades){g.upgrades++;progress(s,'vip');reputation(s,1);}else if(guest.tier==='Globalist'&&rooms(s).some(a=>standardSuite(a)&&a.status==='available'))reputation(s,-1);
@@ -107,6 +108,6 @@ export function execute(s:PreviewState,c:Command){const g=s.game;if(!g)return;if
  case 'pause':g.paused=!g.paused;break;
  case 'evening-close':if(g.evening?.open){g.evening.open=false;g.paused=false;}break;
  case 'continue':if(g.reportOpen)nextDay(s);break;
- case 'claim':{const task=g.tasks.find(t=>t.id===c.id);if(task&&!task.claimed&&task.progress>=task.goal){task.claimed=true;income(s,task.reward);log(s,'收益',`完成「${task.title}」，奖励 ¥${task.reward}。`);}break;}
+ case 'claim':{const task=g.tasks.find(t=>t.id===c.id);if(task&&!task.claimed&&task.progress>=task.goal){const remaining=Math.max(0,task.reward-(task.paid??0));task.claimed=true;income(s,remaining);task.paid=task.reward;log(s,'收益',`完成「${task.title}」，尾款 ¥${remaining}；总奖金 ¥${task.reward}。`);}break;}
  }updateUsage(s);
 }
