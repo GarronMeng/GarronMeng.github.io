@@ -10,18 +10,9 @@ import {portrait} from './portraits';
 import {spaceIllustration} from './designSystem';
 import {workItems} from './managementHub';
 import {lateLabel,fallbackHour} from '../core/guestRequests';
-export interface FocusSelection {room?:string;floor?:string;department?:Department;facility?:string;guest?:string;event?:string;roomPage:number;eventPage:number;guestPage:number;taskPage:number;meeting:string;category:string;bed:string;activity:string;}
-export const focusSelection=():FocusSelection=>({roomPage:0,eventPage:0,guestPage:0,taskPage:0,meeting:'overview',activity:'coffee',category:'standard',bed:'king'});
-const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
-const money=(n:number)=>'¥'+Math.round(n).toLocaleString('en-US');
-const btn=(label:string,type:string,id='',value='',extra='')=>`<button class="game-action" data-action="${type}" data-id="${esc(id)}" data-value="${esc(value)}" ${extra}>${label}</button>`;
-const go=(label:string,target:string)=>`<button class="game-action" data-open="${target}">${label}</button>`;
-const choose=(label:string,key:string,value:string,active=false)=>`<button data-focus-key="${key}" data-focus-value="${esc(value)}" aria-pressed="${active}">${label}</button>`;
-const tabs=(body:string)=>`<div class="focus-tabs">${body}</div>`;
-const metrics=(values:[string,string][])=>`<div class="focus-metrics">${values.map(([k,v])=>`<div><small>${k}</small><strong>${v}</strong></div>`).join('')}</div>`;
-const head=(dept:Department,title:string,text:string)=>`<div class="focus-person">${portrait(dept)}<div><strong>${esc(title)}</strong><p>${esc(text)}</p></div></div>`;
-const frame=(title:string,body:string,actions:string)=>`<section class="focus-screen"><h2>${title}</h2><div class="focus-main">${body}</div></section><div class="focus-footer">${actions}</div>`;
-const pager=(key:string,index:number,total:number)=>`<div class="focus-pager">${choose('‹ 上一项',key,String(Math.max(0,index-1)))}<span>${total?index+1:0} / ${total}</span>${choose('下一项 ›',key,String(Math.min(Math.max(0,total-1),index+1)))}</div>`;
+export interface FocusSelection {room?:string;floor?:string;department?:Department;facility?:string;guest?:string;event?:string;roomPage:number;eventPage:number;guestPage:number;taskPage:number;meeting:string;category:string;bed:string;activity:string;bookingPage:number;profilePage:number;logPage:number;careerPage:number;archiveTab:string;profile?:string;}
+export const focusSelection=():FocusSelection=>({roomPage:0,eventPage:0,guestPage:0,taskPage:0,meeting:'overview',activity:'coffee',bookingPage:0,profilePage:0,logPage:0,careerPage:0,archiveTab:'overview',category:'standard',bed:'king'});
+import {esc,money,btn,go,choose,tabs,metrics,head,frame,pager} from './screenKit';
 export function focusScreen(s:Readonly<PreviewState>,view:string,u:FocusSelection):string|null{
  const g=s.game!,rs=rooms(s),queue=s.guests.filter(v=>!v.staff&&!v.departing&&!v.roomId),pending=workItems(s);
  if(view==='hub')return frame('今天怎么经营？',metrics([['现金',money(s.metrics.cash)],['在住',rs.filter(r=>r.status==='occupied').length+'/'+rs.length],['待处理',String(pending.length)]])+`<div class="focus-shortlist">${pending.slice(0,3).map(v=>`<div><span><strong>${esc(v.title)}</strong><small>${esc(v.detail)}</small></span>${v.button}</div>`).join('')||'<p>现场没有积压，可以继续经营。</p>'}</div>`+head('front',campaignGoal(s)?.title??'酒店进入自由经营',campaignGoal(s)?campaignGoal(s)!.action+' · '+campaignGoal(s)!.progress+'/'+campaignGoal(s)!.goal:'继续培养熟客，完成长期里程碑。'),go('当前目标','tasks')+go('08:00 晨会','brief')+go('20:00 复盘','evening'));

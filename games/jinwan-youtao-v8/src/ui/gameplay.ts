@@ -1,141 +1,96 @@
-import {MENU,menuFor,moduleLinks} from './navigation';
+import {MENU,menuFor,moduleLinks,PAGE_TITLES,ManagementNavigation} from './navigation';
 import {campaignGoal} from '../core/campaign';
-import {hubView,workList} from './managementHub';
-import {focusScreen,focusSelection} from './focusScreens';
-import {menuIcon,spaceIllustration} from './designSystem';
-import {entityAdvice,priority,teachingView,teachingSteps,frontView} from './managementUx';
-import {personCard} from './portraits';
-import {eveningView,briefView,bookingsView,historyView,challengeCards} from './managementViews';
-import {ROOM_TIERS,roomName,standardSuite} from '../content/roomTypes';
-import {lateLabel,lateHour,fallbackHour,checkoutMinute} from '../core/guestRequests';
-import {roomPreview,managerPreview} from './upgradePreview';
-import {roomRate} from '../core/economy';
-import {scores,milestones,ACTIVITIES} from '../core/progression';
-import type {Store,Command,Department} from '../state/types';
-import {rooms,roomSlots,availableSuites,occupiedRooms} from '../state/selectors';
-import {ROOM_STATUS} from '../content/place';
-import {queue,weekday,clock,demand,DEPARTMENTS} from '../core/game';
+import {focusScreen} from './focusScreens';
+import {secondaryScreen} from './secondaryScreens';
+import {menuIcon} from './designSystem';
+import {scores} from '../core/progression';
+import {esc,money,btn} from './screenKit';
+import type {Store,Command} from '../state/types';
+import {rooms,availableSuites,occupiedRooms} from '../state/selectors';
+import {queue,weekday,clock} from '../core/game';
 import './gameplay.css';
 import './managementHub.css';
 import './hotelDesign.css';
 import './focusScreens.css';
-const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
-const money=(v:number)=>'¥'+Math.round(v).toLocaleString('en-US');
-const action=(label:string,type:string,id='',value='')=>`<button class="game-action" data-action="${esc(type)}" data-id="${esc(id)}" data-value="${esc(value)}">${esc(label)}</button>`;
+import './managementShell.css';
 export function mountGameplay(root:HTMLElement,store:Store){
- const focusUI=focusSelection();
- const $=(q:string)=>root.querySelector<HTMLElement>(q)!;const dialog=root.querySelector<HTMLDialogElement>('dialog')!,content=$('#sheet-content'),eye=$('#sheet-eye');let view='',selected='',hotelFloor='',logFilter='全部',focusFloor:(id:string)=>void=()=>{},previousFocus:HTMLElement|null=null;
- const menuTabs=MENU;
- const tabs=()=>menuTabs.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-label="${label}" aria-pressed="${menuFor(view)===id}">${menuIcon(id)}<span>${label}</span></button>`).join('');
- $('.main-nav').innerHTML=tabs();
- const menuNav=document.createElement('nav');menuNav.className='sheet-navigation';menuNav.setAttribute('aria-label','管理菜单');content.before(menuNav);
- type Place={view:string;selected:string;key:string};
- let shown:Place|null=null,goingBack=false;
- const history:Place[]=[];
- const bookmarks=new Map<string,{scroll:number;open:string[]}>();
- const remember=()=>{if(shown)bookmarks.set(shown.key,{scroll:dialog.scrollTop,open:[...content.querySelectorAll<HTMLDetailsElement>('details[open]')].map(d=>d.querySelector('summary')?.textContent??'')});};
- $('.preview-badge').outerHTML='<button class="preview-badge score-button" data-open="score" aria-label="查看经营评分"></button>';$('.world-caption').textContent='轻点空间 · 处理今天的经营';$('.weather').title='切换日夜预览';
- $('.property-name small').id='game-time';$('.today-hint').setAttribute('data-open','tasks');$('.event-strip').removeAttribute('data-focus');$('.event-strip').setAttribute('data-open','events');
- $('.speed-control').insertAdjacentHTML('beforeend',action('Ⅱ','pause'));$('.speed-control').setAttribute('aria-label','经营速度');
- root.querySelectorAll('[data-speed]').forEach(el=>el.setAttribute('aria-label',el.getAttribute('data-speed')+'倍经营速度'));
- const feedback=document.createElement('p');feedback.className='action-feedback';feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');feedback.hidden=true;content.before(feedback);
- const rewardToast=document.createElement('div');rewardToast.className='reward-toast';rewardToast.setAttribute('role','status');rewardToast.setAttribute('aria-live','polite');root.append(rewardToast);let lastReward=store.getState().game?.rewardBeat?.id;
+ const nav=new ManagementNavigation(),$=(q:string)=>root.querySelector<HTMLElement>(q)!;
+ const dialog=root.querySelector<HTMLDialogElement>('dialog')!,content=$('#sheet-content'),eye=$('#sheet-eye');let focusFloor:(id:string)=>void=()=>{},previousFocus:HTMLElement|null=null;
+ const top=$('.sheet-top'),back=document.createElement('button');back.className='sheet-back';back.textContent='‹';back.dataset.menuBack='true';back.setAttribute('aria-label','返回上一页');top.prepend(back);
+ const moduleNav=document.createElement('nav');moduleNav.className='module-tabs';moduleNav.setAttribute('aria-label','当前部门功能');content.before(moduleNav);
+ const feedback=document.createElement('p');feedback.className='action-feedback';feedback.setAttribute('role','status');feedback.hidden=true;content.before(feedback);
  const fixedActions=document.createElement('div');fixedActions.className='fixed-actions';content.after(fixedActions);
- const notify=()=>{feedback.textContent=store.getState().game!.notice;feedback.hidden=!feedback.textContent;};
- const close=()=>{remember();shown=null;history.length=0;view='';selected='';if(store.getState().game!.evening?.open)store.dispatch({type:'evening-close'});if(store.getState().game!.operations?.briefOpen)store.dispatch({type:'brief-start'});dialog.close();store.select(null);previousFocus?.focus();};
- const dismiss=()=>{if(store.getState().game!.reportOpen){store.dispatch({type:'continue'});view='brief';render();return;}if(store.getState().game!.operations?.briefOpen)store.dispatch({type:'brief-start'});close();};
- let backdropDown=false;const outside=(x:number,y:number)=>{const r=dialog.getBoundingClientRect();return x<r.left||x>r.right||y<r.top||y>r.bottom;};
- dialog.addEventListener('pointerdown',e=>{backdropDown=e.target===dialog&&outside(e.clientX,e.clientY);});
- dialog.addEventListener('click',e=>{if(backdropDown&&e.target===dialog&&outside(e.clientX,e.clientY))dismiss();backdropDown=false;});
- const show=(title:string,body:string)=>{
-  const key=view+(view==='entity'?':'+selected:'');remember();
-  if(shown&&shown.key!==key&&!goingBack){history.push(shown);if(history.length>20)history.shift();}goingBack=false;
-  shown={view,selected,key};eye.textContent=title;
-  $('.main-nav').innerHTML=tabs();
-  menuNav.innerHTML=`<div class="menu-tabs">${tabs()}</div><nav class="module-tabs" aria-label="${menuTabs.find(([id])=>id===menuFor(view))?.[1]}功能">${moduleLinks(view).map(([id,label])=>`<button data-open="${id}" aria-current="${view===id?'page':'false'}">${label}</button>`).join('')}</nav>${history.length?'<button class="menu-back" data-menu-back="true">‹ 返回上一页 · 保留位置</button>':''}`;
-  const compact=body.includes('class="focus-screen"');dialog.classList.toggle('focus-layout',compact);fixedActions.innerHTML='';
-  content.innerHTML=(compact?'':view==='entity'?entityAdvice(store.getState(),selected):priority(store.getState(),view))+body;
-  const footer=content.querySelector('.focus-footer');if(footer)fixedActions.append(footer);
-  dialog.dataset.view=view;
-  const heading=content.querySelector('h2');if(heading&&!compact)content.prepend(heading);
-  content.querySelectorAll('.room-choice,.room-options section,.room-grid button').forEach(el=>el.insertAdjacentHTML('afterbegin',`<span class="room-preview-art">${spaceIllustration('hotel')}</span>`));
-  content.querySelectorAll<HTMLElement>('.work-item').forEach(el=>el.insertAdjacentHTML('afterbegin',`<span class="work-symbol">${menuIcon(el.querySelector('[data-action="clean"]')?'hotel':el.querySelector('[data-action="stock"]')?'development':'tasks')}</span>`));
-  content.querySelectorAll<HTMLButtonElement>('.choice-grid button:first-child,.person-body button[data-action="late"][data-value="honor"],.person-body button[data-action="checkin"]').forEach(el=>el.classList.add('decision-primary'));
-  const saved=bookmarks.get(key);if(saved)content.querySelectorAll<HTMLDetailsElement>('details').forEach(d=>d.open=saved.open.includes(d.querySelector('summary')?.textContent??''));
+ const menuNav=document.createElement('nav');menuNav.className='sheet-navigation';menuNav.setAttribute('aria-label','切换管理部门');fixedActions.after(menuNav);
+ const rewardToast=document.createElement('div');rewardToast.className='reward-toast';rewardToast.setAttribute('role','status');root.append(rewardToast);let lastReward=store.getState().game?.rewardBeat?.id;
+ const tabs=()=>MENU.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-label="${label}" aria-pressed="${dialog.open&&menuFor(nav.current.view)===id}">${menuIcon(id)}<span>${label}</span></button>`).join('');
+ const updateNav=()=>{$('.main-nav').innerHTML=tabs();menuNav.innerHTML=`<div class="menu-tabs">${tabs()}</div>`;};
+ const checkpoint=()=>{nav.current.scroll=content.scrollTop;};
+ const render=()=>{
+  const {view,selection}=nav.current,s=store.getState();
+  eye.textContent=MENU.find(([id])=>id===menuFor(view))?.[1]+' / '+(PAGE_TITLES[view]??'酒店经营');back.hidden=!nav.canBack;
+  moduleNav.innerHTML=moduleLinks(view).map(([id,label])=>`<button data-open="${id}" aria-current="${view===id?'page':'false'}">${label}</button>`).join('');
+  content.innerHTML=focusScreen(s,view,selection)??secondaryScreen(s,view,selection);
+  fixedActions.replaceChildren();const footer=content.querySelector('.focus-footer');if(footer)fixedActions.append(footer);
+  dialog.classList.add('focus-layout','management-shell');dialog.dataset.view=view;
+  // Main action is always in the same place; navigational links retain a secondary style.
+  const primary=fixedActions.querySelector<HTMLButtonElement>('[data-action]:not([disabled])');(primary??fixedActions.querySelector('button'))?.classList.add('decision-primary');
   if(!dialog.open){previousFocus=document.activeElement as HTMLElement;dialog.showModal();}
-  dialog.scrollTop=saved?.scroll??0;
+  content.scrollTop=nav.current.scroll;dialog.scrollTop=0;updateNav();
  };
- const roomView=(id:string)=>{const s=store.getState(),e=s.entities[id];if(!e)return;
-  if(e.construction||s.floors.find(f=>f.id===e.floorId)?.construction){const c=e.construction??s.floors.find(f=>f.id===e.floorId)!.construction!;show('施工现场',`<h2>${e.kind==='room'?e.number:e.name} · 封闭施工</h2><progress max="${c.total}" value="${c.total-c.remaining}"></progress><p>剩余 ${c.remaining} 游戏分钟，竣工后开放。</p>`);return;}
-  if(e.kind==='room'&&e.status==='unbuilt'){show('配置客房 · '+e.number,`<h2>选择房型</h2><p>普通配置已含在楼层造价中；其他房型支付差价。</p><div class="room-options">${Object.entries(ROOM_TIERS).map(([key,t])=>`<section><strong>${t.name}</strong><small>新客 ${money(s.game!.price*t.factor)}/晚起 · ${t.cost?money(t.cost):'已含'}</small><div>${action('大床','configure-room',id,key+':king')}${action('双床','configure-room',id,key+':twin')}</div></section>`).join('')}</div><small>标准套房可供会员免费升套；尊享套房按付费房价出售。</small>`);return;}
-  if(e.kind==='room'){const guest=s.guests.find(g=>g.id===e.guestId);show('HYATT PLACE · '+s.floors.find(f=>f.id===e.floorId)?.label,`<h2>${esc(e.number)}<span>${roomName(e)} · Lv.${e.level??1}</span></h2><div class="status-chip">${ROOM_STATUS[e.status]}${e.timer?' · 还需 '+e.timer+' 分钟':''}</div><dl><div><dt>住客</dt><dd>${guest?esc(guest.name)+' · '+esc(guest.tier):'暂无'}</dd></div><div><dt>剩余住宿</dt><dd>${e.nightsLeft} 晚</dd></div><div><dt>每晚房费</dt><dd>${guest?money(guest.rate??s.game!.price):money(roomRate(s.game!.price,e))}</dd></div></dl>${guest?'<p>'+esc(guest.name)+(guest.goh?' · GOH':'')+(guest.sua?' · SUA':'')+'</p><blockquote>'+esc(guest.thought)+'</blockquote>'+(!guest.serviceDone?action(({road:'安排发票与行程',family:'加床与早餐确认',points:'核对 QN 与 bonus',hunter:'一起核对套房库存',forum:'确认房型口径',creator:'安排拍摄与欢迎饮品',proposal:'安排求婚布置',planner:'安排团队动线考察',whale:'安排专属接待',auditplus:'安排客房巡检',chill:'补充饮水与用品'}[guest.persona??'chill'])+' ¥120','guest-service',guest.id):'<small>本次住宿已安排专属服务</small>')+(guest.late==='pending'?action('确认 '+lateLabel(guest),'late',guest.id,'honor')+action('协商 '+fallbackHour(guest)+':00','late',guest.id,'deny'):guest.late?'<p>退房时间：'+clock(checkoutMinute(guest))+'</p>':''):''}${e.status==='available'?roomPreview(s,e):''}<div class="action-row">${e.status==='dirty'?action('安排清洁 ¥90','clean',id):''}${e.status==='maintenance'&&!e.timer?action('安排维修 ¥180','repair',id):''}${e.status==='available'?(action('分配给住客','front')+((e.level??1)<5?action('装修 '+money(2500*(e.level??1)),'upgrade',id):'')+(standardSuite(e)?action('预留给会员','reserve',id):'')):''}${e.status==='reserved'&&!e.suaBookingId?action('释放预留','release',id):''}</div>`);
-  }else show('HYATT PLACE · 公共空间',`<h2>${esc(e.name)}</h2><dl><div><dt>使用 / 容量</dt><dd>${e.usage} / ${e.capacity}</dd></div><div><dt>维护状况</dt><dd>${Math.round(e.maintenance)}%</dd></div>${['breakfast','club'].includes(e.role)?`<div><dt>库存</dt><dd>${e.role==='club'?s.game!.clubStock:s.game!.stock} 份</dd></div>`:''}</dl><div class="action-row">${e.role==='lobby'?action('办理入住','front'):''}${e.role==='breakfast'?action('补充早餐 ¥300','stock','breakfast'):e.role==='club'?action('补充酒廊 ¥300','stock','club'):''}${action('维护设施 ¥200','repair',e.id)}${(e.level??1)<5?action('公区升级 '+money(3500*(e.level??1)),'invest',e.id):'已达 Lv.5'}</div>`);
-
- };
- const render=()=>{const s=store.getState(),g=s.game!;
-  if(view==='entity'){focusUI.room=selected;focusUI.floor=s.entities[selected]?.floorId;if(s.entities[selected]?.kind==='facility'){focusUI.facility=selected;view='development';}}
-  const screen=focusScreen(s,view,focusUI);if(screen){show('HOTEL MANAGEMENT',screen);return;}
-  if(view==='room-data'){roomView(focusUI.room??selected);return;}
-  if(view==='brief-data'){show('MORNING DATA',briefView(s));return;}
-  if(view==='evening-data'){show('EVENING DATA',eveningView(s));return;}
-  if(view==='hub'){show('MANAGEMENT · 经营',hubView(s));return;}
-  if(view==='worklist'){show('ACTION CENTER · 现场事项',`<h2>按轻重缓急处理</h2>${workList(s,Number.MAX_SAFE_INTEGER)}`);return;}
-  if(view==='teaching'){show('DEPARTMENT HEAD · 带教',teachingView(s)||'<h2>三日带教已结束</h2><p>各部门仍会根据现场情况给你建议。</p>');return;}
-  if(view==='entity'){roomView(selected);return;}
-  if(view==='evening'){show('EVENING REVIEW',eveningView(s));return;}
-  if(view==='brief'){show('MORNING BRIEF',briefView(s).replace('<details class="manager-card">',workList(s,2)+'<details class="manager-card">'));return;}
-  if(view==='bookings'){show('RESERVATIONS',bookingsView(s));return;}
-  if(view==='history'){show('GUEST HISTORY',historyView(s));return;}
-  if(view==='front')show('FRONT OFFICE',frontView(s));
-  else if(view==='hotel-archive')show('YOUR HOTEL',`<h2>酒店 · ${rooms(s).length} 间客房</h2><details class="manager-card"><summary>扩建与投资 · 增加容量</summary><p>扩建花钱并封闭施工 240 分钟；新楼层竣工后需手动设置房型。</p>${action('加高一层 · 3 个空位 '+money(10000+5000*(s.floors.filter(f=>f.role==='guest').length-3)),'expand')}<div class="action-row"><button class="game-action" data-open="development">投资与主题活动 ›</button></div></details><details class="manager-card"><summary>楼层导航</summary><div class="floor-list">${[...s.floors].reverse().map(f=>`<button data-floor="${f.id}"><b>${f.label}</b><span>${f.name}</span><small>定位楼层 ›</small></button>`).join('')}</div></details><div class="floor-tabs" aria-label="客房楼层">${s.floors.filter(f=>f.role==='guest').map(f=>`<button class="game-action" data-room-floor="${f.id}" aria-pressed="${(hotelFloor||s.floors.find(f=>f.role==='guest')?.id)===f.id}">${f.label}</button>`).join('')}</div><div class="room-grid">${roomSlots(s).filter(r=>r.floorId===(hotelFloor||s.floors.find(f=>f.role==='guest')?.id)).map(r=>`<button data-entity="${r.id}">${r.status==='unbuilt'?'＋':r.number}<small>${r.status==='unbuilt'?r.number+' · 设置房型':roomName(r)+' · '+ROOM_STATUS[r.status]}</small></button>`).join('')}</div>`);
-  else if(view==='operations-data')show('DEPARTMENT HEADS',`<h2>找主管商量</h2><div class="action-row"><button class="game-action" data-open="brief">安排今天</button><button class="game-action" data-open="evening">回看经营</button><button class="game-action" data-open="development">考虑投资</button></div><details class="manager-card"><summary>餐台备货 · 早餐 ${g.stock} / 酒廊 ${g.clubStock}</summary><p>库存不足先补货，每次增加 50 份，支出 ¥300。</p><div class="action-row">${action('补早餐 · ¥300','stock','breakfast')}${action('补酒廊 · ¥300','stock','club')}</div></details><details class="manager-card"><summary>团队授权 · ${Object.values(g.managers).filter(v=>v>0).length} / 5 位主管在岗</summary><p>减少亲自处理的次数，同时承担每日工资。</p>${Object.entries(DEPARTMENTS).map(([id,name])=>managerPreview(s,id as Department,name,demand(s)>1.1?750:590)).join('')}</details><details class="manager-card"><summary>房价与客源 · 当前 ¥${g.price}</summary><p>降价争取 Walk-in，提价增加单晚收益但可能减少客流。</p><div class="action-row">${action('¥720 · 争取入住','price','','720')}${action('¥850 · 提高单价','price','','850')}</div><details class="manager-card"><summary>精确定价与酒店定位</summary><label>挂牌价 <input id="price-input" type="number" min="350" max="1800" value="${g.price}"></label>${action('应用价格','price')}<div class="action-row">${action('商务','position','','business')}${action('度假','position','','resort')}${action('城市混合','position','','urban')}</div></details></details><details class="manager-card"><summary>预订、客史与经营档案</summary><div class="action-row"><button class="game-action" data-open="bookings">今日预订</button><button class="game-action" data-open="history">客史</button>${action('最近日结','report')}<button class="game-action" data-open="log">运营日志</button>${action('导出存档','export')}${action('新开存档','reset')}</div><small>自动保存在当前浏览器。非官方粉丝游戏，与 Hyatt 无隶属关系。</small></details>`);
-  else if(view==='development-data'){const d=g.development;show('GROW YOUR HOTEL',`<h2>投资与新体验</h2><p>扩建之外，让每一层创造更多收入。客房可装修至 5 级，每级增加基础房价的 10%，装修前可查看回本预估。</p><details class="manager-card"><summary>三日营销 · 获客还是浪费？</summary><p>客流 +35%；推广持续到第 ${d?.campaignUntil??0} 天。满房时请谨慎投放。</p>${d&&d.campaignUntil>=g.day?'<small>推广进行中</small>':action('投放推广 ¥2,200','campaign')}</details><details class="manager-card"><summary>今日主题活动</summary><p>每天一场，筹备两小时。参与人数取决于在住人数、公区容量与经营条件；成本可能高于收入。</p>${d?.activity?`<blockquote>正在筹备：${ACTIVITIES[d.activity.id as keyof typeof ACTIVITIES].name} · 还需 ${Math.max(0,d.activity.ends-g.day*1440-g.minute)} 分钟</blockquote>`:''}${Object.entries(ACTIVITIES).map(([id,a])=>`<section class="guest-card"><strong>${a.name}</strong><p>${a.description} 每人消费 ¥${a.fee} 起。</p>${d?.activityDay===g.day?'<small>今日档期已使用</small>':action('安排 '+money(a.cost),'activity',id)}</section>`).join('')}</details><details class="manager-card"><summary>公共空间投资</summary>${!s.entities['facility-spa']?action('开设 Spa 水疗 ¥12,000','build-spa'):''}<p>每级增加 4 人容量，餐饮、健身与屋顶消费单价提升 20%，住客体验更好；大堂升级增加等候耐心。</p>${Object.values(s.entities).filter(e=>e.kind==='facility').map(f=>`<section class="guest-card"><strong>${esc(f.name)} · Lv.${f.level??1}</strong><p>容量 ${f.capacity} 人 · 维护 ${Math.round(f.maintenance)}%</p>${(f.level??1)<5?action('升级 '+money(3500*(f.level??1)),'invest',f.id):'<small>满级</small>'}</section>`).join('')}</details><button class="game-action" data-open="hotel">装修客房 / 继续扩建 ›</button><button class="game-action" data-open="operations">培训部门负责人 ›</button>`);}
-  else if(view==='score'){const rating=scores(s);show('HOTEL SCORE',`<h2>酒店经营评分</h2><div class="score-hero"><div class="score-ring" style="--score:${rating.total}%"><strong>${rating.total}<small>/ 100</small></strong></div><div><strong>${rating.total>=90?'卓越酒店':rating.total>=75?'稳健经营':rating.total>=60?'成长中':'需要改善'}</strong><p>四项指标等权平均，实时更新。</p></div></div>${rating.parts.map(p=>`<div class="score-part"><span>${p.name}</span><b>${p.value}</b><progress max="100" value="${p.value}" aria-label="${p.name}"></progress></div>`).join('')}<p>及时处理诉求提升口碑；补货与活动改善体验；清洁维修改善房务；收支表现影响业主信心。</p><details class="manager-card"><summary>最近 7 天评分</summary><div class="revenue-trend">${(g.development?.scores??[]).slice(-7).map(p=>`<div><small>${p.value} 分</small><i style="height:${p.value*.65}px"></i><small>D${p.day}</small></div>`).join('')||'<p>首次日结后记录评分趋势。</p>'}</div></details><button class="game-action" data-open="tasks">查看任务与里程碑 ›</button>`);}
-  else if(view==='tasks-data')show('MISSIONS',`<h2>今天的目标</h2>${teachingView(s)}<p>支线奖金按进度分段到账，完成后领取尾款。单任务上限不变；长期里程碑不会随交班重置。</p>${g.tasks.map(t=>`<section class="guest-card"><strong>${esc(t.title)}</strong><p>${t.progress} / ${t.goal} · 奖金 ${money(t.reward)} · 已到账 ${money(t.paid??0)}</p><progress max="${t.goal}" value="${t.progress}" aria-label="${esc(t.title)}"></progress>${t.claimed?'<small>已领取</small>':t.progress>=t.goal?action('领取尾款 '+money(Math.max(0,t.reward-(t.paid??0))),'claim',t.id):`<button class="game-action" data-open="${t.target}">去完成 ›</button>`}</section>`).join('')}<details class="manager-card"><summary>长期里程碑与奖励</summary><p>持续接待住客、举办活动和建设酒店，解锁长期奖励。</p>${milestones(s).map(t=>`<section class="guest-card"><strong>${t.title}</strong><p>${Math.min(t.progress,t.goal)} / ${t.goal} · ${money(t.reward)}</p><progress max="${t.goal}" value="${Math.min(t.progress,t.goal)}" aria-label="${t.title}"></progress>${t.claimed?'<small>已领取</small>':t.progress>=t.goal?action('领取里程碑奖励','claim-career',t.id):'<small>持续经营以解锁</small>'}</section>`).join('')}</details>`);
-  else if(view==='events')show('DUTY MANAGER',`<h2>待办 · ${s.guests.filter(v=>v.challenge&&!v.challenge.resolved&&!v.departing).length+g.events.length+s.guests.filter(v=>v.late==='pending').length}</h2>${challengeCards(s)}${s.guests.filter(v=>v.late==='pending'&&!v.departing).map(v=>personCard(v,`<strong class="request-title">${lateLabel(v)} 请求</strong><p>希望${v.checkoutDay===g.day?'今天':'明天'} ${lateHour(v)}:00 退房。比 11:00 常规退房晚 ${lateHour(v)-11} 小时，之后才可翻房。</p><p class="trade-off">同意：客人更满意，房间晚些可卖。协商：提前翻房，但会影响体验。</p><details class="manager-card"><summary>查看指标影响</summary><p>同意：体验 +4、口碑 +1、业主 -1；协商：体验 -3、口碑 -1、业主 +1。</p></details>${action('同意 '+lateLabel(v),'late',v.id,'honor')}${action('协商 '+fallbackHour(v)+':00','late',v.id,'deny')}`)).join('')}${g.events.map(e=>`<section class="guest-card"><strong>${esc(e.title)}</strong><p>剩余 ${Math.max(0,e.expires-g.day*1440-g.minute)} 游戏分钟</p><div class="action-row"><button class="game-action" data-entity="${e.target}">定位现场</button>${action('亲自协调 ¥350','resolve',String(e.id),'gm')}${action('交给主管 ¥150','resolve',String(e.id),'sop')}</div></section>`).join('')||(s.guests.some(v=>!v.departing&&(v.late==='pending'||v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved&&v.roomId))?'':'<p class="empty">目前没有异常，关上面板继续经营。</p>')}${queue(s).length?`<button class="primary" data-open="front">接待 ${queue(s).length} 位排队住客</button>`:''}`);
-  else if(view==='log')show('HOTEL JOURNAL',`<h2>运营日志</h2><div class="filter-row">${['全部','入住','客诉','房态','部门','收益','升级'].map(c=>`<button class="${c===logFilter?'active':''}" data-filter="${c}">${c}</button>`).join('')}</div><div class="log-list">${[...g.logs].reverse().filter(l=>logFilter==='全部'||l.category===logFilter).map(l=>`<article><small>Day ${l.day} ${clock(l.minute)} · ${l.category}</small><p>${esc(l.text)}</p>${l.target?`<button data-entity="${esc(l.target)}">查看现场 ›</button>`:''}</article>`).join('')}</div>`);
-  else if(view==='report-data'){const r=g.reports.at(-1);show('DAILY REVIEW',r?`<h2>Day ${r.day} · 日结</h2><button class="game-action" data-open="score">经营评分 ${r.score??scores(s).total} / 100 ›</button><p class="result-hero">今日净额 ${money(r.revenue-r.expense)}</p><details class="manager-card"><summary>收支明细、ADR 与预测对账</summary><dl><div><dt>收入 / 成本</dt><dd>${money(r.revenue)} / ${money(r.expense)}</dd></div><div><dt>ADR / RevPAR</dt><dd>${money(r.adr)} / ${money(r.revpar)}</dd></div><div><dt>入住率 / 房态损失</dt><dd>${r.occupancy}% / ${r.lost}%</dd></div><div><dt>升套 / 客诉</dt><dd>${r.upgrades} / ${r.complaints}</dd></div></dl><h3>晨会预测对账</h3><p>预计晚间入住率 ${r.forecastOccupancy??'—'}% → 实际 ${r.actualEveningOccupancy??'—'}% · 未兑现预订 ${r.bookingsLost??0} 单</p><h3>最近 7 天收入</h3><div class="revenue-trend">${g.reports.slice(-7).map(d=>`<div><small>${money(d.revenue)}</small><i style="height:${Math.max(3,Math.round(d.revenue/Math.max(1,...g.reports.slice(-7).map(v=>v.revenue))*65))}px"></i><small>D${d.day}</small></div>`).join('')}</div></details><blockquote>${esc(r.recommendation)}</blockquote>${g.reportOpen?action('开始下一天','continue'):''}`:'<h2>第一天还没结束</h2><p>房费于午夜统一结算。关闭面板继续经营。</p>');}
- };
- root.addEventListener('change',ev=>{const target=ev.target as HTMLSelectElement;if(target.id==='hotel-floor-select'){hotelFloor=target.value;render();}});
- root.addEventListener('click',ev=>{const b=(ev.target as HTMLElement).closest<HTMLElement>('button');if(!b)return;
+ const navigate=(view:string,rootMenu=false)=>{checkpoint();nav.visit(view,rootMenu);feedback.hidden=true;render();};
+ const openEntity=(id:string)=>{const s=store.getState(),e=s.entities[id];if(!e)return;checkpoint();nav.visit(e.kind==='room'?'hotel':'development');const u=nav.current.selection;nav.current.selected=id;if(e.kind==='room'){u.room=id;u.floor=e.floorId;}else u.facility=id;feedback.hidden=true;render();};
+ const notify=()=>{feedback.textContent=store.getState().game!.notice;feedback.hidden=!feedback.textContent;};
+ const close=()=>{checkpoint();nav.clear();dialog.close();feedback.hidden=true;const g=store.getState().game!;if(g.evening?.open)store.dispatch({type:'evening-close'});if(g.operations?.briefOpen)store.dispatch({type:'brief-start'});store.select(null);updateNav();if(previousFocus?.isConnected)previousFocus.focus();};
+ const dismiss=()=>{if(store.getState().game!.reportOpen&&nav.current.view==='report'){store.dispatch({type:'continue'});navigate('brief',true);return;}close();};
+ $('.preview-badge').outerHTML='<button class="preview-badge score-button" data-open="score" aria-label="查看经营评分"></button>';$('.world-caption').textContent='轻点空间 · 查看问题与决定';$('.property-name small').id='game-time';$('.today-hint').setAttribute('data-open','tasks');$('.event-strip').removeAttribute('data-focus');$('.event-strip').setAttribute('data-open','events');$('.speed-control').insertAdjacentHTML('beforeend',btn('Ⅱ','pause'));
+ let backdropDown=false;const outside=(x:number,y:number)=>{const r=dialog.getBoundingClientRect();return x<r.left||x>r.right||y<r.top||y>r.bottom;};
+ dialog.addEventListener('pointerdown',e=>{backdropDown=e.target===dialog&&outside(e.clientX,e.clientY);});dialog.addEventListener('click',e=>{if(backdropDown&&e.target===dialog&&outside(e.clientX,e.clientY))dismiss();backdropDown=false;});dialog.addEventListener('cancel',e=>{e.preventDefault();dismiss();});
+ root.addEventListener('click',ev=>{
+  const b=(ev.target as Element).closest<HTMLButtonElement>('button');if(!b||b.disabled)return;
   if(b.matches('.close-sheet')){dismiss();return;}
-  if(b.dataset.focusKey){const k=b.dataset.focusKey,v=b.dataset.focusValue??'';if(['roomPage','eventPage','guestPage','taskPage'].includes(k)){(focusUI as unknown as Record<string,unknown>)[k]=Math.max(0,Number(v)||0);if(k==='eventPage')focusUI.event=undefined;if(k==='guestPage'){focusUI.guest=undefined;focusUI.roomPage=0;}}else if(['floor','room','department','facility','meeting','category','bed','activity'].includes(k)){(focusUI as unknown as Record<string,unknown>)[k]=v;if(k==='floor'){focusUI.room=undefined;view='hotel';}if(k==='room'){selected=v;view='hotel';}}render();return;}
-  if(b.dataset.menuBack){const previous=history.pop();if(previous){goingBack=true;view=previous.view;selected=previous.selected;feedback.hidden=true;render();}return;}
-  if(b.dataset.open){if(b.dataset.rootMenu){remember();shown=null;history.length=0;selected='';}view=b.dataset.open;if(b.dataset.assignRoom){focusUI.room=b.dataset.assignRoom;focusUI.roomPage=0;}if(b.dataset.guest){focusUI.guest=b.dataset.guest;focusUI.event=b.dataset.guest;focusUI.roomPage=0;}feedback.hidden=true;render();if(b.dataset.guest){const id=b.dataset.guest;const target=document.getElementById('assign-'+id)??[...content.querySelectorAll<HTMLElement>('[data-id]')].find(v=>v.dataset.id===id);if(target){let parent=target.parentElement;while(parent&&parent!==content){if(parent instanceof HTMLDetailsElement)parent.open=true;parent=parent.parentElement;}target.closest('.person-card')?.scrollIntoView({block:'nearest'});target.focus({preventScroll:true});}}return;}
-  if(b.dataset.reveal){const d=[...content.querySelectorAll<HTMLDetailsElement>('details')].find(v=>v.querySelector('summary')?.textContent?.startsWith('今日决策'));if(d){d.open=true;d.scrollIntoView({block:'start'});}return;}
+  if(b.dataset.menuBack){checkpoint();nav.back();feedback.hidden=true;render();return;}
+  const u=nav.current.selection;
+  if(b.dataset.focusKey){const key=b.dataset.focusKey,value=b.dataset.focusValue??'';if(!(key in u)&&!['room','floor','department','facility','guest','event','profile'].includes(key))return;
+   (u as unknown as Record<string,unknown>)[key]=key.endsWith('Page')?Math.max(0,Number(value)||0):value;
+   if(key==='floor')u.room=undefined;if(key==='guestPage'){u.guest=undefined;u.roomPage=0;}if(key==='eventPage')u.event=undefined;if(key==='profilePage')u.profile=undefined;if(key==='archiveTab')u.logPage=0;
+   nav.current.scroll=0;feedback.hidden=true;render();return;
+  }
+  if(b.dataset.open){checkpoint();const sourceRoom=nav.current.selection.room;nav.visit(b.dataset.open,!!b.dataset.rootMenu);if(b.dataset.open==='room-data'&&sourceRoom)nav.current.selection.room=sourceRoom;const next=nav.current.selection;
+   if(b.dataset.assignRoom){next.room=b.dataset.assignRoom;next.roomPage=0;}
+   if(b.dataset.guest){next.guest=b.dataset.guest;next.event=b.dataset.guest;next.roomPage=0;}
+   if(b.dataset.profile){next.profile=b.dataset.profile;next.logPage=0;}
+   feedback.hidden=true;render();return;
+  }
+  if(b.dataset.entity){openEntity(b.dataset.entity);focusFloor(store.getState().entities[b.dataset.entity].floorId);return;}
+  if(b.dataset.floor){close();store.focusFloor(b.dataset.floor);focusFloor(b.dataset.floor);return;}
   if(b.dataset.speed){store.setSpeed(Number(b.dataset.speed) as 1|2|4);return;}
-  if(b.dataset.entity){selected=b.dataset.entity;const e=store.getState().entities[selected];if(e)focusFloor(e.floorId);view='entity';store.select(selected);render();return;}
-  if(b.dataset.floor){const id=b.dataset.floor;close();store.focusFloor(id);focusFloor(id);return;}
-  if(b.dataset.roomFloor){hotelFloor=b.dataset.roomFloor;render();return;}
-  if(b.dataset.filter){logFilter=b.dataset.filter;render();return;}
   if(b.matches('.weather')){const modes=['dusk','night','day'] as const;store.setAtmosphere(modes[(modes.indexOf(store.getState().atmosphere)+1)%3]);return;}
   const type=b.dataset.action;if(!type)return;
-  if(['front','report'].includes(type)){view=type;render();return;}
   if(type==='reset'){document.dispatchEvent(new Event('new-game'));return;}
   if(type==='export'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(store.getState())],{type:'application/json'}));a.download='jinwan-v8-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);return;}
-  const c:Command={type:type as Command['type'],id:b.dataset.id,value:b.dataset.value};
-  if(type==='checkin')c.roomId=b.dataset.room;
+  const c:Command={type:type as Command['type'],id:b.dataset.id,value:b.dataset.value};if(type==='checkin')c.roomId=b.dataset.room;
   if(type==='price')c.value=b.dataset.value||Number(root.querySelector<HTMLInputElement>('#price-input')?.value);
-  if(type==='position')c.value=b.dataset.value||root.querySelector<HTMLSelectElement>('#position-input')?.value;
-  const openDetails=[...content.querySelectorAll<HTMLDetailsElement>('details[open]')].map(d=>d.querySelector('summary')?.textContent);const previousView=view;const previousEffect=store.getState().game!.upgradeEffect?.id;store.dispatch(c);if(store.getState().game!.upgradeEffect?.id!==previousEffect){const id=store.getState().game!.upgradeEffect!.entityId;close();focusFloor(store.getState().entities[id].floorId);return;}if(type==='brief-start'||type==='evening-close')close();else if(type==='continue'){view='brief';render();}else if(view){if(type==='checkin'&&store.getState().guests.find(v=>v.id===c.id)?.roomId&&store.getState().guests.find(v=>v.id===c.id)&&(store.getState().guests.find(v=>v.id===c.id)?.challenge||store.getState().guests.find(v=>v.id===c.id)?.occasion)){view='events';dialog.scrollTop=0;}render();if(view===previousView)content.querySelectorAll<HTMLDetailsElement>('details').forEach(d=>{if(openDetails.includes(d.querySelector('summary')?.textContent))d.open=true;});notify();}
+  checkpoint();store.dispatch(c);
+  if(type==='brief-start'||type==='evening-close'){close();return;}
+  if(type==='continue'){navigate('brief',true);return;}
+  if(type==='checkin'){const v=store.getState().guests.find(v=>v.id===c.id);if(v?.roomId&&(v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved)){nav.visit('events');nav.current.selection.event=v.id;}}
+  if(dialog.open){render();notify();}
  });
- dialog.addEventListener('cancel',ev=>{ev.preventDefault();dismiss();});
  let lastSelection:string|null=null,lastFloors='',lastNotice='',lastReportDay=0,lastBriefDay=0,lastEveningDay=0,lastGoalState='';
- const update=()=>{const s=store.getState(),g=s.game!;
-  $('.score-button').innerHTML=`<i style="--score:${scores(s).total}%"></i> ${scores(s).total} 分 ›`;$('#cash').textContent=money(s.metrics.cash);$('#reputation').textContent=String(s.metrics.reputation);$('#owner').textContent=String(s.metrics.owner);$('#suite-count').textContent=availableSuites(s)+' 间';$('#game-time').textContent=`${weekday(g.day)} · Day ${g.day} ${clock(g.minute)}${g.paused?' · 暂停':''}`;
-  $('.today-hint span:nth-child(2)').textContent=g.tasks.find(t=>!t.claimed)?.title??'今日任务全部完成';$('#task-count').textContent=g.tasks.filter(t=>t.claimed).length+'/'+g.tasks.length;$('#occupancy').textContent=`${occupiedRooms(s)}/${rooms(s).length} 在住 · 收入 ${money(g.revenue)}`;
-  const lesson=teachingSteps(s),nextLesson=lesson.find(v=>!v.done);if(nextLesson){$('.today-hint span:nth-child(2)').textContent='Day '+g.day+' · '+nextLesson.title;$('#task-count').textContent=lesson.filter(v=>v.done).length+'/3';$('.today-hint').setAttribute('data-open','teaching');}else $('.today-hint').setAttribute('data-open','tasks');
-  const goal=campaignGoal(s),campaign=g.campaign;if(goal){$('.today-hint').setAttribute('data-open','tasks');$('.today-hint span:nth-child(2)').textContent=campaign?.result?(campaign.result.passed?'检验通过 · 开启下一阶段':'检验待改善 · 免费重约'):campaign?.inspection?(campaign.inspection.phase==='visiting'?'现场体验中 · 等待回访':goal.exam+' · 已预约'):goal.ready?'目标达成 · 预约'+goal.exam:goal.action;$('#task-count').textContent=goal.progress+'/'+goal.goal;}
-  const goalState=JSON.stringify([campaign?.chapter,goal?.progress,campaign?.result,campaign?.inspection?.phase,campaign?.inspection?.prepared,Math.ceil(((campaign?.inspection?.due??0)-g.day*1440-g.minute)/10)]);if(view==='tasks'&&dialog.open&&lastGoalState!==goalState)render();lastGoalState=goalState;
+ const update=()=>{
+  const s=store.getState(),g=s.game!;
+  $('.score-button').innerHTML=`<i style="--score:${scores(s).total}%"></i> ${scores(s).total} 分 ›`;$('#cash').textContent=money(s.metrics.cash);$('#reputation').textContent=String(s.metrics.reputation);$('#owner').textContent=String(s.metrics.owner);$('#suite-count').textContent=availableSuites(s)+' 间';$('#game-time').textContent=`${weekday(g.day)} · Day ${g.day} ${clock(g.minute)}${g.paused?' · 暂停':''}`;$('#occupancy').textContent=`${occupiedRooms(s)}/${rooms(s).length} 在住 · 收入 ${money(g.revenue)}`;
+  const goal=campaignGoal(s),campaign=g.campaign;$('.today-hint').setAttribute('data-open','tasks');$('.today-hint span:nth-child(2)').textContent=goal?(campaign?.result?(campaign.result.passed?'检验通过 · 开启下一阶段':'检验待改善 · 免费重约'):campaign?.inspection?(campaign.inspection.phase==='visiting'?'现场体验中 · 等待回访':goal.exam+' · 已预约'):goal.ready?'目标达成 · 预约'+goal.exam:goal.action):'主线完成 · 自由经营';$('#task-count').textContent=goal?goal.progress+'/'+goal.goal:'5 / 5';
+  const goalState=JSON.stringify([campaign?.chapter,goal?.progress,campaign?.result,campaign?.inspection?.phase,campaign?.inspection?.prepared]);if(dialog.open&&nav.current.view==='tasks'&&lastGoalState!==goalState)render();lastGoalState=goalState;
   if(g.rewardBeat&&g.rewardBeat.id!==lastReward){lastReward=g.rewardBeat.id;rewardToast.textContent='＋'+money(g.rewardBeat.amount)+' · '+g.rewardBeat.text;rewardToast.classList.remove('show');void rewardToast.offsetWidth;rewardToast.classList.add('show');}
-  $('.event-strip span').textContent=(s.guests.some(v=>v.occasion&&!v.occasion.resolved&&!v.departing&&v.roomId)?'住客今天过生日 · 礼遇待决定':undefined)??(s.guests.some(v=>v.challenge&&!v.challenge.resolved&&!v.departing)?'特别住客需要你的判断':undefined)??(s.guests.some(v=>v.late==='pending'&&!v.departing)?'会员晚退请求待你确认':undefined)??g.events[0]?.title??(queue(s).length?`${queue(s).length} 位住客等待办理入住`:'酒店运营平稳');$('.event-strip b').textContent=g.events.length||s.guests.some(v=>(v.late==='pending'||v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved&&v.roomId)&&!v.departing)?'处理 ›':'前台 ›';$('.event-strip').setAttribute('data-open',g.events.length||s.guests.some(v=>(v.late==='pending'||v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved&&v.roomId)&&!v.departing)?'events':'front');$('.review-strip span').textContent=g.notice;$('.weather span').textContent=g.weather==='rain'?'有雨':'晴朗';
+  const pending=g.events.length||s.guests.some(v=>!v.departing&&v.roomId&&(v.late==='pending'||v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved));$('.event-strip span').textContent=s.guests.some(v=>v.occasion&&!v.occasion.resolved&&!v.departing&&v.roomId)?'住客今天过生日 · 礼遇待决定':pending?'现场有服务诉求待处理':queue(s).length?`${queue(s).length} 位住客等待入住`:'酒店运营平稳';$('.event-strip b').textContent=pending?'处理 ›':'前台 ›';$('.event-strip').setAttribute('data-open',pending?'events':'front');$('.review-strip span').textContent=g.reportOpen?'今日已结算 · 查看日结并开始下一天':g.notice;$('.review-strip').setAttribute('data-open',g.reportOpen?'report':'log');$('.weather span').textContent=g.weather==='rain'?'有雨':'晴朗';
   root.querySelectorAll<HTMLElement>('[data-speed]').forEach(b=>{b.classList.toggle('active',Number(b.dataset.speed)===s.speed);b.setAttribute('aria-pressed',String(Number(b.dataset.speed)===s.speed));});
   const floorKey=s.floors.map(f=>f.id).join(',');if(lastFloors!==floorKey){lastFloors=floorKey;$('.floor-rail').innerHTML=[...s.floors].reverse().map(f=>`<button data-floor="${f.id}" aria-label="前往${f.label} ${f.name}">${f.label}</button>`).join('');}
-  if(s.selectedId&&s.selectedId!==lastSelection){selected=s.selectedId;view='entity';render();}lastSelection=s.selectedId;
-  if(g.operations?.briefOpen&&lastBriefDay!==g.day){lastBriefDay=g.day;view='brief';render();}
-  if(g.evening?.open&&lastEveningDay!==g.evening.day){lastEveningDay=g.evening.day;view='evening';render();dialog.scrollTop=0;}
-  if(g.reportOpen&&lastReportDay!==g.day){lastReportDay=g.day;view='report';render();}
-  if(lastNotice!==g.notice){lastNotice=g.notice;if(dialog.open)notify();}
+  if(s.selectedId&&s.selectedId!==lastSelection)openEntity(s.selectedId);lastSelection=s.selectedId;
+  if(g.operations?.briefOpen&&lastBriefDay!==g.day){lastBriefDay=g.day;navigate('brief',true);nav.current.selection.meeting='overview';render();}
+  if(g.evening?.open&&lastEveningDay!==g.evening.day){lastEveningDay=g.evening.day;navigate('evening',true);}
+  if(g.reportOpen&&lastReportDay!==g.day){lastReportDay=g.day;navigate('report',true);}
+  if(lastNotice!==g.notice){lastNotice=g.notice;}updateNav();
  };store.subscribe(update);update();
- return {stage:$('.world-stage'),setFocusHandler:(fn:(id:string)=>void)=>{focusFloor=fn;},showError:(message:string)=>show('画面暂时不可用',`<h2>请重新载入酒店</h2><p>${esc(message)}</p>`)};
+ return {stage:$('.world-stage'),setFocusHandler:(fn:(id:string)=>void)=>{focusFloor=fn;},showError:(message:string)=>{content.innerHTML=`<section class="focus-screen"><h2>画面暂时不可用</h2><div class="focus-main"><p>${esc(message)}</p></div></section>`;fixedActions.innerHTML='';dialog.showModal();}};
 }
