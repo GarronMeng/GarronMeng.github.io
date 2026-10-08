@@ -33,4 +33,4 @@ test('解除21间限制、投资活动结算、领奖幂等及旧存档兼容',a
  delete (globalThis as {localStorage?:unknown}).localStorage;
 });
 
-function playableGame(){const s=newGame();execute(s,{type:'brief-start'});return s;}
+function playableGame(){const s=newGame({guided:false});execute(s,{type:'brief-start'});return s;}

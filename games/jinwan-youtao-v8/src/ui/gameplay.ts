@@ -1,10 +1,11 @@
+import {openingGoal,viewLock,commandLock} from '../core/onboarding';
 import {MENU,menuFor,moduleLinks,PAGE_TITLES,ManagementNavigation} from './navigation';
 import {campaignGoal} from '../core/campaign';
 import {focusScreen} from './focusScreens';
 import {secondaryScreen} from './secondaryScreens';
 import {menuIcon} from './designSystem';
 import {scores} from '../core/progression';
-import {esc,money,btn} from './screenKit';
+import {esc,money,btn,frame,head,go} from './screenKit';
 import type {Store,Command} from '../state/types';
 import {rooms,availableSuites,occupiedRooms} from '../state/selectors';
 import {queue,weekday,clock} from '../core/game';
@@ -23,14 +24,19 @@ export function mountGameplay(root:HTMLElement,store:Store){
  const fixedActions=document.createElement('div');fixedActions.className='fixed-actions';content.after(fixedActions);
  const menuNav=document.createElement('nav');menuNav.className='sheet-navigation';menuNav.setAttribute('aria-label','切换管理部门');fixedActions.after(menuNav);
  const rewardToast=document.createElement('div');rewardToast.className='reward-toast';rewardToast.setAttribute('role','status');root.append(rewardToast);let lastReward=store.getState().game?.rewardBeat?.id;
- const tabs=()=>MENU.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-label="${label}" aria-pressed="${dialog.open&&menuFor(nav.current.view)===id}">${menuIcon(id)}<span>${label}</span></button>`).join('');
+ const tabs=()=>MENU.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-label="${label}" aria-pressed="${dialog.open&&menuFor(nav.current.view)===id}">${menuIcon(id)}<span>${viewLock(store.getState(),id)?'◇ ':''}${label}</span></button>`).join('');
  const updateNav=()=>{$('.main-nav').innerHTML=tabs();menuNav.innerHTML=`<div class="menu-tabs">${tabs()}</div>`;};
  const checkpoint=()=>{nav.current.scroll=content.scrollTop;};
  const render=()=>{
   const {view,selection}=nav.current,s=store.getState();
   eye.textContent=MENU.find(([id])=>id===menuFor(view))?.[1]+' / '+(PAGE_TITLES[view]??'酒店经营');back.hidden=!nav.canBack;
   moduleNav.innerHTML=moduleLinks(view).map(([id,label])=>`<button data-open="${id}" aria-current="${view===id?'page':'false'}">${label}</button>`).join('');
-  content.innerHTML=focusScreen(s,view,selection)??secondaryScreen(s,view,selection);
+  const lock=viewLock(s,view),lesson=openingGoal(s);if(view==='operations'&&lesson?.index===4)selection.department='house';if(view==='operations-data'&&lesson?.index===3)selection.archiveTab='stock';
+  content.innerHTML=lock?frame('即将解锁',head('front',lock,'先完成当前主线，功能会逐步开放。已发生的住客诉求仍可正常处理。'),go('查看当前目标','tasks')):focusScreen(s,view,selection)??secondaryScreen(s,view,selection);
+  content.querySelectorAll<HTMLButtonElement>('[data-action]').forEach(b=>{const reason=commandLock(s,{type:b.dataset.action as Command['type'],id:b.dataset.id,value:b.dataset.value});if(reason){b.disabled=true;b.title=reason;b.textContent='◇ '+b.textContent;}});
+  if(lesson?.index===4)content.querySelectorAll<HTMLElement>('[data-focus-key="department"]').forEach(b=>{if(b.dataset.focusValue!=='house')b.remove();});
+  if(lesson?.index===3)content.querySelectorAll<HTMLElement>('[data-focus-key="archiveTab"]').forEach(b=>{if(b.dataset.focusValue!=='stock')b.remove();});
+  if(lesson&&view!=='tasks'&&view!=='teaching'&&!lock){content.insertAdjacentHTML('afterbegin',`<button class="guide-ribbon" data-open="tasks"><span>开业 ${lesson.index+1}/${lesson.total}</span><strong>${esc(lesson.title)}</strong><small>查看带教 ›</small></button>`);}
   fixedActions.replaceChildren();const footer=content.querySelector('.focus-footer');if(footer)fixedActions.append(footer);
   dialog.classList.add('focus-layout','management-shell');dialog.dataset.view=view;
   // Main action is always in the same place; navigational links retain a secondary style.
@@ -74,15 +80,16 @@ export function mountGameplay(root:HTMLElement,store:Store){
   checkpoint();store.dispatch(c);
   if(type==='brief-start'||type==='evening-close'){close();return;}
   if(type==='continue'){navigate('brief',true);return;}
-  if(type==='checkin'){const v=store.getState().guests.find(v=>v.id===c.id);if(v?.roomId&&(v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved)){nav.visit('events');nav.current.selection.event=v.id;}}
+  if(type==='checkin'&&!openingGoal(store.getState())){const v=store.getState().guests.find(v=>v.id===c.id);if(v?.roomId&&(v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved)){nav.visit('events');nav.current.selection.event=v.id;}}
   if(dialog.open){render();notify();}
  });
- let lastSelection:string|null=null,lastFloors='',lastNotice='',lastReportDay=0,lastBriefDay=0,lastEveningDay=0,lastGoalState='';
+ let lastSelection:string|null=null,lastFloors='',lastNotice='',lastReportDay=0,lastBriefDay=0,lastEveningDay=0,lastGoalState='',lastOpeningStep=store.getState().game?.onboarding?.step;
  const update=()=>{
   const s=store.getState(),g=s.game!;
   $('.score-button').innerHTML=`<i style="--score:${scores(s).total}%"></i> ${scores(s).total} 分 ›`;$('#cash').textContent=money(s.metrics.cash);$('#reputation').textContent=String(s.metrics.reputation);$('#owner').textContent=String(s.metrics.owner);$('#suite-count').textContent=availableSuites(s)+' 间';$('#game-time').textContent=`${weekday(g.day)} · Day ${g.day} ${clock(g.minute)}${g.paused?' · 暂停':''}`;$('#occupancy').textContent=`${occupiedRooms(s)}/${rooms(s).length} 在住 · 收入 ${money(g.revenue)}`;
-  const goal=campaignGoal(s),campaign=g.campaign;$('.today-hint').setAttribute('data-open','tasks');$('.today-hint span:nth-child(2)').textContent=goal?(campaign?.result?(campaign.result.passed?'检验通过 · 开启下一阶段':'检验待改善 · 免费重约'):campaign?.inspection?(campaign.inspection.phase==='visiting'?'现场体验中 · 等待回访':goal.exam+' · 已预约'):goal.ready?'目标达成 · 预约'+goal.exam:goal.action):'主线完成 · 自由经营';$('#task-count').textContent=goal?goal.progress+'/'+goal.goal:'5 / 5';
-  const goalState=JSON.stringify([campaign?.chapter,goal?.progress,campaign?.result,campaign?.inspection?.phase,campaign?.inspection?.prepared]);if(dialog.open&&nav.current.view==='tasks'&&lastGoalState!==goalState)render();lastGoalState=goalState;
+  const lesson=openingGoal(s),goal=campaignGoal(s),campaign=g.campaign;$('.today-hint').setAttribute('data-open','tasks');$('.today-hint span:nth-child(2)').textContent=lesson?lesson.title:goal?(campaign?.result?(campaign.result.passed?'检验通过 · 开启下一阶段':'检验待改善 · 免费重约'):campaign?.inspection?(campaign.inspection.phase==='visiting'?'现场体验中 · 等待回访':goal.exam+' · 已预约'):goal.ready?'目标达成 · 预约'+goal.exam:goal.action):'主线完成 · 自由经营';$('#task-count').textContent=lesson?(lesson.index+1)+' / '+lesson.total:goal?goal.progress+'/'+goal.goal:'5 / 5';
+  const goalState=JSON.stringify([g.onboarding?.step,campaign?.chapter,goal?.progress,campaign?.result,campaign?.inspection?.phase,campaign?.inspection?.prepared]);if(dialog.open&&nav.current.view==='tasks'&&lastGoalState!==goalState)render();lastGoalState=goalState;
+  if(g.onboarding?.step!==lastOpeningStep){lastOpeningStep=g.onboarding?.step;if(dialog.open)render();rewardToast.textContent=g.notice;rewardToast.classList.remove('show');void rewardToast.offsetWidth;rewardToast.classList.add('show');}
   if(g.rewardBeat&&g.rewardBeat.id!==lastReward){lastReward=g.rewardBeat.id;rewardToast.textContent='＋'+money(g.rewardBeat.amount)+' · '+g.rewardBeat.text;rewardToast.classList.remove('show');void rewardToast.offsetWidth;rewardToast.classList.add('show');}
   const pending=g.events.length||s.guests.some(v=>!v.departing&&v.roomId&&(v.late==='pending'||v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved));$('.event-strip span').textContent=s.guests.some(v=>v.occasion&&!v.occasion.resolved&&!v.departing&&v.roomId)?'住客今天过生日 · 礼遇待决定':pending?'现场有服务诉求待处理':queue(s).length?`${queue(s).length} 位住客等待入住`:'酒店运营平稳';$('.event-strip b').textContent=pending?'处理 ›':'前台 ›';$('.event-strip').setAttribute('data-open',pending?'events':'front');$('.review-strip span').textContent=g.reportOpen?'今日已结算 · 查看日结并开始下一天':g.notice;$('.review-strip').setAttribute('data-open',g.reportOpen?'report':'log');$('.weather span').textContent=g.weather==='rain'?'有雨':'晴朗';
   root.querySelectorAll<HTMLElement>('[data-speed]').forEach(b=>{b.classList.toggle('active',Number(b.dataset.speed)===s.speed);b.setAttribute('aria-pressed',String(Number(b.dataset.speed)===s.speed));});

@@ -1,3 +1,4 @@
+import {openingGoal} from './onboarding';
 import type {PreviewState,Command,DailyPlan,Department} from '../state/types';
 import {rooms} from '../state/selectors';
 import {forecast,operationsLog} from './operations';
@@ -31,6 +32,7 @@ export function nextDecision(s:Readonly<PreviewState>):{title:string;why:string;
  const g=s.game!,rs=rooms(s),waiting=s.guests.filter(v=>!v.staff&&!v.roomId&&!v.departing),dirty=rs.find(r=>r.status==='dirty'),requests=s.guests.filter(v=>!v.departing&&v.roomId&&(v.late==='pending'||v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved));
  if(g.reportOpen)return {title:'把今天的结果带进明天',why:'房费已结算，先看判断是否奏效，再安排下一天。',target:'report',department:'revenue'};
  if(g.operations?.briefOpen)return {title:'先确定今天的经营方向',why:'比较接客、体验与利润的取舍，确认后开始营业。',target:'brief',department:'revenue'};
+ const lesson=openingGoal(s);if(lesson)return {title:lesson.title,why:lesson.why,target:lesson.target,department:lesson.department};
  if(g.events.length)return {title:g.events[0].title,why:'现场问题有处理时限，先避免小问题变成客诉。',target:'events',department:'front'};
  if(waiting.length)return {title:'接住 '+waiting.length+' 位到店客人',why:'先办理入住，再兑现生日、晚退或会员安排。',target:'front',department:'front'};
  if(dirty)return {title:dirty.number+' 翻房后才能再次出售',why:'先让现有客房创造收入，再花钱扩大容量。',target:'hotel',department:'house',entity:dirty.id};
