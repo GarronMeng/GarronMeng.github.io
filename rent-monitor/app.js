@@ -145,35 +145,58 @@ function renderDistrictSections(items){
 }
 
 function render(){
-  if(!state.data)return;
-  const all=state.data.listings.filter(x=>tier(x)!=='D');
-  renderPrices(all);
-  const matching=sort(all.filter(passes));
-  const grouped=state.filters.layout?sort(layoutGroups(matching)):matching;
-  const visible=state.district==='all'?grouped:grouped.filter(x=>x.district===state.district);
-  const isReference=false;
-  const areaBox=document.querySelector('#districtNavigator');
-  if(areaBox)areaBox.hidden=isReference;
-  const filtersBox=document.querySelector('#districtFilters');
-  if(filtersBox&&!isReference)filtersBox.innerHTML=districtNav(all,grouped);
-  const results=document.querySelector('#listings');
-  if(results){
-    results.classList.toggle('by-district',!isReference);
-    results.innerHTML=renderDistrictSections(visible)
-  }
-  document.querySelector('#empty').hidden=visible.length>0;
-  document.querySelector('#resultMeta').textContent=
-    (state.district==='all'?'全部地区':state.district)+' · '+visible.length+' '+(state.filters.layout?'户型组':'广告组')+
-    ' · 同规格收起 '+(state.data.meta?.grouped_ad_count||0)+' 条广告';
-  const scoped=state.district==='all'?all:all.filter(x=>x.district===state.district);
-  document.querySelector('#coreCount').textContent=scoped.filter(x=>tier(x)==='A').length;
-  document.querySelector('#tradeoffCount').textContent=scoped.filter(x=>tier(x)==='B').length;
-  document.querySelector('#watchCount').textContent=scoped.filter(watch).length;
-  document.querySelector('#newCount').textContent=scoped.filter(x=>x.is_new||x.price_drop>0).length;
-  const label=state.view==='compact'?'紧凑户型':state.view==='core'?'A 核心候选':state.view==='tradeoff'?'B 权衡盘':state.view==='watch'?'重点屋苑':state.view==='new'?'新盘 / 降价':'全部可权衡候选';
-  document.querySelector('#resultTitle').textContent=state.district==='all'?label:label+' · '+state.district;
-  document.querySelector('#updatedAt').textContent=state.data.meta?.updated_at?'更新 '+date(state.data.meta.updated_at):'等待首次刷新';
-  document.querySelector('#refreshStatus').textContent=state.data.meta?.status==='ok'?'监控正常':state.data.meta?.status==='partial'?'部分来源异常':'等待刷新'
+ if(!state.data)return;
+ const all=state.data.listings.filter(x=>tier(x)!=='D');
+ renderPrices(all);
+ const matching=sort(all.filter(passes));
+ const groups=state.filters.layout?sort(layoutGroups(matching)):matching;
+ const visible=state.district==='all'?groups:groups.filter(x=>x.district===state.district);
+ const mode=state.display==='district';
+ const filtersBox=document.querySelector('#districtFilters');
+ if(filtersBox)filtersBox.innerHTML=districtNav(all,groups);
+ const results=document.querySelector('#listings');
+ results.classList.toggle('by-district',mode);
+ results.classList.toggle('flat-results',!mode);
+ results.innerHTML=mode?renderDistrictSections(visible):visible.map(card).join('');
+ document.querySelector('#empty').hidden=visible.length>0;
+ document.querySelector('#resultMeta').textContent=
+   (state.district==='all'?'全部地区':state.district)+' · '+visible.length+' '+(state.filters.layout?'户型组':'广告组')+
+   ' · 同规格收起 '+(state.data.meta?.grouped_ad_count||0)+' 条广告';
+ const scoped=state.district==='all'?all:all.filter(x=>x.district===state.district);
+ document.querySelector('#coreCount').textContent=scoped.filter(x=>tier(x)==='A').length;
+ document.querySelector('#tradeoffCount').textContent=scoped.filter(x=>tier(x)==='B').length;
+ document.querySelector('#watchCount').textContent=scoped.filter(watch).length;
+ document.querySelector('#newCount').textContent=scoped.filter(x=>x.is_new||x.price_drop>0).length;
+ const label=state.view==='compact'?'紧凑户型':state.view==='core'?'A 核心候选':state.view==='tradeoff'?'B 权衡盘':state.view==='watch'?'重点屋苑':state.view==='new'?'新盘 / 降价':'全部可权衡候选';
+ document.querySelector('#resultTitle').textContent=state.district==='all'?label:label+' · '+state.district;
+ document.querySelector('#updatedAt').textContent=state.data.meta?.updated_at?'更新 '+date(state.data.meta.updated_at):'等待首次刷新';
+ document.querySelector('#refreshStatus').textContent=state.data.meta?.status==='ok'?'监控正常':state.data.meta?.status==='partial'?'部分来源异常':'等待刷新';
+ for(const [id,v] of [['#sortSelect',state.sort],['#displaySelect',state.display],['#walkSelect',state.filters.walkMax],['#areaSelect',state.filters.areaMin],['#roomsSelect',state.filters.rooms]]){
+   const el=document.querySelector(id);if(el)el.value=v
+ }
+ document.querySelectorAll('.chip[data-filter]').forEach(el=>el.classList.toggle('active',Boolean(state.filters[el.dataset.filter])));
+ const note=document.querySelector('#sortNote');
+ if(note)note.textContent=state.sort==='walk_asc'||state.sort==='walk_desc'
+  ?'距离指广告标注的「步行至港铁站分钟数」，并非实际测量或到其他目的地的时间；未核实的距离始终排后。'
+  :mode&&state.sort!=='score'?'当前按地区分组：'+SORTS[state.sort]+'仅在每个地区内生效。切换「全区平铺」可跨地区比较。'
+  :'排序依据：'+(SORTS[state.sort]||'综合推荐')+'。户型合并时会选符合当前排序的代表广告，其他报价可展开。'
 }
 async function boot(){try{if(typeof window!=='undefined'){const area=new URLSearchParams(window.location.search).get('district');if(area)state.district=area}state.data=await(await fetch(`./data/listings.json?v=${Date.now()}`,{cache:'no-store'})).json()}catch(e){state.data={meta:{status:'pending'},listings:[]}}render()}
-document.addEventListener('click',e=>{const pb=e.target.closest('[data-price]');if(pb){state.priceBand=pb.dataset.price;render();return}const area=e.target.closest('[data-district]');if(area){state.district=decodeURIComponent(area.dataset.district);if(typeof window!=='undefined'){const url=new URL(window.location.href);if(state.district==='all')url.searchParams.delete('district');else url.searchParams.set('district',state.district);window.history.replaceState(null,'',url)}render();return}const s=e.target.closest('.seg');if(s){document.querySelectorAll('.seg').forEach(x=>x.classList.remove('active'));s.classList.add('active');state.view=s.dataset.view;render();return}const c=e.target.closest('.chip');if(c){const k=c.dataset.filter;state.filters[k]=!state.filters[k];c.classList.toggle('active',state.filters[k]);render()}});document.querySelector('#sortSelect').addEventListener('change',e=>{state.sort=e.target.value;render()});boot();
+document.addEventListener('click',e=>{const pb=e.target.closest('[data-price]');if(pb){state.priceBand=pb.dataset.price;render();return}const area=e.target.closest('[data-district]');if(area){state.district=decodeURIComponent(area.dataset.district);if(typeof window!=='undefined'){const url=new URL(window.location.href);if(state.district==='all')url.searchParams.delete('district');else url.searchParams.set('district',state.district);window.history.replaceState(null,'',url)}render();return}const s=e.target.closest('.seg');if(s){document.querySelectorAll('.seg').forEach(x=>x.classList.remove('active'));s.classList.add('active');state.view=s.dataset.view;render();return}const c=e.target.closest('.chip');if(c){const k=c.dataset.filter;state.filters[k]=!state.filters[k];c.classList.toggle('active',state.filters[k]);render()}});function updateFilter(k,value){state.filters[k]=value;render()}
+document.querySelector('#sortSelect').addEventListener('change',e=>{
+ state.sort=e.target.value;
+ if(state.sort!=='score')state.display='flat';
+ render()
+});
+document.querySelector('#displaySelect').addEventListener('change',e=>{state.display=e.target.value;render()});
+document.querySelector('#walkSelect').addEventListener('change',e=>updateFilter('walkMax',e.target.value));
+document.querySelector('#areaSelect').addEventListener('change',e=>updateFilter('areaMin',e.target.value));
+document.querySelector('#roomsSelect').addEventListener('change',e=>updateFilter('rooms',e.target.value));
+document.querySelector('#resetFilters').addEventListener('click',()=>{
+ state.view='all';state.district='all';state.priceBand='10-15';state.sort='score';state.display='district';
+ state.filters={direct:true,commute:true,split:false,lift:false,layout:true,walkMax:'all',areaMin:'all',rooms:'all'};
+ if(typeof window!=='undefined'){const u=new URL(window.location.href);u.searchParams.delete('district');window.history.replaceState(null,'',u)}
+ document.querySelectorAll('.seg').forEach(x=>x.classList.toggle('active',x.dataset.view==='all'));
+ render()
+});
+boot();
