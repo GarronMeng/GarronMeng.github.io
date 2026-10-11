@@ -55,7 +55,8 @@
       "李節花園",
       "壹嘉",
       "維峯",
-      "維峯浚匯"
+      "維峯浚匯",
+      "悅雅"
     ],
     "premium_watchlist_estates": [
       "柏傲莊",
@@ -65,6 +66,11 @@
       "維峯浚匯"
     ],
     "prefer_direct_rail": true,
-    "prefer_early_rail_service": true
+    "prefer_early_rail_service": true,
+    "budget_focus_min": 10000,
+    "budget_focus_max": 15000,
+    "compact_review_min_area": 170,
+    "compact_review_max_rent": 15000,
+    "compact_collect_min_area": 170
   }
 }
