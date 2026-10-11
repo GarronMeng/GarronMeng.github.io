@@ -21,24 +21,31 @@ scrape.EXCLUDE_GROUPS['shared'].extend([
 _base_discover=scrape.discover
 _base_parse_detail=scrape.parse_detail
 
-def _source_cap(source):
-    return int(source.get('collect_max_rent', scrape.CFG['criteria']['collect_max_rent']))
+def _source_caps(source):
+    return {
+        'collect_max_rent': int(source.get('collect_max_rent', scrape.CFG['criteria']['collect_max_rent'])),
+        'collect_min_area': int(source.get('collect_min_area', scrape.CFG['criteria']['collect_min_area'])),
+        'max_details_per_source': int(source.get('max_details_per_source', scrape.CFG['criteria']['max_details_per_source'])),
+    }
+
+def _with_source_caps(source, action):
+    caps=_source_caps(source)
+    old={key:scrape.CRIT.get(key) for key in caps}
+    try:
+        scrape.CRIT.update(caps)
+        return action()
+    finally:
+        for key,value in old.items():
+            if value is None:
+                scrape.CRIT.pop(key, None)
+            else:
+                scrape.CRIT[key]=value
 
 def discover_with_source_cap(source):
-    old=scrape.CRIT['collect_max_rent']
-    scrape.CRIT['collect_max_rent']=_source_cap(source)
-    try:
-        return _base_discover(source)
-    finally:
-        scrape.CRIT['collect_max_rent']=old
+    return _with_source_caps(source, lambda:_base_discover(source))
 
 def parse_detail_with_source_cap(pid,url,source,old_doc):
-    old=scrape.CRIT['collect_max_rent']
-    scrape.CRIT['collect_max_rent']=_source_cap(source)
-    try:
-        return _base_parse_detail(pid,url,source,old_doc)
-    finally:
-        scrape.CRIT['collect_max_rent']=old
+    return _with_source_caps(source,lambda:_base_parse_detail(pid,url,source,old_doc))
 
 scrape.discover=discover_with_source_cap
 scrape.parse_detail=parse_detail_with_source_cap
@@ -89,12 +96,36 @@ scrape.SOURCES.extend([
     {'district':'北角','url':'https://www.28hse.com/rent/apartment/a1/dg7/c1147','collect_max_rent':20000,'watch_estate':'東發大廈'}
 ])
 
+# Lower-cost compact estate and neighborhood feeds. The main feed still
+# prefers larger units; these dedicated scans also cover 170-249 sq ft.
+compact_base=[
+    ('长沙湾','https://www.28hse.com/rent/apartment/a2/dg106/c22419','悅雅'),
+    ('长沙湾','https://www.28hse.com/rent/apartment/a2/dg106',None),
+    ('北角','https://www.28hse.com/rent/apartment/a1/dg7',None),
+    ('鰂鱼涌','https://www.28hse.com/rent/apartment/a1/dg8',None),
+    ('西湾河','https://www.28hse.com/rent/apartment/a1/dg10/c38/page-1',None),
+    ('红磡','https://www.28hse.com/rent/apartment/a2/dg31',None),
+    ('鸭脷洲','https://www.28hse.com/rent/apartment/a1/dg13',None),
+]
+for district,url,estate_name in compact_base:
+    source={'district':district,'url':url,'collect_min_area':170,'collect_max_rent':15000,'max_details_per_source':20}
+    if estate_name:source['watch_estate']=estate_name
+    scrape.SOURCES.append(source)
+
 if __name__=='__main__':
     scrape.main()
     data_path=Path(__file__).resolve().parents[1]/'data'/'listings.json'
     doc=json.loads(data_path.read_text(encoding='utf-8'))
+    examples_path=data_path.parent/'market_examples.json'
+    if examples_path.exists():
+        market=json.loads(examples_path.read_text(encoding='utf-8'))
+        known_ids={str(x.get('id')) for x in doc.get('listings',[])}
+        for item in market.get('listings',[]):
+            if str(item.get('id')) not in known_ids:
+                doc.setdefault('listings',[]).append(item)
+                known_ids.add(str(item.get('id')))
     doc=dedupe.collapse_document(doc)
-    doc.setdefault('meta',{})['algorithm_version']='3.1'
+    doc.setdefault('meta',{})['algorithm_version']='3.3'
     doc['meta']['budget_policy']='market filters: preferred <=15k; tradeoff <=18k; opportunistic <=22k'
     doc['meta']['selection_policy']='hard-exclude invalid/shared/dorm/village/non-residential; soft-score area, rent, age, AC, walk and layout'
     doc['meta']['watchlist_estates']=scrape.CFG['criteria'].get('watchlist_estates',[])
