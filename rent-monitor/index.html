@@ -40,15 +40,19 @@
         <button class="seg" data-view="core">A 核心</button>
         <button class="seg" data-view="tradeoff">B 权衡</button>
         <button class="seg" data-view="watch">重点屋苑</button>
-        <button class="seg" data-view="new">新盘 / 降价</button><button class="seg" data-view="reference">参考盘对比</button>
+        <button class="seg" data-view="new">新盘 / 降价</button><button class="seg" data-view="compact">紧凑户型</button>
       </div>
       <div class="chips" id="chips">
         <button class="chip" data-filter="area">只看 ≥300呎</button>
-        <button class="chip" data-filter="rent">只看 ≤16k</button>
+        
         <button class="chip active" data-filter="direct">直达线路</button>
         <button class="chip active" data-filter="commute">早班路线已识别</button>
         <button class="chip" data-filter="split">分体冷气已确认</button><button class="chip active" data-filter="layout">按户型合并</button>
       </div>
+    </section>
+    <section class="district-browser price-browser" aria-label="按租金范围浏览">
+      <div class="district-browser-title"><div><h2>按租金浏览</h2><p>优先看 10–15k，也能一键切换全部租金；小面积房源会明确显示取舍。</p></div></div>
+      <div class="area-shortcuts" id="priceFilters">正在读取预算...</div>
     </section>
     <section class="district-browser" id="districtNavigator" aria-label="按地区浏览">
       <div class="district-browser-title">
@@ -66,8 +70,8 @@
     </section>
     <section id="listings" class="listings"></section>
     <section id="empty" class="empty" hidden><strong>暂时没有符合当前组合的房源</strong><span>关闭部分筛选即可看到面积、租金或设备存在取舍但仍值得比较的候选。</span></section>
-    <footer><span>A 核心候选：核心经济与通勤达标；分体冷气、干湿分离可待确认</span><span>同规格广告合并展示，所有原始链接可展开；无法凭楼层段证明为同一实际单位</span></footer>
+    <footer><span>A 核心以面积和便利度优先；170–259呎独立住宅归入紧凑观察，不代表居住品质升级</span><span>同规格广告合并展示，所有原始链接可展开；无法凭楼层段证明为同一实际单位</span></footer>
   </main>
-  <script src="./app.js?v=3.7" defer></script>
+  <script src="./app.js?v=3.8" defer></script>
 </body>
 </html>
