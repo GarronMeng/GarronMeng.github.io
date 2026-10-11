@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updated_at": "2026-10-11T21:43:30+08:00",
+    "updated_at": "2026-10-11T21:56:25+08:00",
     "status": "ok",
     "source_count": 38,
     "errors": [],
@@ -14,6 +14,12 @@
       "non_residential",
       "short_term"
     ],
+    "raw_ad_count": 150,
+    "display_group_count": 133,
+    "grouped_ad_count": 17,
+    "multi_ad_group_count": 12,
+    "dedupe_method": "same_estate_building_floor_band_area_rent_rooms; distinct explicit room numbers separated",
+    "dedupe_caveat": "Matching advertisements may represent different flats on different floors. All ad URLs retained.",
     "commute_target": "06:30 Admiralty; rank practical leave-home time and missed-train tolerance",
     "budget_policy": "core <=15k; tradeoff <=18k; opportunity <=20-22k when commute/space/quality compensates",
     "selection_policy": "hard-exclude invalid/shared/dorm/village/non-residential; soft-score area, rent, age, AC, walk and layout",
@@ -61,14 +67,7 @@
       "壹嘉",
       "維峯",
       "維峯浚匯"
-    ],
-    "raw_ad_count": 151,
-    "display_group_count": 134,
-    "grouped_ad_count": 17,
-    "multi_ad_group_count": 12,
-    "dedupe_method": "same_estate_building_floor_band_area_rent_rooms; distinct explicit room numbers separated",
-    "dedupe_caveat": "Matching advertisements may represent different flats on different floors. All ad URLs retained.",
-    "dedupe_status": "grouped existing scan; original scrape timestamp unchanged"
+    ]
   },
   "baseline": {
     "estate": "基安大厦 10C",
@@ -110,7 +109,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4030122",
       "listing_updated": "2026-09-26",
       "first_seen": "2026-09-26T01:13:52+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 90
@@ -146,7 +145,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4030519",
       "listing_updated": "2026-10-05",
       "first_seen": "2026-09-26T19:27:24+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 85
@@ -182,7 +181,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4043173",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-06T14:23:50+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 85
@@ -196,7 +195,7 @@
       "unit": "富臨閣 (6座) 高層 (13-22/22樓)",
       "rent": 11800,
       "area": 369,
-      "rent_psf": 32,
+      "rent_psf": 32.0,
       "rooms": 2,
       "baths": 1,
       "age_years": 33,
@@ -218,7 +217,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4021376",
       "listing_updated": "2026-09-18",
       "first_seen": "2026-09-19T00:25:50+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 84
@@ -254,7 +253,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4046652",
       "listing_updated": "2026-10-08",
       "first_seen": "2026-10-08T21:33:17+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 81
@@ -268,7 +267,7 @@
       "unit": "第3座 低層 (3-15/36樓)",
       "rent": 11000,
       "area": 324,
-      "rent_psf": 34,
+      "rent_psf": 34.0,
       "rooms": 2,
       "baths": null,
       "age_years": 12,
@@ -290,7 +289,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4047666",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-09T21:20:33+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 80
@@ -326,7 +325,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4031706",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-07T02:23:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 79
@@ -362,7 +361,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3980553",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 78
@@ -398,7 +397,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3915049",
       "listing_updated": "2026-10-05",
       "first_seen": "2026-10-05T13:44:19+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 77,
@@ -447,7 +446,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4026638",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-09-24T01:03:09+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 76
@@ -483,7 +482,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049105",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 76
@@ -519,7 +518,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4005906",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 76,
@@ -527,14 +526,6 @@
       "duplicate_basis": "同屋苑、座数、楼层范围、面积、租金及房数；实际楼层未证实",
       "duplicate_confidence": "similar_spec_unverified",
       "alternate_ads": [
-        {
-          "id": "1926348",
-          "url": "https://www.28hse.com/rent/apartment/property-1926348",
-          "unit": "中興大廈 中層 (6-15/25樓)",
-          "listing_updated": "2026-10-07",
-          "rent": 13000,
-          "area": 362
-        },
         {
           "id": "4039384",
           "url": "https://www.28hse.com/rent/apartment/property-4039384",
@@ -548,6 +539,14 @@
           "url": "https://www.28hse.com/rent/apartment/property-3598309",
           "unit": "中興大廈 中層 (6-15/25樓)",
           "listing_updated": "2026-10-06",
+          "rent": 13000,
+          "area": 362
+        },
+        {
+          "id": "1926348",
+          "url": "https://www.28hse.com/rent/apartment/property-1926348",
+          "unit": "中興大廈 中層 (6-15/25樓)",
+          "listing_updated": "2026-10-07",
           "rent": 13000,
           "area": 362
         }
@@ -584,7 +583,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4045314",
       "listing_updated": "2026-10-07",
       "first_seen": "2026-10-07T21:27:34+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 74
@@ -620,7 +619,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4032946",
       "listing_updated": "2026-09-28",
       "first_seen": "2026-09-28T21:59:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 74
@@ -656,7 +655,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4046687",
       "listing_updated": "2026-10-08",
       "first_seen": "2026-10-08T21:33:17+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 74
@@ -692,7 +691,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4030507",
       "listing_updated": "2026-09-26",
       "first_seen": "2026-09-26T19:27:24+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 74
@@ -728,7 +727,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4038161",
       "listing_updated": "2026-10-07",
       "first_seen": "2026-10-02T20:38:32+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 74,
@@ -777,7 +776,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3983473",
       "listing_updated": "2026-10-04",
       "first_seen": "2026-10-02T20:38:32+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 72
@@ -813,7 +812,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049463",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 71
@@ -849,7 +848,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049805",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T13:49:55+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 70
@@ -885,7 +884,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4042256",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-05T22:43:51+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 70
@@ -921,7 +920,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4035502",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-08T21:33:17+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 70
@@ -957,7 +956,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4047964",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-09T21:20:33+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 69,
@@ -1006,7 +1005,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4021567",
       "listing_updated": "2026-09-19",
       "first_seen": "2026-09-19T12:39:49+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 69
@@ -1042,7 +1041,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3944111",
       "listing_updated": "2026-10-02",
       "first_seen": "2026-09-22T12:59:13+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 69
@@ -1056,7 +1055,7 @@
       "unit": "2座 中層 (9-18/28樓) E室",
       "rent": 14000,
       "area": 400,
-      "rent_psf": 35,
+      "rent_psf": 35.0,
       "rooms": null,
       "baths": null,
       "age_years": 35,
@@ -1078,7 +1077,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048645",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T13:55:14+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 69
@@ -1092,7 +1091,7 @@
       "unit": "4座 中層 (11-21/38樓) G室",
       "rent": 19900,
       "area": 510,
-      "rent_psf": 39,
+      "rent_psf": 39.0,
       "rooms": 3,
       "baths": null,
       "age_years": 40,
@@ -1114,7 +1113,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4040546",
       "listing_updated": "2026-10-04",
       "first_seen": "2026-10-04T20:24:18+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 69
@@ -1150,7 +1149,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4039708",
       "listing_updated": "2026-10-03",
       "first_seen": "2026-10-03T19:42:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 67
@@ -1186,7 +1185,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3931827",
       "listing_updated": "2026-10-03",
       "first_seen": "2026-10-03T19:42:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 67
@@ -1222,7 +1221,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4047713",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-09T21:20:33+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 67
@@ -1258,7 +1257,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4038713",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-03T13:21:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 67
@@ -1294,7 +1293,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4045046",
       "listing_updated": "2026-10-07",
       "first_seen": "2026-10-07T21:27:34+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 66,
@@ -1343,7 +1342,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4039255",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-03T19:42:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 66
@@ -1379,7 +1378,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3933292",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-09-24T19:48:57+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 66
@@ -1415,7 +1414,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4029973",
       "listing_updated": "2026-09-25",
       "first_seen": "2026-09-25T19:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 66
@@ -1429,7 +1428,7 @@
       "unit": "滿華樓 高層 (7-16/16樓)",
       "rent": 13600,
       "area": 316,
-      "rent_psf": 43,
+      "rent_psf": 43.0,
       "rooms": 2,
       "baths": 1,
       "age_years": 55,
@@ -1451,7 +1450,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4043983",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-07T02:23:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 65
@@ -1487,7 +1486,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4039889",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-04T00:19:26+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 65
@@ -1523,7 +1522,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4011821",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-07T02:23:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 65
@@ -1559,7 +1558,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4018001",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-07T14:03:16+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 65
@@ -1595,7 +1594,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4041764",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-05T22:43:51+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 65
@@ -1631,7 +1630,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4034915",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-09-30T13:35:05+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 65
@@ -1667,7 +1666,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4045037",
       "listing_updated": "2026-10-07",
       "first_seen": "2026-10-07T21:27:34+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 65
@@ -1703,7 +1702,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4038166",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 64
@@ -1739,7 +1738,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4044091",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-07T02:23:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 62
@@ -1775,7 +1774,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048842",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T13:55:14+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 62
@@ -1811,7 +1810,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4033942",
       "listing_updated": "2026-09-29",
       "first_seen": "2026-09-29T20:56:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 62
@@ -1847,7 +1846,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4020444",
       "listing_updated": "2026-10-02",
       "first_seen": "2026-10-02T20:38:32+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 62
@@ -1883,7 +1882,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049062",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 61
@@ -1919,7 +1918,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4043035",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-06T14:23:50+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 61
@@ -1955,7 +1954,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4020868",
       "listing_updated": "2026-09-26",
       "first_seen": "2026-09-26T19:27:24+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 61
@@ -1991,7 +1990,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4040395",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-04T20:24:18+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 61
@@ -2005,7 +2004,7 @@
       "unit": "啟岸 中層 (9-21/30樓)",
       "rent": 16500,
       "area": 266,
-      "rent_psf": 62,
+      "rent_psf": 62.0,
       "rooms": 1,
       "baths": null,
       "age_years": 5,
@@ -2027,7 +2026,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4050460",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 61
@@ -2063,7 +2062,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4031767",
       "listing_updated": "2026-09-27",
       "first_seen": "2026-09-27T20:05:36+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 61
@@ -2099,7 +2098,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4013937",
       "listing_updated": "2026-09-15",
       "first_seen": "2026-09-13T19:55:28+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 61
@@ -2113,7 +2112,7 @@
       "unit": "樂悠居 中層 (19-29/60樓) 17室",
       "rent": 18500,
       "area": 420,
-      "rent_psf": 44,
+      "rent_psf": 44.0,
       "rooms": 2,
       "baths": 1,
       "age_years": 21,
@@ -2135,7 +2134,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049104",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 61
@@ -2171,7 +2170,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4046374",
       "listing_updated": "2026-10-08",
       "first_seen": "2026-10-08T21:33:17+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 61
@@ -2207,7 +2206,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049018",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 60
@@ -2243,7 +2242,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4035573",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-09T14:11:54+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 60,
@@ -2292,7 +2291,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4017596",
       "listing_updated": "2026-09-20",
       "first_seen": "2026-09-16T19:37:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 60
@@ -2306,7 +2305,7 @@
       "unit": "金勳大廈 中層 (5-14/17樓)",
       "rent": 16300,
       "area": 408,
-      "rent_psf": 40,
+      "rent_psf": 40.0,
       "rooms": 3,
       "baths": 1,
       "age_years": 57,
@@ -2328,7 +2327,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049891",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 60
@@ -2364,7 +2363,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4023323",
       "listing_updated": "2026-09-20",
       "first_seen": "2026-09-20T19:27:12+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 60
@@ -2400,7 +2399,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4050123",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 60,
@@ -2408,14 +2407,6 @@
       "duplicate_basis": "同屋苑、座数、楼层范围、面积、租金及房数；实际楼层未证实",
       "duplicate_confidence": "similar_spec_unverified",
       "alternate_ads": [
-        {
-          "id": "4043893",
-          "url": "https://www.28hse.com/rent/apartment/property-4043893",
-          "unit": "D座 中層 (8-17/31樓) 6室",
-          "listing_updated": "2026-10-06",
-          "rent": 17800,
-          "area": 408
-        },
         {
           "id": "4038875",
           "url": "https://www.28hse.com/rent/apartment/property-4038875",
@@ -2425,10 +2416,10 @@
           "area": 408
         },
         {
-          "id": "4027986",
-          "url": "https://www.28hse.com/rent/apartment/property-4027986",
+          "id": "4043893",
+          "url": "https://www.28hse.com/rent/apartment/property-4043893",
           "unit": "D座 中層 (8-17/31樓) 6室",
-          "listing_updated": "2026-10-02",
+          "listing_updated": "2026-10-06",
           "rent": 17800,
           "area": 408
         },
@@ -2437,6 +2428,14 @@
           "url": "https://www.28hse.com/rent/apartment/property-4024912",
           "unit": "D座 中層 (8-17/31樓)",
           "listing_updated": "2026-10-06",
+          "rent": 17800,
+          "area": 408
+        },
+        {
+          "id": "4027986",
+          "url": "https://www.28hse.com/rent/apartment/property-4027986",
+          "unit": "D座 中層 (8-17/31樓) 6室",
+          "listing_updated": "2026-10-02",
           "rent": 17800,
           "area": 408
         }
@@ -2473,7 +2472,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4028680",
       "listing_updated": "2026-10-08",
       "first_seen": "2026-09-24T19:48:57+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 60
@@ -2509,7 +2508,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4015096",
       "listing_updated": "2026-09-14",
       "first_seen": "2026-09-14T20:51:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 60
@@ -2545,7 +2544,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048418",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T06:40:22+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 60
@@ -2581,7 +2580,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4038422",
       "listing_updated": "2026-10-02",
       "first_seen": "2026-10-03T06:15:59+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 59
@@ -2595,7 +2594,7 @@
       "unit": "曉悅 高層 (20-30/30樓) F室",
       "rent": 15800,
       "area": 316,
-      "rent_psf": 50,
+      "rent_psf": 50.0,
       "rooms": 1,
       "baths": null,
       "age_years": 10,
@@ -2617,7 +2616,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4025233",
       "listing_updated": "2026-09-21",
       "first_seen": "2026-09-22T05:59:35+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 59
@@ -2653,7 +2652,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048792",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T13:55:14+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 59
@@ -2689,7 +2688,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049069",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 58,
@@ -2738,7 +2737,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4011998",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-06T14:23:50+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 58
@@ -2774,7 +2773,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4035226",
       "listing_updated": "2026-09-30",
       "first_seen": "2026-09-30T20:37:35+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 58
@@ -2810,7 +2809,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3919858",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 58
@@ -2846,7 +2845,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4020243",
       "listing_updated": "2026-09-18",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 58
@@ -2860,7 +2859,7 @@
       "unit": "F座 中層 (8-17/30樓) 2室",
       "rent": 18500,
       "area": 451,
-      "rent_psf": 41,
+      "rent_psf": 41.0,
       "rooms": 3,
       "baths": null,
       "age_years": 43,
@@ -2882,46 +2881,10 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048899",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 58
-    },
-    {
-      "id": "4036393",
-      "source": "28Hse",
-      "title": "加達樓",
-      "estate": "加達樓",
-      "district": "湾仔",
-      "unit": "加達樓 高層 (6-15/15樓) A室",
-      "rent": 14800,
-      "area": 299,
-      "rent_psf": 49.5,
-      "rooms": 2,
-      "baths": null,
-      "age_years": 46,
-      "mtr_station": "湾仔",
-      "mtr_walk_min": 2,
-      "mtr_verified": true,
-      "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；通勤极优",
-      "property_class": "conventional_residential",
-      "type_verified": true,
-      "lift": true,
-      "ac_present": false,
-      "split_ac": false,
-      "window_ac": false,
-      "wet_dry": null,
-      "shared": false,
-      "url": "https://www.28hse.com/rent/apartment/property-4036393",
-      "listing_updated": "2026-10-04",
-      "first_seen": "2026-10-05T05:28:34+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
-      "price_drop": 0,
-      "is_new": false,
-      "score": 57
     },
     {
       "id": "4014958",
@@ -2954,7 +2917,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4014958",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-08T21:33:17+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 57
@@ -2990,7 +2953,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4037789",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-09T21:20:33+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 57
@@ -3026,7 +2989,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4017975",
       "listing_updated": "2026-09-18",
       "first_seen": "2026-09-16T19:37:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 57
@@ -3062,7 +3025,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4037357",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-02T20:38:32+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 57
@@ -3076,7 +3039,7 @@
       "unit": "SKYPARK 高層 (17-27/27樓)",
       "rent": 17000,
       "area": 315,
-      "rent_psf": 54,
+      "rent_psf": 54.0,
       "rooms": 1,
       "baths": null,
       "age_years": 9,
@@ -3098,7 +3061,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4039480",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-04T20:24:18+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 57,
@@ -3147,7 +3110,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4041684",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-05T13:44:19+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 57,
@@ -3196,7 +3159,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4039898",
       "listing_updated": "2026-10-03",
       "first_seen": "2026-10-04T00:19:26+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 57
@@ -3232,7 +3195,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4044189",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 57
@@ -3244,9 +3207,9 @@
       "estate": "The Holborn",
       "district": "西湾河",
       "unit": "The Holborn 中層 (9-21/32樓) B5室",
-      "rent": 18800,
+      "rent": 18500,
       "area": 255,
-      "rent_psf": 73.7,
+      "rent_psf": 72.5,
       "rooms": 1,
       "baths": null,
       "age_years": 3,
@@ -3266,10 +3229,10 @@
       "wet_dry": null,
       "shared": false,
       "url": "https://www.28hse.com/rent/apartment/property-4043105",
-      "listing_updated": "2026-10-09",
+      "listing_updated": "2026-10-11",
       "first_seen": "2026-10-08T21:33:17+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
-      "price_drop": 0,
+      "last_seen": "2026-10-11T21:56:25+08:00",
+      "price_drop": 300,
       "is_new": false,
       "score": 57
     },
@@ -3304,7 +3267,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4043460",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 56
@@ -3340,7 +3303,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3588438",
       "listing_updated": "2026-09-24",
       "first_seen": "2026-09-24T19:48:57+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 56
@@ -3376,7 +3339,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4035959",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-02T13:40:46+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 56
@@ -3412,7 +3375,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4021397",
       "listing_updated": "2026-10-08",
       "first_seen": "2026-10-07T02:23:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 56
@@ -3448,7 +3411,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048763",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T13:55:14+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 56,
@@ -3497,7 +3460,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4039753",
       "listing_updated": "2026-10-07",
       "first_seen": "2026-10-08T07:06:49+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 56
@@ -3533,7 +3496,7 @@
       "url": "https://www.28hse.com/cn/rent/apartment/property-4043291",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-06T14:23:50+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 56
@@ -3569,7 +3532,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4045962",
       "listing_updated": "2026-10-08",
       "first_seen": "2026-10-08T14:08:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 56
@@ -3605,7 +3568,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4041806",
       "listing_updated": "2026-10-05",
       "first_seen": "2026-10-05T22:43:51+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 55
@@ -3641,7 +3604,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4047059",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-09T14:11:54+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 55
@@ -3677,7 +3640,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4047022",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-09T14:11:54+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 55
@@ -3713,7 +3676,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4047941",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-09T21:20:33+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 55
@@ -3749,7 +3712,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4026678",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 55
@@ -3785,7 +3748,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4036095",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-01T13:58:18+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 54
@@ -3799,7 +3762,7 @@
       "unit": "1B座 中層 (10-21/33樓)",
       "rent": 15800,
       "area": 329,
-      "rent_psf": 48,
+      "rent_psf": 48.0,
       "rooms": 4,
       "baths": null,
       "age_years": 7,
@@ -3821,7 +3784,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4038892",
       "listing_updated": "2026-10-03",
       "first_seen": "2026-10-03T13:21:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 54
@@ -3857,7 +3820,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4023992",
       "listing_updated": "2026-09-21",
       "first_seen": "2026-09-21T04:51:01+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 54
@@ -3893,7 +3856,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4019025",
       "listing_updated": "2026-09-22",
       "first_seen": "2026-09-17T19:44:27+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 54
@@ -3929,7 +3892,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4040799",
       "listing_updated": "2026-10-04",
       "first_seen": "2026-10-04T20:24:18+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 54
@@ -3965,7 +3928,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4035120",
       "listing_updated": "2026-10-02",
       "first_seen": "2026-09-30T20:37:35+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 54
@@ -4001,7 +3964,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048452",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T06:40:22+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 54
@@ -4037,7 +4000,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4049359",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 53
@@ -4073,7 +4036,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4044537",
       "listing_updated": "2026-10-07",
       "first_seen": "2026-10-07T14:03:16+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 53
@@ -4087,7 +4050,7 @@
       "unit": "2座 高層 (20-29/30樓)",
       "rent": 17500,
       "area": 330,
-      "rent_psf": 53,
+      "rent_psf": 53.0,
       "rooms": 2,
       "baths": 1,
       "age_years": 41,
@@ -4109,7 +4072,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4032804",
       "listing_updated": "2026-10-05",
       "first_seen": "2026-09-28T21:59:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 53
@@ -4123,7 +4086,7 @@
       "unit": null,
       "rent": 18000,
       "area": 562,
-      "rent_psf": 32,
+      "rent_psf": 32.0,
       "rooms": 3,
       "baths": 1,
       "age_years": 61,
@@ -4145,7 +4108,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048674",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T13:55:14+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 53
@@ -4181,7 +4144,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4046805",
       "listing_updated": "2026-10-08",
       "first_seen": "2026-10-08T21:33:17+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 53
@@ -4217,7 +4180,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048911",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 53
@@ -4253,7 +4216,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4045608",
       "listing_updated": "2026-10-08",
       "first_seen": "2026-10-08T07:06:49+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 53
@@ -4289,7 +4252,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4045518",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-08T21:33:17+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 53
@@ -4325,7 +4288,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4045310",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-07T21:27:34+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 52
@@ -4361,7 +4324,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4048134",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-09T21:20:33+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 52
@@ -4397,7 +4360,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4042408",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T21:43:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 52
@@ -4433,7 +4396,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4035091",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-09-30T20:37:35+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 52
@@ -4469,7 +4432,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-3969341",
       "listing_updated": "2026-09-29",
       "first_seen": "2026-09-22T12:59:13+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 52
@@ -4505,7 +4468,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4040981",
       "listing_updated": "2026-10-04",
       "first_seen": "2026-10-04T20:24:18+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 52
@@ -4519,7 +4482,7 @@
       "unit": "Coasto 中層 (8-19/26樓) D室",
       "rent": 18000,
       "area": 277,
-      "rent_psf": 65,
+      "rent_psf": 65.0,
       "rooms": 1,
       "baths": null,
       "age_years": 1,
@@ -4541,7 +4504,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4038586",
       "listing_updated": "2026-10-03",
       "first_seen": "2026-10-03T06:15:59+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 52
@@ -4577,7 +4540,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4033125",
       "listing_updated": "2026-09-28",
       "first_seen": "2026-09-28T21:59:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 51
@@ -4613,7 +4576,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4036975",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-04T20:24:18+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 51
@@ -4649,7 +4612,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4050635",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 51
@@ -4685,7 +4648,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-2287151",
       "listing_updated": "2026-09-30",
       "first_seen": "2026-09-26T13:00:50+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 50
@@ -4721,7 +4684,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4040372",
       "listing_updated": "2026-10-07",
       "first_seen": "2026-10-04T13:56:37+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 49
@@ -4757,7 +4720,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4043701",
       "listing_updated": "2026-10-06",
       "first_seen": "2026-10-07T02:23:48+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 49
@@ -4793,7 +4756,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4032676",
       "listing_updated": "2026-10-04",
       "first_seen": "2026-09-28T21:59:03+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 47
@@ -4829,7 +4792,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4023462",
       "listing_updated": "2026-10-10",
       "first_seen": "2026-10-10T20:35:04+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 46,
@@ -4878,7 +4841,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4030807",
       "listing_updated": "2026-09-26",
       "first_seen": "2026-09-26T19:27:24+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 46
@@ -4914,7 +4877,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4036464",
       "listing_updated": "2026-10-09",
       "first_seen": "2026-10-09T21:20:33+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 46
@@ -4950,7 +4913,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4030786",
       "listing_updated": "2026-09-26",
       "first_seen": "2026-09-26T19:27:24+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 43
@@ -4986,7 +4949,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4031420",
       "listing_updated": "2026-09-27",
       "first_seen": "2026-09-27T13:20:51+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 40
@@ -5022,7 +4985,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4050453",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 40
@@ -5058,7 +5021,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4050182",
       "listing_updated": "2026-10-11",
       "first_seen": "2026-10-11T20:53:30+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": true,
       "score": 40
@@ -5094,7 +5057,7 @@
       "url": "https://www.28hse.com/rent/apartment/property-4023573",
       "listing_updated": "2026-10-07",
       "first_seen": "2026-09-20T19:27:12+08:00",
-      "last_seen": "2026-10-11T21:43:30+08:00",
+      "last_seen": "2026-10-11T21:56:25+08:00",
       "price_drop": 0,
       "is_new": false,
       "score": 39
