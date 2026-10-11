@@ -4,7 +4,7 @@
     "status": "ok",
     "source_count": 38,
     "errors": [],
-    "algorithm_version": "3.2",
+    "algorithm_version": "3.3",
     "excluded_types": [
       "village",
       "student_housing",
@@ -14,8 +14,8 @@
       "non_residential",
       "short_term"
     ],
-    "raw_ad_count": 150,
-    "display_group_count": 133,
+    "raw_ad_count": 151,
+    "display_group_count": 134,
     "grouped_ad_count": 17,
     "multi_ad_group_count": 12,
     "dedupe_method": "same_estate_building_floor_band_area_rent_rooms; distinct explicit room numbers separated",
@@ -66,7 +66,10 @@
       "維峯",
       "維峯浚匯"
     ],
-    "privacy_policy": "Only public listing fields and generic selection thresholds are stored; no current residence, unit, or precise personal schedule."
+    "privacy_policy": "Only public listing fields and generic selection thresholds are stored; no current residence, unit, or precise personal schedule.",
+    "market_examples_count": 1,
+    "budget_focus": "HK$10,000–15,000",
+    "compact_review_floor": "170 sq ft, labeled as compact and never core"
   },
   "listings": [
     {
@@ -3856,6 +3859,44 @@
       "score": 54,
       "rail_line": "港岛线",
       "direct_rail": true
+    },
+    {
+      "id": "4036289",
+      "source": "28Hse",
+      "title": "悅雅",
+      "estate": "悅雅",
+      "district": "长沙湾",
+      "unit": "悅雅 中層 (8-19/25樓) F室",
+      "rent": 11000,
+      "area": 173,
+      "rent_psf": 63.6,
+      "rooms": 0,
+      "baths": 1,
+      "age_years": 7,
+      "mtr_station": "长沙湾",
+      "mtr_walk_min": null,
+      "mtr_verified": false,
+      "mtr_evidence": "station_area_only",
+      "direct_rail": true,
+      "rail_line": "荃湾线",
+      "property_class": "conventional_residential",
+      "type_verified": true,
+      "lift": null,
+      "ac_present": null,
+      "split_ac": null,
+      "window_ac": null,
+      "wet_dry": null,
+      "shared": false,
+      "url": "https://www.28hse.com/rent/apartment/property-4036289",
+      "listing_updated": "2026-10-06",
+      "first_seen": null,
+      "last_seen": null,
+      "price_drop": 0,
+      "is_new": false,
+      "score": 53,
+      "availability_verified": false,
+      "listing_status": "刊登可见；在租状态待确认",
+      "market_example": true
     },
     {
       "id": "4049359",
