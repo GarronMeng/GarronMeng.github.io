@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import scrape
+import dedupe
 
 # 06:30 Admiralty commute expansion: South Island Line is direct and starts early.
 scrape.T2S.update(str.maketrans({'東':'东','島':'岛','園':'园','堅':'坚','營':'营'}))
@@ -99,7 +100,8 @@ if __name__=='__main__':
     scrape.main()
     data_path=Path(__file__).resolve().parents[1]/'data'/'listings.json'
     doc=json.loads(data_path.read_text(encoding='utf-8'))
-    doc.setdefault('meta',{})['algorithm_version']='3.0'
+    doc=dedupe.collapse_document(doc)
+    doc.setdefault('meta',{})['algorithm_version']='3.1'
     doc['meta']['commute_target']='06:30 Admiralty; rank practical leave-home time and missed-train tolerance'
     doc['meta']['budget_policy']='core <=15k; tradeoff <=18k; opportunity <=20-22k when commute/space/quality compensates'
     doc['meta']['selection_policy']='hard-exclude invalid/shared/dorm/village/non-residential; soft-score area, rent, age, AC, walk and layout'
