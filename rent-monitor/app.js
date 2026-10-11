@@ -65,7 +65,7 @@ function renderPrices(all){const box=document.querySelector('#priceFilters');if(
  const saved=state.priceBand;state.priceBand='all';
  const matching=all.filter(x=>passes(x)&&(state.district==='all'||x.district===state.district));
  state.priceBand=saved;
- box.innerHTML=PRICE_BANDS.map(b=>{const n=matching.filter(x=>x.rent>=b.min&&x.rent<=b.max).length;
+ box.innerHTML=PRICE_BANDS.map(b=>{const subset=matching.filter(x=>x.rent>=b.min&&x.rent<=b.max);const n=state.filters.layout?layoutGroups(subset).length:subset.length;
  return '<button type="button" class="area-filter'+(saved===b.id?' active':'')+(n===0?' no-results':'')+'" data-price="'+b.id+'" aria-pressed="'+(saved===b.id)+'">'+escapeHtml(b.label)+' <span>'+n+'</span></button>'}).join('')}
 
 // Display grouping: same estate / block / area / room count is one layout type,
