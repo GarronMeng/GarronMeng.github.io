@@ -17,35 +17,35 @@ UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/14
 S=requests.Session();S.headers.update({'User-Agent':UA,'Accept-Language':'zh-HK,zh;q=0.9,en;q=0.7'})
 
 SOURCES=[
- {'district':'荃湾','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2249%22%2C%2249-113%22%2C%22nt%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default','shenzhen':'西九龙高铁一般'},
- {'district':'葵芳','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2250%22%2C%2250-132%22%2C%22nt%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default','shenzhen':'西九龙高铁较方便'},
- {'district':'美孚','url':'https://www.28hse.com/rent/apartment/a2/dg107','shenzhen':'屯马线接西九龙高铁方便'},
- {'district':'荔枝角','url':'https://www.28hse.com/rent/apartment/a2/dg27','shenzhen':'西九龙高铁较方便'},
- {'district':'长沙湾','url':'https://www.28hse.com/rent/apartment/a2/dg106','shenzhen':'西九龙高铁较方便'},
- {'district':'深水埗','url':'https://www.28hse.com/rent/apartment/a2/dg26/di26-62','shenzhen':'西九龙高铁较方便'},
- {'district':'太子','url':'https://www.28hse.com/rent/apartment/a2/dg29','shenzhen':'西九龙高铁方便'},
- {'district':'旺角','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%22110%22%2C%22kw%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default','shenzhen':'西九龙高铁很方便'},
- {'district':'油麻地','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%22111%22%2C%22kw%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default','shenzhen':'西九龙高铁很方便'},
- {'district':'佐敦','url':'https://www.28hse.com/rent/apartment/a2/dg120/c73','shenzhen':'西九龙高铁很方便'},
- {'district':'北角','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%227%22%2C%22hk%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default','shenzhen':'金钟转东铁'},
- {'district':'鰂鱼涌','url':'https://www.28hse.com/rent/apartment/a1/dg8','shenzhen':'金钟转东铁'},
- {'district':'西湾河','url':'https://www.28hse.com/rent/apartment/a1/dg10/c38/page-1','shenzhen':'金钟转东铁'},
- {'district':'筲箕湾','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2211%22%2C%2211-34%22%2C%22hk%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default','shenzhen':'金钟转东铁'},
- {'district':'柴湾','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2212%22%2C%2212-36%22%2C%22hk%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default','shenzhen':'金钟转东铁'},
- {'district':'红磡','url':'https://www.28hse.com/rent/apartment/a2/dg31','shenzhen':'罗湖 / 落马洲方便'},
- {'district':'大围','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2244%22%2C%2244-124%22%2C%22nt%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default','shenzhen':'罗湖 / 落马洲方便'},
- {'district':'沙田','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2244%22%2C%2244-102%22%2C%22nt%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default','shenzhen':'罗湖 / 落马洲方便'},
- {'district':'火炭','url':'https://www.28hse.com/rent/apartment/a3/dg44/di44-126','shenzhen':'罗湖 / 落马洲方便'},
- {'district':'大埔','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2245%22%2C%2245-103%22%2C%22nt%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default','shenzhen':'罗湖 / 落马洲方便'},
- {'district':'太和','url':'https://www.28hse.com/rent/apartment/a3/dg45/di45-130','shenzhen':'罗湖 / 落马洲很方便'},
- {'district':'粉岭','url':'https://www.28hse.com/rent/apartment/a3/dg46/c104','shenzhen':'罗湖 / 落马洲很方便'},
- {'district':'上水','url':'https://www.28hse.com/rent/apartment?buyRent=rent&cat_ids=105&locations=%5B%22112%22%2C%22nt%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=cat_ids&sortBy=default','shenzhen':'罗湖 / 落马洲最方便'}
+ {'district':'荃湾','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2249%22%2C%2249-113%22%2C%22nt%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default'},
+ {'district':'葵芳','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2250%22%2C%2250-132%22%2C%22nt%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default'},
+ {'district':'美孚','url':'https://www.28hse.com/rent/apartment/a2/dg107'},
+ {'district':'荔枝角','url':'https://www.28hse.com/rent/apartment/a2/dg27'},
+ {'district':'长沙湾','url':'https://www.28hse.com/rent/apartment/a2/dg106'},
+ {'district':'深水埗','url':'https://www.28hse.com/rent/apartment/a2/dg26/di26-62'},
+ {'district':'太子','url':'https://www.28hse.com/rent/apartment/a2/dg29'},
+ {'district':'旺角','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%22110%22%2C%22kw%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default'},
+ {'district':'油麻地','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%22111%22%2C%22kw%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default'},
+ {'district':'佐敦','url':'https://www.28hse.com/rent/apartment/a2/dg120/c73'},
+ {'district':'北角','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%227%22%2C%22hk%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default'},
+ {'district':'鰂鱼涌','url':'https://www.28hse.com/rent/apartment/a1/dg8'},
+ {'district':'西湾河','url':'https://www.28hse.com/rent/apartment/a1/dg10/c38/page-1'},
+ {'district':'筲箕湾','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2211%22%2C%2211-34%22%2C%22hk%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default'},
+ {'district':'柴湾','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2212%22%2C%2212-36%22%2C%22hk%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default'},
+ {'district':'红磡','url':'https://www.28hse.com/rent/apartment/a2/dg31'},
+ {'district':'大围','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2244%22%2C%2244-124%22%2C%22nt%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default'},
+ {'district':'沙田','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2244%22%2C%2244-102%22%2C%22nt%22%5D&locations_by_text=0&mainType=%5B%225%22%5D&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default'},
+ {'district':'火炭','url':'https://www.28hse.com/rent/apartment/a3/dg44/di44-126'},
+ {'district':'大埔','url':'https://www.28hse.com/rent/apartment?buyRent=rent&locations=%5B%2245%22%2C%2245-103%22%2C%22nt%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=default&sortBy=default'},
+ {'district':'太和','url':'https://www.28hse.com/rent/apartment/a3/dg45/di45-130'},
+ {'district':'粉岭','url':'https://www.28hse.com/rent/apartment/a3/dg46/c104'},
+ {'district':'上水','url':'https://www.28hse.com/rent/apartment?buyRent=rent&cat_ids=105&locations=%5B%22112%22%2C%22nt%22%5D&locations_by_text=0&mainType=5&mainType_by_text=0&mobilePageChannel=apartment&page=1&propertyDoSearchVersion=2.0&search_words_thing=cat_ids&sortBy=default'}
 ]
 
 DIRECT_LINES={
- '荃湾线':['荃湾','大窝口','葵兴','葵芳','荔景','美孚','荔枝角','长沙湾','深水埗','太子','旺角','油麻地','佐敦','尖沙咀','金钟','中环'],
- '港岛线':['坚尼地城','香港大学','西营盘','上环','中环','金钟','湾仔','铜锣湾','天后','炮台山','北角','鰂鱼涌','太古','西湾河','筲箕湾','杏花邨','柴湾'],
- '东铁线':['金钟','会展','红磡','旺角东','九龙塘','大围','沙田','火炭','马场','大学','大埔墟','太和','粉岭','上水']
+ '荃湾线':['荃湾','大窝口','葵兴','葵芳','荔景','美孚','荔枝角','长沙湾','深水埗','太子','旺角','油麻地','佐敦','尖沙咀','中环'],
+ '港岛线':['坚尼地城','香港大学','西营盘','上环','中环','湾仔','铜锣湾','天后','炮台山','北角','鰂鱼涌','太古','西湾河','筲箕湾','杏花邨','柴湾'],
+ '东铁线':['会展','红磡','旺角东','九龙塘','大围','沙田','火炭','马场','大学','大埔墟','太和','粉岭','上水']
 }
 T2S=str.maketrans({'灣':'湾','窩':'窝','興':'兴','麗':'丽','長':'长','鐘':'钟','環':'环','堅':'坚','營':'营','鑼':'锣','魚':'鱼','會':'会','紅':'红','龍':'龙','圍':'围','學':'学','嶺':'岭','鐵':'铁','車':'车'})
 def simp(s):return (s or '').translate(T2S)
@@ -195,7 +195,7 @@ def parse_detail(pid,url,source,old):
     try:is_new=(NOW-datetime.fromisoformat(first)).total_seconds()<36*3600
     except Exception:is_new=True
 
-    rooms=int(room_m.group(1)) if room_m else None;area_gain=max(0,area-CFG['baseline']['area']);extra_rent=max(0,rent-CFG['baseline']['rent'])
+    rooms=int(room_m.group(1)) if room_m else None;area_gain=max(0,area-CRIT['target_min_area']);extra_rent=max(0,rent-CRIT['target_max_rent'])
     score=45+min(16,max(0,(area-280)//15))+min(12,max(-6,(CRIT['target_max_rent']-rent)//250))
     score+=12 if split else (0 if ac else -3);score+=6 if wet else 0;score+=7 if lift is True else -3;score+=max(-8,8-(route['walk']*2))
     if rooms==1:score+=5
@@ -204,10 +204,10 @@ def parse_detail(pid,url,source,old):
     if route['line']=='东铁线':score+=4
     elif source['district']=='佐敦':score+=3
     if drop>0:score+=min(5,drop//500)
-    if area_gain>=75 and extra_rent<=2000:score+=5
+    if area>=350 and rent<=CRIT['target_max_rent']+2000:score+=5
     score=max(0,min(99,int(score)))
 
-    return {'id':pid,'source':'28Hse','title':estate,'estate':estate,'district':source['district'],'unit':clean_text(unit_m.group(1)) if unit_m else None,'rent':rent,'area':area,'rent_psf':psf,'rooms':rooms,'baths':int(room_m.group(2)) if room_m and room_m.group(2) else None,'age_years':int(age_m.group(1)) if age_m else None,'mtr_station':route['station'],'mtr_walk_min':route['walk'],'mtr_verified':True,'mtr_evidence':route['evidence'],'direct_to_admiralty':True,'admiralty_route':f"{route['line']}直达金钟",'shenzhen_note':source['shenzhen'],'property_class':'conventional_residential','type_verified':True,'lift':lift,'ac_present':ac,'split_ac':split,'window_ac':False,'wet_dry':wet if wet else None,'shared':False,'url':final.split('?')[0],'listing_updated':upd.group(1) if upd else None,'first_seen':first,'last_seen':NOW.isoformat(timespec='seconds'),'price_drop':drop,'is_new':is_new,'score':score}
+    return {'id':pid,'source':'28Hse','title':estate,'estate':estate,'district':source['district'],'unit':clean_text(unit_m.group(1)) if unit_m else None,'rent':rent,'area':area,'rent_psf':psf,'rooms':rooms,'baths':int(room_m.group(2)) if room_m and room_m.group(2) else None,'age_years':int(age_m.group(1)) if age_m else None,'mtr_station':route['station'],'mtr_walk_min':route['walk'],'mtr_verified':True,'mtr_evidence':route['evidence'],'direct_rail':True,'rail_line':route['line'],'property_class':'conventional_residential','type_verified':True,'lift':lift,'ac_present':ac,'split_ac':split,'window_ac':False,'wet_dry':wet if wet else None,'shared':False,'url':final.split('?')[0],'listing_updated':upd.group(1) if upd else None,'first_seen':first,'last_seen':NOW.isoformat(timespec='seconds'),'price_drop':drop,'is_new':is_new,'score':score}
 
 def load_old():
     try:return json.loads(DATA.read_text(encoding='utf-8'))
@@ -227,7 +227,7 @@ def main():
         except Exception as e:errors.append(f"{source['district']}: {type(e).__name__}: {str(e)[:100]}")
         time.sleep(.4)
     listings=sorted(results.values(),key=lambda x:(-x['score'],x['rent']))
-    doc={'meta':{'updated_at':NOW.isoformat(timespec='seconds'),'status':'ok' if not errors else ('partial' if listings else 'error'),'source_count':len(SOURCES),'errors':errors[:30],'algorithm_version':'2.1','excluded_types':['village','student_housing','staff_housing','shared','serviced','non_residential','short_term']},'baseline':CFG['baseline'],'listings':listings}
+    doc={'meta':{'updated_at':NOW.isoformat(timespec='seconds'),'status':'ok' if not errors else ('partial' if listings else 'error'),'source_count':len(SOURCES),'errors':errors[:30],'algorithm_version':'2.1','excluded_types':['village','student_housing','staff_housing','shared','serviced','non_residential','short_term']},'listings':listings}
     DATA.parent.mkdir(parents=True,exist_ok=True);DATA.write_text(json.dumps(doc,ensure_ascii=False,indent=2),encoding='utf-8')
     print(f"Saved {len(listings)} route-verified residential candidates; errors={len(errors)}")
 if __name__=='__main__':main()
