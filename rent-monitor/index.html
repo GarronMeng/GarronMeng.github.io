@@ -18,12 +18,12 @@
       <div class="refresh-box"><span class="pulse"></span><div><strong id="refreshStatus">正在读取</strong><small id="updatedAt">—</small></div></div>
     </header>
     <section class="benchmark">
-      <div class="benchmark-title"><span>当前基准</span><strong>基安大厦 10C</strong></div>
+      <div class="benchmark-title"><span>通用筛选标准</span><strong>独立住宅 · 可权衡</strong></div>
       <div class="benchmark-grid">
-        <div><b>HK$11,000</b><span>月租</span></div>
-        <div><b>224 呎</b><span>实用面积</span></div>
-        <div><b>15–18k</b><span>主要权衡区间</span></div>
-        <div><b>06:30</b><span>到金钟</span></div>
+        <div><b>≤15k</b><span>优先租金</span></div>
+        <div><b>≥300 呎</b><span>面积参考</span></div>
+        <div><b>≤18k</b><span>权衡候选</span></div>
+        <div><b>≤5 分钟</b><span>港铁步行优先</span></div>
       </div>
     </section>
     <section class="summary" aria-label="监控摘要">
@@ -43,8 +43,8 @@
       <div class="chips" id="chips">
         <button class="chip" data-filter="area">只看 ≥300呎</button>
         <button class="chip" data-filter="rent">只看 ≤16k</button>
-        <button class="chip active" data-filter="direct">直达金钟</button>
-        <button class="chip active" data-filter="commute">06:30前可达</button>
+        <button class="chip active" data-filter="direct">直达线路</button>
+        <button class="chip active" data-filter="commute">早班路线已识别</button>
         <button class="chip" data-filter="split">分体冷气已确认</button><button class="chip active" data-filter="layout">按户型合并</button>
       </div>
     </section>
@@ -66,6 +66,6 @@
     <section id="empty" class="empty" hidden><strong>暂时没有符合当前组合的房源</strong><span>关闭部分筛选即可看到面积、租金或设备存在取舍但仍值得比较的候选。</span></section>
     <footer><span>A 核心候选：核心经济与通勤达标；分体冷气、干湿分离可待确认</span><span>同规格广告合并展示，所有原始链接可展开；无法凭楼层段证明为同一实际单位</span></footer>
   </main>
-  <script src="./app.js?v=3.5" defer></script>
+  <script src="./app.js?v=3.6" defer></script>
 </body>
 </html>
