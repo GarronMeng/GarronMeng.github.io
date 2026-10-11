@@ -4,7 +4,7 @@
     "status": "ok",
     "source_count": 38,
     "errors": [],
-    "algorithm_version": "3.1",
+    "algorithm_version": "3.2",
     "excluded_types": [
       "village",
       "student_housing",
@@ -20,10 +20,8 @@
     "multi_ad_group_count": 12,
     "dedupe_method": "same_estate_building_floor_band_area_rent_rooms; distinct explicit room numbers separated",
     "dedupe_caveat": "Matching advertisements may represent different flats on different floors. All ad URLs retained.",
-    "commute_target": "06:30 Admiralty; rank practical leave-home time and missed-train tolerance",
-    "budget_policy": "core <=15k; tradeoff <=18k; opportunity <=20-22k when commute/space/quality compensates",
+    "budget_policy": "rental price brackets: preferred <=15k; consider <=18k; review exceptional listings <=22k",
     "selection_policy": "hard-exclude invalid/shared/dorm/village/non-residential; soft-score area, rent, age, AC, walk and layout",
-    "preferred_zone": "North Point / Quarry Bay / Sai Wan Ho / Cheung Sha Wan / Ap Lei Chau / Tai Wai / Sha Tin / Hung Hom / Kennedy Town / Wan Chai / Fanling",
     "watchlist_estates": [
       "惠利大廈",
       "金海大廈",
@@ -67,15 +65,8 @@
       "壹嘉",
       "維峯",
       "維峯浚匯"
-    ]
-  },
-  "baseline": {
-    "estate": "基安大厦 10C",
-    "rent": 11000,
-    "area": 224,
-    "age_years": 35,
-    "ac": "窗口式冷气",
-    "station": "何文田"
+    ],
+    "privacy_policy": "Only public listing fields and generic selection thresholds are stored; no current residence, unit, or precise personal schedule."
   },
   "listings": [
     {
@@ -95,9 +86,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -112,7 +100,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 90
+      "score": 90,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4030519",
@@ -131,9 +121,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -148,7 +135,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 85
+      "score": 85,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4043173",
@@ -167,9 +156,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -184,7 +170,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 85
+      "score": 85,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4021376",
@@ -195,7 +183,7 @@
       "unit": "富臨閣 (6座) 高層 (13-22/22樓)",
       "rent": 11800,
       "area": 369,
-      "rent_psf": 32.0,
+      "rent_psf": 32,
       "rooms": 2,
       "baths": 1,
       "age_years": 33,
@@ -203,9 +191,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -220,7 +205,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 84
+      "score": 84,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4046652",
@@ -239,9 +226,6 @@
       "mtr_walk_min": 3,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -256,7 +240,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 81
+      "score": 81,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4047666",
@@ -267,7 +253,7 @@
       "unit": "第3座 低層 (3-15/36樓)",
       "rent": 11000,
       "area": 324,
-      "rent_psf": 34.0,
+      "rent_psf": 34,
       "rooms": 2,
       "baths": null,
       "age_years": 12,
@@ -275,9 +261,6 @@
       "mtr_walk_min": 3,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -292,7 +275,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 80
+      "score": 80,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4031706",
@@ -311,9 +296,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -328,7 +310,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 79
+      "score": 79,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "3980553",
@@ -347,9 +331,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -364,7 +345,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 78
+      "score": 78,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "3915049",
@@ -383,9 +366,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -413,7 +393,9 @@
           "rent": 12800,
           "area": 334
         }
-      ]
+      ],
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4026638",
@@ -432,9 +414,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -449,7 +428,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 76
+      "score": 76,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4049105",
@@ -468,9 +449,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -485,7 +463,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 76
+      "score": 76,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4005906",
@@ -504,9 +484,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -550,7 +527,9 @@
           "rent": 13000,
           "area": 362
         }
-      ]
+      ],
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4045314",
@@ -569,9 +548,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -586,7 +562,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 74
+      "score": 74,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4032946",
@@ -605,9 +583,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -622,7 +597,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 74
+      "score": 74,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4046687",
@@ -641,9 +618,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲最方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -658,7 +632,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 74
+      "score": 74,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4030507",
@@ -677,9 +653,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -694,7 +667,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 74
+      "score": 74,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4038161",
@@ -713,9 +688,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -743,7 +715,9 @@
           "rent": 18000,
           "area": 520
         }
-      ]
+      ],
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "3983473",
@@ -762,9 +736,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -779,7 +750,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 72
+      "score": 72,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4049463",
@@ -798,9 +771,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -815,7 +785,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 71
+      "score": 71,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4049805",
@@ -834,9 +806,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -851,7 +820,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 70
+      "score": 70,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4042256",
@@ -870,9 +841,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -887,7 +855,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 70
+      "score": 70,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4035502",
@@ -906,9 +876,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -923,7 +890,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 70
+      "score": 70,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4047964",
@@ -942,9 +911,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -972,7 +938,9 @@
           "rent": 11500,
           "area": 375
         }
-      ]
+      ],
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4021567",
@@ -991,9 +959,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1008,7 +973,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 69
+      "score": 69,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "3944111",
@@ -1027,9 +994,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1044,7 +1008,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 69
+      "score": 69,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4048645",
@@ -1055,7 +1021,7 @@
       "unit": "2座 中層 (9-18/28樓) E室",
       "rent": 14000,
       "area": 400,
-      "rent_psf": 35.0,
+      "rent_psf": 35,
       "rooms": null,
       "baths": null,
       "age_years": 35,
@@ -1063,9 +1029,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲最方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1080,7 +1043,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 69
+      "score": 69,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4040546",
@@ -1091,7 +1056,7 @@
       "unit": "4座 中層 (11-21/38樓) G室",
       "rent": 19900,
       "area": 510,
-      "rent_psf": 39.0,
+      "rent_psf": 39,
       "rooms": 3,
       "baths": null,
       "age_years": 40,
@@ -1099,9 +1064,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1116,7 +1078,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 69
+      "score": 69,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4039708",
@@ -1135,9 +1099,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1152,7 +1113,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 67
+      "score": 67,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "3931827",
@@ -1171,9 +1134,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1188,7 +1148,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 67
+      "score": 67,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4047713",
@@ -1207,9 +1169,6 @@
       "mtr_walk_min": 3,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1224,7 +1183,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 67
+      "score": 67,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4038713",
@@ -1243,9 +1204,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1260,7 +1218,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 67
+      "score": 67,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4045046",
@@ -1279,9 +1239,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1309,7 +1266,9 @@
           "rent": 14000,
           "area": 340
         }
-      ]
+      ],
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4039255",
@@ -1328,9 +1287,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1345,7 +1301,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 66
+      "score": 66,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "3933292",
@@ -1364,9 +1322,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1381,7 +1336,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 66
+      "score": 66,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4029973",
@@ -1400,9 +1357,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1417,7 +1371,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 66
+      "score": 66,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4043983",
@@ -1428,7 +1384,7 @@
       "unit": "滿華樓 高層 (7-16/16樓)",
       "rent": 13600,
       "area": 316,
-      "rent_psf": 43.0,
+      "rent_psf": 43,
       "rooms": 2,
       "baths": 1,
       "age_years": 55,
@@ -1436,9 +1392,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1453,7 +1406,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 65
+      "score": 65,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4039889",
@@ -1472,9 +1427,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1489,7 +1441,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 65
+      "score": 65,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4011821",
@@ -1508,9 +1462,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1525,7 +1476,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 65
+      "score": 65,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4018001",
@@ -1544,9 +1497,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1561,7 +1511,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 65
+      "score": 65,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4041764",
@@ -1580,9 +1532,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1597,7 +1546,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 65
+      "score": 65,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4034915",
@@ -1616,9 +1567,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1633,7 +1581,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 65
+      "score": 65,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4045037",
@@ -1652,9 +1602,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1669,7 +1616,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 65
+      "score": 65,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4038166",
@@ -1688,9 +1637,6 @@
       "mtr_walk_min": 3,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1705,7 +1651,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 64
+      "score": 64,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4044091",
@@ -1724,9 +1672,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1741,7 +1686,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 62
+      "score": 62,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4048842",
@@ -1760,9 +1707,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1777,7 +1721,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 62
+      "score": 62,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4033942",
@@ -1796,9 +1742,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1813,7 +1756,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 62
+      "score": 62,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4020444",
@@ -1832,9 +1777,6 @@
       "mtr_walk_min": 4,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1849,7 +1791,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 62
+      "score": 62,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4049062",
@@ -1868,9 +1812,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲最方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1885,7 +1826,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 61
+      "score": 61,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4043035",
@@ -1904,9 +1847,6 @@
       "mtr_walk_min": 4,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1921,7 +1861,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 61
+      "score": 61,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4020868",
@@ -1940,9 +1882,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "屯马线接西九龙高铁方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1957,7 +1896,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 61
+      "score": 61,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4040395",
@@ -1976,9 +1917,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -1993,7 +1931,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 61
+      "score": 61,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4050460",
@@ -2004,7 +1944,7 @@
       "unit": "啟岸 中層 (9-21/30樓)",
       "rent": 16500,
       "area": 266,
-      "rent_psf": 62.0,
+      "rent_psf": 62,
       "rooms": 1,
       "baths": null,
       "age_years": 5,
@@ -2012,9 +1952,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2029,7 +1966,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 61
+      "score": 61,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4031767",
@@ -2048,9 +1987,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2065,7 +2001,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 61
+      "score": 61,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4013937",
@@ -2084,9 +2022,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2101,7 +2036,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 61
+      "score": 61,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4049104",
@@ -2112,7 +2049,7 @@
       "unit": "樂悠居 中層 (19-29/60樓) 17室",
       "rent": 18500,
       "area": 420,
-      "rent_psf": 44.0,
+      "rent_psf": 44,
       "rooms": 2,
       "baths": 1,
       "age_years": 21,
@@ -2120,9 +2057,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2137,7 +2071,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 61
+      "score": 61,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4046374",
@@ -2156,9 +2092,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2173,7 +2106,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 61
+      "score": 61,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4049018",
@@ -2192,9 +2127,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -2209,7 +2141,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 60
+      "score": 60,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4035573",
@@ -2228,9 +2162,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2258,7 +2189,9 @@
           "rent": 13600,
           "area": 278
         }
-      ]
+      ],
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4017596",
@@ -2277,9 +2210,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2294,7 +2224,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 60
+      "score": 60,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4049891",
@@ -2305,7 +2237,7 @@
       "unit": "金勳大廈 中層 (5-14/17樓)",
       "rent": 16300,
       "area": 408,
-      "rent_psf": 40.0,
+      "rent_psf": 40,
       "rooms": 3,
       "baths": 1,
       "age_years": 57,
@@ -2313,9 +2245,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2330,7 +2259,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 60
+      "score": 60,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4023323",
@@ -2349,9 +2280,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2366,7 +2294,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 60
+      "score": 60,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4050123",
@@ -2385,9 +2315,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2439,7 +2366,9 @@
           "rent": 17800,
           "area": 408
         }
-      ]
+      ],
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4028680",
@@ -2458,9 +2387,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2475,7 +2401,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 60
+      "score": 60,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4015096",
@@ -2494,9 +2422,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2511,7 +2436,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 60
+      "score": 60,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4048418",
@@ -2530,9 +2457,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2547,7 +2471,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 60
+      "score": 60,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4038422",
@@ -2566,9 +2492,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2583,7 +2506,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 59
+      "score": 59,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4025233",
@@ -2594,7 +2519,7 @@
       "unit": "曉悅 高層 (20-30/30樓) F室",
       "rent": 15800,
       "area": 316,
-      "rent_psf": 50.0,
+      "rent_psf": 50,
       "rooms": 1,
       "baths": null,
       "age_years": 10,
@@ -2602,9 +2527,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2619,7 +2541,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 59
+      "score": 59,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4048792",
@@ -2638,9 +2562,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "南港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；去西九龙较远",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2655,7 +2576,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 59
+      "score": 59,
+      "rail_line": "南港岛线",
+      "direct_rail": true
     },
     {
       "id": "4049069",
@@ -2674,9 +2597,6 @@
       "mtr_walk_min": 4,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2704,7 +2624,9 @@
           "rent": 14500,
           "area": 294
         }
-      ]
+      ],
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4011998",
@@ -2723,9 +2645,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -2740,7 +2659,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 58
+      "score": 58,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4035226",
@@ -2759,9 +2680,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2776,7 +2694,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 58
+      "score": 58,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "3919858",
@@ -2795,9 +2715,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "港岛线到金钟后转东铁；西九龙一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2812,7 +2729,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 58
+      "score": 58,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4020243",
@@ -2831,9 +2750,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2848,7 +2764,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 58
+      "score": 58,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4048899",
@@ -2859,7 +2777,7 @@
       "unit": "F座 中層 (8-17/30樓) 2室",
       "rent": 18500,
       "area": 451,
-      "rent_psf": 41.0,
+      "rent_psf": 41,
       "rooms": 3,
       "baths": null,
       "age_years": 43,
@@ -2867,9 +2785,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2884,7 +2799,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 58
+      "score": 58,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4014958",
@@ -2903,9 +2820,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -2920,7 +2834,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 57
+      "score": 57,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4037789",
@@ -2939,9 +2855,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2956,7 +2869,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 57
+      "score": 57,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4017975",
@@ -2975,9 +2890,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -2992,7 +2904,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 57
+      "score": 57,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4037357",
@@ -3011,9 +2925,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3028,7 +2939,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 57
+      "score": 57,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4039480",
@@ -3039,7 +2952,7 @@
       "unit": "SKYPARK 高層 (17-27/27樓)",
       "rent": 17000,
       "area": 315,
-      "rent_psf": 54.0,
+      "rent_psf": 54,
       "rooms": 1,
       "baths": null,
       "age_years": 9,
@@ -3047,9 +2960,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3077,7 +2987,9 @@
           "rent": 17000,
           "area": 315
         }
-      ]
+      ],
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4041684",
@@ -3096,9 +3008,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3126,7 +3035,9 @@
           "rent": 17500,
           "area": 282
         }
-      ]
+      ],
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4039898",
@@ -3145,9 +3056,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3162,7 +3070,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 57
+      "score": 57,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4044189",
@@ -3181,9 +3091,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3198,7 +3105,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 57
+      "score": 57,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4043105",
@@ -3217,9 +3126,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3234,7 +3140,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 57
+      "score": 57,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4043460",
@@ -3253,9 +3161,6 @@
       "mtr_walk_min": 4,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3270,7 +3175,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 56
+      "score": 56,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "3588438",
@@ -3289,9 +3196,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3306,7 +3210,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 56
+      "score": 56,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4035959",
@@ -3325,9 +3231,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；通勤极优",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3342,7 +3245,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 56
+      "score": 56,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4021397",
@@ -3361,9 +3266,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3378,7 +3280,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 56
+      "score": 56,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4048763",
@@ -3397,9 +3301,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3427,7 +3328,9 @@
           "rent": 16000,
           "area": 316
         }
-      ]
+      ],
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4039753",
@@ -3446,9 +3349,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3463,7 +3363,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 56
+      "score": 56,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4043291",
@@ -3482,9 +3384,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3499,7 +3398,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 56
+      "score": 56,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4045962",
@@ -3518,9 +3419,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3535,7 +3433,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 56
+      "score": 56,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4041806",
@@ -3554,9 +3454,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3571,7 +3468,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 55
+      "score": 55,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4047059",
@@ -3590,9 +3489,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3607,7 +3503,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 55
+      "score": 55,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4047022",
@@ -3626,9 +3524,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3643,7 +3538,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 55
+      "score": 55,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4047941",
@@ -3662,9 +3559,6 @@
       "mtr_walk_min": 3,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3679,7 +3573,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 55
+      "score": 55,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4026678",
@@ -3698,9 +3594,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；通勤很好",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3715,7 +3608,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 55
+      "score": 55,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4036095",
@@ -3734,9 +3629,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -3751,7 +3643,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 54
+      "score": 54,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4038892",
@@ -3762,7 +3656,7 @@
       "unit": "1B座 中層 (10-21/33樓)",
       "rent": 15800,
       "area": 329,
-      "rent_psf": 48.0,
+      "rent_psf": 48,
       "rooms": 4,
       "baths": null,
       "age_years": 7,
@@ -3770,9 +3664,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3787,7 +3678,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 54
+      "score": 54,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4023992",
@@ -3806,9 +3699,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3823,7 +3713,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 54
+      "score": 54,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4019025",
@@ -3842,9 +3734,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3859,7 +3748,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 54
+      "score": 54,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4040799",
@@ -3878,9 +3769,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -3895,7 +3783,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 54
+      "score": 54,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4035120",
@@ -3914,9 +3804,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3931,7 +3818,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 54
+      "score": 54,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4048452",
@@ -3950,9 +3839,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -3967,7 +3853,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 54
+      "score": 54,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4049359",
@@ -3986,9 +3874,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -4003,7 +3888,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 53
+      "score": 53,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4044537",
@@ -4022,9 +3909,6 @@
       "mtr_walk_min": 3,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4039,7 +3923,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 53
+      "score": 53,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4032804",
@@ -4050,7 +3936,7 @@
       "unit": "2座 高層 (20-29/30樓)",
       "rent": 17500,
       "area": 330,
-      "rent_psf": 53.0,
+      "rent_psf": 53,
       "rooms": 2,
       "baths": 1,
       "age_years": 41,
@@ -4058,9 +3944,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "港岛线到金钟后转东铁；西九龙一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4075,7 +3958,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 53
+      "score": 53,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4048674",
@@ -4086,7 +3971,7 @@
       "unit": null,
       "rent": 18000,
       "area": 562,
-      "rent_psf": 32.0,
+      "rent_psf": 32,
       "rooms": 3,
       "baths": 1,
       "age_years": 61,
@@ -4094,9 +3979,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -4111,7 +3993,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 53
+      "score": 53,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4046805",
@@ -4130,9 +4014,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "港岛线到金钟后转东铁；西九龙一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4147,7 +4028,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 53
+      "score": 53,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4048911",
@@ -4166,9 +4049,6 @@
       "mtr_walk_min": 4,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4183,7 +4063,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 53
+      "score": 53,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4045608",
@@ -4202,9 +4084,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4219,7 +4098,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 53
+      "score": 53,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4045518",
@@ -4238,9 +4119,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4255,7 +4133,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 53
+      "score": 53,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4045310",
@@ -4274,9 +4154,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4291,7 +4168,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 52
+      "score": 52,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4048134",
@@ -4310,9 +4189,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4327,7 +4203,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 52
+      "score": 52,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4042408",
@@ -4346,9 +4224,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4363,7 +4238,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 52
+      "score": 52,
+      "rail_line": "东铁线",
+      "direct_rail": true
     },
     {
       "id": "4035091",
@@ -4382,9 +4259,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "南港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；去西九龙较远",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4399,7 +4273,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 52
+      "score": 52,
+      "rail_line": "南港岛线",
+      "direct_rail": true
     },
     {
       "id": "3969341",
@@ -4418,9 +4294,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "南港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；去西九龙较远",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4435,7 +4308,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 52
+      "score": 52,
+      "rail_line": "南港岛线",
+      "direct_rail": true
     },
     {
       "id": "4040981",
@@ -4454,9 +4329,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4471,7 +4343,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 52
+      "score": 52,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4038586",
@@ -4482,7 +4356,7 @@
       "unit": "Coasto 中層 (8-19/26樓) D室",
       "rent": 18000,
       "area": 277,
-      "rent_psf": 65.0,
+      "rent_psf": 65,
       "rooms": 1,
       "baths": null,
       "age_years": 1,
@@ -4490,9 +4364,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "南港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；去西九龙较远",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4507,7 +4378,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 52
+      "score": 52,
+      "rail_line": "南港岛线",
+      "direct_rail": true
     },
     {
       "id": "4033125",
@@ -4526,9 +4399,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4543,7 +4413,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 51
+      "score": 51,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4036975",
@@ -4562,9 +4434,6 @@
       "mtr_walk_min": 3,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；通勤极优",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -4579,7 +4448,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 51
+      "score": 51,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4050635",
@@ -4598,9 +4469,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "屯马线接西九龙高铁方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4615,7 +4483,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 51
+      "score": 51,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "2287151",
@@ -4634,9 +4504,6 @@
       "mtr_walk_min": 10,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "港岛线到金钟后转东铁；西九龙一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4651,7 +4518,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 50
+      "score": 50,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4040372",
@@ -4670,9 +4539,6 @@
       "mtr_walk_min": 6,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "南港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；去西九龙较远",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4687,7 +4553,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 49
+      "score": 49,
+      "rail_line": "南港岛线",
+      "direct_rail": true
     },
     {
       "id": "4043701",
@@ -4706,9 +4574,6 @@
       "mtr_walk_min": 4,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4723,7 +4588,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 49
+      "score": 49,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4032676",
@@ -4742,9 +4609,6 @@
       "mtr_walk_min": 2,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4759,7 +4623,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 47
+      "score": 47,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4023462",
@@ -4778,9 +4644,6 @@
       "mtr_walk_min": 9,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "金钟转东铁；通勤很好",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4808,7 +4671,9 @@
           "rent": 15000,
           "area": 288
         }
-      ]
+      ],
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4030807",
@@ -4827,9 +4692,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4844,7 +4706,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 46
+      "score": 46,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4036464",
@@ -4863,9 +4727,6 @@
       "mtr_walk_min": 9,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "港岛线直达金钟",
-      "shenzhen_note": "港岛线到金钟后转东铁；西九龙一般",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4880,7 +4741,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 46
+      "score": 46,
+      "rail_line": "港岛线",
+      "direct_rail": true
     },
     {
       "id": "4030786",
@@ -4899,9 +4762,6 @@
       "mtr_walk_min": 5,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4916,7 +4776,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 43
+      "score": 43,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4031420",
@@ -4935,9 +4797,6 @@
       "mtr_walk_min": 1,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁较方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": null,
@@ -4952,7 +4811,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 40
+      "score": 40,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4050453",
@@ -4971,9 +4832,6 @@
       "mtr_walk_min": 10,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -4988,7 +4846,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 40
+      "score": 40,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4050182",
@@ -5007,9 +4867,6 @@
       "mtr_walk_min": 10,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "荃湾线直达金钟",
-      "shenzhen_note": "西九龙高铁很方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -5024,7 +4881,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": true,
-      "score": 40
+      "score": 40,
+      "rail_line": "荃湾线",
+      "direct_rail": true
     },
     {
       "id": "4023573",
@@ -5043,9 +4902,6 @@
       "mtr_walk_min": 10,
       "mtr_verified": true,
       "mtr_evidence": "explicit",
-      "direct_to_admiralty": true,
-      "admiralty_route": "东铁线直达金钟",
-      "shenzhen_note": "罗湖 / 落马洲方便",
       "property_class": "conventional_residential",
       "type_verified": true,
       "lift": true,
@@ -5060,7 +4916,9 @@
       "last_seen": "2026-10-11T22:03:06+08:00",
       "price_drop": 0,
       "is_new": false,
-      "score": 39
+      "score": 39,
+      "rail_line": "东铁线",
+      "direct_rail": true
     }
   ]
 }
