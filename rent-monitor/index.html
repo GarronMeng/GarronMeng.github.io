@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#f5f5f2" />
   <title>香港租房雷达</title>
-  <link rel="stylesheet" href="./styles.css?v=3.5" />
+  <link rel="stylesheet" href="./styles.css?v=4.0" />
 </head>
 <body>
   <main class="shell">
@@ -43,16 +43,39 @@
         <button class="seg" data-view="new">新盘 / 降价</button><button class="seg" data-view="compact">紧凑户型</button>
       </div>
       <div class="chips" id="chips">
-        <button class="chip" data-filter="area">只看 ≥300呎</button>
         
         <button class="chip active" data-filter="direct">直达线路</button>
         <button class="chip active" data-filter="commute">早班路线已识别</button>
-        <button class="chip" data-filter="split">分体冷气已确认</button><button class="chip active" data-filter="layout">按户型合并</button>
+        <button class="chip" data-filter="split">分体冷气已确认</button>
+        <button class="chip" data-filter="lift">已确认有电梯</button>
+        <button class="chip active" data-filter="layout">按户型合并</button>
       </div>
     </section>
     <section class="district-browser price-browser" aria-label="按租金范围浏览">
       <div class="district-browser-title"><div><h2>按租金浏览</h2><p>优先看 10–15k，也能一键切换全部租金；小面积房源会明确显示取舍。</p></div></div>
       <div class="area-shortcuts" id="priceFilters">正在读取预算...</div>
+    </section>
+    <section class="filter-panel" aria-label="更多筛选条件">
+      <div class="filter-panel-head"><div><h2>筛选条件</h2><p>按港铁步行、面积和房型进一步筛选；距离未知的房源不会被误算为近站。</p></div>
+        <button type="button" id="resetFilters" class="reset-filters">重置筛选</button>
+      </div>
+      <div class="filter-fields">
+        <label class="filter-field" for="walkSelect"><span>步行至港铁</span>
+          <select id="walkSelect">
+            <option value="all">不限距离</option><option value="3">≤3 分钟</option>
+            <option value="5">≤5 分钟</option><option value="10">≤10 分钟</option>
+          </select></label>
+        <label class="filter-field" for="areaSelect"><span>实用面积</span>
+          <select id="areaSelect">
+            <option value="all">全部面积（含紧凑盘）</option><option value="250">≥250 呎</option>
+            <option value="300">≥300 呎</option><option value="400">≥400 呎</option>
+          </select></label>
+        <label class="filter-field" for="roomsSelect"><span>间隔房型</span>
+          <select id="roomsSelect">
+            <option value="all">不限房型</option><option value="studio">开放式</option>
+            <option value="one">1 房</option><option value="two">2 房及以上</option>
+          </select></label>
+      </div>
     </section>
     <section class="district-browser" id="districtNavigator" aria-label="按地区浏览">
       <div class="district-browser-title">
@@ -65,13 +88,31 @@
     </section>
 
     <section class="list-head">
-      <div><strong id="resultTitle">全部可权衡候选</strong><span id="resultMeta"></span></div>
-      <select id="sortSelect" aria-label="排序"><option value="score">综合推荐</option><option value="area">面积最大</option><option value="rent">租金最低</option><option value="fresh">最新确认</option></select>
+      <div class="results-heading"><strong id="resultTitle">全部可权衡候选</strong><span id="resultMeta"></span></div>
+      <div class="results-tools">
+        <label class="results-tool" for="displaySelect"><span>展示方式</span>
+          <select id="displaySelect"><option value="district">按地区分组</option><option value="flat">全区平铺</option></select>
+        </label>
+        <label class="results-tool" for="sortSelect"><span>排序依据</span>
+          <select id="sortSelect">
+            <option value="score">综合推荐</option>
+            <option value="rent_asc">月租：低到高</option>
+            <option value="rent_desc">月租：高到低</option>
+            <option value="walk_asc">港铁步行：近到远</option>
+            <option value="walk_desc">港铁步行：远到近</option>
+            <option value="area_desc">面积：大到小</option>
+            <option value="area_asc">面积：小到大</option>
+            <option value="psf_asc">呎租：低到高</option>
+            <option value="fresh_desc">广告更新：最新优先</option>
+          </select>
+        </label>
+      </div>
     </section>
+    <p id="sortNote" class="sort-note" aria-live="polite"></p>
     <section id="listings" class="listings"></section>
     <section id="empty" class="empty" hidden><strong>暂时没有符合当前组合的房源</strong><span>关闭部分筛选即可看到面积、租金或设备存在取舍但仍值得比较的候选。</span></section>
     <footer><span>A 核心以面积和便利度优先；170–259呎独立住宅归入紧凑观察，不代表居住品质升级</span><span>同规格广告合并展示，所有原始链接可展开；无法凭楼层段证明为同一实际单位</span></footer>
   </main>
-  <script src="./app.js?v=3.8" defer></script>
+  <script src="./app.js?v=4.0" defer></script>
 </body>
 </html>
