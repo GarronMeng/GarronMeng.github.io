@@ -1,4 +1,4 @@
-const state={data:null,view:'all',filters:{area:false,rent:false,direct:true,commute:true,split:false,layout:true},sort:'score',district:'all',priceBand:'10-15'};
+const state={data:null,view:'all',filters:{direct:true,commute:true,split:false,lift:false,layout:true,walkMax:'all',areaMin:'all',rooms:'all'},sort:'score',district:'all',priceBand:'10-15',display:'district'};
 const money=n=>`HK$${Number(n||0).toLocaleString('en-HK')}`;
 const date=s=>{if(!s)return'—';const d=new Date(s);return Number.isNaN(d.getTime())?s:new Intl.DateTimeFormat('zh-HK',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(d)};
 const er={红磡:['excellent',14],大围:['excellent',12],沙田:['safe',9],火炭:['safe',6],大埔墟:['medium',0],太和:['medium',-1],粉岭:['early',-5],上水:['early',-7]};
@@ -24,11 +24,49 @@ function score(x){let s=x.score||0;s+=commute(x).bonus;s+=x.rent<=14000?6:x.rent
 function tradeoffs(x){const a=[],c=commute(x);if(x.rent>18000)a.push('租金明显超预算');else if(x.rent>15000)a.push(`比15k高${money(x.rent-15000)}`);if(x.area<260)a.push('紧凑面积 '+x.area+'呎');else if(x.area<300)a.push(`面积${x.area}呎`);if(x.mtr_verified!==true)a.push('步行港铁时间待核实');if(x.mtr_walk_min>5)a.push(`港铁步行${x.mtr_walk_min}分钟`);if(['fragile','tight'].includes(c.risk))a.push('早班容错低');if(c.risk==='early')a.push('需要很早出门');if(x.split_ac!==true)a.push(x.ac_present?'冷气类型待确认':'冷气待确认');if(x.wet_dry!==true)a.push('干湿分离待确认');if(x.age_years>=45)a.push(`楼龄${x.age_years}年`);return a.slice(0,4)}
 function upsides(x){const a=[],c=commute(x);if(x.area>=400)a.push('宽敞户型');else if(x.area>=300)a.push('达到300呎面积目标');if(x.rent<=14000)a.push('租金较低');if(c.risk==='excellent')a.push('早班交通相对便利');if(x.split_ac===true)a.push('分体冷气已确认');if(watch(x))a.push('重点屋苑');return a.slice(0,3)}
 function badges(x){const a=[],t=tier(x),c=commute(x);a.push(badge(t==='A'?'A 核心候选':t==='B'?'B 权衡':'C 机会',t==='A'?'good':t==='B'?'warn':'neutral'));if(x.is_new)a.push(badge('新盘','new'));if(x.price_drop>0)a.push(badge(`降价 ${money(x.price_drop)}`,'new'));if(watch(x))a.push(badge('重点屋苑','good'));if(x.duplicate_count>1)a.push(badge('同规格广告 ×'+x.duplicate_count,'warn'));if(x.layout_group_count>1)a.push(badge('同户型 '+x.layout_group_count+' 组','good'));if(x.area<260)a.push(badge('紧凑户型','warn'));if(x.availability_verified===false)a.push(badge('在租待确认','warn'));if(c.risk==='excellent')a.push(badge('早班通勤优','good'));else if(['fragile','tight','early'].includes(c.risk))a.push(badge(c.risk==='early'?'需很早出门':'早班容错低','warn'));if(x.split_ac===true)a.push(badge('分体冷气已确认','good'));else a.push(badge(x.ac_present?'有冷气·类型待确认':'冷气待确认','warn'));if(x.wet_dry===true)a.push(badge('干湿分离','good'));if(x.lift===true)a.push(badge('有电梯','good'));return a.join('')}
-function passes(x){if(tier(x)==='D')return false;if(state.view==='core'&&tier(x)!=='A')return false;if(state.view==='tradeoff'&&tier(x)!=='B')return false;if(state.view==='watch'&&!watch(x))return false;if(state.view==='new'&&!x.is_new&&!(x.price_drop>0))return false;if(state.view==='compact'&&!(x.area>=170&&x.area<260))return false;if(state.filters.area&&x.area<300)return false;if(state.filters.rent&&x.rent>16000)return false;if(state.filters.direct&&!x.direct_rail)return false;if(state.filters.commute&&!commute(x).ok)return false;if(state.filters.split&&x.split_ac!==true)return false;if(!matchesPrice(x))return false;return true}
+function passes(x){
+ if(tier(x)==='D')return false;
+ if(state.view==='core'&&tier(x)!=='A')return false;
+ if(state.view==='tradeoff'&&tier(x)!=='B')return false;
+ if(state.view==='watch'&&!watch(x))return false;
+ if(state.view==='new'&&!x.is_new&&!(x.price_drop>0))return false;
+ if(state.view==='compact'&&!(x.area>=170&&x.area<260))return false;
+ if(state.filters.direct&&!x.direct_rail)return false;
+ if(state.filters.commute&&!commute(x).ok)return false;
+ if(state.filters.split&&x.split_ac!==true)return false;
+ if(state.filters.lift&&x.lift!==true)return false;
+ if(state.filters.areaMin!=='all'&&!(x.area>=Number(state.filters.areaMin)))return false;
+ if(state.filters.walkMax!=='all'&&(!validWalk(x)||x.mtr_walk_min>Number(state.filters.walkMax)))return false;
+ if(state.filters.rooms==='studio'&&x.rooms!==0)return false;
+ if(state.filters.rooms==='one'&&x.rooms!==1)return false;
+ if(state.filters.rooms==='two'&&!(Number.isFinite(x.rooms)&&x.rooms>=2))return false;
+ return matchesPrice(x)
+}
 const PRICE_BANDS=[{id:'10-15',label:'10–15k 优先',min:10000,max:15000},{id:'all',label:'全部租金',min:0,max:Infinity},{id:'under13',label:'≤13k',min:0,max:13000},{id:'15-18',label:'15–18k',min:15001,max:18000},{id:'over18',label:'18k以上',min:18001,max:Infinity}];
 function matchesPrice(x){const b=PRICE_BANDS.find(p=>p.id===state.priceBand)||PRICE_BANDS[0];return x.rent>=b.min&&x.rent<=b.max}
-function renderPrices(all){const box=document.querySelector('#priceFilters');if(!box)return;box.innerHTML=PRICE_BANDS.map(b=>{const n=all.filter(x=>x.rent>=b.min&&x.rent<=b.max).length;return '<button type="button" class="area-filter'+(state.priceBand===b.id?' active':'')+'" data-price="'+b.id+'" aria-pressed="'+(state.priceBand===b.id)+'">'+b.label+' <span>'+n+'</span></button>'}).join('')}
-function sort(items){return[...items].sort((a,b)=>state.sort==='area'?b.area-a.area:state.sort==='rent'?a.rent-b.rent:state.sort==='fresh'?String(b.last_seen).localeCompare(String(a.last_seen)):score(b)-score(a)||a.rent-b.rent)}
+const validWalk=x=>Number.isFinite(x.mtr_walk_min)&&x.mtr_walk_min>=0&&x.mtr_verified===true;
+const psf=x=>Number.isFinite(x.rent_psf)&&x.rent_psf>0?x.rent_psf:(x.rent>0&&x.area>0?x.rent/x.area:null);
+const freshStamp=x=>{const n=Date.parse(x.listing_updated||x.first_seen||'');return Number.isFinite(n)?n:null};
+const SORTS={score:'综合推荐',rent_asc:'月租：低到高',rent_desc:'月租：高到低',walk_asc:'港铁步行：近到远',walk_desc:'港铁步行：远到近',area_desc:'面积：大到小',area_asc:'面积：小到大',psf_asc:'呎租：低到高',fresh_desc:'广告更新：最新优先'};
+function compareValue(a,b,direction=1){const av=Number.isFinite(a)?a:null,bv=Number.isFinite(b)?b:null;if(av===null&&bv===null)return 0;if(av===null)return 1;if(bv===null)return -1;return (av-bv)*direction}
+function compareListings(a,b){let c=0;switch(state.sort){
+ case 'rent_asc':c=compareValue(a.rent,b.rent);break;
+ case 'rent_desc':c=compareValue(a.rent,b.rent,-1);break;
+ case 'walk_asc':c=compareValue(validWalk(a)?a.mtr_walk_min:null,validWalk(b)?b.mtr_walk_min:null);break;
+ case 'walk_desc':c=compareValue(validWalk(a)?a.mtr_walk_min:null,validWalk(b)?b.mtr_walk_min:null,-1);break;
+ case 'area_desc':c=compareValue(a.area,b.area,-1);break;
+ case 'area_asc':c=compareValue(a.area,b.area);break;
+ case 'psf_asc':c=compareValue(psf(a),psf(b));break;
+ case 'fresh_desc':c=compareValue(freshStamp(a),freshStamp(b),-1);break;
+ default:c=score(b)-score(a)
+ }return c||score(b)-score(a)||compareValue(a.rent,b.rent)||String(a.id||'').localeCompare(String(b.id||''))}
+function sort(items){return [...items].sort(compareListings)}
+function renderPrices(all){const box=document.querySelector('#priceFilters');if(!box)return;
+ const saved=state.priceBand;state.priceBand='all';
+ const matching=all.filter(x=>passes(x)&&(state.district==='all'||x.district===state.district));
+ state.priceBand=saved;
+ box.innerHTML=PRICE_BANDS.map(b=>{const n=matching.filter(x=>x.rent>=b.min&&x.rent<=b.max).length;
+ return '<button type="button" class="area-filter'+(saved===b.id?' active':'')+(n===0?' no-results':'')+'" data-price="'+b.id+'" aria-pressed="'+(saved===b.id)+'">'+escapeHtml(b.label)+' <span>'+n+'</span></button>'}).join('')}
 
 // Display grouping: same estate / block / area / room count is one layout type,
 // not necessarily one physical flat. Keep every distinct offering underneath.
@@ -38,28 +76,24 @@ function layoutKey(x){
   const normal=v=>String(v??'').normalize('NFKC').toLowerCase().replace(/\s+/g,'');
   return [normal(x.district),normal(estate(x)),x.area,x.rooms??'unknown',normal(building)].join('|')
 }
-function layoutGroups(items){
-  const buckets=new Map();
-  for(const x of items){const k=layoutKey(x);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(x)}
-  return [...buckets.values()].map(group=>{
-    if(group.length===1)return group[0];
-    const ordered=[...group].sort((a,b)=>a.rent-b.rent||score(b)-score(a));
-    const chosen=ordered[0];
-    return {...chosen,layout_group_count:group.length,layout_ad_count:group.reduce((n,x)=>n+(x.duplicate_count||1),0),layout_price_min:chosen.rent,layout_price_max:Math.max(...group.map(x=>x.rent)),layout_options:ordered.slice(1).map(x=>({id:x.id,url:x.url,rent:x.rent,unit:x.unit,alternate_ads:x.alternate_ads||[]}))}
-  })
-}
-function layoutAlternatives(x){
-  const opts=x.layout_options||[];
-  if(!opts.length)return '';
-  const fmtLink=(ad)=>{
-    if(!/^\d+$/.test(String(ad.id||'')))return '';
-    return '<a target="_blank" rel="noopener noreferrer" href="https://www.28hse.com/rent/apartment/property-'+String(ad.id)+'">'+money(ad.rent)+' · 广告 #'+String(ad.id)+'</a>';
-  };
-  let links=opts.map(o=>fmtLink(o)+(o.alternate_ads||[]).map(a=>fmtLink({...a,rent:o.rent})).join('')).join('');
-  return '<details class="duplicate-links"><summary>另有 '+opts.length+' 组同户型报价 · '+money(x.layout_price_min)+'–'+money(x.layout_price_max)+'</summary><p>按屋苑、楼座、面积及房数归组；不同楼层及租金可能属于不同单位。请逐一查看链接。</p><div class="duplicate-link-list">'+links+'</div></details>';
-}
+function layoutGroups(items){const buckets=new Map();for(const x of items){const k=layoutKey(x);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(x)}
+ return [...buckets.values()].map(group=>{if(group.length===1)return group[0];
+ const ordered=sort(group),chosen=ordered[0],rents=group.map(x=>x.rent).filter(Number.isFinite),walks=group.filter(validWalk).map(x=>x.mtr_walk_min);
+ return {...chosen,layout_group_count:group.length,layout_ad_count:group.reduce((n,x)=>n+(x.duplicate_count||1),0),
+ layout_price_min:Math.min(...rents),layout_price_max:Math.max(...rents),
+ layout_walk_min:walks.length?Math.min(...walks):null,layout_walk_max:walks.length?Math.max(...walks):null,
+ layout_options:ordered.slice(1).map(x=>({id:x.id,url:x.url,rent:x.rent,mtr_walk_min:x.mtr_walk_min,mtr_verified:x.mtr_verified,unit:x.unit,listing_updated:x.listing_updated,alternate_ads:x.alternate_ads||[]}))}})}
+
+function layoutAlternatives(x){const opts=x.layout_options||[];if(!opts.length)return '';
+ const mkLink=ad=>{const id=String(ad.id||'');if(!/^\d+$/.test(id))return '';
+ const walk=validWalk(ad)?' · 港铁步行'+ad.mtr_walk_min+'分钟':'',updated=ad.listing_updated?' · '+escapeHtml(ad.listing_updated):'';
+ return '<a target="_blank" rel="noopener noreferrer" href="https://www.28hse.com/rent/apartment/property-'+id+'">'+money(ad.rent)+walk+updated+' · #'+id+'</a>'};
+ const links=opts.map(o=>mkLink(o)+(o.alternate_ads||[]).map(a=>mkLink({...a,rent:o.rent,mtr_walk_min:o.mtr_walk_min,mtr_verified:o.mtr_verified})).join('')).join('');
+ const range=x.layout_price_min===x.layout_price_max?money(x.layout_price_min):money(x.layout_price_min)+'–'+money(x.layout_price_max);
+ return '<details class="duplicate-links"><summary>同户型另有 '+opts.length+' 组报价 · '+range+'</summary><p>仅按屋苑、楼座、面积及房数归组；不同报价或楼层可能是不同单位。保留每条原广告。</p><div class="duplicate-link-list">'+links+'</div></details>'}
+
 function alternativeAds(x){const ads=Array.isArray(x.alternate_ads)?x.alternate_ads:[];if(!ads.length)return '';const links=ads.filter(a=>/^\d+$/.test(String(a.id||''))).map(a=>'<a target="_blank" rel="noopener noreferrer" href="https://www.28hse.com/rent/apartment/property-'+encodeURIComponent(String(a.id))+'">广告 #'+String(a.id)+(a.listing_updated?' · 更新 '+String(a.listing_updated):'')+'</a>').join('');return '<details class="duplicate-links"><summary>同规格还有 '+ads.length+' 条广告 · 展开核对</summary><p>屋苑、面积、价钱及楼层范围相近，不代表已确认属于同一实际单位。</p><div class="duplicate-link-list">'+links+'</div></details>'}
-function card(x){const c=commute(x);return`<article class="listing"><div class="listing-top"><div class="listing-title"><h2>${estate(x)}</h2><p>${x.district}${x.unit?` · ${x.unit}`:''}${x.rooms?` · ${x.rooms}房`:''}</p></div><div class="score">${score(x)}</div></div><div class="badges">${badges(x)}</div><div class="metrics"><div class="metric"><b>${money(x.rent)}${x.layout_group_count>1?' 起':''}</b><span>月租</span></div><div class="metric"><b>${x.area} 呎</b><span>实用面积</span></div><div class="metric"><b>${x.age_years??'—'}${x.age_years!=null?' 年':''}</b><span>楼龄</span></div></div><div class="facts"><div class="fact"><span>早班交通参考</span>${c.label}</div><div class="fact"><span>港铁</span>${x.mtr_station||x.district}${x.mtr_walk_min!=null?` · ${x.mtr_walk_min}分钟`:''} · ${x.rail_line||'线路待确认'}</div><div class="fact"><span>值得看</span>${upsides(x).join(' · ')||'综合条件有可比性'}</div><div class="fact"><span>主要取舍</span>${tradeoffs(x).join(' · ')||'暂无明显短板'}</div><div class="fact"><span>最后确认</span>${date(x.last_seen)}</div></div><div class="listing-actions"><a class="open-link" href="${x.url}" target="_blank" rel="noopener">打开当前房源</a><span class="source">${x.source}</span></div>${alternativeAds(x)}${layoutAlternatives(x)}</article>`}
+function card(x){const c=commute(x);return`<article class="listing"><div class="listing-top"><div class="listing-title"><h2>${estate(x)}</h2><p>${x.district}${x.unit?` · ${x.unit}`:''}${x.rooms?` · ${x.rooms}房`:''}</p></div><div class="score">${score(x)}</div></div><div class="badges">${badges(x)}</div><div class="metrics"><div class="metric"><b>${money(x.rent)}</b><span>月租${x.layout_group_count>1?' · 当前排序代表':''}</span></div><div class="metric"><b>${x.area} 呎</b><span>实用面积</span></div><div class="metric"><b>${validWalk(x)?x.mtr_walk_min+' 分钟':'待核实'}</b><span>至港铁 · 广告步行</span></div></div><div class="facts"><div class="fact"><span>早班交通参考</span>${c.label}</div><div class="fact"><span>港铁</span>${x.mtr_station||x.district}${x.mtr_walk_min!=null?` · ${x.mtr_walk_min}分钟`:''} · ${x.rail_line||'线路待确认'}</div><div class="fact"><span>值得看</span>${upsides(x).join(' · ')||'综合条件有可比性'}</div><div class="fact"><span>主要取舍</span>${tradeoffs(x).join(' · ')||'暂无明显短板'}</div><div class="fact"><span>楼龄 / 呎租</span>${x.age_years!=null?x.age_years+"年":"楼龄待核"} · ${psf(x)!=null?money(Math.round(psf(x)))+"/呎":"呎租待核"}</div><div class="fact"><span>广告更新</span>${x.listing_updated||"日期待核"}</div></div>${x.layout_group_count>1?`<div class="group-price-note">同户型报价：${money(x.layout_price_min)}–${money(x.layout_price_max)} · 当前显示按排序选出的广告</div>`:""}<div class="listing-actions"><a class="open-link" href="${x.url}" target="_blank" rel="noopener">打开当前房源</a><span class="source">${x.source}</span></div>${alternativeAds(x)}${layoutAlternatives(x)}</article>`}
 
 
 // Area navigator: group by the advertisement district, not the detected MTR
@@ -104,7 +138,7 @@ function renderDistrictSections(items){
   const names=[...grouped.keys()].sort(areaOrder);
   return names.map(d=>{
     const records=grouped.get(d),ranges=records.map(x=>x.rent).filter(Number.isFinite);
-    const rentRange=ranges.length?money(Math.min(...ranges))+(ranges.length>1?'–'+money(Math.max(...ranges)):''):'租金待确认';
+    const lows=records.map(x=>Number.isFinite(x.layout_price_min)?x.layout_price_min:x.rent).filter(Number.isFinite),highs=records.map(x=>Number.isFinite(x.layout_price_max)?x.layout_price_max:x.rent).filter(Number.isFinite);const rentRange=lows.length?money(Math.min(...lows))+(Math.min(...lows)!==Math.max(...highs)?'–'+money(Math.max(...highs)):''):'租金待确认';
     const expanded=state.district!=='all'||featuredDistricts.slice(0,4).includes(d);
     return '<details class="district-section"'+(expanded?' open':'')+'><summary class="district-heading"><span class="district-heading-copy"><span class="district-region">'+areaRegion(d)+'</span><strong>'+escapeHtml(d)+'</strong><span class="district-count">'+records.length+' 个'+(state.filters.layout?'户型组':'广告组')+'</span></span><span class="district-rent">'+rentRange+'</span></summary><div class="district-section-actions"><button type="button" class="focus-district" data-district="'+encodeURIComponent(d)+'">只看'+escapeHtml(d)+'</button></div><div class="district-card-grid">'+records.map(card).join('')+'</div></details>';
   }).join('')
