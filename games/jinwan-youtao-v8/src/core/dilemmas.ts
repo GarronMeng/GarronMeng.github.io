@@ -55,7 +55,7 @@ export function tickDilemmas(s:PreviewState){const g=initDilemmas(s),t=now(s);
  const today=g.decisions!.filter(d=>d.day===g.day&&d.kind!=='late'&&d.kind!=='birthday').length,last=Math.max(0,...Object.values(g.dilemmaSeen!));
  if(today>=(g.day>=7?3:2)||t-last<150&&!teaching)return;
  const order=(['budget','overbook','hk-overtime','vip-upgrade','noise-comp'] as DilemmaKind[]).sort((a,b)=>(a==='budget'?-1:b==='budget'?1:0)||(g.dilemmaSeen![a]??0)-(g.dilemmaSeen![b]??0));
- const fresh=(k:DilemmaKind)=>(g.dilemmaSeen![k]??0)<g.day*1440;let kind=order.find(k=>fresh(k)&&candidate(s,k)),data=kind?candidate(s,kind):null;
+ const fresh=(k:DilemmaKind)=>(g.dilemmaSeen![k]??0)<(k==='budget'?g.day:g.day-1)*1440;let kind=order.find(k=>fresh(k)&&candidate(s,k)),data=kind?candidate(s,kind):null;
  if(!data&&teaching&&g.minute>=540&&g.minute<=1140&&fresh('overbook')){kind='overbook';data=candidate(s,kind,true);}
  if(!kind||!data)return;
  const d:Dilemma={id:g.nextId++,kind,day:g.day,created:t,expires:t+DURATION[kind],teach:teaching,...data};g.dilemmas!.push(d);g.dilemmaSeen![kind]=t;
@@ -102,7 +102,7 @@ const later=(s:PreviewState,r:DecisionRecord,kind:'referral'|'review',value:numb
 
 export function resolveDilemma(s:PreviewState,id:number,choice:string,auto=false){const g=initDilemmas(s),d=g.dilemmas!.find(d=>d.id===id);if(!d)return false;const view=describeDilemma(s,d),option=view.options.find(o=>o.id===choice);
  if(!option||option.disabled&&!auto){g.notice=option?.disabled??'这个选项已不可用。';return false;}
- const cost=option.effects.filter(e=>e.k==='现金'&&typeof e.v==='number').reduce((n,e)=>n-(e.v as number),0);if(cost>s.metrics.cash&&!auto){g.notice='现金不足，需要 ¥'+cost;return false;}
+ const cost=option.effects.filter(e=>e.k==='现金'&&typeof e.v==='number').reduce((n,e)=>n-(e.v as number),0);if(cost>0&&cost>s.metrics.cash&&!auto){g.notice='现金不足，需要 ¥'+cost;return false;}
  g.dilemmas=g.dilemmas!.filter(x=>x.id!==id);if(cost>0&&s.metrics.cash>=cost){s.metrics.cash-=cost;g.expense+=cost;}
  const v=s.guests.find(x=>x.id===d.guestId),o=initOperations(s);let result='';const r=recordDecision(s,d.kind,view.title,(auto?'超时 · ':'')+option.label,'',auto);
  if(d.kind==='overbook'){const n=choice==='all'?d.count??2:choice==='one'?1:0;for(let i=0;i<n;i++){const p=newProfile(s,.9);o.bookings.push({id:'booking-'+g.nextId++,profileId:p.id,source:'团单',eta:1080+i*20,nights:1,rate:d.rate??g.price,segment:'团队',status:'confirmed',decision:r.id});}
