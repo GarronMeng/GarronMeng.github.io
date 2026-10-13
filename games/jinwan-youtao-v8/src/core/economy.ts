@@ -3,6 +3,8 @@ import type {Room} from '../state/types';
 export const roomRate=(price:number,room:Pick<Room,'type'|'level'|'category'>,member=false)=>Math.round(price*(roomTier(room)==='suite'&&member?1:ROOM_TIERS[roomTier(room)].factor)*(1+((room.level??1)-1)*.1));
 export const roomUpgradeCost=(level:number)=>2500*level;
 export const houseMinutes=(level:number)=>level?Math.max(8,24-level*5):30;
+/** Tired teams turn rooms more slowly; the penalty is what makes overtime a real cost. */
+export const moraleFactor=(morale=80)=>morale<35?1.5:morale<60?1.2:1;
 export const engineeringMinutes=(level:number)=>level?Math.max(10,35-level*7):40;
 export const supplyCost=(level:number)=>Math.max(140,260-level*20);
 export const revenuePrice=(base:number,hotelLevel:number,managerLevel:number)=>Math.round(base*(1+hotelLevel*.04+(managerLevel-1)*.06));

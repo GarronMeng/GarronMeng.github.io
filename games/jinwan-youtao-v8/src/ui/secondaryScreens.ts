@@ -39,7 +39,7 @@ export function secondaryScreen(s:Readonly<PreviewState>,view:string,u:FocusSele
   return frame('运营安排',nav+body,actions);
  }
  if(view==='score'){
-  const rating=scores(s);return frame('经营评分',metrics([['综合评分',rating.total+' / 100'],['评估方式','四项等权']])+`<div class="rating-list">${rating.parts.map(p=>`<div><span>${p.name}</span><b>${p.value}</b><progress max="100" value="${p.value}" aria-label="${p.name}"></progress></div>`).join('')}</div>`+head('revenue','从最弱的一项开始改善','口碑看承诺，体验看服务，房务看周转，业主看经营。'),go('处理待办','events')+go('财务表现','report-data'));
+  const rating=scores(s);return frame('经营评分',metrics([['综合评分',rating.total+' / 100'],['评估方式','五项等权']])+`<div class="rating-list">${rating.parts.map(p=>`<div><span>${p.name}</span><b>${p.value}</b><progress max="100" value="${p.value}" aria-label="${p.name}"></progress></div>`).join('')}</div>`+head('revenue','从最弱的一项开始改善','口碑看承诺，体验看服务，房务看周转，业主看经营，团队看负荷。'),go('处理待办','events')+go('财务表现','report-data'));
  }
  if(view==='report-data'){
   const r=g.reports.at(-1);return frame(r?'Day '+r.day+' · 财务明细':'今天 · 财务进度',metrics([['入账收入',money(r?.revenue??g.revenue)],['成本',money(r?.expense??g.expense)],['净额',money((r?.revenue??g.revenue)-(r?.expense??g.expense))]])+(r?metrics([['ADR',money(r.adr)],['RevPAR',money(r.revpar)],['入住率',r.occupancy+'%']])+entry('收益经理建议',r.recommendation):head('revenue','房费于午夜统一结算','当前收入包括已经到账的消费与奖金；在住房费尚未入账。')),go('经营评分','score')+go('收支日志','log')+(g.reportOpen?btn('开始下一天','continue'):go('晚间复盘','evening')));

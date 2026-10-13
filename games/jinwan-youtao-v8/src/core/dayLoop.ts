@@ -3,6 +3,8 @@ import type {PreviewState,Command,DailyPlan,Department} from '../state/types';
 import {rooms} from '../state/selectors';
 import {forecast,operationsLog} from './operations';
 import {campaignGoal} from './campaign';
+import {track} from './progression';
+import {describeDilemma} from './dilemmas';
 export const DAY_PLANS={occupancy:{name:'稳健接客',price:720,hold:false,description:'用适中房价接住需求，套房开放销售。',risk:'客流更多，翻房和前台压力也更大。'},experience:{name:'照顾体验',price:720,hold:true,description:'留一间会员套房，早餐与酒廊各预备 20 份。',risk:'预采购 ¥240；留套会减少付费销售空间。'},margin:{name:'争取利润',price:850,hold:false,description:'提高挂牌价，保留套房付费销售机会。',risk:'Walk-in 会减少，已确认订单不会跟着涨价。'}} as const;
 export function initDayPlan(s:PreviewState){const g=s.game!;if(g.plan?.day===g.day)return g.plan;return g.plan={day:g.day,focus:'occupancy',selected:false,prepared:false,target:0};}
 export function planTarget(s:Readonly<PreviewState>,focus:DailyPlan['focus']){
@@ -19,7 +21,7 @@ export function dayPlanCommand(s:PreviewState,c:Command){
  const option=DAY_PLANS[id],cost=id==='experience'&&!p.prepared?240:0;
  if(s.metrics.cash<cost){g.notice='预采购需要 ¥240；也可以维持现有安排。';return true;}
  if(cost){s.metrics.cash-=cost;g.expense+=cost;g.stock+=20;g.clubStock+=20;p.prepared=true;}
- p.focus=id;p.selected=true;g.price=option.price;g.operations.suitePolicy=option.hold?'hold':'sell';p.target=planTarget(s,id);
+ p.focus=id;p.selected=true;track(s,'strategy');g.price=option.price;g.operations.suitePolicy=option.hold?'hold':'sell';p.target=planTarget(s,id);
  operationsLog(s,'晨会方向：'+option.name+'。挂牌 ¥'+g.price+'，'+(option.hold?'保留一间会员套房':'套房开放销售')+(cost?'，餐台预采购 ¥240':'')+'。');return true;
 }
 export function reviewDayPlan(s:PreviewState,net:number,phase:'evening'|'settled'){
@@ -32,7 +34,8 @@ export function nextDecision(s:Readonly<PreviewState>):{title:string;why:string;
  const g=s.game!,rs=rooms(s),waiting=s.guests.filter(v=>!v.staff&&!v.roomId&&!v.departing),dirty=rs.find(r=>r.status==='dirty'),requests=s.guests.filter(v=>!v.departing&&v.roomId&&(v.late==='pending'||v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved));
  if(g.reportOpen)return {title:'把今天的结果带进明天',why:'房费已结算，先看判断是否奏效，再安排下一天。',target:'report',department:'revenue'};
  if(g.operations?.briefOpen)return {title:'先确定今天的经营方向',why:'比较接客、体验与利润的取舍，确认后开始营业。',target:'brief',department:'revenue'};
- const lesson=openingGoal(s);if(lesson)return {title:lesson.title,why:lesson.why,target:lesson.target,department:lesson.department};
+ const lesson=openingGoal(s);if(lesson&&!lesson.waiting)return {title:lesson.title,why:lesson.why,target:lesson.target,department:lesson.department};
+ const choice=g.dilemmas?.[0];if(choice)return {title:'经营抉择：'+describeDilemma(s,choice).title,why:'每个选项都有代价；超时会按最保守的方式处理。',target:'events',department:describeDilemma(s,choice).advisor};
  if(g.events.length)return {title:g.events[0].title,why:'现场问题有处理时限，先避免小问题变成客诉。',target:'events',department:'front'};
  if(waiting.length)return {title:'接住 '+waiting.length+' 位到店客人',why:'先办理入住，再兑现生日、晚退或会员安排。',target:'front',department:'front'};
  if(dirty)return {title:dirty.number+' 翻房后才能再次出售',why:'先让现有客房创造收入，再花钱扩大容量。',target:'hotel',department:'house',entity:dirty.id};

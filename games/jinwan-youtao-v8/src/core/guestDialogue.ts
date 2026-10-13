@@ -5,12 +5,14 @@ import {PERSONAS} from '../content/personas';
 import {hotelTime,hash} from './guestMovement';
 export const memoryKey=(g:Guest)=>g.name+':'+g.persona;
 export function cue(s:PreviewState,g:Guest,event:string){g.speech??={next:0,recent:[]};g.speech.event=event;g.speech.eventUntil=hotelTime(s)+35;g.speech.next=0;speak(s,g);}
+export function say(s:PreviewState,g:Guest,line:string){g.speech??={next:0,recent:[]};g.speech.line=line;cue(s,g,'line');}
 export function speak(s:PreviewState,g:Guest){if(g.staff)return;const now=hotelTime(s),speech=g.speech??={next:0,recent:[]},m=g.movement;
  const role=s.floors.find(f=>f.id===g.floorId)?.role??'lobby',moving=!!m?.steps.length,event=(speech.eventUntil??0)>=now?speech.event:'';
  const context=[m?.position.phase,moving,role,event,g.late,g.upgrades,g.departing,g.experience?.kind].join(':');if(now<speech.next&&speech.context===context)return;speech.context=context;
  const key=g.persona??'chill',app=Object.values(s.entities).filter(e=>e.kind==='room'&&standardSuite(e)&&e.status==='available').length;
  let lines:string[]=[];
- if(event==='birthday'&&g.occasion?.resolved)lines=[g.occasion.outcome??'生日安排已确认。'];
+ if(event==='line'&&speech.line)lines=[speech.line];
+ else if(event==='birthday'&&g.occasion?.resolved)lines=[g.occasion.outcome??'生日安排已确认。'];
  else if(event==='checkout'&&g.departing)lines=[key==='points'?'Checkout 完了，接下来守着 QN 到账。':key==='forum'?'住完了，可以发完整 DP 了。':'房退好了，去大堂拿行李。'];
  else if(event==='checkin'&&g.roomId)lines=[g.upgrades?'这次真给 Standard Suite 了。':'房卡拿到了，先上楼看看。'];
  else if(event==='denied')lines=[!g.roomId?'这次没住成，换一家问问。':app?'App 上有套，不代表你有套。今天懂了。':'今天 Standard Suite 没库存，这条 DP 得注明。'];

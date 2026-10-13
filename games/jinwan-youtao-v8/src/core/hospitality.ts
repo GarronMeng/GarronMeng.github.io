@@ -5,6 +5,7 @@ import {queueTravel} from './guestMovement';
 import {cue} from './guestDialogue';
 import {track} from './progression';
 import {operationsLog} from './operations';
+import {recordDecision} from './dilemmas';
 export function birthdayOptions(s:Readonly<PreviewState>,v:Guest){
  const g=s.game!,free=rooms(s).filter(r=>standardSuite(r)&&r.status==='available'&&!r.construction&&!r.suaBookingId);
  const promised=g.operations?.bookings.filter(b=>b.status==='confirmed'&&!b.sua&&g.operations?.profiles[b.profileId]?.tier==='Globalist').length??0;
@@ -30,7 +31,7 @@ export function hospitalityCommand(s:PreviewState,c:Command){
  const delta=c.value==='breakfast'?8:c.value==='suite'?12:c.value==='card'?2:-3;
  v.satisfaction=Math.max(0,Math.min(100,(v.satisfaction??88)+delta));occasion.resolved=true;occasion.choice=String(c.value);
  const text=c.value==='breakfast'?'生日早餐已确认，两个人一起吃很开心。':c.value==='suite'?'生日这晚真的住进 Standard Suite，房费也没变。':c.value==='card'?'收到手写生日卡，Front Office 记得这一天。':'今天按原预订入住，生日没有特别安排。';
- occasion.outcome=text;cue(s,v,'birthday');track(s,'resolve');
+ occasion.outcome=text;cue(s,v,'birthday');track(s,'resolve');recordDecision(s,'birthday',v.name+' 的生日',{breakfast:'双人早餐',suite:'生日升套',card:'手写生日卡',decline:'维持原预订'}[String(c.value)]??'',text+(cost?' 支出 ¥'+cost+'。':''));
  const profile=g.operations?.profiles[v.profileId??''];if(profile){profile.history.push({day:g.day,text});profile.history=profile.history.slice(-8);}
  operationsLog(s,v.name+'：'+text+' 支出 ¥'+cost+'。','部门',v.roomId);return true;
 }
