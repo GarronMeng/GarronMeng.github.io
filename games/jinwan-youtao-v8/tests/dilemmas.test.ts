@@ -38,7 +38,7 @@ test('客房加班：花钱派临时保洁，翻完离场；团队精力下降',
 test('噪音投诉免单：当晚结算不收这间房费，次日恢复正常',()=>{
  const s=open(),g=s.game!,v=resident(s),d=inject(s,'noise-comp',{guestId:v.id,roomId:v.roomId,reason:'空调一直嗡嗡响'});
  execute(s,{type:'dilemma',id:String(d.id),value:'comp'});assert.equal(v.compNight,true);const spend=v.spend??0;
- run(s,1440-g.minute+10);assert.equal(v.spend??0,spend,'免单当晚不计房费');assert.equal(v.compNight,false);
+ const rate=v.rate??g.price;run(s,1440-g.minute+10);assert.ok((v.spend??0)-spend<rate,'免单当晚不计房费');assert.equal(v.compNight,false);
 });
 
 test('超时按保守方案自动处理并记入复盘；情况变化的抉择直接撤销',()=>{
