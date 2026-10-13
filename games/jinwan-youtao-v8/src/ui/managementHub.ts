@@ -1,9 +1,11 @@
 import type {PreviewState} from '../state/types';
 import {menuIcon,spaceIllustration} from './designSystem';
 import {rooms} from '../state/selectors';
+import {describeDilemma} from '../core/dilemmas';
 const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const link=(title:string,detail:string,target:string)=>`<button class="hub-tile" data-open="${target}">${menuIcon(target)}<div class="tile-copy"><strong>${title}</strong><small>${detail}</small></div><div class="tile-scene">${spaceIllustration(target)}</div><span class="tile-arrow" aria-hidden="true">›</span></button>`;
 export function workItems(s:Readonly<PreviewState>){const g=s.game!;return [
+ ...(g.dilemmas??[]).map(d=>({key:'dilemma-'+d.id,title:'经营抉择 · '+describeDilemma(s,d).title,detail:`${Math.max(0,d.expires-g.day*1440-g.minute)} 分钟内决定，超时按保守方案处理`,urgent:true,button:`<button class="game-action" data-open="events" data-event="dilemma-${d.id}">做决定 →</button>`,note:'没有标准答案：对比现金、体验、团队负担与后续影响。'})),
  ...g.events.map(e=>({key:'event-'+e.id,title:e.title,detail:`剩余 ${Math.max(0,e.expires-g.day*1440-g.minute)} 分钟`,urgent:true,button:`<button class="game-action" data-entity="${esc(e.target)}">现场</button><button class="game-action" data-action="resolve" data-id="${e.id}" data-value="gm">亲自处理 · ¥350</button>`,note:'直接协调支出较高；授权方案在待办详情中。'})),
  ...rooms(s).filter(r=>r.status==='dirty').map(r=>({key:r.id,title:r.number+' · 待翻房',detail:'客房部 · 清洁后才可出售',urgent:false,button:`<button class="game-action" data-action="clean" data-id="${r.id}">清洁 · ¥90</button>`,note:'约 30 游戏分钟；等待主管可节省手动清洁费。'})),
  ...s.guests.filter(v=>!v.staff&&!v.departing&&!v.roomId).map(v=>({key:v.id,title:v.name+' · 等待入住',detail:`${v.tier} · 耐心 ${v.patience??0} 分钟`,urgent:(v.patience??100)<45,button:`<button class="game-action" data-open="front" data-guest="${esc(v.id)}">为他选房 →</button>`,note:v.reservationId?'确认预订未兑现需支付 ¥600 安置费。':'临时到店客人，先比较空房与留套需要。'})),
