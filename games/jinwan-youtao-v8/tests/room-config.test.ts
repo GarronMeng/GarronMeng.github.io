@@ -16,4 +16,4 @@ test('新增三空位、八种配置、重复点击不扣费、尊享套房正�
  }
 });
 
-function playableGame(){const s=newGame();execute(s,{type:'brief-start'});return s;}
+function playableGame(){const s=newGame({guided:false});execute(s,{type:'brief-start'});return s;}

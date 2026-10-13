@@ -55,4 +55,4 @@ test('装修预览与真实结算使用一致价格，缺货对白不夸赞用�
  q.floorId='floor-breakfast';q.movement!.steps=[];q.movement!.position.phase='public';q.experience={place:'facility-breakfast',kind:'shortage',at:s.game!.day*1440+s.game!.minute};q.speech={next:0,recent:[]};speak(s,q);assert.match(q.thought,/空了/);
 });
 
-function playableGame(){const s=newGame();execute(s,{type:'brief-start'});return s;}
+function playableGame(){const s=newGame({guided:false});execute(s,{type:'brief-start'});return s;}
