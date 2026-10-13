@@ -25,7 +25,7 @@ export function advanceOnboarding(s:PreviewState){const g=s.game!,o=g.onboarding
   const done=[!g.operations?.briefOpen,more('arrivals'),more('service'),g.evening?.day===g.day,!!o.breakfastPrepared,more('late-decision'),g.managers.house>0,more('strategy'),more('dilemma'),g.evening?.day===g.day&&!g.evening.open][o.step];
   if(!done)break;o.step++;o.baseline={...counts};o.breakfastPrepared=false;
  }
- if(o.step!==before){const last=OPENING[o.step-1],next=OPENING[o.step];g.notice='✓ '+last.title+' · 已解锁'+last.unlock+'。'+(next&&next.day>g.day?'今天的带教完成，明早继续。':'');g.logs.push({id:g.nextId++,day:g.day,minute:g.minute,category:'部门',text:g.notice});}
+ if(o.step!==before){const last=OPENING[o.step-1],next=OPENING[o.step];g.notice='✓ '+last.title+' · 已解锁'+(/^[A-Z]/.test(last.unlock)?' ':'')+last.unlock+'。'+(next&&next.day>g.day?'今天的带教完成，明早继续。':'');g.logs.push({id:g.nextId++,day:g.day,minute:g.minute,category:'部门',text:g.notice});}
 }
 export type Feature='team'|'stock'|'strategy'|'upgrade'|'activity'|'expansion';
 export function featureLock(s:Readonly<PreviewState>,feature:Feature):string|null{const o=s.game?.onboarding;if(!o||o.legacy)return null;const step=o.step,ch=s.game?.campaign?.chapter??0;
@@ -35,7 +35,7 @@ export function featureLock(s:Readonly<PreviewState>,feature:Feature):string|nul
  if(feature==='upgrade'&&(step<OPENING.length||ch<3))return '通过会员体验回访后解锁客房与公区升级';
  if((feature==='activity'||feature==='expansion')&&(step<OPENING.length||ch<4))return '通过新空间试营业后解锁活动、营销与扩建';return null;
 }
-export function viewLock(s:Readonly<PreviewState>,view:string){const features:Record<string,Feature>={operations:'team','operations-data':'stock',development:'upgrade','development-data':'activity','hotel-data':'expansion','room-data':'strategy','brief-data':'strategy','score':'strategy','career':'strategy','tasks-data':'strategy'};return features[view]?featureLock(s,features[view]):null;}
+export function viewLock(s:Readonly<PreviewState>,view:string){const features:Record<string,Feature>={operations:'team','operations-data':'stock',development:'upgrade','development-data':'activity','hotel-data':'expansion','brief-data':'strategy','score':'strategy','career':'strategy','tasks-data':'strategy'};return features[view]?featureLock(s,features[view]):null;}
 export function commandLock(s:Readonly<PreviewState>,c:Command){const features:Partial<Record<Command['type'],Feature>>={stock:'stock',hire:c.id==='house'?'team':'strategy',train:'strategy','day-plan':'strategy',price:'strategy',position:'strategy','suite-policy':'strategy',upgrade:'upgrade',invest:'upgrade','build-spa':'expansion',expand:'expansion','configure-room':'expansion',activity:'activity',campaign:'activity','book-inspection':'strategy','prepare-inspection':'strategy','continue-chapter':'strategy'};return features[c.type]?featureLock(s,features[c.type]!):null;}
 export const CHAPTER_UNLOCKS=['完整翻房运营','会员承诺检验','客房与公区升级','主题活动、营销与扩建','自由经营'];
 /** Opening lessons stay forgiving: nobody walks out before the player has checked in a first guest. */
