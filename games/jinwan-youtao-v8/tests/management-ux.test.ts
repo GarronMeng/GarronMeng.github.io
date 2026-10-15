@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {newGame,execute,queue} from '../src/core/game';
 import {roomChoices,teachingSteps,priority} from '../src/ui/managementUx';
 test('房间卡直接办理入住，带教只认真实操作，存档往返保留进度',()=>{
- const s=newGame();execute(s,{type:'brief-start'});const guest=queue(s)[0];assert.ok(guest);assert.equal(teachingSteps(s)[0].done,false);
+ const s=newGame({guided:false});execute(s,{type:'brief-start'});const guest=queue(s)[0];assert.ok(guest);assert.equal(teachingSteps(s)[0].done,false);
  const html=roomChoices(s,guest),id=html.match(/data-room="([^"]+)"/)?.[1];assert.ok(id);assert.ok(!html.includes('<select'));execute(s,{type:'checkin',id:guest.id,roomId:id});assert.equal(guest.roomId,id);assert.equal(teachingSteps(s)[0].done,true);
  const stock=s.game!.stock;execute(s,{type:'stock',id:'breakfast'});assert.ok(s.game!.stock>stock);assert.equal(teachingSteps(s)[1].done,true);assert.equal(teachingSteps(JSON.parse(JSON.stringify(s)))[1].done,true);
  s.game!.day=2;assert.equal(teachingSteps(s)[0].done,false);execute(s,{type:'stock',id:'club'});assert.equal(teachingSteps(s)[0].done,true);assert.equal(teachingSteps(s)[1].done,true);

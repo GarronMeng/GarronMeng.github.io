@@ -11,7 +11,7 @@ export function initOperations(s:PreviewState){const g=s.game!;if(g.operations)r
  for(const guest of s.guests.filter(g=>!g.staff)){const id=guest.profileId??'history-'+guest.id;guest.profileId=id;g.operations.profiles[id]={id,name:guest.name,persona:guest.persona??'chill',tier:guest.tier,visits:0,trust:0,spend:0,history:[]};}
  return g.operations;
 }
-export function operationsLog(s:PreviewState,text:string,category:'部门'|'入住'|'收益'|'客诉'|'升级'|'房态'='部门',target?:string){const g=s.game!;g.notice=text;g.logs.push({id:g.nextId++,day:g.day,minute:g.minute,category,text,target});}
+export function operationsLog(s:PreviewState,text:string,category:'部门'|'入住'|'收益'|'客诉'|'升级'|'房态'|'抉择'='部门',target?:string){const g=s.game!;g.notice=text;g.logs.push({id:g.nextId++,day:g.day,minute:g.minute,category,text,target});}
 export function newProfile(s:PreviewState,roll:number):GuestProfile{const o=initOperations(s),id='profile-'+s.game!.nextId++,n=hash(id),personas=['chill','road','family','points','hunter','forum','creator','proposal','planner','whale','auditplus'] as const;
  const profile:GuestProfile={id,name:['陈','林','周','何','张','李','赵','王'][n%8]+['宇航','子衡','明远','嘉树','景行','一帆','致远','承泽'][Math.floor(n/8)%8],persona:personas[n%11],tier:roll<.27?'Globalist':roll<.5?'Explorist':roll<.8?'Member':'普通客',visits:0,trust:0,spend:0,history:[]};o.profiles[id]=profile;return profile;}
 export function walkinEstimate(s:Readonly<PreviewState>,price=s.game!.price){const g=s.game!,o=g.operations,weekend=(g.day-1)%7>=5;
@@ -47,14 +47,14 @@ export function attachProfile(s:PreviewState,g:Guest,b?:Booking){const o=initOpe
 export function loseBooking(s:PreviewState,g:Guest){const o=initOperations(s),b=o.bookings.find(b=>b.id===g.reservationId);if(!b||b.status==='lost'||b.status==='checkedin')return;b.status='lost';o.lostBookings++;s.metrics.cash-=600;s.game!.expense+=600;s.metrics.reputation=Math.max(0,s.metrics.reputation-2);operationsLog(s,g.name+' 的确认预订未兑现：安置补偿 ¥600，口碑 -2。','客诉','facility-lobby');
  if(b.roomId){const r=s.entities[b.roomId];if(r?.kind==='room'&&r.suaBookingId===b.id){r.suaBookingId=undefined;if(r.status==='reserved')r.status='available';}}
 }
-export function guestStory(s:PreviewState,g:Guest){const o=initOperations(s),p=o.profiles[g.profileId??''];if(!p)return;const good=(g.satisfaction??90)>=90&&(!g.challenge||g.challenge.outcome==='需求已兑现')&&!g.denied;
- p.visits++;p.trust=Math.max(-3,Math.min(5,p.trust+(good?1:-1)));p.spend+=g.spend??0;
- const text=good?(p.trust>=2?'连续服务满意：这家以后可以常住，愿意介绍朋友。':'留下好 DP：下次愿意再来。'):g.denied?'没拿到套房：App 上明明还有套？下次还会记得。':'留下差 DP：这次的问题没有完整解决。';p.history.push({day:s.game!.day,text});p.history=p.history.slice(-8);
- if(!good){s.metrics.reputation=Math.max(0,s.metrics.reputation-2);}else{s.metrics.reputation=Math.min(100,s.metrics.reputation+1);}operationsLog(s,p.name+'：'+text,'入住');
+export function guestStory(s:PreviewState,g:Guest){const o=initOperations(s),p=o.profiles[g.profileId??''];if(!p)return;const sat=g.satisfaction??90,broken=!!g.challenge&&g.challenge.outcome!=='需求已兑现'||!!g.denied,good=sat>=88&&!broken,bad=broken||sat<75;
+ p.visits++;p.trust=Math.max(-3,Math.min(5,p.trust+(good?1:bad?-1:0)));p.spend+=g.spend??0;
+ const text=good?(p.trust>=2?'连续服务满意：这家以后可以常住，愿意介绍朋友。':'留下好 DP：下次愿意再来。'):!bad?'中规中矩：没有惊喜，也没有问题。':g.denied?'没拿到套房：App 上明明还有套？下次还会记得。':'留下差 DP：这次的问题没有完整解决。';p.history.push({day:s.game!.day,text});p.history=p.history.slice(-8);
+ if(bad){s.metrics.reputation=Math.max(0,s.metrics.reputation-2);}else if(good){s.metrics.reputation=Math.min(100,s.metrics.reputation+1);}operationsLog(s,p.name+'：'+text,'入住');
 }
 export function operationsCommand(s:PreviewState,c:Command){const g=s.game!,o=initOperations(s);
  if(c.type==='brief-start'){if(!o.briefOpen)return true;o.forecast=forecast(s);commitDayPlan(s);o.briefOpen=false;g.paused=false;operationsLog(s,`晨会决策已确认：Walk-in 挂牌 ¥${g.price}，预计入住率 ${o.forecast.occupancy}%。`);return true;}
- if(c.type==='suite-policy'){o.suitePolicy=c.value==='hold'?'hold':'sell';operationsLog(s,o.suitePolicy==='hold'?'前厅指令：保留最后一间标准套房给会员。':'前厅指令：标准套房开放销售；已锁 SUA 不变。');return true;}
+ if(c.type==='suite-policy'){track(s,'strategy');o.suitePolicy=c.value==='hold'?'hold':'sell';operationsLog(s,o.suitePolicy==='hold'?'前厅指令：保留最后一间标准套房给会员。':'前厅指令：标准套房开放销售；已锁 SUA 不变。');return true;}
  if(c.type==='guest-choice'){const guest=s.guests.find(v=>v.id===c.id),request=guest?.challenge;if(!guest||!request||request.resolved)return true;if(!guest.roomId){g.notice='先办理入住，再落实住客的特殊安排。';return true;}
   const appropriate=(request.kind==='quiet'&&c.value==='quiet')||(request.kind==='family'&&c.value==='family')||(request.kind==='audit'&&c.value==='inspect')||(request.kind==='sua'&&c.value==='inventory');const cost=c.value==='decline'?0:appropriate?180:100;
   if(s.metrics.cash<cost){g.notice='预算不足，暂无法安排。';return true;}s.metrics.cash-=cost;g.expense+=cost;request.resolved=true;
