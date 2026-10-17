@@ -55,16 +55,13 @@
 }
 
   </style>
-  <!-- Import map switches to a second CDN if a network provider is unavailable. -->
+  <!-- Pinned local Three.js r180 modules: no third-party runtime CDN dependency. -->
+  <script type="importmap">
+    {"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}
+  </script>
   <script>
     (function () {
-      const params = new URLSearchParams(location.search);
-      const backup = params.get('mirror') === 'unpkg';
-      const base = backup ? 'https://unpkg.com/three@0.180.0/' : 'https://cdn.jsdelivr.net/npm/three@0.180.0/';
-      const map = { imports: { three: base + 'build/three.module.js', 'three/addons/': base + 'examples/jsm/' } };
-      document.write('<script type="importmap">' + JSON.stringify(map) + '<\/script>');
       window.__roomReady = false;
-      window.__mirrorName = backup ? 'UNPKG' : 'jsDelivr';
       window.__showLoadError = function (reason) {
         if (window.__roomReady || window.__errorShown) return;
         window.__errorShown = true;
@@ -73,29 +70,29 @@
         if (loading) loading.classList.add('is-done');
         if (overlay) overlay.hidden = false;
         const msg = document.getElementById('error-message');
-        if (msg) msg.textContent = '当前使用 ' + window.__mirrorName + ' 加载 3D 引擎。' + reason + ' 点击下方按钮切换备用 CDN 再试。';
+        if (msg) msg.textContent = 'Three.js 已改为本站本地加载。' + reason + ' 如果在应用内浏览器中打开，建议用 Safari 重试。';
         const button = document.getElementById('retry-button');
         if (button) {
-          button.textContent = '切换线路重新加载';
+          button.textContent = '重新加载场景';
           button.onclick = function () {
             const url = new URL(location.href);
-            if (backup) url.searchParams.delete('mirror');
-            else url.searchParams.set('mirror', 'unpkg');
-            location.href = url.href;
+            url.searchParams.set('v', Date.now().toString());
+            location.replace(url.href);
           };
         }
       };
       window.addEventListener('error', function (e) {
-        if (!window.__roomReady && (e instanceof ErrorEvent || e.target?.tagName === 'SCRIPT')) {
-          window.__showLoadError('模块加载失败或浏览器不支持 WebGL。');
-        }
+        if (window.__roomReady) return;
+        const source = e.filename ? ' [' + e.filename.split('/').pop() + ':' + e.lineno + ']' : '';
+        const detail = e.message || (e.target?.src ? '资源加载失败: ' + e.target.src.split('/').pop() : '未知资源错误');
+        window.__showLoadError('错误详情：' + detail + source + '。');
       }, true);
-      window.addEventListener('unhandledrejection', function () {
-        if (!window.__roomReady) window.__showLoadError('加载或渲染发生异常。');
+      window.addEventListener('unhandledrejection', function (e) {
+        if (!window.__roomReady) window.__showLoadError('错误详情：' + (e.reason?.message || String(e.reason || '加载或渲染异常')) + '。');
       });
       window.setTimeout(function () {
-        if (!window.__roomReady) window.__showLoadError('加载等待超过 18 秒。');
-      }, 18000);
+        if (!window.__roomReady) window.__showLoadError('等待超过 30 秒，未完成场景加载。');
+      }, 30000);
     }());
   </script>
 </head>
