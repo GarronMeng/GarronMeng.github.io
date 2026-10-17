@@ -8,3 +8,11 @@ export function dioramaOptions(url:URL):DioramaOptions{
  const p=url.searchParams,enabled=p.get('visual')==='diorama'||url.pathname.includes('diorama')&&p.get('visual')!=='original';
  return {enabled,inspect:p.get('view')==='room',low:p.get('quality')==='low',diagnostics:p.get('diagnostics')==='1',inspectRoom:p.get('room')??SAMPLE_ROOM};
 }
+
+
+/** Keep the Regency suite preview isolated from both the live game and the earlier diorama slot. */
+export function previewSaveKey(url:URL,baseKey:string){
+ if(url.pathname.includes('regency-preview'))return baseKey+'_regency_p3';
+ const options=dioramaOptions(url);
+ return url.pathname.includes('diorama')||options.enabled?baseKey+'_diorama_p1':baseKey;
+}

@@ -39,3 +39,8 @@
 ## 验收范围
 
 CI 会执行 npm ci、npm test、npm run build 并保存构建产物。自动化测试验证模型结构、游戏房间边界、装修等级和原有状态隔离；它们不替代支持 WebGL 2 的桌面浏览器和 iPhone Safari 真机截图验收。
+
+
+## 预览存档隔离
+
+公开预览路径为 `games/jinwan-youtao-regency-preview/`，通过 `?visual=diorama&view=room&room=room-303&diagnostics=1` 直接查看套房。该路径使用独立的 `SAVE_KEY_regency_p3` 存档，不会覆盖正式游戏或旧 P1 微缩预览存档。

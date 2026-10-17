@@ -5,7 +5,7 @@ import {newGame} from '../src/core/game';
 import {loadGame,saveGame,SAVE_KEY} from '../src/core/save';
 import type {Room} from '../src/state/types';
 import {dioramaRoom,setRoomCutaway} from '../src/render/diorama/room';
-import {SAMPLE_ROOM,isSampleRoom,dioramaOptions} from '../src/render/diorama/config';
+import {SAMPLE_ROOM,isSampleRoom,dioramaOptions,previewSaveKey} from '../src/render/diorama/config';
 import {ROOM_REFERENCE} from '../src/render/diorama/reference';
 import {dioramaGeometryStats,disposeDioramaGeometry} from '../src/render/diorama/assets';
 import {dioramaMaterials,disposeDioramaMaterials} from '../src/render/diorama/materials';
@@ -40,4 +40,12 @@ test('重复构建复用几何和贴图，缓存释放后可重建，未引入�
 });
 test('独立预览存档槽不会覆盖原版，默认读写行为保持兼容',()=>{
  const data=new Map<string,string>();Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:(k:string)=>data.get(k)??null,setItem:(k:string,v:string)=>data.set(k,v)}});const s=newGame();saveGame(s);const baseline=data.get(SAVE_KEY);s.metrics.cash=12345;saveGame(s,SAVE_KEY+'_diorama_p1');assert.equal(data.get(SAVE_KEY),baseline);assert.equal(loadGame(SAVE_KEY+'_diorama_p1').metrics.cash,12345);assert.notEqual(loadGame().metrics.cash,12345);delete (globalThis as {localStorage?:unknown}).localStorage;
+});
+
+
+test('Regency preview uses a separate save slot and leaves the live and P1 preview slots untouched',()=>{
+ const base='https://example.com/';
+ assert.equal(previewSaveKey(new URL(base+'games/jinwan-youtao-regency-preview/?visual=diorama'),SAVE_KEY),SAVE_KEY+'_regency_p3');
+ assert.equal(previewSaveKey(new URL(base+'games/jinwan-youtao-diorama-preview/?visual=original'),SAVE_KEY),SAVE_KEY+'_diorama_p1');
+ assert.equal(previewSaveKey(new URL(base+'games/jinwan-youtao-v8-preview/'),SAVE_KEY),SAVE_KEY);
 });

@@ -4,10 +4,10 @@ import {createStore} from './state/store';
 import {mountShell} from './ui/shell';
 import {HotelWorld} from './render/HotelWorld';
 import {loadGame,saveGame,SAVE_KEY} from './core/save';
-import {dioramaOptions} from './render/diorama/config';
+import {dioramaOptions,previewSaveKey} from './render/diorama/config';
 const url=new URL(location.href),visualOptions=dioramaOptions(url);
 // Original and sample share ONLY their own experimental slot, never the live game's slot.
-const saveKey=url.pathname.includes('diorama')||visualOptions.enabled?SAVE_KEY+'_diorama_p1':SAVE_KEY;
+const saveKey=previewSaveKey(url,SAVE_KEY);
 const store=createStore(loadGame(saveKey));const shell=mountShell(document.querySelector('#app')!,store);
 mountHotelAudio(document.querySelector('#app')!,store);
 let resetting=false,saveBlocked=store.getState().game!.notice.startsWith('存档读取失败');

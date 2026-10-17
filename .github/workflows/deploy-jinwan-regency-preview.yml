@@ -1,0 +1,56 @@
+name: Publish Regency suite preview
+
+on:
+  push:
+    branches: [visual-diorama-upgrade]
+    paths:
+      - 'games/jinwan-youtao-v8/**'
+      - '.github/workflows/deploy-jinwan-regency-preview.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-regency-suite-preview
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: source
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: source/games/jinwan-youtao-v8/package-lock.json
+      - run: npm ci
+        working-directory: source/games/jinwan-youtao-v8
+      - run: node --import tsx --test tests/diorama.test.ts tests/diorama-variants.test.ts
+        working-directory: source/games/jinwan-youtao-v8
+      - run: npm run build
+        working-directory: source/games/jinwan-youtao-v8
+      - name: Checkout master for GitHub Pages
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: publish
+          fetch-depth: 0
+      - name: Publish isolated preview directory
+        shell: bash
+        run: |
+          target="publish/games/jinwan-youtao-regency-preview"
+          mkdir -p "$target"
+          find "$target" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          cp -R source/games/jinwan-youtao-v8/dist/. "$target"/
+          touch "$target/.nojekyll"
+          git -C publish config user.name 'github-actions[bot]'
+          git -C publish config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C publish add games/jinwan-youtao-regency-preview
+          if git -C publish diff --cached --quiet; then echo 'Preview unchanged'; exit 0; fi
+          git -C publish commit -m 'preview: publish Regency suite diorama build'
+          git -C publish push origin HEAD:master
