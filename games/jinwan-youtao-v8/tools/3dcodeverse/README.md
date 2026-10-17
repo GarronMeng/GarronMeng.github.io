@@ -29,7 +29,8 @@ bash harness/setup.sh
 ```bash
 npm ci
 npm run diorama:audit
-npm run diorama:generate
+npm run diorama:generate -- --dry-run  # create harness spec only; no model generation
+npm run diorama:generate             # generate / evaluate an isolated candidate
 # When a local, properly sourced real-room image is available:
 npm run diorama:generate -- --image /absolute/path/king-room.jpg --rounds 2
 ```
