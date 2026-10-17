@@ -616,6 +616,7 @@ $('reset-camera').addEventListener('click',resetCamera);
 $('toggle-ui').addEventListener('click',()=>document.body.classList.toggle('focus-mode'));
 $('about-button').addEventListener('click',()=>$('about-dialog').showModal());
 
+function landscapePhone(){ return onMobile() && window.innerWidth > window.innerHeight; }
 function resetCamera(){
   const t=onMobile()?(landscapePhone()?.38:-.55):.85;
   controls.target.set(landscapePhone()?1.1:0,t,0);camera.position.set(13.8,t+11.55,15.3);controls.update();scheduleRender();
