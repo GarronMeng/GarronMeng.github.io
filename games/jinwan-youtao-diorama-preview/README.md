@@ -2,6 +2,8 @@
 
 完整游戏 + 单间 201 Diorama，未替换 `jinwan-youtao-v8-preview`。
 
+当前样板已按深圳东门凯悦嘉轩真实大床房照片调整：深木床头、灰米地毯、白床品、床对面的媒体工作台、白色办公椅和窗边躺椅。布局作了镜像与尺寸压缩；照片来源与对应关系记录在源码分支的 `HYATT-PLACE-REFERENCES.md`。
+
 - [样板房：局部视图](./?visual=diorama&view=room&diagnostics=1)
 - [原版房间：同相机对照](./?visual=original&view=room&diagnostics=1)
 - [完整酒店](./?visual=diorama&diagnostics=1)

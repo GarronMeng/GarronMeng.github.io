@@ -6,11 +6,15 @@ import {loadGame,saveGame,SAVE_KEY} from '../src/core/save';
 import type {Room} from '../src/state/types';
 import {dioramaRoom,setRoomCutaway} from '../src/render/diorama/room';
 import {SAMPLE_ROOM,isSampleRoom,dioramaOptions} from '../src/render/diorama/config';
+import {ROOM_REFERENCE} from '../src/render/diorama/reference';
 import {dioramaGeometryStats,disposeDioramaGeometry} from '../src/render/diorama/assets';
 import {dioramaMaterials,disposeDioramaMaterials} from '../src/render/diorama/materials';
 import {batchStatic} from '../src/render/primitives';
 import {createInspectionCollider,pickEntity} from '../src/render/interaction';
 const room=()=>newGame().entities[SAMPLE_ROOM] as Room;
+test('真实嘉轩 King 照片约束：床与媒体台相对、窗边休息位、保留前方通道',()=>{
+ const g=dioramaRoom(room());assert.equal(g.userData.reference,ROOM_REFERENCE.id);const bed=g.getObjectByName('hyatt-king-sleep-zone')!,desk=g.getObjectByName('hyatt-media-work-center')!,chaise=g.getObjectByName('hyatt-window-chaise')!;assert.ok(bed.position.x>0&&desk.position.x<0);assert.ok(chaise.position.z<0);assert.ok(g.getObjectByName('white-ergonomic-work-chair'));assert.ok(!g.getObjectByName('oak-floor-board'));assert.ok(!g.getObjectByName('sage-woven-runner'));releaseInstances(g);
+});
 function meshes(g:T.Group){const list:T.Mesh[]=[];g.traverse(o=>{if(o instanceof T.Mesh)list.push(o);});return list;}
 function releaseInstances(g:T.Group){g.traverse(o=>{if(o instanceof T.InstancedMesh)o.dispose();});}
 test('仅 201 普通大床 Lv1 使用样板，升级、改房型或施工回到原有渲染',()=>{

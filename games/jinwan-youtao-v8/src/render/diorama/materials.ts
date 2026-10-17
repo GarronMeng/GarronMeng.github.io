@@ -13,11 +13,14 @@ function map(kind:MapKind){let found=maps.get(kind);if(found)return found;const 
 let palette:ReturnType<typeof createPalette>|undefined;
 function createPalette(){const standard=(color:number,roughness=.8,kind?:MapKind)=>new T.MeshStandardMaterial({color,roughness,...(kind?{map:map(kind)}:{})});
  return {
-  oak:standard(0xc4a378,.72,'oak'),edge:standard(0x907452,.78,'oak'),walnut:standard(0x6b5744,.8,'oak'),
-  wall:standard(0xe4dfd0,.94,'plaster'),sage:standard(0x8d9c80,.94,'plaster'),linen:standard(0xf4eee2,.97,'linen'),
-  upholstery:standard(0x879683,.96,'linen'),throw:standard(0x526b61,.97,'linen'),rug:standard(0xc7c4ad,1,'rug'),
+  oak:standard(0x745438,.73,'oak'),edge:standard(0x675241,.78,'oak'),walnut:standard(0x49382c,.72,'oak'),
+  wall:standard(0xe3e0d6,.94,'plaster'),sage:standard(0xd7d4c8,.94,'plaster'),linen:standard(0xf7f5ed,.97,'linen'),
+  upholstery:standard(0xaaa69a,.96,'linen'),throw:standard(0x8c795e,.97,'linen'),rug:standard(0xaaa89f,1,'rug'),
   ceramic:standard(0xe6dfcf,.66),terracotta:standard(0xb7896d,.91),leaf:standard(0x57774e,.92),leafLight:standard(0x7d965d,.95),soil:standard(0x675747,1),
   brass:new T.MeshStandardMaterial({color:0xa88a55,metalness:.65,roughness:.48}),
+  chrome:new T.MeshStandardMaterial({color:0xa6abad,metalness:.72,roughness:.36}),
+  headboard:standard(0x756052,.9,'linen'),darkFrame:standard(0x2c3031,.6),olive:standard(0x76744e,.96,'linen'),
+  floralRed:standard(0xa6502d,.92),floralGold:standard(0xc29c52,.92),
   glass:new T.MeshStandardMaterial({color:0xb2ccd0,roughness:.35,transparent:true,opacity:.23,depthWrite:false}),
   window:new T.MeshStandardMaterial({color:0xd9e4df,roughness:.7,emissive:0xb5c2b1,emissiveIntensity:.16}),
   lamp:new T.MeshStandardMaterial({color:0xf2ddad,roughness:.95,emissive:0xeeb778,emissiveIntensity:.32}),

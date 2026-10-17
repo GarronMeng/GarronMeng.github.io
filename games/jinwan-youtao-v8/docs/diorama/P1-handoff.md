@@ -1,5 +1,7 @@
 # P1 · Single-room diorama candidate
 
+**Current revision:** the generic sage/oak prototype has been replaced by a photo-led Hyatt Place Shenzhen Dongmen King room. See `HYATT-PLACE-REFERENCES.md` for the actual viewed images, source provenance, feature mapping and dimensional adaptations.
+
 ## Scope and acceptance status
 
 This is a complete-game experimental build, **not an accepted visual upgrade**. Only ordinary king room 201, level 1, receives the new asset. Public areas, other room types/levels, staff/guest models, menu styles and business rules are unchanged. Room 201 intentionally falls back to the original room renderer when renovated, reconfigured, or under construction: expanding the art system is P2, which is not authorized yet.
@@ -23,8 +25,9 @@ Local: `npm install` (if dependencies are missing), `npm run dev`, open the loca
 
 - `render/diorama/config.ts`: feature boundary / sample-room identity / preview options.
 - `assets.ts`: shared rounded geometry, lathed pottery, turned lamps, sculpted chair and plants, local-coordinate InstancedMesh batches. Architecture cutaway groups remain independently hideable.
-- `materials.ts`: shared oak / plaster / woven linen / rug / metal / ceramic / glass palette; deterministic 128×128 sRGB maps, no external imagery or expensive transmission.
-- `room.ts`: parametric room composition, window and curtains, layered bed, desk, lounge chair, luggage bench, soft furnishings and state feedback.
+- `materials.ts`: shared dark walnut / warm plaster / white linen / greige carpet / chrome / glass palette; deterministic 128×128 sRGB maps, no external imagery or expensive transmission.
+- `room.ts`: photo-led bed facing the media/work counter, black-framed window, neutral chaise, white ergonomic chair, stacked bedding, hospitality tray and real-state feedback.
+- `reference.ts`: traceable hotel, room type and actual photo source URLs; no runtime image requests.
 - `gestures.ts`: inspection-only pointer tracking; native overview scroll remains intact.
 - `diagnostics.ts`: actual renderer metrics, frame timing and first rendered frame timing exposed in an optional small overlay and `.world-stage[data-render-metrics]`.
 - `HotelWorld.ts`: actual entity/room factory integration, layered local section camera, actual guest transforms, light presets and disposal.
@@ -36,13 +39,15 @@ Blender and `bpy` are unavailable in this environment. These assets are editable
 
 ## Performance: measured vs unmeasured
 
-Node geometry inspection of the available-room candidate: approximately 34k rendered mesh triangles, 65–66 cached unique geometries, approximately 1.2 MB of geometry attributes, 5 small maps (~0.42 MB including estimated mipmaps), and approximately 75 room-level mesh submissions before camera culling and shadow passes. These are **structural model counts**, not measured GPU draw calls or resident VRAM. Original and sample full-game comparison must use the live renderer overlay.
+Node geometry inspection of the current available-room candidate: approximately 30k rendered mesh triangles, 66 cached unique geometries, approximately 1.6 MB of geometry attributes, 5 small maps (~0.42 MB including estimated mipmaps), and approximately 70 room-level mesh submissions before camera culling and shadow passes. These are **structural model counts**, not measured GPU draw calls or resident VRAM. Original and sample full-game comparison must use the live renderer overlay.
 
 The sample intentionally increases detail in one room only. Its present mesh submissions are not suitable for blindly cloning across every hotel room. P2 must evaluate material-level merging / GLB instancing / LOD before rollout. Standard preview DPR is capped at 1.5 and shadow map at 1024²; low mode turns off live shadows. The unchanged normal game path retains its previous DPR/shadow settings.
 
 FPS, first-frame time, actual draw calls, WebView compatibility and 30 FPS on a midrange phone: **pending physical-device validation**. GPU memory reports are approximate resource sizes only; WebGL does not expose reliable resident VRAM.
 
 ## Evidence / known issues / stop point
+
+- Photo-led revision: **8 / 8 targeted checks passed** (`diorama` + `game`); TypeScript and production build passed. This supplements the earlier P1 regression below. Only the single-room art, palette, reference provenance and corresponding tests changed.
 
 - Targeted regression: **19 / 19 passed** (`diorama`, `game`, `navigation-shell`, `guest-ai`, `onboarding`); TypeScript / production build passed. The old guest-AI fixture was explicitly changed to `guided:false` so its Spa test exercises the pre-existing veteran business flow rather than being blocked by onboarding. No guest-AI or economic behavior was modified.
 - Vite reports the complete-game JavaScript chunk is ~719 KB raw / ~208 KB gzip, exceeding its advisory 700 KB raw warning threshold. The bundle is not hand-edited. Splitting / broader asset rollout is deferred until visual acceptance.

@@ -1,71 +1,73 @@
 import * as T from 'three';
 import type {Room} from '../../state/types';
 import {SAMPLE} from './config';
+import {ROOM_REFERENCE} from './reference';
 import {dioramaMaterials} from './materials';
-import {rounded,cylinder,oval,contact,pottery,plant,lamp,loungeChair,batchDiorama} from './assets';
-/** A real-room replacement, in the original 4.7 × 3.1 footprint and Y-up axes. */
-export function dioramaRoom(room:Room){const g=new T.Group(),m=dioramaMaterials();g.name=room.id;g.userData={entityId:room.id,diorama:true};
+import {rounded,cylinder,oval,contact,batchDiorama} from './assets';
+/** Photo-led Hyatt Place king room, mirrored to preserve the existing corridor. */
+export function dioramaRoom(room:Room){
+ const g=new T.Group(),m=dioramaMaterials();g.name=room.id;g.userData={entityId:room.id,diorama:true,reference:ROOM_REFERENCE.id};
  rounded(g,'architectural-plinth',0,.015,0,4.7,.14,3.1,m.edge,.025);
- // Individual staggered boards, an actual geometric floor, not a photograph.
- for(let row=0;row<10;row++)for(let col=0;col<3;col++){const width=4.6/3;rounded(g,'oak-floor-board',-2.3+width*(col+.5),.102,-1.38+row*.304,width-.012,.035,.292,(row+col)%4===0?m.edge:m.oak,.006);}
+ rounded(g,'wall-to-wall-grey-carpet',0,.106,0,4.58,.04,2.98,m.rug,.012);
  const rear=new T.Group();rear.name='cutaway-rear-wall';rear.userData.dynamic=true;g.add(rear);
- rounded(rear,'plaster-rear-wall',0,1.25,-1.52,4.7,2.38,SAMPLE.wall,m.wall,.018);
- rounded(rear,'oak-rear-skirting',0,.18,-1.432,4.56,.12,.055,m.oak,.012);
+ rounded(rear,'plaster-rear-wall',1.03,1.25,-1.52,2.64,2.38,SAMPLE.wall,m.wall,.016);
+ rounded(rear,'window-side-pier',-2.22,1.25,-1.52,.26,2.38,SAMPLE.wall,m.wall,.014);
+ rounded(rear,'window-header',-1.2,2.33,-1.52,1.8,.22,SAMPLE.wall,m.wall,.014);
+ rounded(rear,'window-low-sill',-1.2,.22,-1.52,1.8,.2,SAMPLE.wall,m.wall,.014);
+ rounded(rear,'window-reveal',-1.2,1.26,-1.47,1.84,2.05,.09,m.darkFrame,.012);
+ rounded(rear,'daylit-window',-1.2,1.26,-1.42,1.72,1.94,.018,m.window,.003);
+ rounded(rear,'window-glazing',-1.2,1.26,-1.399,1.71,1.93,.012,m.glass,.003);
+ for(const x of [-2.06,-1.2,-.34])rounded(rear,'black-window-mullion',x,1.26,-1.368,.045,2,.05,m.darkFrame,.006);
+ rounded(rear,'window-crossbar',-1.2,.92,-1.364,1.77,.045,.055,m.darkFrame,.006);
+ rounded(rear,'roller-blind-valance',-1.2,2.19,-1.31,1.9,.16,.14,m.wall,.012);
+ for(let i=0;i<5;i++)cylinder(rear,'neutral-curtain-fold',-2.1+i*.047,1.28,-1.23,.046,1.8,m.upholstery);
+ rounded(rear,'dark-window-sill',-1.2,.29,-1.26,1.9,.06,.29,m.walnut,.015);
  const side=new T.Group();side.name='cutaway-side-wall';side.userData.dynamic=true;g.add(side);
- rounded(side,'sage-side-wall',2.32,1.25,0,.13,2.38,3.1,m.sage,.018);
- rounded(side,'oak-side-skirting',2.235,.18,0,.045,.12,2.97,m.oak,.009);
- // Glazed window, deep timber reveal and curved curtain folds.
- rounded(rear,'window-reveal',1.24,1.47,-1.405,1.74,1.57,.095,m.oak,.018);
- rounded(rear,'daylit-window',1.24,1.47,-1.346,1.61,1.44,.025,m.window,.004);
- rounded(rear,'window-glazing',1.24,1.47,-1.326,1.6,1.43,.012,m.glass,.003);
- for(const x of [.46,.98,1.5,2.02])rounded(rear,'window-mullion',x,1.47,-1.306,.026,1.48,.04,m.ceramic,.006);
- rounded(rear,'window-crossbar',1.24,1.48,-1.30,1.6,.035,.045,m.ceramic,.006);
- rounded(rear,'window-sill',1.24,.72,-1.24,1.85,.075,.3,m.oak,.018);
- const rod=cylinder(rear,'curtain-rod',1.22,2.28,-1.13,.018,2.1,m.brass);rod.rotation.z=Math.PI/2;
- for(const edge of [.35,2.1])for(let i=0;i<5;i++){const x=edge+(i-2)*.049;const fold=cylinder(rear,'draped-curtain-fold',x,1.45,-1.15+Math.cos(i*1.9)*.025,.047,1.62,m.linen,.046);fold.scale.z=.85;}
- // Upholstered bed: rounded frame, mattress piping, soft pillows, folded duvet.
- contact(g,-.86,.1,2.9,2.9);
- rounded(g,'woven-bed-rug',-.9,.13,.18,2.73,.025,2.43,m.rug,.055);
- for(const x of [-1.58,-.08])for(const z of [-.77,.84])cylinder(g,'bed-leg',x,.23,z,.035,.2,m.walnut);
- rounded(g,'oak-bed-frame',-.83,.32,.06,1.95,.26,2.05,m.walnut,.065);
- rounded(g,'upholstered-headboard',-.83,.83,-1.05,2.14,1.42,.16,m.upholstery,.09);
- rounded(g,'headboard-oak-cap',-.83,1.54,-1.065,2.16,.055,.18,m.oak,.023);
- rounded(g,'mattress-piping',-.83,.49,.08,1.88,.15,1.97,m.linen,.07);
- rounded(g,'soft-mattress',-.83,.56,.08,1.86,.22,1.94,room.status==='dirty'?m.rug:m.linen,.085);
- const duvet=rounded(g,'draped-duvet',-.83,.687,.38,1.91,.15,1.43,m.linen,.065);if(room.status==='dirty')duvet.rotation.y=.07;
- for(const x of [-1.31,-.36]){const p=oval(g,'plump-pillow',x,.75,-.61,.43,.13,.255,m.linen);p.rotation.y=x<-.8?-.06:.04;rounded(g,'pillow-seam',x,.742,-.36,.7,.015,.018,m.paper,.005);}
- rounded(g,'folded-duvet-edge',-.83,.77,-.15,1.85,.09,.23,m.linen,.035);
- rounded(g,'sage-woven-runner',-.83,.786,.7,1.94,.035,.43,m.throw,.018);
- for(const x of [-1.78,.12])rounded(g,'runner-overhang',x,.64,.7,.045,.28,.43,m.throw,.016);
- // Two bedside cabinets, brass pulls and actual turned lamps.
- for(const x of [-2.02,.4]){contact(g,x,-.79,.56,.69);rounded(g,'oak-nightstand',x,.42,-.8,.43,.49,.45,m.oak,.028);rounded(g,'stone-nightstand-top',x,.68,-.8,.46,.045,.48,m.ceramic,.017);rounded(g,'nightstand-drawer',x,.49,-.562,.36,.15,.018,m.edge,.008);cylinder(g,'drawer-pull',x,.49,-.542,.018,.03,m.brass);lamp(g,x,.71,-.8);}
- // Calm framed abstract art; all colored paper elements are real geometry.
- rounded(rear,'art-frame',-.84,1.95,-1.405,1.45,.61,.055,m.oak,.02);
- rounded(rear,'art-paper',-.84,1.95,-1.369,1.33,.49,.016,m.paper,.008);
- rounded(rear,'art-landscape',-.84,1.83,-1.354,1.3,.21,.009,m.upholstery,.005);
- const sun=cylinder(rear,'art-sun',-.48,2.035,-1.339,.088,.008,m.art);sun.rotation.x=Math.PI/2;
- // Compact writing desk, upholstered chair, hospitality tray, greenery.
- rounded(g,'writing-desk-top',1.53,.83,-.61,1.03,.085,.57,m.oak,.035);
- for(const x of [1.12,1.95])for(const z of [-.82,-.42]){const leg=cylinder(g,'desk-tapered-leg',x,.46,z,.028,.7,m.walnut,.02);leg.rotation.z=x<1.5?.04:-.04;}
- rounded(g,'closed-notebook',1.48,.889,-.6,.24,.035,.18,m.book,.012);
- rounded(g,'writing-paper',1.48,.909,-.6,.21,.005,.16,m.paper,.003);
- pottery(g,1.87,.875,-.66,.18);lamp(g,1.13,.88,-.67);
- loungeChair(g,1.36,.37);
- cylinder(g,'side-table-pedestal',1.85,.36,.99,.035,.53,m.brass);
- cylinder(g,'side-table-top',1.85,.65,.99,.28,.065,m.oak);
- cylinder(g,'coffee-saucer',1.82,.697,1.0,.085,.012,m.ceramic);
- cylinder(g,'coffee-cup',1.82,.742,1.0,.045,.075,m.ceramic,.05);
- plant(g,1.99,-1.03,.56);plant(g,2.0,1.26,.68);
- rounded(g,'luggage-bench',-.84,.32,1.29,1.48,.2,.29,m.oak,.035);
- for(const x of [-1.4,-.28])rounded(g,'bench-leg',x,.2,1.29,.065,.22,.24,m.walnut,.015);
- // Guest luggage uses real room status, never a staged occupant or fake activity.
- if(room.status==='occupied'){rounded(g,'guest-luggage',-.36,.56,1.26,.39,.38,.25,m.book,.05);rounded(g,'luggage-handle',-.36,.79,1.26,.16,.1,.06,m.brass,.015);}
- if(room.extraBed){rounded(g,'actual-extra-bed',.36,.35,1.01,.76,.3,.83,m.oak,.025);rounded(g,'extra-bed-linen',.36,.54,1.01,.76,.13,.83,m.linen,.045);}
- if(room.status==='reserved'){rounded(g,'suite-reservation-marker',.8,.31,1.46,.18,.35,.055,room.suaBookingId?m.book:m.brass,.015);}
+ rounded(side,'warm-plaster-side-wall',2.32,1.25,0,.13,2.38,3.1,m.wall,.016);
+ rounded(side,'dark-timber-skirting',2.235,.18,0,.045,.12,2.97,m.walnut,.009);
+ // The bed faces a continuous media/work counter across the central aisle.
+ const bed=new T.Group();bed.name='hyatt-king-sleep-zone';bed.position.set(1.19,0,.08);bed.rotation.y=-Math.PI/2;g.add(bed);
+ rounded(bed,'continuous-walnut-headwall',0,.87,-1.045,2.72,1.42,.16,m.walnut,.018);
+ rounded(bed,'upholstered-headboard',0,.82,-.942,1.9,1.22,.08,m.headboard,.035);
+ rounded(bed,'headboard-backlight',0,1.446,-.932,1.96,.025,.025,m.lamp,.006);
+ rounded(bed,'hotel-bed-base',0,.32,.08,1.82,.28,2.02,m.headboard,.055);contact(bed,0,.08,2.3,2.4);
+ rounded(bed,'mattress-piping',0,.49,.08,1.85,.14,1.99,m.linen,.065);
+ rounded(bed,'soft-mattress',0,.56,.08,1.84,.2,1.96,room.status==='dirty'?m.rug:m.linen,.075);
+ const duvet=rounded(bed,'white-hotel-duvet',0,.69,.29,1.9,.14,1.65,m.linen,.058);if(room.status==='dirty')duvet.rotation.y=.065;
+ for(const x of [-.89,.89])rounded(bed,'white-duvet-drop',x,.51,.31,.07,.33,1.61,m.linen,.025);
+ rounded(bed,'duvet-foot-drop',0,.51,1.05,1.84,.3,.075,m.linen,.025);
+ for(const x of [-.46,.46]){oval(bed,'rear-stacked-pillow',x,.77,-.65,.43,.095,.24,m.linen);const p=oval(bed,'front-stacked-pillow',x,.85,-.57,.43,.095,.23,m.linen);p.rotation.y=x<0?-.035:.035;}
+ rounded(bed,'folded-white-top-sheet',0,.77,-.19,1.83,.05,.22,m.linen,.02);
+ for(const x of [-1.13,1.13]){
+  rounded(bed,'walnut-nightstand',x,.4,-.75,.4,.5,.51,m.walnut,.018);rounded(bed,'nightstand-open-shelf',x,.28,-.478,.33,.12,.015,m.ink,.006);rounded(bed,'nightstand-drawer',x,.51,-.48,.34,.14,.025,m.oak,.009);
+  rounded(bed,'bedside-lamp-base',x,.682,-.75,.2,.025,.13,m.chrome,.008);cylinder(bed,'bedside-lamp-stem',x,.85,-.75,.013,.32,m.chrome);rounded(bed,'rectangular-linen-lamp',x,1.06,-.75,.29,.2,.17,m.lamp,.018);
+ }
+ rounded(bed,'guest-telephone',1.13,.689,-.56,.23,.06,.15,m.darkFrame,.016);rounded(bed,'telephone-handset',1.13,.733,-.57,.23,.04,.05,m.ink,.013);
+ const art=new T.Group();art.name='hyatt-floral-headwall-art';art.position.set(0,1.91,-.97);bed.add(art);
+ rounded(art,'walnut-art-frame',0,0,0,1.83,.53,.045,m.oak,.012);rounded(art,'warm-abstract-background',0,0,.03,1.74,.44,.012,m.floralRed,.003);
+ for(let i=0;i<6;i++)rounded(art,'abstract-art-panel',-.72+i*.28,-.08+(i%2)*.06,.041,.29,.21,.008,i%2?m.floralGold:m.headboard,.003);
+ for(const x of [-.56,-.05,.53]){const stem=cylinder(art,'floral-art-stem',x,-.02,.053,.007,.29,m.paper);stem.rotation.z=-.14;for(let i=0;i<3;i++){const leaf=oval(art,'floral-art-leaf',x+(i%2?-.055:.05),-.06+i*.06,.06,.045,.015,.004,m.paper);leaf.rotation.z=i%2?-.5:.5;}}
+ // This ordinary King has a window chaise, not the Specialty King's sofa bed.
+ const chaise=new T.Group();chaise.name='hyatt-window-chaise';chaise.position.set(-1.12,0,-.91);g.add(chaise);
+ rounded(chaise,'chaise-timber-plinth',0,.22,0,1.55,.18,.57,m.walnut,.025);rounded(chaise,'chaise-upholstered-seat',0,.44,.01,1.54,.28,.59,m.upholstery,.065);rounded(chaise,'chaise-side-back',-.65,.73,-.02,.22,.66,.58,m.upholstery,.07);
+ const cushion=oval(chaise,'window-chaise-cushion',-.42,.71,0,.19,.2,.08,m.paper);cushion.rotation.z=-.18;
+ for(let i=0;i<4;i++)rounded(chaise,'striped-accent-cushion',-.42,.6+i*.06,.085,.29,.025,.012,i%2?m.olive:m.headboard,.004);contact(g,-1.12,-.91,1.85,.85);
+ const desk=new T.Group();desk.name='hyatt-media-work-center';desk.position.set(-2.02,0,.08);desk.rotation.y=Math.PI/2;g.add(desk);
+ rounded(desk,'continuous-media-worktop',0,.84,0,1.74,.085,.54,m.walnut,.018);for(const x of [-.77,.77])rounded(desk,'desk-pedestal',x,.48,0,.16,.65,.47,m.walnut,.012);
+ rounded(desk,'mini-fridge-door',-.58,.5,-.018,.28,.48,.46,m.walnut,.012);rounded(desk,'tv-stand-base',-.32,.908,-.1,.37,.035,.21,m.darkFrame,.009);cylinder(desk,'tv-stand-neck',-.32,1.02,-.1,.022,.22,m.chrome);
+ const tv=new T.Group();tv.name='swiveling-hotel-TV';tv.position.set(-.32,0,-.11);tv.rotation.y=-.85;desk.add(tv);rounded(tv,'flat-screen-TV',0,1.3,0,.79,.49,.05,m.darkFrame,.015);rounded(tv,'TV-screen',0,1.3,.031,.73,.42,.009,m.ink,.004);
+ rounded(desk,'hospitality-tray',.57,.9,-.1,.45,.035,.28,m.darkFrame,.009);cylinder(desk,'stainless-kettle',.66,1.025,-.12,.073,.21,m.chrome,.057);rounded(desk,'kettle-handle',.75,1.045,-.12,.065,.14,.04,m.darkFrame,.015);for(const x of [.44,.53])cylinder(desk,'tea-cup',x,.96,-.03,.032,.08,m.linen,.039);
+ rounded(desk,'desk-lamp-foot',.13,.902,-.12,.14,.02,.11,m.chrome,.008);cylinder(desk,'desk-lamp-stem',.13,1.09,-.12,.012,.36,m.chrome);rounded(desk,'desk-lamp-head',.13,1.28,-.08,.2,.045,.11,m.chrome,.01);
+ const chair=new T.Group();chair.name='white-ergonomic-work-chair';chair.position.set(-1.27,0,.36);chair.rotation.y=-Math.PI/2;g.add(chair);
+ cylinder(chair,'swivel-chair-gas-lift',0,.3,0,.035,.32,m.chrome);rounded(chair,'white-work-chair-seat',0,.48,0,.46,.12,.47,m.linen,.05);const back=rounded(chair,'white-ribbed-chair-back',0,.76,-.21,.45,.56,.095,m.linen,.035);back.rotation.x=-.1;
+ for(let i=0;i<6;i++)rounded(chair,'chair-upholstery-channel',0,.55+i*.075,-.151,.4,.012,.014,m.paper,.004);
+ for(const x of [-.25,.25]){rounded(chair,'chrome-chair-arm',x,.62,0,.035,.025,.35,m.chrome,.009);cylinder(chair,'chair-arm-support',x,.55,-.1,.012,.15,m.chrome);}
+ for(let i=0;i<5;i++){const a=i*Math.PI*2/5,leg=rounded(chair,'five-star-chair-base',Math.cos(a)*.13,.18,Math.sin(a)*.13,.29,.035,.04,m.chrome,.009);leg.rotation.y=-a;const wheel=cylinder(chair,'chair-caster',Math.cos(a)*.26,.15,Math.sin(a)*.26,.039,.043,m.darkFrame);wheel.rotation.z=Math.PI/2;}
+ if(room.status==='occupied'){rounded(g,'guest-luggage',.12,.34,1.29,.33,.42,.25,m.headboard,.045);rounded(g,'luggage-handle',.12,.59,1.29,.14,.1,.05,m.chrome,.013);}
+ if(room.extraBed){rounded(g,'actual-extra-bed',.25,.35,.91,.76,.3,.83,m.walnut,.025);rounded(g,'extra-bed-linen',.25,.54,.91,.76,.13,.83,m.linen,.045);}
+ if(room.status==='reserved')rounded(g,'suite-reservation-marker',.8,.31,1.46,.18,.35,.055,room.suaBookingId?m.book:m.chrome,.015);
  if(room.status==='cleaning'){rounded(g,'housekeeping-cart',.66,.37,1.41,.46,.48,.28,m.ink,.03);rounded(g,'clean-towel-stack',.66,.65,1.41,.41,.12,.26,m.linen,.025);for(const x of [.49,.83])cylinder(g,'cart-wheel',x,.13,1.41,.055,.07,m.walnut);}
  if(room.status==='maintenance'){const fault=rounded(g,'fault-lamp',.79,1.84,1.55,.17,.17,.07,m.lamp,.02);fault.userData.interactive=true;rounded(g,'engineering-tool-case',.65,.26,.94,.38,.24,.28,m.book,.035);}
- // Static warm pools replace per-lamp shadow-casting PointLights on mobile.
- for(const x of [-2.02,.4]){const pool=oval(rear,'warm-wall-wash',x,1.18,-1.438,.18,.3,.008,m.lamp);pool.castShadow=false;}
  batchDiorama(rear);batchDiorama(side);batchDiorama(g);return g;
 }
 export function setRoomCutaway(group:T.Group,cameraLocal:T.Vector3){const side=group.getObjectByName('cutaway-side-wall'),rear=group.getObjectByName('cutaway-rear-wall');if(side)side.visible=cameraLocal.x<2.3;if(rear)rear.visible=cameraLocal.z> -1.5;}
