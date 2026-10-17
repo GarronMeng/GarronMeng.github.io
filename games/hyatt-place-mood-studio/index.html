@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#0d131d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>PLACE / STUDIO — 凯悦嘉轩 3D 客房氛围实验室</title>
+  <meta name="description" content="Three.js 可交互 3D 微缩酒店客房：旋转、缩放、材质替换、光照时间轴与氛围预设。灵感源自深圳东门凯悦嘉轩酒店客房。" />
+  <style>
+/* System-first fonts: zero font downloads, faster startup on mobile networks. */
+:root{font-family:'DM Sans','Manrope',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;color:#e9e8e6;background:#101721;font-synthesis:none;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{overscroll-behavior:none}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #dfaf69;outline-offset:3px}button{ -webkit-tap-highlight-color:transparent}a{color:inherit} .app{position:relative;height:100%;height:100dvh;overflow:hidden;background:radial-gradient(ellipse at 48% 57%,#243344 0,#151f2b 54%,#0d131d 100%)}
+.canvas-wrap{position:absolute;inset:0;touch-action:none}.canvas-wrap canvas{width:100%;height:100%;display:block;outline:none}.ambient-noise{pointer-events:none;position:absolute;inset:0;opacity:.2;z-index:1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.68' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E")}
+.topbar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;height:72px;padding:0 36px;z-index:10;border-bottom:1px solid rgba(244,238,222,.08)}.brand{text-decoration:none;display:flex;align-items:center;gap:13px}.brand-symbol{font-size:29px;font-weight:800;letter-spacing:-.14em;color:#f7f1e5}.brand-dot{color:#d5a979}.brand-text{font-size:12px;font-weight:800;letter-spacing:.17em}.brand-text-muted{color:#949da7;font-weight:500}.studio-tag{font-size:9px;letter-spacing:.17em;font-weight:700;color:#98a3af;display:flex;gap:12px;align-items:center}.status-dot{width:6px;height:6px;border-radius:50%;background:#8fb6a6;box-shadow:0 0 0 4px #8fb6a61d}.tag-version{color:#586578}.top-actions{display:flex;gap:7px}.icon-action{display:grid;place-items:center;width:33px;height:33px;border:1px solid #ffffff1c;background:#ffffff09;border-radius:8px;color:#e3e5e6}.icon-action svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round}.icon-action:hover{background:#ffffff20}
+.side-panel{z-index:5}.intro{position:absolute;top:122px;left:clamp(25px,3.6vw,60px);width:235px;pointer-events:auto}.small-eyebrow{font-size:9px;font-weight:800;letter-spacing:.18em;color:#c5b9a8}.fine-line{display:inline-block;width:22px;border-top:1px solid #9d9d9d;vertical-align:middle;margin:0 3px}.intro h1{font-size:clamp(44px,4.8vw,75px);letter-spacing:-.065em;font-weight:800;line-height:.87;margin:20px 0 21px}.intro h1 em{font-weight:500;font-family:Georgia,'Times New Roman',serif;letter-spacing:-.055em}.period{color:#d2a06c}.intro-copy{font-size:12px;color:#b3bdc7;line-height:1.85;font-weight:400}.intro-rule{height:1px;background:linear-gradient(90deg,#75828c55,transparent);margin:24px 0 20px}.section-meta{display:flex;justify-content:space-between;color:#9da8b2;font-size:9px;font-weight:700;letter-spacing:.08em}.mood-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:15px}.mood-tile{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:12px 6px 10px 10px;background:#dce6f007;color:#ebeff1;border:1px solid #ffffff18;border-radius:7px;text-align:left;transition:.18s}.mood-tile:hover{border-color:#ffffff44}.mood-tile.is-active{background:#dbaf7330;border-color:#d2a16ca8}.mood-tile>span:nth-child(2){font-size:11px;font-weight:700}.mood-tile small{font-size:9px;white-space:nowrap;color:#a6b0bc}.mood-icon{font-size:19px;line-height:25px}.cozy-icon{color:#ffcb81}.bright-icon{color:#e5e2d8}.moody-icon{color:#9eafcd}.intro-foot{font-size:10px;color:#818e9b;margin-top:21px;white-space:nowrap}.plus-symbol{color:#ccaf87}
+.daylight{position:absolute;top:123px;right:clamp(24px,3.5vw,55px);width:232px;padding:20px;background:#0c1420c9;border:1px solid #c2d1dd20;box-shadow:0 16px 55px #070b1490;border-radius:12px;backdrop-filter:blur(18px)}.panel-heading{display:flex;justify-content:space-between;align-items:center}.panel-heading h2{margin:10px 0 18px;font-size:18px;font-weight:600;letter-spacing:-.03em}.panel-heading h2 span{font-family:'DM Sans',sans-serif;font-weight:500;color:#d5b58f;font-size:12px;margin-left:6px;letter-spacing:.01em}.sun-glyph{font-size:25px;color:#eec994}.time-choices{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.time-preset{background:transparent;border:1px solid transparent;border-radius:5px;color:#d9dde0;padding:4px 0 5px;display:flex;flex-direction:column;gap:5px;align-items:center}.time-preset.is-active{border-color:#d2a16c9c;background:#d2a16c16}.time-preset>span{display:block}.time-thumb{position:relative;width:37px;height:38px;border-radius:4px;overflow:hidden;background:linear-gradient(160deg,#f0d5a6,#a5bdc2 52%,#413b4b);border:1px solid #ffffff20}.time-thumb.noon{background:linear-gradient(160deg,#e9e4d5,#d4e3e6 59%,#7b8b9e)}.time-thumb.evening{background:linear-gradient(160deg,#dc9961,#845a67 58%,#2b354a)}.time-thumb.night{background:linear-gradient(160deg,#131e37,#253052 55%,#1c1d29)}.tiny-window{position:absolute;inset:7px 7px 5px;border:2px solid #22282b;background:linear-gradient(90deg,transparent 45%,#1b2224 45%,#1b2224 55%,transparent 55%);box-shadow:0 12px 0 -6px #edc1804d}.time-name{font-size:9px;font-weight:700;color:#e0e5e9}.time-label{font-size:8px;color:#8c9aab}.slider-line{display:flex;align-items:center;justify-content:space-between;margin-top:20px;font-size:9px;color:#8593a3}.slider-line span:nth-child(2){color:#c7a379;letter-spacing:.08em;font-size:8px;font-weight:700}input[type=range]{display:block;width:100%;height:18px;appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;margin:9px 0 0}input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:5px;background:linear-gradient(90deg,#dfb374 0 var(--progress,62%),#394556 var(--progress,62%) 100%)}input[type=range]::-moz-range-track{height:3px;border-radius:5px;background:#7c7168}input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#f5d1a0;border:2px solid #29313d;box-shadow:0 0 0 3px #edc27e22;margin-top:-5px}.light-bottom{display:flex;justify-content:space-between;gap:6px;color:#899aa9;font-size:8px;margin-top:12px}.light-bottom span:first-child{color:#b9ad9c}
+.scene-caption{position:absolute;left:clamp(25px,3.6vw,60px);bottom:32px;z-index:3;pointer-events:none}.scene-caption-line{display:flex;align-items:center;gap:9px;color:#c4a57e;font-size:9px;letter-spacing:.12em;font-weight:700}.index-square{border:1px solid #d6b08269;padding:4px 5px}.dashline{border-top:1px solid #8b756b55;width:36px}.scene-caption-name{font-size:15px;font-weight:700;letter-spacing:.04em;margin-top:12px}.scene-caption-name span{font-size:11px;font-weight:400;color:#9eb0bc}.scene-caption-desc{font-size:10px;color:#8492a0;margin-top:7px}
+.bottom-panel{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);width:min(510px,46vw);background:#0b111bd9;border:1px solid #ffffff1c;box-shadow:0 20px 65px #080b139c;border-radius:13px;padding:16px 20px 16px;backdrop-filter:blur(19px)}.bottom-topline{display:flex;align-items:center;justify-content:space-between}.bottom-topline h2{font-size:17px;font-weight:600;letter-spacing:-.025em;margin:7px 0 13px}.bottom-hint{font-size:9px;color:#7f8e9d;max-width:145px;text-align:right}.material-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid #ffffff13;padding-bottom:8px}.material-tabs::-webkit-scrollbar{display:none}.material-tab{flex:none;padding:7px 10px;border-radius:5px;background:transparent;border:0;color:#8e9cab;font-size:10px;white-space:nowrap}.material-tab.is-active{background:#e9d8be19;color:#e8d0ae;font-weight:700}.swatches{display:flex;gap:13px;align-items:start;overflow-x:auto;scrollbar-width:none;min-height:76px;padding:14px 1px 2px}.swatches::-webkit-scrollbar{display:none}.swatch{display:flex;flex:none;flex-direction:column;align-items:center;gap:7px;width:59px;border:none;background:transparent;color:#a6b2bd;padding:0}.swatch-chip{display:block;width:47px;height:44px;border-radius:6px;box-shadow:inset 0 0 0 1px #fff4,0 3px 13px #0005;position:relative}.swatch.is-active .swatch-chip::after{content:'✓';position:absolute;right:-6px;top:-6px;border-radius:50%;width:18px;height:18px;background:#d7aa74;color:#17212b;display:grid;place-items:center;font-size:11px;font-weight:800}.swatch-label{font-size:9px;line-height:1.25;white-space:nowrap}.swatch.is-active .swatch-label{color:#e7d2b6}.hints{position:absolute;right:30px;bottom:20px;display:flex;gap:12px;z-index:3;color:#758491;font-size:9px;pointer-events:none}.object-label{z-index:6;position:absolute;left:50%;top:20%;transform:translate(-50%,-10px);padding:9px 13px;border:1px solid #d9b68b8c;border-radius:7px;background:#131b26db;backdrop-filter:blur(12px);font-size:11px;color:#f9e0bd;box-shadow:0 10px 35px #0006;pointer-events:none;display:flex;align-items:center;gap:8px;animation:rise .25s ease}.object-label[hidden]{display:none}.object-dot{height:5px;width:5px;background:#dfb37d;border-radius:50%}@keyframes rise{from{opacity:0;transform:translate(-50%,0)}to{opacity:1;transform:translate(-50%,-10px)}}
+.loader{position:absolute;z-index:30;inset:0;background:radial-gradient(ellipse at center,#202d3a,#0c141e 68%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity .6s,visibility .6s}.loader.is-done{opacity:0;visibility:hidden;pointer-events:none}.loader-mark{font-size:64px;letter-spacing:-.12em;font-weight:800;color:#f2e5d6}.loader-mark span{color:#d9a46b}.loader-progress{height:2px;width:125px;background:#ffffff22;overflow:hidden}.loader-progress span{height:100%;background:#d9a46b;display:block;width:0%;transition:width .25s}.loader>span{font-size:9px;letter-spacing:.2em;color:#7c8b9b}.error-overlay{position:absolute;z-index:35;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#0d131ff2;padding:25px;text-align:center}.error-overlay[hidden]{display:none}.error-overlay strong{font-size:20px}.error-overlay p{max-width:460px;font-size:12px;color:#a4b3be;line-height:1.8}.error-overlay button{border:1px solid #d7ad83;background:#d7ad83;color:#0d131f;padding:12px 25px;border-radius:8px}.mobile-bar{display:none}dialog{border:1px solid #a4b4bd35;background:#131d2b;color:#e3e3df;border-radius:14px;width:min(460px,calc(100vw - 36px));padding:35px 34px;line-height:1.8;box-shadow:0 25px 80px #0009}dialog::backdrop{background:#050a12bc;backdrop-filter:blur(5px)}dialog h2{font-size:27px;letter-spacing:-.05em}dialog p{font-size:13px;color:#a9b4bd}dialog a{font-size:12px;color:#d9b385}.close-dialog{position:absolute;right:15px;top:10px;border:0;background:transparent;font-size:26px;color:#bdc5cf}.focus-mode .side-panel,.focus-mode .scene-caption,.focus-mode .hints{opacity:0;pointer-events:none}.focus-mode .topbar{background:transparent;border:0}
+@media (max-width:1180px){.intro{width:190px}.intro h1{font-size:58px}.daylight{width:205px;padding:14px}.bottom-panel{width:430px}.scene-caption{bottom:25px}.scene-caption-name{font-size:12px}.scene-caption-name span{display:block;margin-top:6px}.hints{display:none}}
+@media (max-width:950px), (max-height:580px){.topbar{height:62px;padding:0 17px;border:0}.brand-symbol{font-size:28px}.brand-text{font-size:10px}.studio-tag{display:none}.top-actions{gap:5px}.icon-action{width:32px;height:32px}.intro,.daylight,.bottom-panel,.scene-caption{display:none}.app{background:radial-gradient(ellipse at 51% 41%,#303d4d 0,#1c2734 52%,#101821 100%)}.canvas-wrap{bottom:0}.mobile-bar{display:block;position:absolute;bottom:0;left:0;right:0;background:linear-gradient(160deg,#151e2bf9,#101823f9);box-shadow:0 -12px 50px #070e1aa1;border-top:1px solid #ffffff26;border-radius:19px 19px 0 0;padding:8px 20px max(env(safe-area-inset-bottom),18px);backdrop-filter:blur(20px);min-height:208px}.mobile-grabber{margin:0 auto 12px;border-radius:10px;background:#697583;width:33px;height:3px}.mobile-section-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px}.mobile-switch{height:33px;border:1px solid #ffffff14;border-radius:7px;background:#ffffff08;color:#a7b1bb;font-size:11px;font-weight:600}.mobile-switch span{font-size:9px;color:#69798a;margin-left:5px}.mobile-switch.is-active{border-color:#bd9770a6;color:#efd0a6;background:#bd966b1a}.mobile-content{min-height:105px}.mobile-bar .material-tabs{padding-bottom:7px;gap:5px}.mobile-bar .material-tab{font-size:10px;padding:6px 9px}.mobile-bar .swatches{gap:13px;padding:10px 0 0;min-height:65px}.mobile-bar .swatch{width:57px}.mobile-bar .swatch-chip{height:38px;width:45px}.mobile-bar .swatch-label{font-size:9px}.mobile-bar .mood-grid{margin:5px 0 0;gap:9px}.mobile-bar .mood-tile{padding:9px 10px;gap:3px;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center}.mobile-bar .mood-tile .mood-icon{font-size:19px;width:28px}.mobile-bar .mood-tile small{width:100%;padding-left:28px}.mobile-bar .time-choices{gap:8px}.mobile-bar .time-preset{flex-direction:row;gap:5px;justify-content:center}.mobile-bar .time-thumb{display:none}.mobile-bar .slider-line{margin:10px 2px 0}.mobile-bar .light-bottom{margin-top:2px}.mobile-bar input[type=range]{margin:1px 0}.hints{display:flex;bottom:auto;top:77px;left:17px;right:auto;gap:10px}.hints span{font-size:9px}.hints span:last-child{display:none}.object-label{top:120px}.focus-mode .mobile-bar{opacity:0;pointer-events:none}}
+@media (max-width:380px){.mobile-bar{padding-left:14px;padding-right:14px}.mobile-bar .swatches{gap:10px}.brand-text-muted{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* On landscape phones the controls become a compact right-side inspector. */
+@media (orientation:landscape) and (max-height:580px){
+  .topbar{height:53px;padding:0 16px}
+  .canvas-wrap{right:min(340px,43vw)}
+  .mobile-bar{top:53px;bottom:0;left:auto;right:0;width:min(340px,43vw);min-height:0;border-radius:14px 0 0 0;border-top:1px solid #ffffff24;border-left:1px solid #ffffff24;padding:10px 12px max(10px,env(safe-area-inset-bottom))}
+  .mobile-grabber{display:none}
+  .mobile-section-switch{gap:6px;margin-bottom:8px}
+  .mobile-switch{height:30px;font-size:10px}
+  .mobile-bar .material-tabs{gap:2px;padding-bottom:4px}
+  .mobile-bar .material-tab{font-size:9px;padding:5px 6px}
+  .mobile-bar .swatches{gap:7px;flex-wrap:wrap;row-gap:7px;padding-top:8px;max-height:calc(100vh - 180px);overflow-y:auto}
+  .mobile-bar .swatch{width:49px;gap:4px}
+  .mobile-bar .swatch-chip{width:39px;height:33px}
+  .mobile-bar .swatch-label{font-size:8px}
+  .hints{top:64px;left:15px}
+  .mobile-bar .mood-tile{min-height:68px;padding:6px 7px}
+  .object-label{left:35%;top:90px}
+}
+
+@media (orientation:landscape) and (max-height:560px) and (pointer:coarse){
+ .topbar{height:48px;padding:0 12px}.brand-symbol{font-size:24px}.top-actions .icon-action{width:29px;height:29px}
+ .intro,.daylight,.bottom-panel,.scene-caption{display:none}
+ .mobile-bar{display:block;inset:48px 0 0 auto;width:min(292px,38vw);height:calc(100dvh - 48px);min-height:0;border-radius:14px 0 0 0;overflow-y:auto;padding:8px 15px max(10px,env(safe-area-inset-bottom))}
+ .mobile-bar .mobile-section-switch{gap:4px}.mobile-bar .mobile-switch{font-size:10px}
+ .mobile-bar .swatches{flex-wrap:wrap;gap:13px;overflow-y:visible}
+ .mobile-bar .swatch{width:44px}.mobile-bar .swatch-chip{width:39px;height:38px}.mobile-bar .swatch-label{font-size:8px}
+ .mobile-bar .mood-grid{grid-template-columns:1fr}.mobile-bar .mood-tile{padding:9px}.mobile-bar .mood-tile small{width:auto;padding-left:3px}
+ .hints{top:58px}.object-label{left:30%;top:70px}
+}
+
+  </style>
+  <!-- Import map switches to a second CDN if a network provider is unavailable. -->
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const backup = params.get('mirror') === 'unpkg';
+      const base = backup ? 'https://unpkg.com/three@0.180.0/' : 'https://cdn.jsdelivr.net/npm/three@0.180.0/';
+      const map = { imports: { three: base + 'build/three.module.js', 'three/addons/': base + 'examples/jsm/' } };
+      document.write('<script type="importmap">' + JSON.stringify(map) + '<\/script>');
+      window.__roomReady = false;
+      window.__mirrorName = backup ? 'UNPKG' : 'jsDelivr';
+      window.__showLoadError = function (reason) {
+        if (window.__roomReady || window.__errorShown) return;
+        window.__errorShown = true;
+        const loading = document.getElementById('loader');
+        const overlay = document.getElementById('error-overlay');
+        if (loading) loading.classList.add('is-done');
+        if (overlay) overlay.hidden = false;
+        const msg = document.getElementById('error-message');
+        if (msg) msg.textContent = '当前使用 ' + window.__mirrorName + ' 加载 3D 引擎。' + reason + ' 点击下方按钮切换备用 CDN 再试。';
+        const button = document.getElementById('retry-button');
+        if (button) {
+          button.textContent = '切换线路重新加载';
+          button.onclick = function () {
+            const url = new URL(location.href);
+            if (backup) url.searchParams.delete('mirror');
+            else url.searchParams.set('mirror', 'unpkg');
+            location.href = url.href;
+          };
+        }
+      };
+      window.addEventListener('error', function (e) {
+        if (!window.__roomReady && (e instanceof ErrorEvent || e.target?.tagName === 'SCRIPT')) {
+          window.__showLoadError('模块加载失败或浏览器不支持 WebGL。');
+        }
+      }, true);
+      window.addEventListener('unhandledrejection', function () {
+        if (!window.__roomReady) window.__showLoadError('加载或渲染发生异常。');
+      });
+      window.setTimeout(function () {
+        if (!window.__roomReady) window.__showLoadError('加载等待超过 18 秒。');
+      }, 18000);
+    }());
+  </script>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="canvas-wrap" id="canvas-wrap" aria-label="可旋转的三维酒店客房模型"></div>
+  <div class="ambient-noise" aria-hidden="true"></div>
+  <div class="topbar">
+    <a href="#" class="brand" aria-label="PLACE STUDIO，返回主视角" id="brand-home"><span class="brand-symbol">P<span class="brand-dot">.</span></span><span class="brand-text">PLACE<span class="brand-text-muted"> / STUDIO</span></span></a>
+    <span class="studio-tag"><span class="status-dot"></span> INTERACTIVE ROOM STUDY <span class="tag-version">/ 01</span></span>
+    <div class="top-actions">
+      <button id="reset-camera" class="icon-action" title="重置视角" aria-label="重置视角">
+        <svg viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 3 7M3 17v-6h6"/></svg>
+      </button>
+      <button id="toggle-ui" class="icon-action" title="专注模式" aria-label="切换专注模式">
+        <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg>
+      </button>
+      <button id="about-button" class="icon-action" title="项目说明" aria-label="项目说明">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <section class="intro side-panel" aria-label="场景介绍及氛围">
+    <div class="small-eyebrow">A ROOM, A THOUSAND MOODS <span class="fine-line"></span> 001</div>
+    <h1>Set the<br/><em>Mood<span class="period">.</span></em></h1>
+    <p class="intro-copy">把一间凯悦嘉轩客房，<br/>调成你喜欢的样子。</p>
+    <div class="intro-rule"></div>
+    <div class="section-meta"><span>01 — LIGHTING STYLE</span><span>氛围预设</span></div>
+    <div class="mood-grid" role="group" aria-label="氛围风格">
+      <button class="mood-tile is-active" data-mood="cozy" aria-pressed="true"><span class="mood-icon cozy-icon">☀</span><span>Cozy</span><small>温暖舒适</small></button>
+      <button class="mood-tile" data-mood="bright" aria-pressed="false"><span class="mood-icon bright-icon">✳</span><span>Bright</span><small>明亮自然</small></button>
+      <button class="mood-tile" data-mood="moody" aria-pressed="false"><span class="mood-icon moody-icon">◕</span><span>Moody</span><small>静谧电影感</small></button>
+    </div>
+    <div class="intro-foot"><span class="plus-symbol">✳</span> 真实空间逻辑 · 实时材质与光影</div>
+  </section>
+
+  <section class="daylight side-panel" aria-label="日光与时间控制">
+    <div class="panel-heading"><div><div class="small-eyebrow">02 — NATURAL LIGHT</div><h2>Daylight <span id="clock">16:30</span></h2></div><span class="sun-glyph" id="sun-glyph">☀</span></div>
+    <div class="time-choices" id="time-choices">
+      <button class="time-preset" data-time="7.5"><span class="time-thumb morning"><span class="tiny-window"></span></span><span class="time-name">晨间</span><span class="time-label">07:30</span></button>
+      <button class="time-preset" data-time="12"><span class="time-thumb noon"><span class="tiny-window"></span></span><span class="time-name">正午</span><span class="time-label">12:00</span></button>
+      <button class="time-preset is-active" data-time="16.5"><span class="time-thumb evening"><span class="tiny-window"></span></span><span class="time-name">黄昏</span><span class="time-label">16:30</span></button>
+      <button class="time-preset" data-time="21"><span class="time-thumb night"><span class="tiny-window"></span></span><span class="time-name">深夜</span><span class="time-label">21:00</span></button>
+    </div>
+    <div class="slider-line"><span>06:00</span><span id="period-label">GOLDEN HOUR</span><span>23:00</span></div>
+    <input aria-label="调整一天中的时间" id="time-slider" type="range" min="6" max="23" step="0.25" value="16.5" />
+    <div class="light-bottom"><span>☼ <span id="light-desc">Warm afternoon sunlight</span></span><span id="sun-elevation">SUN 24°</span></div>
+  </section>
+
+  <div class="scene-caption" id="scene-caption">
+    <div class="scene-caption-line"><span class="index-square">01</span><span>THE KING ROOM</span><span class="dashline"></span></div>
+    <div class="scene-caption-name">HYATT PLACE <span>SHENZHEN DONGMEN</span></div>
+    <div class="scene-caption-desc">特色特大床 · Cozy Corner 沙发 · 独立办公空间</div>
+  </div>
+
+  <div id="object-label" class="object-label" hidden><span class="object-dot"></span><span id="object-label-text">选择地板材质</span></div>
+
+  <div class="bottom-panel side-panel" id="bottom-panel">
+    <div class="bottom-topline"><div><div class="small-eyebrow">03 — MATERIAL LIBRARY</div><h2>Touch the details<span class="period">.</span></h2></div><span class="bottom-hint">点击房间物件，或直接选择材质</span></div>
+    <div class="material-tabs" role="tablist" aria-label="材质类别">
+      <button role="tab" class="material-tab is-active" data-category="wood" aria-selected="true">木饰面</button>
+      <button role="tab" class="material-tab" data-category="fabric" aria-selected="false">沙发织物</button>
+      <button role="tab" class="material-tab" data-category="floor" aria-selected="false">地面</button>
+      <button role="tab" class="material-tab" data-category="wall" aria-selected="false">墙面</button>
+      <button role="tab" class="material-tab" data-category="bedding" aria-selected="false">床品</button>
+    </div>
+    <div id="swatches" class="swatches" role="group" aria-label="材质样本"></div>
+  </div>
+
+  <div class="mobile-bar side-panel" id="mobile-bar">
+    <div class="mobile-grabber"></div>
+    <div class="mobile-section-switch">
+      <button data-mobile-panel="materials" class="mobile-switch is-active">材质 <span>05</span></button>
+      <button data-mobile-panel="mood" class="mobile-switch">氛围 <span>03</span></button>
+      <button data-mobile-panel="light" class="mobile-switch">时间 <span>04</span></button>
+    </div>
+    <div id="mobile-content" class="mobile-content"></div>
+  </div>
+
+  <div class="hints"><span>↔ 拖动旋转</span><span>⤢ 双指缩放</span><span>◈ 点击家具更换材质</span></div>
+  <div id="loader" class="loader" role="status"><div class="loader-mark">P<span>.</span></div><div class="loader-progress"><span id="progress-bar"></span></div><span>PREPARING YOUR ROOM</span></div>
+  <div id="error-overlay" class="error-overlay" hidden><strong>3D 场景无法加载</strong><p id="error-message"></p><button id="retry-button">重试</button></div>
+  <dialog id="about-dialog"><form method="dialog"><button class="close-dialog" aria-label="关闭">×</button></form><div class="small-eyebrow">ABOUT THIS EXPERIMENT</div><h2>PLACE / STUDIO</h2><p>灵感取自深圳东门凯悦嘉轩酒店特色特大床房：温暖米色调、深色木饰面、Cozy Corner 沙发床、旋转电视、独立办公区与大窗。</p><p>这是使用原生 Three.js 程序化建模的独立交互演示，不是酒店官方产品，也不代表房型的精确尺寸或家具配置。</p><p>所有 3D 家具与材质均在运行时生成，不需要下载大型模型文件。需要网络加载 Three.js。</p><a href="https://www.hyatt.com/hyatt-place/zh-CN/szxzs-hyatt-place-shenzhen-dongmen/rooms" target="_blank" rel="noopener">查看凯悦官方房型介绍 ↗</a></dialog>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* PLACE / STUDIO · An independent Three.js guestroom experience.
+   Generated meshes, textures and furniture can be reused inside a game.
+   Reference: Hyatt Place Shenzhen Dongmen, Specialty King with Sofa Bed.
+*/
+const $ = (id) => document.getElementById(id);
+const root = $('canvas-wrap');
+const mobileContent = $('mobile-content');
+const onMobile = () => window.innerWidth <= 950 || window.innerHeight <= 580;
+const palette = {
+  wood: [
+    {id:'walnut',name:'深胡桃木',color:'#775039',chip:'repeating-linear-gradient(95deg,#6f4b33,#785238 4px,#66432f 6px,#875b40 10px)'},
+    {id:'oak',name:'自然橡木',color:'#caa278',chip:'repeating-linear-gradient(95deg,#c29b6d,#ddba89 4px,#cba374 7px)'},
+    {id:'ash',name:'烟熏白蜡',color:'#938779',chip:'repeating-linear-gradient(95deg,#756f67,#aca092 5px,#918575 9px)'},
+    {id:'espresso',name:'深咖啡木',color:'#46352e',chip:'repeating-linear-gradient(95deg,#322720,#514034 6px,#443126 9px)'},
+    {id:'blackwood',name:'黑檀木',color:'#343437',chip:'repeating-linear-gradient(95deg,#26292e,#444448 5px,#33363a 10px)'}
+  ],
+  fabric: [
+    {id:'linen',name:'暖亚麻',color:'#bfaa91',chip:'repeating-linear-gradient(25deg,#bba88f,#d4c5ad 2px,#b6a38b 4px)'},
+    {id:'oat',name:'燕麦米',color:'#ded0b5',chip:'repeating-linear-gradient(25deg,#e4d7bf,#c6b69e 3px,#e5d9c4 5px)'},
+    {id:'olive',name:'鼠尾草',color:'#889384',chip:'repeating-linear-gradient(25deg,#899685,#768674 3px,#96a191 5px)'},
+    {id:'blue',name:'雾霾蓝',color:'#758ca0',chip:'repeating-linear-gradient(25deg,#869aac,#6a7e90 3px,#879dad 5px)'},
+    {id:'graphite',name:'石墨灰',color:'#626568',chip:'repeating-linear-gradient(25deg,#52575b,#747779 3px,#64676a 5px)'}
+  ],
+  floor: [
+    {id:'sand',name:'暖砂地毯',color:'#a99c86',chip:'repeating-linear-gradient(70deg,#a59987,#b9ad9a 2px,#9c907f 4px)'},
+    {id:'cream',name:'奶油织毯',color:'#cfc3ad',chip:'repeating-linear-gradient(70deg,#ccc4b1,#e0d4c1 2px,#bdb4a5 4px)'},
+    {id:'slate',name:'浅灰地毯',color:'#8f9493',chip:'repeating-linear-gradient(70deg,#9b9f9b,#777e80 2px,#8c9393 4px)'},
+    {id:'timber',name:'天然木地板',color:'#bc9a76',chip:'repeating-linear-gradient(90deg,#a98762 0 8px,#d4b18b 9px 10px,#ab8b6d 11px 21px)'},
+    {id:'darkfloor',name:'深木地板',color:'#665449',chip:'repeating-linear-gradient(90deg,#493b31 0 8px,#8c6e56 9px 10px,#554536 11px 21px)'}
+  ],
+  wall: [
+    {id:'warm',name:'暖白墙漆',color:'#d9cfbe',chip:'linear-gradient(130deg,#f0e7d8,#c9bcac)'},
+    {id:'stone',name:'浅砂岩',color:'#c1b5a2',chip:'linear-gradient(130deg,#d1c8b4,#aba08f)'},
+    {id:'cool',name:'雾白',color:'#d6d9d5',chip:'linear-gradient(130deg,#e1e7e5,#b8c4c6)'},
+    {id:'sage',name:'淡鼠尾草',color:'#b4bcae',chip:'linear-gradient(130deg,#d1d8c9,#a3b29f)'},
+    {id:'taupe',name:'沙茶色',color:'#aaa092',chip:'linear-gradient(130deg,#bfb1a0,#81796e)'}
+  ],
+  bedding: [
+    {id:'ivory',name:'云朵白',color:'#f0eee6',chip:'linear-gradient(135deg,#ffffff,#dcd9d0)'},
+    {id:'cream',name:'香草白',color:'#dfd4bf',chip:'linear-gradient(135deg,#f0e2ce,#c8b89f)'},
+    {id:'rose',name:'雾粉',color:'#d2b9ad',chip:'linear-gradient(135deg,#ead3cb,#b99e92)'},
+    {id:'blue',name:'雨雾蓝',color:'#b0bec4',chip:'linear-gradient(135deg,#d9e0df,#829daa)'},
+    {id:'charcoal',name:'深灰',color:'#9a9894',chip:'linear-gradient(135deg,#b7b5af,#787877)'}
+  ]
+};
+const names = {wood:'木饰面',fabric:'沙发织物',floor:'地面',wall:'墙面',bedding:'床品'};
+const selected = {wood:'walnut',fabric:'linen',floor:'sand',wall:'warm',bedding:'ivory'};
+let category = 'wood', mood = 'cozy', hour = 16.5, currentMobilePanel = 'materials';
+let renderQueued = false;
+
+function textNoiseTexture(kind='fabric',seed=17) {
+  const c = document.createElement('canvas'); c.width=c.height=256;
+  const ctx = c.getContext('2d', {willReadFrequently:true});
+  ctx.fillStyle = kind === 'wood' ? '#ded5c6' : '#ece8df'; ctx.fillRect(0,0,256,256);
+  let value=seed;
+  const rand=()=>{value=(value*1664525+1013904223)>>>0;return value/4294967296};
+  if(kind==='wood'){
+    for(let i=0;i<600;i++){
+      let x=rand()*256,w=.2+rand()*1.6;
+      ctx.fillStyle=`rgba(${rand()<.5?'65,40,29':'255,245,210'},${.015+rand()*.13})`;
+      ctx.fillRect(x,0,w,256);
+    }
+    for(let y=0;y<256;y+=64){ctx.fillStyle='rgba(53,37,30,.1)';ctx.fillRect(0,y,256,1)}
+  } else {
+    for(let i=0;i<25000;i++){
+      let x=rand()*256,y=rand()*256;
+      ctx.fillStyle=rand()>.52?'rgba(45,40,36,.07)':'rgba(255,255,255,.16)';
+      ctx.fillRect(x,y,kind==='carpet'?1.6:.8,kind==='carpet'?1.2:.8);
+    }
+    if(kind==='fabric'){
+      ctx.strokeStyle='rgba(125,111,94,.06)';ctx.lineWidth=.35;
+      for(let v=0;v<256;v+=4){ctx.beginPath();ctx.moveTo(v,0);ctx.lineTo(v,256);ctx.stroke();ctx.beginPath();ctx.moveTo(0,v);ctx.lineTo(256,v);ctx.stroke()}
+    }
+  }
+  const tex=new THREE.CanvasTexture(c);
+  tex.colorSpace=THREE.SRGBColorSpace; tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+  tex.anisotropy=4;
+  return tex;
+}
+
+const renderer = new THREE.WebGLRenderer({antialias: true, alpha:true, powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,onMobile()?1.6:2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.48;
+renderer.setClearColor(0x111924,0);
+renderer.domElement.setAttribute('aria-label','交互式 3D 凯悦嘉轩客房，拖动旋转、双指缩放、点击家具修改材质');
+root.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.fog=new THREE.FogExp2('#1a2532',.012);
+const camera = new THREE.OrthographicCamera(-9,9,6,-6,.1,120);
+camera.position.set(13.8,12.3,15.3);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.075;controls.enablePan=false;
+controls.minPolarAngle=.48;controls.maxPolarAngle=1.36;
+controls.minAzimuthAngle=-Infinity;controls.maxAzimuthAngle=Infinity;
+controls.minZoom=.75;controls.maxZoom=2.6;
+controls.rotateSpeed=.72;controls.zoomSpeed=.72;
+controls.target.set(0,.75,0);
+controls.update();
+
+const hemi = new THREE.HemisphereLight(0xdfe9ff,0x716354,2.3); scene.add(hemi);
+const ambient=new THREE.AmbientLight(0xffffff,.28);scene.add(ambient);
+const sun=new THREE.DirectionalLight(0xffd5a0,3.5);
+sun.position.set(-5,12,7);sun.castShadow=true;
+sun.shadow.mapSize.set(onMobile()?1024:2048,onMobile()?1024:2048);
+sun.shadow.camera.left=-11;sun.shadow.camera.right=11;sun.shadow.camera.top=11;sun.shadow.camera.bottom=-11;
+sun.shadow.camera.near=.5;sun.shadow.camera.far=45;
+sun.shadow.bias=-.00024;sun.shadow.normalBias=.03;
+sun.target.position.set(0,0,0);scene.add(sun,sun.target);
+const bedsideLight=new THREE.PointLight(0xffbd7f,0.6,5,2);bedsideLight.position.set(3,2,-2.9);scene.add(bedsideLight);
+const deskLight=new THREE.PointLight(0xffd5a2,0.5,3.2,2);deskLight.position.set(-2.9,1.6,-1.9);scene.add(deskLight);
+
+const textures={fabric:textNoiseTexture('fabric'),wood:textNoiseTexture('wood'),floor:textNoiseTexture('carpet'),rug:textNoiseTexture('fabric',43)};
+textures.wood.repeat.set(1.2,1.3);textures.floor.repeat.set(3,3);textures.fabric.repeat.set(2,2);
+const mat={
+  wood:new THREE.MeshStandardMaterial({color:'#775039',map:textures.wood,roughness:.63,metalness:0}),
+  fabric:new THREE.MeshStandardMaterial({color:'#bfaa91',map:textures.fabric,roughness:.98}),
+  floor:new THREE.MeshStandardMaterial({color:'#a99c86',map:textures.floor,roughness:.99}),
+  wall:new THREE.MeshStandardMaterial({color:'#d9cfbe',roughness:.96}),
+  bedding:new THREE.MeshStandardMaterial({color:'#f0eee6',roughness:.91,map:textures.fabric}),
+  woodDark:new THREE.MeshStandardMaterial({color:'#4a3024',map:textures.wood,roughness:.7}),
+  stone:new THREE.MeshStandardMaterial({color:'#ded4bf',roughness:.84}),
+  dark:new THREE.MeshStandardMaterial({color:'#202831',roughness:.5,metalness:.2}),
+  black:new THREE.MeshStandardMaterial({color:'#141719',roughness:.29,metalness:.35}),
+  trim:new THREE.MeshStandardMaterial({color:'#cda778',metalness:.73,roughness:.3}),
+  pillow:new THREE.MeshStandardMaterial({color:'#a29a88',map:textures.fabric,roughness:.95}),
+  fabricLight:new THREE.MeshStandardMaterial({color:'#e2d3c0',map:textures.fabric,roughness:.96}),
+  white:new THREE.MeshStandardMaterial({color:'#f4efe6',roughness:.76}),
+  plant:new THREE.MeshStandardMaterial({color:'#436552',roughness:.85,side:THREE.DoubleSide}),
+  leaf2:new THREE.MeshStandardMaterial({color:'#607a5c',roughness:.82,side:THREE.DoubleSide}),
+  glass:new THREE.MeshPhysicalMaterial({color:'#c7d8dc',transmission:.12,transparent:true,opacity:.42,metalness:.06,roughness:.12,depthWrite:false,side:THREE.DoubleSide}),
+  screen:new THREE.MeshStandardMaterial({color:'#151c23',roughness:.22,metalness:.21}),
+  ivory:new THREE.MeshStandardMaterial({color:'#eee4d0',roughness:.95}),
+  copper:new THREE.MeshStandardMaterial({color:'#ad7958',metalness:.7,roughness:.3}),
+};
+const world=new THREE.Group();scene.add(world);
+const clickTargets=[];
+function register(mesh,cat){if(cat){mesh.userData.category=cat;clickTargets.push(mesh)}return mesh}
+function box(parent,name,w,h,d,x,y,z,material,cat,round=.015){
+  const r=Math.max(0,Math.min(round,w*.45,h*.45,d*.45));
+  const geom=r>.005?new RoundedBoxGeometry(w,h,d,2,r):new THREE.BoxGeometry(w,h,d);
+  const mesh=new THREE.Mesh(geom,material);
+  mesh.name=name;mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);register(mesh,cat);return mesh;
+}
+function cylinder(parent,name,rTop,rBottom,h,x,y,z,material,segments=16){const m=new THREE.Mesh(new THREE.CylinderGeometry(rTop,rBottom,h,segments),material);m.name=name;m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+function sphere(parent,name,r,x,y,z,material,scale){const m=new THREE.Mesh(new THREE.SphereGeometry(r,12,8),material);m.name=name;m.position.set(x,y,z);if(scale)m.scale.set(...scale);m.castShadow=true;parent.add(m);return m;}
+function tube(parent,a,b,r,material){const direction=new THREE.Vector3().subVectors(new THREE.Vector3(...b),new THREE.Vector3(...a));const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,direction.length(),8),material);mesh.position.copy(new THREE.Vector3(...a)).add(new THREE.Vector3(...b)).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),direction.normalize());parent.add(mesh);mesh.castShadow=true;return mesh;}
+function labelTexture(text,second='',bg='#232934',fg='#ead6b7'){
+  const canvas=document.createElement('canvas');canvas.width=512;canvas.height=128;
+  const c=canvas.getContext('2d');c.fillStyle=bg;c.fillRect(0,0,512,128);
+  c.fillStyle=fg;c.font='bold 38px Arial';c.textAlign='center';c.fillText(text,256,58);
+  c.font='18px Arial';c.fillStyle='#b5ada3';c.fillText(second,256,91);
+  const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;return t;
+}
+function artworkTexture(variant){
+  const c=document.createElement('canvas');c.width=320;c.height=400;const g=c.getContext('2d');
+  g.fillStyle=variant===0?'#d1b296':'#aaa99a';g.fillRect(0,0,320,400);
+  g.fillStyle=variant===0?'#c88b65':'#738c8c';g.beginPath();g.ellipse(140,165,110,155,-.4,0,7);g.fill();
+  g.fillStyle=variant===0?'#a96047':'#415d65';g.beginPath();g.ellipse(225,240,95,148,.45,0,7);g.fill();
+  g.globalAlpha=.6;g.fillStyle='#e4d9bf';g.beginPath();g.ellipse(110,290,45,130,.5,0,7);g.fill();
+  for(let i=0;i<70;i++){let a=Math.sin(i*18.5)*1000;g.fillStyle='rgba(250,242,227,.06)';g.fillRect(Math.abs(a)%320,Math.abs(a*3)%400,9,12)}
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;
+}
+
+// The freestanding miniature display plinth.
+const platform=box(world,'exhibition platform',9.9,.44,8.2,0,-.32,0,mat.black,null,.09);
+box(world,'warm-edge inlay',9.67,.025,7.97,0,-.105,0,mat.trim,null,.02);
+box(world,'floating room slab',9.57,.17,7.87,0,-.01,0,new THREE.MeshStandardMaterial({color:'#4b4239',roughness:.85}),null,.04);
+box(world,'carpeted floor',9.25,.065,7.55,0,.112,0,mat.floor,'floor',.018);
+// Front exhibition label on the plinth.
+const badge=new THREE.Mesh(new THREE.PlaneGeometry(2.8,.7),new THREE.MeshBasicMaterial({map:labelTexture('HYATT PLACE','ROOM 1208   /   SHENZHEN DONGMEN'),transparent:false}));
+badge.position.set(0,-.30,4.112);world.add(badge);
+for(let x of [-4.5,4.5])for(let z of [-3.5,3.5]){cylinder(world,'brass corner peg',.035,.035,.034,x,-.078,z,mat.trim,12)}
+
+// Back wall: built as split wall panels around a genuine large window opening.
+const WALL_Z=-3.81;
+box(world,'back left wall',.90,3.5,.13,-4.17,1.85,WALL_Z,mat.wall,'wall',.025);
+box(world,'back right wall',5.25,3.5,.13,2.02,1.85,WALL_Z,mat.wall,'wall',.025);
+box(world,'upper window lintel',3.1,.62,.13,-2.16,3.29,WALL_Z,mat.wall,'wall');
+box(world,'lower window spandrel',3.1,.62,.13,-2.16,.43,WALL_Z,mat.wall,'wall');
+box(world,'left wall',.13,3.5,7.5,-4.64,1.85,0,mat.wall,'wall');
+// Thin ceiling-edge capping accent emphasizes architectural section.
+box(world,'back top capping',9.3,.07,.2,0,3.63,-3.81,mat.ivory,null,.012);
+box(world,'side top capping',.2,.07,7.6,-4.64,3.63,0,mat.ivory,null,.012);
+box(world,'back baseboard',9.28,.13,.13,0,.23,-3.67,mat.wood,'wood',.012);
+box(world,'side baseboard',.13,.13,7.4,-4.48,.23,0,mat.wood,'wood',.012);
+// Vertical paint/wood panels behind bed.
+for(let x=.25;x<4.55;x+=.53){box(world,'headboard wall battens',.025,2.7,.045,x,2.05,-3.696,mat.wood,'wood',.01)}
+// Large picture window with a handcrafted hazy Shenzhen skyline.
+const sky = new THREE.MeshBasicMaterial({color:'#afc5d0',side:THREE.DoubleSide});
+const windowGlow=box(world,'window sky',3.12,2.15,.025,-2.16,1.88,-3.98,sky,null,0);windowGlow.castShadow=false;
+const cityMat=new THREE.MeshBasicMaterial({color:'#809da9'});
+const cityMat2=new THREE.MeshBasicMaterial({color:'#a3b9bf'});
+for(let i=0;i<17;i++){
+  const x=-3.55+i*.175;const ht=.3+.64*(.5+.5*Math.sin(i*7.19));
+  box(world,'cityscape distant tower',.13,ht,.025,x,1.11+ht*.5,-3.94,i%3===0?cityMat:cityMat2,null,0).castShadow=false;
+}
+const glass=box(world,'window pane',3.12,2.14,.025,-2.16,1.86,-3.77,mat.glass,null,0);glass.castShadow=false;
+for(let x of [-3.73,-2.17,-.60])box(world,'window dark mullion',.068,2.34,.10,x,1.85,-3.68,mat.dark,null,.01);
+for(let y of [.73,3.0])box(world,'window rail',3.25,.055,.1,-2.17,y,-3.69,mat.dark,null,.01);
+// Lined fabric curtain panels along both window edges.
+const curtainMaterial=new THREE.MeshStandardMaterial({color:'#d6c9b5',roughness:1,side:THREE.DoubleSide});
+for(let side of [-1,1])for(let i=0;i<7;i++){
+  let cx=side<0?-3.78+i*.07:-.55-i*.07;
+  const fold=box(world,'curtain pleat',.105,2.39,.15,cx,1.77,-3.47,curtainMaterial,null,.03);
+  fold.rotation.y=.15*Math.sin(i*1.7);
+}
+box(world,'curtain rod',3.7,.04,.065,-2.17,3.11,-3.47,mat.trim,null,.012);
+
+// Carpet inset rug: a subtle zoning device separating lounge from bed.
+const rug=box(world,'lounge rug',3.8,.03,3.0,-2.1,.167,.7,new THREE.MeshStandardMaterial({color:'#d7c9b5',map:textures.rug,roughness:1}),null,.035);
+const rugEdge=new THREE.MeshStandardMaterial({color:'#c4b49d',roughness:1});
+box(world,'rug inset line',3.60,.005,2.82,-2.1,.186,.7,rugEdge,null,.01).castShadow=false;
+
+// Compact kitchenette / minibar zone on rear far left.
+box(world,'minibar dark cabinet',.85,1.1,.51,-4.01,.72,-2.58,mat.wood,'wood',.025);
+box(world,'minibar stone top',.95,.05,.63,-4.01,1.30,-2.58,mat.stone,null,.015);
+box(world,'minibar fridge recess',.59,.65,.045,-4.01,.66,-2.27,mat.dark,null,.008);
+for(let x of [-4.19,-3.92]){cylinder(world,'coffee cups',.072,.062,.12,x,1.40,-2.58,mat.ivory,12)}
+const kettle=cylinder(world,'electric kettle',.11,.09,.18,-3.69,1.43,-2.61,mat.dark,12);
+box(world,'welcome tray',.60,.035,.35,-3.95,1.34,-2.61,mat.woodDark,null,.01);
+
+// Full-depth comfortable work table by window.
+box(world,'working desk',1.90,.105,.85,-2.22,1.18,-2.44,mat.wood,'wood',.035);
+for(let x of [-3.04,-1.42])for(let z of [-2.78,-2.08])tube(world,[x,.2,z],[x,1.11,z],.025,mat.dark);
+box(world,'desk drawer front',1.0,.14,.03,-2.23,1.00,-2.00,mat.wood,'wood',.009);
+// Open laptop, folded display.
+box(world,'laptop keyboard',.55,.024,.37,-2.16,1.252,-2.33,mat.dark,null,.012);
+const laptopScreen=box(world,'laptop display',.56,.39,.018,-2.16,1.44,-2.59,mat.dark,null,.014);laptopScreen.rotation.x=-.12;
+box(world,'laptop lit screen',.50,.31,.021,-2.16,1.44,-2.576,new THREE.MeshBasicMaterial({color:'#668490'}),null,.004).rotation.x=-.12;
+// Sleek rolling desk chair.
+cylinder(world,'chair column',.046,.054,.71,-2.15,.57,-1.22,mat.dark,10);
+for(let a=0;a<5;a++){const ang=a*2*Math.PI/5;const x=-2.15,z=-1.22; tube(world,[x,.26,z],[x+Math.cos(ang)*.31,.23,z+Math.sin(ang)*.31],.023,mat.dark);}
+box(world,'office chair cushion',.74,.14,.7,-2.15,.93,-1.22,mat.fabricLight,null,.12);
+const back=box(world,'office chair back',.7,.86,.14,-2.15,1.40,-1.53,mat.fabricLight,null,.08);back.rotation.x=-.09;
+for(let side of [-1,1])tube(world,[-2.15+side*.35,1.05,-1.29],[-2.15+side*.35,1.06,-1.55],.035,mat.dark);
+
+// COZY CORNER : sectional Hyatt Place sofa with visible layered cushions.
+const sofa=new THREE.Group();sofa.position.set(-2.68,0,.49);world.add(sofa);
+box(sofa,'sofa base',2.72,.23,1.05,0,.45,0,mat.woodDark,'wood',.06);
+box(sofa,'sofa seat left',1.25,.26,.95,-.67,.64,.04,mat.fabric,'fabric',.12);
+box(sofa,'sofa seat right',1.25,.26,.95,.65,.64,.04,mat.fabric,'fabric',.12);
+box(sofa,'sofa backrest',2.74,.92,.30,0,1.01,-.53,mat.fabric,'fabric',.14);
+box(sofa,'sofa left arm',.25,.65,1.20,-1.38,.76,-.04,mat.fabric,'fabric',.08);
+box(sofa,'sofa right arm',.25,.65,1.20,1.38,.76,-.04,mat.fabric,'fabric',.08);
+for(let xx of [-1.02,1.02])for(let zz of [-.33,.3])box(sofa,'sofa feet',.13,.21,.13,xx,.25,zz,mat.woodDark,'wood',.01);
+const cushionA=box(sofa,'warm decorative cushion',.48,.48,.16,-.87,.99,-.31,mat.pillow,'fabric',.07);cushionA.rotation.z=-.13;
+const cushionB=box(sofa,'patterned decorative cushion',.42,.43,.15,.84,1.0,-.32,new THREE.MeshStandardMaterial({color:'#d1b69c',roughness:1,map:textures.fabric}),'fabric',.06);cushionB.rotation.z=.15;
+// Sofa chaise / ottoman parallel to the camera.
+box(world,'sofa chaise platform',.95,.32,1.20,-3.22,.45,1.27,mat.fabric,'fabric',.085);
+box(world,'sofa chaise cushion',.93,.17,1.20,-3.22,.68,1.25,mat.fabric,'fabric',.085);
+// Coffee table at the lounge; objects are individually modelled.
+box(world,'coffee table wooden top',1.35,.11,.64,-1.77,.67,1.76,mat.wood,'wood',.025);
+for(let x of [-2.32,-1.22])for(let z of [1.52,2.02])box(world,'coffee table foot',.055,.43,.055,x,.41,z,mat.woodDark,'wood',.01);
+box(world,'coffee table magazine',.35,.012,.27,-1.92,.737,1.76,mat.ivory,null,.002);
+box(world,'magazine ink graphic',.25,.009,.12,-1.93,.749,1.77,mat.copper,null,.001);
+cylinder(world,'coffee cup',.092,.07,.13,-1.44,.805,1.67,mat.ivory,16);
+cylinder(world,'coffee cup interior',.067,.067,.005,-1.44,.873,1.67,mat.woodDark,12);
+
+// Bed: king pillowtop with an oversized upholstered headboard and independent linen meshes.
+const bed=new THREE.Group();bed.position.set(1.49,0,-1.44);world.add(bed);
+box(bed,'king bed platform',2.54,.37,3.22,0,.40,.30,mat.woodDark,'wood',.065);
+box(bed,'king mattress',2.48,.32,3.12,0,.73,.30,mat.ivory,null,.085);
+box(bed,'king fitted sheet',2.38,.11,3.04,0,.933,.30,mat.bedding,'bedding',.064);
+box(bed,'bed top duvet',2.38,.17,2.28,0,1.02,.65,mat.bedding,'bedding',.12);
+box(bed,'folded duvet band',2.37,.048,.24,0,1.13,-.45,mat.fabricLight,'bedding',.045);
+// Sheet piping along foot of bed.
+box(bed,'duvet hem line',2.25,.011,.025,0,1.09,1.76,mat.ivory,null,.004);
+for(let x of [-.66,.66]){
+  const pillow=box(bed,'king bed pillow',.99,.21,.69,x,1.105,-.77,mat.bedding,'bedding',.17);pillow.rotation.y=x>0?.07:-.07;
+  box(bed,'accent pillow',.55,.16,.38,x,1.23,-.32,mat.fabricLight,null,.10);
+}
+box(bed,'king headboard upholstered',2.99,1.23,.23,0,1.12,-1.40,mat.fabricLight,null,.08);
+for(let x of [-.68,0,.68])box(bed,'headboard stitching',.018,1.08,.015,x,1.10,-1.26,mat.pillow,null,.005);
+// Nightstands on either side.
+for(let side of [-1,1]){
+  let px=side*1.69;
+  box(bed,'bedside cabinet',.58,.55,.62,px,.53,-.89,mat.wood,'wood',.025);
+  box(bed,'bedside handle',.24,.018,.018,px,.59,-.56,mat.trim,null,.008);
+  box(bed,'bedside slab',.62,.044,.68,px,.84,-.89,mat.woodDark,null,.012);
+}
+// A pair of decorative pendant sconces hang over the bed.
+for(let xx of [.08,3.02]){
+  tube(world,[xx,3.35,-3.42],[xx,2.62,-3.42],.014,mat.trim);
+  const shade=new THREE.Mesh(new THREE.CylinderGeometry(.07,.11,.44,12),new THREE.MeshStandardMaterial({color:'#f3e5c4',emissive:'#e9a764',emissiveIntensity:.55,roughness:.52}));
+  shade.position.set(xx,2.43,-3.42);shade.castShadow=true;world.add(shade);
+}
+// Swiveling television divider: signature Hyatt Place feature.
+const tv=new THREE.Group();tv.position.set(-.15,0,.46);world.add(tv);
+box(tv,'tv base console',.27,1.03,1.45,0,.65,0,mat.wood,'wood',.03);
+box(tv,'tv open shelf',.28,.04,1.41,0,.58,0,mat.woodDark,null,.01);
+box(tv,'tv wall display',.08,1.12,1.60,.19,1.68,0,mat.black,null,.028);
+box(tv,'tv black glass',.022,.97,1.47,.242,1.69,0,mat.screen,null,.01);
+box(tv,'display stand',.11,.35,.12,0,1.26,0,mat.dark,null,.015);
+// Soft interior objects: towels, plants, book, decorative bowl.
+box(world,'rolled hotel towel',.45,.10,.21,3.57,.38,1.84,mat.white,null,.045);
+for(let x of [.1,.31])box(world,'books at TV unit',.12,.12,.4,-.2,.90,x,mat.ivory,null,.006);
+// Side wall artwork, framed in brass and wood.
+for(let i=0;i<2;i++){
+  const art=box(world,'framed abstract artwork',.72,.9,.065,-4.51,2.33,1.31+i*.85,mat.woodDark,null,.012);
+  art.rotation.y=Math.PI/2;
+  const plane=new THREE.Mesh(new THREE.PlaneGeometry(.61,.79),new THREE.MeshBasicMaterial({map:artworkTexture(i),side:THREE.DoubleSide}));
+  plane.rotation.y=Math.PI/2;plane.position.set(-4.465,2.33,1.31+i*.85);world.add(plane);
+}
+// Small potted plant with hand-modelled long leaves.
+function makePlant(x,z,scale=1){
+  const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);world.add(g);
+  cylinder(g,'plant clay pot',.21,.16,.34,0,.39,0,mat.stone,16);
+  cylinder(g,'pot soil',.192,.192,.025,0,.56,0,mat.woodDark,16);
+  for(let i=0;i<9;i++){
+    const theta=i*Math.PI*2/9;const height=.63+(i%3)*.18;
+    const a=[0,.57,0],b=[Math.cos(theta)*(.34+i%3*.055),height+.62,Math.sin(theta)*(.32+i%4*.04)];
+    tube(g,a,b,.026,i%2?mat.plant:mat.leaf2);
+    const leaf=sphere(g,'leaf',.18,b[0],b[1],b[2],i%2?mat.plant:mat.leaf2,[.4,1.45,.20]);
+    leaf.rotation.z=-Math.cos(theta)*.55;leaf.rotation.x=Math.sin(theta)*.5;
+  }
+}
+makePlant(4.07,2.80,.9);makePlant(-4.01,2.64,.57);
+
+// Decorative bedside wall cove and spotlight illusion.
+for(let i=0;i<4;i++){
+  const x=.36+i*1.03;
+  cylinder(world,'recessed spotlight',.075,.075,.02,x,3.57,-3.55,mat.ivory,16);
+  cylinder(world,'recessed spotlight warm lens',.048,.048,.025,x,3.55,-3.55,new THREE.MeshBasicMaterial({color:'#ffe2b2'}),12);
+}
+
+// Extra static grounding shadow, designed to look good even on slower mobile GPUs.
+const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=128;
+const sc=shadowCanvas.getContext('2d'),grad=sc.createRadialGradient(64,64,6,64,64,62);
+grad.addColorStop(0,'rgba(3,7,14,.45)');grad.addColorStop(1,'rgba(3,7,14,0)');
+sc.fillStyle=grad;sc.fillRect(0,0,128,128);
+const shadowMap=new THREE.CanvasTexture(shadowCanvas);
+const groundShadow=new THREE.Mesh(new THREE.PlaneGeometry(13,11),new THREE.MeshBasicMaterial({map:shadowMap,transparent:true,depthWrite:false,opacity:.52}));
+groundShadow.rotation.x=-Math.PI/2;groundShadow.position.y=-.56;scene.add(groundShadow);
+
+// A small amount of image noise increases the feel of physical miniature objects.
+function updateMaterials(cat) {
+  const entry=palette[cat].find((p)=>p.id===selected[cat]);
+  if(!entry)return;
+  const m=mat[cat];m.color.set(entry.color);m.needsUpdate=true;
+  if(cat==='floor'){
+    const woody=entry.id==='timber'||entry.id==='darkfloor';m.map=woody?textures.wood:textures.floor;m.roughness=woody?.79:.99;m.needsUpdate=true;
+  }
+}
+
+function interpolate(a,b,t){return a+(b-a)*t}
+const KEYFRAMES=[
+  {t:6,color:'#aebccc',sun:'#ffc4a1',sunPower:1.2,hemi:1.95,lamps:1.05,ambient:'#82796f',fog:'#283140',elev:12},
+  {t:8,color:'#d3e2e6',sun:'#ffdbac',sunPower:3.35,hemi:2.15,lamps:.16,ambient:'#b4aaa0',fog:'#344250',elev:31},
+  {t:12,color:'#e0e9ec',sun:'#ffffff',sunPower:3.45,hemi:2.45,lamps:.05,ambient:'#d1d5d4',fog:'#384657',elev:72},
+  {t:16.5,color:'#d6aa8f',sun:'#ffd3a3',sunPower:4.0,hemi:2.1,lamps:.42,ambient:'#b39780',fog:'#342c37',elev:24},
+  {t:19,color:'#4d6078',sun:'#f8ae80',sunPower:.65,hemi:1.23,lamps:1.75,ambient:'#596077',fog:'#202735',elev:0},
+  {t:23,color:'#182744',sun:'#7a98cb',sunPower:.18,hemi:1.06,lamps:2.2,ambient:'#596077',fog:'#151d30',elev:-14}
+];
+function sampleKeyframes(t){
+  let i=0;while(i<KEYFRAMES.length-2&&KEYFRAMES[i+1].t<t)i++;
+  const a=KEYFRAMES[i],b=KEYFRAMES[i+1],frac=THREE.MathUtils.clamp((t-a.t)/(b.t-a.t),0,1);
+  return {sun:new THREE.Color(a.sun).lerp(new THREE.Color(b.sun),frac),back:new THREE.Color(a.color).lerp(new THREE.Color(b.color),frac),ambient:new THREE.Color(a.ambient).lerp(new THREE.Color(b.ambient),frac),fog:new THREE.Color(a.fog).lerp(new THREE.Color(b.fog),frac),sunPower:interpolate(a.sunPower,b.sunPower,frac),hemi:interpolate(a.hemi,b.hemi,frac),lamps:interpolate(a.lamps,b.lamps,frac),elev:interpolate(a.elev,b.elev,frac)};
+}
+function timeString(t){const mins=Math.round(t*60);return `${String(Math.floor(mins/60)).padStart(2,'0')}:${String(mins%60).padStart(2,'0')}`;}
+function syncTimeUI(){
+  $('clock').textContent=timeString(hour);
+  $('time-slider').value=hour;
+  $('time-slider').style.setProperty('--progress',`${(hour-6)/17*100}%`);
+  const slider=$('mobile-time-slider');if(slider){slider.value=hour;slider.style.setProperty('--progress',`${(hour-6)/17*100}%`)}
+  const presets=document.querySelectorAll('[data-time]');
+  presets.forEach((el)=>el.classList.toggle('is-active',Math.abs(Number(el.dataset.time)-hour)<.15));
+  const period=hour<10?'MORNING LIGHT':hour<15?'CLEAR DAYLIGHT':hour<18.7?'GOLDEN HOUR':'NIGHT LIGHTS';
+  $('period-label').textContent=period;
+  const mobilePeriod=$('mobile-period-label');if(mobilePeriod)mobilePeriod.textContent=period;
+  $('light-desc').textContent=hour<10?'Gentle morning light':hour<15?'Clear natural daylight':hour<18.7?'Warm afternoon sunlight':'Soft bedside lighting';
+  $('sun-glyph').textContent=hour>19?'☾':'☀';
+  $('sun-elevation').textContent=`SUN ${Math.round(sampleKeyframes(hour).elev)}°`;
+  const mClock=$('mobile-clock');if(mClock)mClock.textContent=timeString(hour);
+}
+function updateLighting(){
+  const t=sampleKeyframes(hour),mix={cozy:1,bright:1.23,moody:.61}[mood];
+  sun.color.copy(t.sun);sun.intensity=t.sunPower*(mood==='moody'?.78:mix);
+  sun.position.set(-9+(hour-6)*.70,Math.max(3,5+Math.sin((hour-6)/17*Math.PI)*10),5.5+(hour>15?1:-1));
+  hemi.intensity=t.hemi*(mood==='moody'?.81:mood==='bright'?1.18:1);
+  hemi.color.copy(t.back);hemi.groundColor.copy(t.ambient);
+  ambient.intensity=mood==='bright'?.46:.3;
+  bedsideLight.intensity=t.lamps*(mood==='cozy'?1.4:mood==='moody'?1.9:.66);
+  deskLight.intensity=t.lamps*(mood==='cozy'?1.0:mood==='moody'?1.45:.6);
+  renderer.toneMappingExposure=mood==='bright'?1.72:mood==='moody'?1.13:1.50;
+  scene.fog.color.copy(t.fog);
+  windowGlow.material.color.copy(t.back);
+  const bg=t.fog.clone().lerp(new THREE.Color('#141d2a'),.42);
+  document.querySelector('.app').style.background=`radial-gradient(ellipse at 50% 45%,#${t.fog.getHexString()} 0%,#${bg.getHexString()} 55%,#0a1019 100%)`;
+  syncTimeUI();
+  scheduleRender();
+}
+function setTime(newTime){hour=THREE.MathUtils.clamp(newTime,6,23);updateLighting();}
+function setMood(newMood){if(!['cozy','bright','moody'].includes(newMood))return;mood=newMood;document.querySelectorAll('[data-mood]').forEach(el=>{el.classList.toggle('is-active',el.dataset.mood===newMood);el.setAttribute('aria-pressed',String(el.dataset.mood===newMood))});updateLighting();}
+
+function renderSwatches(target){
+  target.innerHTML=palette[category].map(p=>`<button type="button" class="swatch ${selected[category]===p.id?'is-active':''}" data-swatch="${p.id}" aria-label="选择${p.name}" aria-pressed="${selected[category]===p.id}"><span class="swatch-chip" style="background:${p.chip}"></span><span class="swatch-label">${p.name}</span></button>`).join('');
+}
+function setCategory(cat){if(!palette[cat])return;category=cat;document.querySelectorAll('[data-category]').forEach(el=>{el.classList.toggle('is-active',el.dataset.category===cat);el.setAttribute('aria-selected',String(el.dataset.category===cat))});renderSwatches($('swatches'));if(onMobile()&&currentMobilePanel==='materials')renderMobile();}
+function selectSwatch(id){if(!palette[category].some(item=>item.id===id))return;selected[category]=id;updateMaterials(category);renderSwatches($('swatches'));if(onMobile()&&currentMobilePanel==='materials')renderMobile();showSelection(`${names[category]} · ${palette[category].find(p=>p.id===id).name}`);scheduleRender();}
+let selectionTimeout=0;
+function showSelection(text){$('object-label-text').textContent=text;$('object-label').hidden=false;clearTimeout(selectionTimeout);selectionTimeout=setTimeout(()=>$('object-label').hidden=true,1900)}
+function renderMobile(){
+  document.querySelectorAll('[data-mobile-panel]').forEach(b=>b.classList.toggle('is-active',b.dataset.mobilePanel===currentMobilePanel));
+  if(currentMobilePanel==='materials'){
+    mobileContent.innerHTML=`<div class="material-tabs" role="tablist">${Object.keys(palette).map(cat=>`<button class="material-tab ${cat===category?'is-active':''}" role="tab" aria-selected="${cat===category}" data-category="${cat}">${names[cat]}</button>`).join('')}</div><div class="swatches" id="mobile-swatches"></div>`;
+    renderSwatches($('mobile-swatches'));
+  }else if(currentMobilePanel==='mood'){
+    mobileContent.innerHTML=`<div class="mood-grid">${[['cozy','☀','Cozy','温暖舒适'],['bright','✳','Bright','明亮自然'],['moody','◕','Moody','静谧电影感']].map(([key,icon,en,zh])=>`<button class="mood-tile ${key===mood?'is-active':''}" data-mood="${key}" aria-pressed="${key===mood}"><span class="mood-icon">${icon}</span><span>${en}</span><small>${zh}</small></button>`).join('')}</div>`;
+  }else{
+    mobileContent.innerHTML=`<div class="time-choices">${[['7.5','晨间'],['12','正午'],['16.5','黄昏'],['21','深夜']].map(([time,name])=>`<button class="time-preset ${Math.abs(Number(time)-hour)<.15?'is-active':''}" data-time="${time}"><span class="time-name">${name}</span></button>`).join('')}</div><div class="slider-line"><span>06:00</span><span id="mobile-period-label">GOLDEN HOUR</span><span id="mobile-clock">16:30</span></div><input id="mobile-time-slider" type="range" min="6" max="23" value="${hour}" step=".25" aria-label="移动端时间轴" />`;
+    syncTimeUI();
+  }
+}
+
+// UI events; delegation also covers recreated mobile controls.
+document.body.addEventListener('click',ev=>{
+  const moodButton=ev.target.closest('[data-mood]');if(moodButton){setMood(moodButton.dataset.mood);return}
+  const timeButton=ev.target.closest('[data-time]');if(timeButton){setTime(Number(timeButton.dataset.time));return}
+  const categoryButton=ev.target.closest('[data-category]');if(categoryButton){setCategory(categoryButton.dataset.category);return}
+  const swatch=ev.target.closest('[data-swatch]');if(swatch){selectSwatch(swatch.dataset.swatch);return}
+  const mobileButton=ev.target.closest('[data-mobile-panel]');if(mobileButton){currentMobilePanel=mobileButton.dataset.mobilePanel;renderMobile()}
+});
+$('time-slider').addEventListener('input',ev=>setTime(Number(ev.target.value)));
+mobileContent.addEventListener('input',ev=>{if(ev.target.id==='mobile-time-slider')setTime(Number(ev.target.value))});
+$('brand-home').addEventListener('click',ev=>{ev.preventDefault();resetCamera()});
+$('reset-camera').addEventListener('click',resetCamera);
+$('toggle-ui').addEventListener('click',()=>document.body.classList.toggle('focus-mode'));
+$('about-button').addEventListener('click',()=>$('about-dialog').showModal());
+
+function resetCamera(){
+  const t=onMobile()?(landscapePhone()?.38:-.55):.85;
+  controls.target.set(landscapePhone()?1.1:0,t,0);camera.position.set(13.8,t+11.55,15.3);controls.update();scheduleRender();
+}
+function fitCamera(){
+  const width=root.clientWidth||window.innerWidth,height=root.clientHeight||window.innerHeight;
+  const aspect=width/height;
+  // Keep complete cutaway visible on tall iPhone portrait screens.
+  const landscapeMobile=onMobile() && window.innerWidth > window.innerHeight;
+  const viewH=onMobile()?(landscapeMobile ? Math.max(9.6,11.4/aspect) : Math.max(12.5,12.7/aspect)):Math.max(10,12.7/aspect);
+  camera.left=-viewH*aspect/2;camera.right=viewH*aspect/2;camera.top=viewH/2;camera.bottom=-viewH/2;
+  camera.zoom=onMobile()?1:1;
+  camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,onMobile()?1.55:2));
+  renderer.setSize(width,height,false);
+  controls.target.x=landscapePhone()?1.1:0;
+  if(onMobile())controls.target.y=landscapePhone()?.38:-.55;
+  else controls.target.y=.8;
+  controls.update();scheduleRender();
+}
+let downPoint=null;
+renderer.domElement.addEventListener('pointerdown',ev=>{downPoint={x:ev.clientX,y:ev.clientY,at:Date.now()}});
+renderer.domElement.addEventListener('pointerup',ev=>{
+  if(!downPoint)return;
+  const delta=Math.hypot(ev.clientX-downPoint.x,ev.clientY-downPoint.y);downPoint=null;
+  if(delta>8)return;
+  const rect=renderer.domElement.getBoundingClientRect();
+  const pt=new THREE.Vector2((ev.clientX-rect.left)/rect.width*2-1,-(ev.clientY-rect.top)/rect.height*2+1);
+  const ray=new THREE.Raycaster();ray.setFromCamera(pt,camera);
+  const found=ray.intersectObjects(clickTargets,false)[0];
+  if(found){const cat=found.object.userData.category;setCategory(cat);currentMobilePanel='materials';if(onMobile())renderMobile();showSelection(`已选中 · ${names[cat]}`)}
+});
+
+let lastFrame=0;
+function scheduleRender(){renderQueued=true}
+function animate(time){
+  requestAnimationFrame(animate);
+  const needsUpdate=controls.update();
+  if(renderQueued||needsUpdate||time-lastFrame>380){
+    renderer.render(scene,camera);renderQueued=false;lastFrame=time;
+  }
+}
+window.addEventListener('resize',fitCamera,{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(fitCamera,200),{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleRender()});
+
+// Scene ready: set initial light, mount controls and reveal the miniature.
+renderSwatches($('swatches'));renderMobile();setCategory('wood');updateLighting();fitCamera();
+$('progress-bar').style.width='100%';
+requestAnimationFrame(()=>{
+  try {
+    renderer.render(scene,camera);
+    window.__roomReady = true;
+    requestAnimationFrame(()=>$('loader').classList.add('is-done'));
+  } catch (error) {
+    window.__showLoadError?.('首次渲染失败：' + error.message + '。');
+  }
+});
+requestAnimationFrame(animate);
+
+</script>
+</body>
+</html>
