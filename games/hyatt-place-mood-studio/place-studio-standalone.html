@@ -56,10 +56,7 @@
 
   </style>
   <!-- Pinned local Three.js r180 modules: no third-party runtime CDN dependency. -->
-  <script type="importmap">
-    {"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}
-  </script>
-  <script>
+<script>
     (function () {
       window.__roomReady = false;
       window.__showLoadError = function (reason) {
@@ -181,9 +178,9 @@
 </div>
   <script src="./vendor/three.umd.js"></script>
 <script type="module">
-import { THREE } from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { THREE } from './vendor/three.module.js';
+import { OrbitControls } from './vendor/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from './vendor/addons/geometries/RoundedBoxGeometry.js';
 
 /* PLACE / STUDIO · Independent suite-design study inspired by Hyatt Regency Shenzhen Airport.
    This is a visual interpretation, not an exact architectural survey or official hotel asset.
