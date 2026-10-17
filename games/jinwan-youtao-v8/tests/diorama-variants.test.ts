@@ -7,6 +7,7 @@ import type {Room} from '../src/state/types';
 import {dioramaRoom,setRoomCutaway} from '../src/render/diorama/room';
 import {roomTemplateStats,pruneRoomTemplates,disposeRoomTemplates} from '../src/render/diorama/templates';
 import {roomVisualPlan,roomTemplateKey} from '../src/render/diorama/variants';
+import {REGENCY_SUITE_REFERENCE} from '../src/render/diorama/reference';
 import {isSampleRoom} from '../src/render/diorama/config';
 function count(g:T.Group){let draws=0,triangles=0;g.traverse(o=>{if(o instanceof T.Mesh){draws++;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;}});return {draws,triangles};}
 test('四房型 × 两床型 × 五等级均可构建，40 种组合保持原房间范围与真实 ID',()=>{
@@ -24,3 +25,30 @@ test('装修期间不冒充竣工，真实施工完成后模型跟随原等级�
 test('同款客房共享几何但不共享状态/点击 ID/墙体隐藏；淘汰旧模板并释放合并几何',()=>{
  disposeRoomTemplates();const r=newGame().entities['room-201'] as Room,a=dioramaRoom(r),b=dioramaRoom({...r,id:'room-303'});setRoomCutaway(a,new T.Vector3(8,7,8));assert.equal(b.getObjectByName('cutaway-side-wall')!.visible,true);assert.equal(b.userData.entityId,'room-303');const occupied=dioramaRoom({...r,status:'occupied'});assert.equal(occupied.userData.templateKey,a.userData.templateKey);assert.ok(occupied.getObjectByName('guest-luggage'));assert.ok(!a.getObjectByName('guest-luggage'));dioramaRoom({...r,status:'dirty'});assert.equal(roomTemplateStats().templates,2);pruneRoomTemplates(new Set([roomTemplateKey(r)]));assert.equal(roomTemplateStats().templates,1);disposeRoomTemplates();assert.equal(roomTemplateStats().geometryBytes,0);
 });
+
+
+test('84㎡深圳机场凯悦嘉宾轩套房：独立起居、卧室、卫浴与入口衣柜区域',()=>{
+ const base=newGame().entities['room-201'] as Room;
+ for(const bed of ['king','twin'] as const){
+  const room={...base,id:'regency-suite-'+bed,category:'suite' as const,bed,level:1};
+  const g=dioramaRoom(room),bounds=new T.Box3().setFromObject(g).getSize(new T.Vector3());
+  assert.equal(g.userData.reference,REGENCY_SUITE_REFERENCE.id);
+  assert.equal(g.userData.suitePrototype,'regency-suite-84sqm');
+  assert.equal(g.userData.bedCount,bed==='twin'?2:1);
+  for(const name of ['suite-living-zone','suite-bedroom-zone','suite-bathroom-zone','suite-entry-wardrobe-zone','suite-dining-zone','suite-slatted-divider-zone','suite-window-assembly'])assert.ok(g.getObjectByName(name),name+' should exist');
+  assert.ok(bounds.x<4.9&&bounds.z<3.4,'suite must preserve the existing game-room envelope');
+  release(g);
+ }
+ const suite=roomVisualPlan({...base,category:'suite'});
+ assert.ok(suite.features.includes('regency-suite-84m2'));
+ assert.ok(suite.features.includes('separate-bathroom'));
+});
+test('84㎡套房的五级装修逐级增加可见几何，普通客房仍使用原嘉轩参考',()=>{
+ const base=newGame().entities['room-201'] as Room;let previous=0;
+ for(let level=1;level<=5;level++){
+  const g=dioramaRoom({...base,category:'suite',level});
+  const triangles=count(g).triangles;assert.ok(triangles>previous,'suite level '+level+' should add geometry');previous=triangles;release(g);
+ }
+ const standard=dioramaRoom(base);assert.equal(standard.userData.reference,'hyatt-place-shenzhen-dongmen-king');release(standard);
+});
+function release(g:T.Group){g.traverse(o=>{if(o instanceof T.InstancedMesh)o.dispose();});}

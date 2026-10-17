@@ -9,3 +9,15 @@ export const ROOM_REFERENCE={
  ],
  adaptation:'Mirrored and compressed to the existing 4.7 × 3.1 game footprint; not a measured architectural replica.',
 } as const;
+
+
+/** Suite-only visual reference. The in-game footprint is normalized for the existing floor plan. */
+export const REGENCY_SUITE_REFERENCE={
+ id:'hyatt-regency-shenzhen-airport-regency-suite-84sqm',
+ hotel:'Hyatt Regency Shenzhen Airport',
+ room:'Regency Suite · 84 m²',
+ official:'https://www.hyatt.com/hyatt-regency/en-US/szxra-hyatt-regency-shenzhen-airport/rooms/RGSK',
+ gallery:'https://www.hyatt.com/hyatt-regency/zh-CN/szxra-hyatt-regency-shenzhen-airport/gallery',
+ executiveSuite:'https://www.hyatt.com/hyatt-regency/en-US/szxra-hyatt-regency-shenzhen-airport/rooms/RGXK',
+ adaptation:'An interpretive suite diorama inspired by the official 84 m² room page and supplied photos. It stays within the existing gameplay footprint and is not a measured 1:1 architectural plan.',
+} as const;

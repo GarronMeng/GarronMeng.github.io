@@ -6,12 +6,14 @@ import {dioramaMaterials} from './materials';
 import {rounded,cylinder,oval,contact} from './assets';
 import {roomVisualPlan,roomTemplateKey} from './variants';
 import {roomTemplate} from './templates';
+import {regencySuiteRoom} from './regencySuite';
 /** Photo-led Hyatt Place king room, mirrored to preserve the existing corridor. */
 export function dioramaRoom(room:Room){
  const g=roomTemplate(roomTemplateKey(room),()=>buildRoom(room));g.name=room.id;g.userData.entityId=room.id;g.userData.status=room.status;addRoomState(g,room);return g;
 }
 function buildRoom(room:Room){
- const g=new T.Group(),m=dioramaMaterials(),p=roomVisualPlan(room);g.name=room.id;g.userData={entityId:room.id,diorama:true,reference:ROOM_REFERENCE.id,visual:p,bedCount:p.bed==='twin'?2:1};
+ const p=roomVisualPlan(room);if(p.suite)return regencySuiteRoom(room);
+ const g=new T.Group(),m=dioramaMaterials();g.name=room.id;g.userData={entityId:room.id,diorama:true,reference:ROOM_REFERENCE.id,visual:p,bedCount:p.bed==='twin'?2:1};
  rounded(g,'architectural-plinth',0,.015,0,4.7,.14,3.1,m.edge,.025);
  rounded(g,'wall-to-wall-grey-carpet',0,.106,0,4.58,.04,2.98,m.rug,.012);
  const rear=new T.Group();rear.name='cutaway-rear-wall';rear.userData.dynamic=true;g.add(rear);

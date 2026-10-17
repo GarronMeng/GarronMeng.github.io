@@ -1,0 +1,38 @@
+name: Test Jinwan v8 source
+
+on:
+  push:
+    branches: [visual-diorama-upgrade]
+    paths:
+      - 'games/jinwan-youtao-v8/**'
+      - '.github/workflows/test-jinwan-v8.yml'
+  pull_request:
+    paths:
+      - 'games/jinwan-youtao-v8/**'
+      - '.github/workflows/test-jinwan-v8.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: games/jinwan-youtao-v8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games/jinwan-youtao-v8/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jinwan-youtao-v8-dist
+          path: games/jinwan-youtao-v8/dist
+          retention-days: 7
