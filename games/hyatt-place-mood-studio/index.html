@@ -95,14 +95,15 @@
       }, 30000);
     }());
   </script>
+  <script src="./vendor/three.umd.js"></script>
 </head>
 <body>
 <div class="app" id="app">
-  <div class="canvas-wrap" id="canvas-wrap" aria-label="可旋转的三维酒店客房模型"></div>
+  <div class="canvas-wrap" id="canvas-wrap" aria-label="可旋转的深圳机场凯悦酒店行政套房三维模型"></div>
   <div class="ambient-noise" aria-hidden="true"></div>
   <div class="topbar">
     <a href="#" class="brand" aria-label="PLACE STUDIO，返回主视角" id="brand-home"><span class="brand-symbol">P<span class="brand-dot">.</span></span><span class="brand-text">PLACE<span class="brand-text-muted"> / STUDIO</span></span></a>
-    <span class="studio-tag"><span class="status-dot"></span> INTERACTIVE ROOM STUDY <span class="tag-version">/ 01</span></span>
+    <span class="studio-tag"><span class="status-dot"></span> INTERACTIVE SUITE STUDY <span class="tag-version">/ 02</span></span>
     <div class="top-actions">
       <button id="reset-camera" class="icon-action" title="重置视角" aria-label="重置视角">
         <svg viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 3 7M3 17v-6h6"/></svg>
@@ -119,7 +120,7 @@
   <section class="intro side-panel" aria-label="场景介绍及氛围">
     <div class="small-eyebrow">A ROOM, A THOUSAND MOODS <span class="fine-line"></span> 001</div>
     <h1>Set the<br/><em>Mood<span class="period">.</span></em></h1>
-    <p class="intro-copy">把一间凯悦嘉轩客房，<br/>调成你喜欢的样子。</p>
+    <p class="intro-copy">把一间深圳机场凯悦酒店行政套房，<br/>调成你喜欢的样子。</p>
     <div class="intro-rule"></div>
     <div class="section-meta"><span>01 — LIGHTING STYLE</span><span>氛围预设</span></div>
     <div class="mood-grid" role="group" aria-label="氛围风格">
@@ -144,9 +145,9 @@
   </section>
 
   <div class="scene-caption" id="scene-caption">
-    <div class="scene-caption-line"><span class="index-square">01</span><span>THE KING ROOM</span><span class="dashline"></span></div>
-    <div class="scene-caption-name">HYATT PLACE <span>SHENZHEN DONGMEN</span></div>
-    <div class="scene-caption-desc">特色特大床 · Cozy Corner 沙发 · 独立办公空间</div>
+    <div class="scene-caption-line"><span class="index-square">01</span><span>EXECUTIVE SUITE</span><span class="dashline"></span></div>
+    <div class="scene-caption-name">HYATT REGENCY <span>SHENZHEN AIRPORT</span></div>
+    <div class="scene-caption-desc">行政套房 · 会客区 / 卧室分区 · 商务旅居氛围</div>
   </div>
 
   <div id="object-label" class="object-label" hidden><span class="object-dot"></span><span id="object-label-text">选择地板材质</span></div>
@@ -174,18 +175,17 @@
   </div>
 
   <div class="hints"><span>↔ 拖动旋转</span><span>⤢ 双指缩放</span><span>◈ 点击家具更换材质</span></div>
-  <div id="loader" class="loader" role="status"><div class="loader-mark">P<span>.</span></div><div class="loader-progress"><span id="progress-bar"></span></div><span>PREPARING YOUR ROOM</span></div>
+  <div id="loader" class="loader" role="status"><div class="loader-mark">P<span>.</span></div><div class="loader-progress"><span id="progress-bar"></span></div><span>PREPARING YOUR SUITE</span></div>
   <div id="error-overlay" class="error-overlay" hidden><strong>3D 场景无法加载</strong><p id="error-message"></p><button id="retry-button">重试</button></div>
-  <dialog id="about-dialog"><form method="dialog"><button class="close-dialog" aria-label="关闭">×</button></form><div class="small-eyebrow">ABOUT THIS EXPERIMENT</div><h2>PLACE / STUDIO</h2><p>灵感取自深圳东门凯悦嘉轩酒店特色特大床房：温暖米色调、深色木饰面、Cozy Corner 沙发床、旋转电视、独立办公区与大窗。</p><p>这是使用原生 Three.js 程序化建模的独立交互演示，不是酒店官方产品，也不代表房型的精确尺寸或家具配置。</p><p>所有 3D 家具与材质均在运行时生成，不需要下载大型模型文件。需要网络加载 Three.js。</p><a href="https://www.hyatt.com/hyatt-place/zh-CN/szxzs-hyatt-place-shenzhen-dongmen/rooms" target="_blank" rel="noopener">查看凯悦官方房型介绍 ↗</a></dialog>
+  <dialog id="about-dialog"><form method="dialog"><button class="close-dialog" aria-label="关闭">×</button></form><div class="small-eyebrow">ABOUT THIS EXPERIMENT</div><h2>PLACE / STUDIO</h2><p>灵感调整为深圳机场凯悦酒店（Hyatt Regency Shenzhen Airport）的行政套房体验：更完整的会客区、独立睡眠区、深木饰面、迷你吧与成熟的商务旅居气质。</p><p>这是使用 Three.js 程序化建模的独立交互演示，重点呈现套房空间关系与视觉气质；不是酒店官方产品，也不代表房型的精确尺寸或家具配置。</p><p>所有 3D 家具与材质均在运行时生成，不需要下载大型模型文件。需要网络加载 Three.js。</p><a href="https://www.hyatt.com/hyatt-regency/zh-CN/szxra-hyatt-regency-shenzhen-airport" target="_blank" rel="noopener">查看深圳机场凯悦酒店官方页面 ↗</a></dialog>
 </div>
 <script type="module">
-import * as THREE from 'three';
+import { THREE } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
-/* PLACE / STUDIO · An independent Three.js guestroom experience.
-   Generated meshes, textures and furniture can be reused inside a game.
-   Reference: Hyatt Place Shenzhen Dongmen, Specialty King with Sofa Bed.
+/* PLACE / STUDIO · Independent suite-design study inspired by Hyatt Regency Shenzhen Airport.
+   This is a visual interpretation, not an exact architectural survey or official hotel asset.
 */
 const $ = (id) => document.getElementById(id);
 const root = $('canvas-wrap');
@@ -356,7 +356,7 @@ box(world,'warm-edge inlay',9.67,.025,7.97,0,-.105,0,mat.trim,null,.02);
 box(world,'floating room slab',9.57,.17,7.87,0,-.01,0,new THREE.MeshStandardMaterial({color:'#4b4239',roughness:.85}),null,.04);
 box(world,'carpeted floor',9.25,.065,7.55,0,.112,0,mat.floor,'floor',.018);
 // Front exhibition label on the plinth.
-const badge=new THREE.Mesh(new THREE.PlaneGeometry(2.8,.7),new THREE.MeshBasicMaterial({map:labelTexture('HYATT PLACE','ROOM 1208   /   SHENZHEN DONGMEN'),transparent:false}));
+const badge=new THREE.Mesh(new THREE.PlaneGeometry(2.8,.7),new THREE.MeshBasicMaterial({map:labelTexture('HYATT REGENCY','EXECUTIVE SUITE   /   SHENZHEN AIRPORT'),transparent:false}));
 badge.position.set(0,-.30,4.112);world.add(badge);
 for(let x of [-4.5,4.5])for(let z of [-3.5,3.5]){cylinder(world,'brass corner peg',.035,.035,.034,x,-.078,z,mat.trim,12)}
 
@@ -374,18 +374,29 @@ box(world,'back baseboard',9.28,.13,.13,0,.23,-3.67,mat.wood,'wood',.012);
 box(world,'side baseboard',.13,.13,7.4,-4.48,.23,0,mat.wood,'wood',.012);
 // Vertical paint/wood panels behind bed.
 for(let x=.25;x<4.55;x+=.53){box(world,'headboard wall battens',.025,2.7,.045,x,2.05,-3.696,mat.wood,'wood',.01)}
-// Large picture window with a handcrafted hazy Shenzhen skyline.
-const sky = new THREE.MeshBasicMaterial({color:'#afc5d0',side:THREE.DoubleSide});
+// Large picture window with a subdued airport-side city / terminal view (no waterfront).
+const sky = new THREE.MeshBasicMaterial({color:'#b7c5cb',side:THREE.DoubleSide});
 const windowGlow=box(world,'window sky',3.12,2.15,.025,-2.16,1.88,-3.98,sky,null,0);windowGlow.castShadow=false;
-const cityMat=new THREE.MeshBasicMaterial({color:'#809da9'});
-const cityMat2=new THREE.MeshBasicMaterial({color:'#a3b9bf'});
-for(let i=0;i<17;i++){
-  const x=-3.55+i*.175;const ht=.3+.64*(.5+.5*Math.sin(i*7.19));
-  box(world,'cityscape distant tower',.13,ht,.025,x,1.11+ht*.5,-3.94,i%3===0?cityMat:cityMat2,null,0).castShadow=false;
+const terminalMat=new THREE.MeshBasicMaterial({color:'#82969e'});
+const terminalGlass=new THREE.MeshBasicMaterial({color:'#b9c6c6'});
+const distantCity=new THREE.MeshBasicMaterial({color:'#a0b0b5'});
+box(world,'airport terminal main volume',2.72,.38,.025,-2.14,1.02,-3.94,terminalMat,null,0).castShadow=false;
+box(world,'airport terminal glass band',2.62,.09,.028,-2.14,1.04,-3.91,terminalGlass,null,0).castShadow=false;
+box(world,'terminal concourse wing',1.02,.23,.025,-1.18,1.25,-3.94,distantCity,null,0).castShadow=false;
+box(world,'airport control tower shaft',.13,.56,.025,-3.47,1.31,-3.94,terminalMat,null,0).castShadow=false;
+box(world,'airport control tower cab',.23,.10,.035,-3.47,1.63,-3.92,terminalGlass,null,0).castShadow=false;
+for(let i=0;i<12;i++){
+  const x=-3.35+i*.22;
+  box(world,'terminal window rhythm',.07,.045,.012,x,1.04,-3.895,terminalGlass,null,0).castShadow=false;
 }
+for(let i=0;i<9;i++){
+  const x=-3.35+i*.29;
+  box(world,'apron guide light',.025,.018,.018,x,.835,-3.91,new THREE.MeshBasicMaterial({color:i%2?'#d9cba9':'#e7d8b8'}),null,0).castShadow=false;
+}
+box(world,'distant aircraft fuselage',.40,.025,.025,-1.62,1.58,-3.91,terminalMat,null,0).castShadow=false;
+box(world,'distant aircraft wing',.12,.018,.11,-1.63,1.58,-3.91,terminalMat,null,0).castShadow=false;
+box(world,'distant aircraft tail',.075,.055,.025,-1.80,1.60,-3.91,terminalMat,null,0).castShadow=false;
 const glass=box(world,'window pane',3.12,2.14,.025,-2.16,1.86,-3.77,mat.glass,null,0);glass.castShadow=false;
-for(let x of [-3.73,-2.17,-.60])box(world,'window dark mullion',.068,2.34,.10,x,1.85,-3.68,mat.dark,null,.01);
-for(let y of [.73,3.0])box(world,'window rail',3.25,.055,.1,-2.17,y,-3.69,mat.dark,null,.01);
 // Lined fabric curtain panels along both window edges.
 const curtainMaterial=new THREE.MeshStandardMaterial({color:'#d6c9b5',roughness:1,side:THREE.DoubleSide});
 for(let side of [-1,1])for(let i=0;i<7;i++){
@@ -396,20 +407,25 @@ for(let side of [-1,1])for(let i=0;i<7;i++){
 box(world,'curtain rod',3.7,.04,.065,-2.17,3.11,-3.47,mat.trim,null,.012);
 
 // Carpet inset rug: a subtle zoning device separating lounge from bed.
-const rug=box(world,'lounge rug',3.8,.03,3.0,-2.1,.167,.7,new THREE.MeshStandardMaterial({color:'#d7c9b5',map:textures.rug,roughness:1}),null,.035);
+const rug=box(world,'lounge rug',4.65,.03,3.55,-1.92,.167,.88,new THREE.MeshStandardMaterial({color:'#d7c9b5',map:textures.rug,roughness:1}),null,.035);
 const rugEdge=new THREE.MeshStandardMaterial({color:'#c4b49d',roughness:1});
-box(world,'rug inset line',3.60,.005,2.82,-2.1,.186,.7,rugEdge,null,.01).castShadow=false;
+box(world,'rug inset line',4.40,.005,3.30,-1.92,.186,.88,rugEdge,null,.01).castShadow=false;
 
-// Compact kitchenette / minibar zone on rear far left.
-box(world,'minibar dark cabinet',.85,1.1,.51,-4.01,.72,-2.58,mat.wood,'wood',.025);
-box(world,'minibar stone top',.95,.05,.63,-4.01,1.30,-2.58,mat.stone,null,.015);
-box(world,'minibar fridge recess',.59,.65,.045,-4.01,.66,-2.27,mat.dark,null,.008);
-for(let x of [-4.19,-3.92]){cylinder(world,'coffee cups',.072,.062,.12,x,1.40,-2.58,mat.ivory,12)}
-const kettle=cylinder(world,'electric kettle',.11,.09,.18,-3.69,1.43,-2.61,mat.dark,12);
-box(world,'welcome tray',.60,.035,.35,-3.95,1.34,-2.61,mat.woodDark,null,.01);
-
+// Suite entry and extended minibar / hospitality console.
+box(world,'minibar dark cabinet',1.48,1.1,.56,-3.92,.72,-2.58,mat.wood,'wood',.025);
+box(world,'minibar side cabinet',.54,1.1,.56,-4.67,.72,-2.58,mat.woodDark,'wood',.025);
+box(world,'minibar stone top',2.12,.05,.69,-4.17,1.30,-2.58,mat.stone,null,.015);
+box(world,'minibar fridge recess',.62,.65,.045,-3.58,.66,-2.24,mat.dark,null,.008);
+for(let x of [-4.33,-4.05]){cylinder(world,'coffee cups',.072,.062,.12,x,1.40,-2.58,mat.ivory,12)}
+cylinder(world,'electric kettle',.11,.09,.18,-3.73,1.43,-2.62,mat.dark,12);
+box(world,'welcome tray',.82,.035,.35,-4.02,1.34,-2.61,mat.woodDark,null,.01);
+box(world,'suite minibar niche',.33,.48,.20,-4.69,1.54,-2.59,mat.dark,null,.01);
+box(world,'entry bench',1.05,.18,.44,-4.02,.52,.55,mat.fabricLight,'fabric',.08);
+for(let x of [-4.39,-3.65]) box(world,'entry bench leg',.07,.36,.07,x,.26,.55,mat.woodDark,'wood',.01);
+box(world,'luggage rack top',.78,.04,.52,-4.02,.80,1.33,mat.woodDark,'wood',.01);
+for(let dx of [-.28,.28]) for(let dz of [-.18,.18]) box(world,'luggage rack leg',.06,.50,.06,-4.02+dx,.52,1.33+dz,mat.dark,null,.01);
 // Full-depth comfortable work table by window.
-box(world,'working desk',1.90,.105,.85,-2.22,1.18,-2.44,mat.wood,'wood',.035);
+box(world,'working desk',2.15,.105,.90,-2.10,1.18,-2.42,mat.wood,'wood',.035);
 for(let x of [-3.04,-1.42])for(let z of [-2.78,-2.08])tube(world,[x,.2,z],[x,1.11,z],.025,mat.dark);
 box(world,'desk drawer front',1.0,.14,.03,-2.23,1.00,-2.00,mat.wood,'wood',.009);
 // Open laptop, folded display.
@@ -423,30 +439,46 @@ box(world,'office chair cushion',.74,.14,.7,-2.15,.93,-1.22,mat.fabricLight,null
 const back=box(world,'office chair back',.7,.86,.14,-2.15,1.40,-1.53,mat.fabricLight,null,.08);back.rotation.x=-.09;
 for(let side of [-1,1])tube(world,[-2.15+side*.35,1.05,-1.29],[-2.15+side*.35,1.06,-1.55],.035,mat.dark);
 
-// COZY CORNER : sectional Hyatt Place sofa with visible layered cushions.
-const sofa=new THREE.Group();sofa.position.set(-2.68,0,.49);world.add(sofa);
-box(sofa,'sofa base',2.72,.23,1.05,0,.45,0,mat.woodDark,'wood',.06);
-box(sofa,'sofa seat left',1.25,.26,.95,-.67,.64,.04,mat.fabric,'fabric',.12);
-box(sofa,'sofa seat right',1.25,.26,.95,.65,.64,.04,mat.fabric,'fabric',.12);
-box(sofa,'sofa backrest',2.74,.92,.30,0,1.01,-.53,mat.fabric,'fabric',.14);
-box(sofa,'sofa left arm',.25,.65,1.20,-1.38,.76,-.04,mat.fabric,'fabric',.08);
-box(sofa,'sofa right arm',.25,.65,1.20,1.38,.76,-.04,mat.fabric,'fabric',.08);
-for(let xx of [-1.02,1.02])for(let zz of [-.33,.3])box(sofa,'sofa feet',.13,.21,.13,xx,.25,zz,mat.woodDark,'wood',.01);
-const cushionA=box(sofa,'warm decorative cushion',.48,.48,.16,-.87,.99,-.31,mat.pillow,'fabric',.07);cushionA.rotation.z=-.13;
-const cushionB=box(sofa,'patterned decorative cushion',.42,.43,.15,.84,1.0,-.32,new THREE.MeshStandardMaterial({color:'#d1b69c',roughness:1,map:textures.fabric}),'fabric',.06);cushionB.rotation.z=.15;
-// Sofa chaise / ottoman parallel to the camera.
-box(world,'sofa chaise platform',.95,.32,1.20,-3.22,.45,1.27,mat.fabric,'fabric',.085);
-box(world,'sofa chaise cushion',.93,.17,1.20,-3.22,.68,1.25,mat.fabric,'fabric',.085);
-// Coffee table at the lounge; objects are individually modelled.
-box(world,'coffee table wooden top',1.35,.11,.64,-1.77,.67,1.76,mat.wood,'wood',.025);
-for(let x of [-2.32,-1.22])for(let z of [1.52,2.02])box(world,'coffee table foot',.055,.43,.055,x,.41,z,mat.woodDark,'wood',.01);
-box(world,'coffee table magazine',.35,.012,.27,-1.92,.737,1.76,mat.ivory,null,.002);
-box(world,'magazine ink graphic',.25,.009,.12,-1.93,.749,1.77,mat.copper,null,.001);
-cylinder(world,'coffee cup',.092,.07,.13,-1.44,.805,1.67,mat.ivory,16);
-cylinder(world,'coffee cup interior',.067,.067,.005,-1.44,.873,1.67,mat.woodDark,12);
+// LOUNGE AREA: generous three-seat sofa, ottoman and accent chair.
+const sofa=new THREE.Group();sofa.position.set(-2.55,0,.43);world.add(sofa);
+box(sofa,'sofa base',3.18,.23,1.10,0,.45,0,mat.woodDark,'wood',.06);
+box(sofa,'sofa seat left',1.42,.26,.98,-.83,.64,.04,mat.fabric,'fabric',.12);
+box(sofa,'sofa seat center',1.02,.26,.98,0,.64,.04,mat.fabric,'fabric',.12);
+box(sofa,'sofa seat right',1.42,.26,.98,.83,.64,.04,mat.fabric,'fabric',.12);
+box(sofa,'sofa backrest',3.20,.95,.31,0,1.03,-.55,mat.fabric,'fabric',.14);
+box(sofa,'sofa left arm',.25,.66,1.22,-1.62,.76,-.04,mat.fabric,'fabric',.08);
+box(sofa,'sofa right arm',.25,.66,1.22,1.62,.76,-.04,mat.fabric,'fabric',.08);
+for(let xx of [-1.26,1.26])for(let zz of [-.33,.3])box(sofa,'sofa feet',.13,.21,.13,xx,.25,zz,mat.woodDark,'wood',.01);
+const cushionA=box(sofa,'warm decorative cushion',.52,.48,.16,-1.06,.99,-.31,mat.pillow,'fabric',.07);cushionA.rotation.z=-.13;
+const cushionB=box(sofa,'patterned decorative cushion',.46,.43,.15,1.02,1.0,-.32,new THREE.MeshStandardMaterial({color:'#d1b69c',roughness:1,map:textures.fabric}),'fabric',.06);cushionB.rotation.z=.15;
+const cushionC=box(sofa,'center decorative cushion',.44,.39,.15,.05,1.02,-.27,mat.fabricLight,'fabric',.06);cushionC.rotation.z=.04;
+box(world,'ottoman platform',1.12,.32,1.14,-3.36,.45,1.32,mat.fabric,'fabric',.085);
+box(world,'ottoman cushion',1.09,.17,1.11,-3.36,.68,1.30,mat.fabric,'fabric',.085);
+const loungeChair=new THREE.Group();loungeChair.position.set(-.86,0,2.34);world.add(loungeChair);
+box(loungeChair,'lounge chair seat',.78,.22,.77,0,.66,0,mat.fabricLight,'fabric',.12);
+box(loungeChair,'lounge chair back',.80,.74,.20,0,1.04,-.30,mat.fabricLight,'fabric',.12);
+box(loungeChair,'lounge chair left arm',.16,.48,.78,-.47,.80,0,mat.fabricLight,'fabric',.08);
+box(loungeChair,'lounge chair right arm',.16,.48,.78,.47,.80,0,mat.fabricLight,'fabric',.08);
+for(let xx of [-.24,.24])for(let zz of [-.24,.24]) box(loungeChair,'chair leg',.06,.46,.06,xx,.33,zz,mat.woodDark,'wood',.01);
+box(world,'round side table top',.46,.04,.46,-.18,.63,2.54,mat.stone,null,.20);
+for(let xx of [-.10,.10])for(let zz of [-.10,.10]) box(world,'side table leg',.05,.54,.05,-.18+xx,.35,2.54+zz,mat.dark,null,.01);
+// Lounge coffee table and accessories.
+box(world,'coffee table wooden top',1.65,.11,.74,-1.86,.67,1.75,mat.wood,'wood',.025);
+for(let x of [-2.52,-1.20])for(let z of [1.42,2.08])box(world,'coffee table foot',.055,.43,.055,x,.41,z,mat.woodDark,'wood',.01);
+box(world,'coffee table magazine',.42,.012,.30,-2.02,.737,1.76,mat.ivory,null,.002);
+box(world,'magazine ink graphic',.29,.009,.14,-2.03,.749,1.77,mat.copper,null,.001);
+cylinder(world,'coffee cup',.092,.07,.13,-1.28,.805,1.60,mat.ivory,16);
+cylinder(world,'coffee cup interior',.067,.067,.005,-1.28,.873,1.60,mat.woodDark,12);
 
+// Suite zoning divider with timber fins.
+const divider=new THREE.Group();divider.position.set(.35,0,.34);world.add(divider);
+box(divider,'suite divider base',.36,1.02,2.72,0,.53,0,mat.wood,'wood',.025);
+box(divider,'suite divider top slab',.46,.07,2.82,0,1.08,0,mat.woodDark,'wood',.02);
+for(let z=-1.14;z<=1.14;z+=.34){box(divider,'suite timber fin',.03,2.14,.12,0,1.84,z,mat.wood,'wood',.012);}
+box(divider,'suite divider brass accent',.018,1.88,2.64,.17,1.85,0,mat.trim,null,.008);
+box(world,'threshold runner',1.92,.02,1.16,.92,.17,.72,new THREE.MeshStandardMaterial({color:'#b9b0a2',roughness:1,map:textures.rug}),null,.03);
 // Bed: king pillowtop with an oversized upholstered headboard and independent linen meshes.
-const bed=new THREE.Group();bed.position.set(1.49,0,-1.44);world.add(bed);
+const bed=new THREE.Group();bed.position.set(1.86,0,-1.54);world.add(bed);
 box(bed,'king bed platform',2.54,.37,3.22,0,.40,.30,mat.woodDark,'wood',.065);
 box(bed,'king mattress',2.48,.32,3.12,0,.73,.30,mat.ivory,null,.085);
 box(bed,'king fitted sheet',2.38,.11,3.04,0,.933,.30,mat.bedding,'bedding',.064);
@@ -473,13 +505,14 @@ for(let xx of [.08,3.02]){
   const shade=new THREE.Mesh(new THREE.CylinderGeometry(.07,.11,.44,12),new THREE.MeshStandardMaterial({color:'#f3e5c4',emissive:'#e9a764',emissiveIntensity:.55,roughness:.52}));
   shade.position.set(xx,2.43,-3.42);shade.castShadow=true;world.add(shade);
 }
-// Swiveling television divider: signature Hyatt Place feature.
-const tv=new THREE.Group();tv.position.set(-.15,0,.46);world.add(tv);
-box(tv,'tv base console',.27,1.03,1.45,0,.65,0,mat.wood,'wood',.03);
-box(tv,'tv open shelf',.28,.04,1.41,0,.58,0,mat.woodDark,null,.01);
-box(tv,'tv wall display',.08,1.12,1.60,.19,1.68,0,mat.black,null,.028);
-box(tv,'tv black glass',.022,.97,1.47,.242,1.69,0,mat.screen,null,.01);
+// Media console facing the lounge and separating living / sleeping functions.
+const tv=new THREE.Group();tv.position.set(-.34,0,.46);world.add(tv);
+box(tv,'tv base console',.34,1.03,1.64,0,.65,0,mat.wood,'wood',.03);
+box(tv,'tv open shelf',.35,.04,1.60,0,.58,0,mat.woodDark,null,.01);
+box(tv,'tv wall display',.08,1.18,1.76,.21,1.72,0,mat.black,null,.028);
+box(tv,'tv black glass',.022,1.03,1.63,.252,1.73,0,mat.screen,null,.01);
 box(tv,'display stand',.11,.35,.12,0,1.26,0,mat.dark,null,.015);
+box(tv,'console stone cap',.40,.04,1.66,-.03,1.19,0,mat.stone,null,.01);
 // Soft interior objects: towels, plants, book, decorative bowl.
 box(world,'rolled hotel towel',.45,.10,.21,3.57,.38,1.84,mat.white,null,.045);
 for(let x of [.1,.31])box(world,'books at TV unit',.12,.12,.4,-.2,.90,x,mat.ivory,null,.006);
