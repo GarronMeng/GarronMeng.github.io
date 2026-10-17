@@ -1,0 +1,43 @@
+name: Jinwan Youtao v8 checks
+on:
+  pull_request:
+    paths:
+      - 'games/jinwan-youtao-v8/**'
+      - '.github/workflows/test-jinwan-v8.yml'
+  push:
+    branches:
+      - 'codex/**'
+    paths:
+      - 'games/jinwan-youtao-v8/**'
+      - '.github/workflows/test-jinwan-v8.yml'
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: games/jinwan-youtao-v8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games/jinwan-youtao-v8/package-lock.json
+      - run: npm ci
+      - run: npm test
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: games/jinwan-youtao-v8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games/jinwan-youtao-v8/package-lock.json
+      - run: npm ci
+      - run: npm run build
