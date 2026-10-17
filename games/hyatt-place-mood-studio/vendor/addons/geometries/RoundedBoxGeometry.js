@@ -1,4 +1,4 @@
-import { THREE } from '../../three.module.js';
+import { THREE } from '../../three.module.js?v=20261018-suitefix2';
 const { BoxGeometry, Vector3 } = THREE;
 const _tempNormal = new Vector3();
 
