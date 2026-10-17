@@ -31,6 +31,21 @@ jobs:
       - run: npm ci
       - run: npm test
 
+  diorama-regression:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: games/jinwan-youtao-v8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games/jinwan-youtao-v8/package-lock.json
+      - run: npm ci
+      - run: node --import tsx --test tests/diorama.test.ts tests/diorama-variants.test.ts
+
   build:
     runs-on: ubuntu-latest
     defaults:

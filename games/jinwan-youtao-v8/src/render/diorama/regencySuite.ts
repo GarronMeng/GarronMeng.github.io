@@ -135,15 +135,15 @@ export function regencySuiteRoom(room:Room){
  for(let i=0;i<8;i++)rounded(divider,'suite-divider-wood-slat',-.08,1.02,-.42+i*.13,.045,1.35,.045,m.suiteWood,.008);
 
  const bath=zone(g,'suite-bathroom-zone','bathroom');
- rounded(bath,'suite-vanity-cabinet',.78,.43,-1.31,.68,.55,.3,m.suiteWood,.018);
- rounded(bath,'suite-vanity-stone-counter',.78,.73,-1.31,.75,.06,.36,m.suiteStone,.02);
- rounded(bath,'suite-wash-basin',.78,.78,-1.3,.34,.045,.21,m.linen,.04);
- cylinder(bath,'suite-vanity-faucet',.98,.89,-1.32,.012,.2,m.brass);
- rounded(bath,'suite-vanity-mirror-backlight',.78,1.36,-1.46,.74,.84,.025,m.lamp,.025);
- rounded(bath,'suite-vanity-mirror',.78,1.36,-1.435,.64,.74,.018,m.suiteMirror,.018);
- rounded(bath,'suite-bathtub-shell',1.58,.3,-1.02,.83,.34,.5,m.linen,.06);
- rounded(bath,'suite-bathtub-basin',1.58,.475,-1.02,.67,.045,.36,m.suiteStone,.055);
- cylinder(bath,'suite-bathtub-faucet',1.94,.63,-1.16,.012,.25,m.brass);
+ rounded(bath,'suite-vanity-cabinet',1.0,.43,-1.33,.68,.55,.26,m.suiteWood,.018);
+ rounded(bath,'suite-vanity-stone-counter',1.0,.73,-1.33,.75,.06,.32,m.suiteStone,.02);
+ rounded(bath,'suite-wash-basin',1.0,.78,-1.32,.34,.045,.19,m.linen,.04);
+ cylinder(bath,'suite-vanity-faucet',1.2,.89,-1.34,.012,.2,m.brass);
+ rounded(bath,'suite-vanity-mirror-backlight',1.0,1.36,-1.46,.74,.84,.025,m.lamp,.025);
+ rounded(bath,'suite-vanity-mirror',1.0,1.36,-1.435,.64,.74,.018,m.suiteMirror,.018);
+ rounded(bath,'suite-bathtub-shell',1.58,.3,-.93,.83,.34,.46,m.linen,.06);
+ rounded(bath,'suite-bathtub-basin',1.58,.475,-.93,.67,.045,.33,m.suiteStone,.055);
+ cylinder(bath,'suite-bathtub-faucet',1.94,.63,-1.02,.012,.25,m.brass);
  rounded(bath,'suite-toilet-base',.45,.29,-.91,.31,.32,.39,m.linen,.07);
  rounded(bath,'suite-toilet-seat',.45,.46,-.91,.32,.055,.4,m.suiteStone,.065);
  rounded(bath,'suite-toilet-tank',.45,.5,-1.24,.29,.4,.13,m.linen,.02);
@@ -153,8 +153,8 @@ export function regencySuiteRoom(room:Room){
  cylinder(bath,'suite-shower-pipe',2.08,1.42,-1.04,.014,.44,m.brass);
  const showerHead=cylinder(bath,'suite-shower-head',2.0,1.63,-1.04,.065,.025,m.brass);showerHead.rotation.z=Math.PI/2;
  if(p.level>=4){
-  rounded(bath,'suite-upgraded-vanity-stone-inlay',.78,.765,-1.31,.54,.018,.25,m.suiteAccent,.008);
-  rounded(bath,'suite-mirror-light-trim',.78,1.36,-1.475,.79,.89,.018,m.lamp,.018);
+  rounded(bath,'suite-upgraded-vanity-stone-inlay',1.0,.765,-1.33,.54,.018,.22,m.suiteAccent,.008);
+  rounded(bath,'suite-mirror-light-trim',1.0,1.36,-1.475,.79,.89,.018,m.lamp,.018);
  }
  if(p.level>=3){
   cylinder(living,'suite-floor-lamp-base',-1.82,.16,-.57,.14,.035,m.brass);
