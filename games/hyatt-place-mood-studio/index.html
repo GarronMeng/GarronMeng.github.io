@@ -176,11 +176,11 @@
   <div id="error-overlay" class="error-overlay" hidden><strong>3D 场景无法加载</strong><p id="error-message"></p><button id="retry-button">重试</button></div>
   <dialog id="about-dialog"><form method="dialog"><button class="close-dialog" aria-label="关闭">×</button></form><div class="small-eyebrow">ABOUT THIS EXPERIMENT</div><h2>PLACE / STUDIO</h2><p>灵感调整为深圳机场凯悦酒店（Hyatt Regency Shenzhen Airport）的行政套房体验：更完整的会客区、独立睡眠区、深木饰面、迷你吧与成熟的商务旅居气质。</p><p>这是使用 Three.js 程序化建模的独立交互演示，重点呈现套房空间关系与视觉气质；不是酒店官方产品，也不代表房型的精确尺寸或家具配置。</p><p>所有 3D 家具与材质均在运行时生成，不需要下载大型模型文件。需要网络加载 Three.js。</p><a href="https://www.hyatt.com/hyatt-regency/zh-CN/szxra-hyatt-regency-shenzhen-airport" target="_blank" rel="noopener">查看深圳机场凯悦酒店官方页面 ↗</a></dialog>
 </div>
-  <script src="./vendor/three.umd.js"></script>
+  <script src="./vendor/three.umd.js?v=20261018-suitefix2"></script>
 <script type="module">
-import { THREE } from './vendor/three.module.js';
-import { OrbitControls } from './vendor/addons/controls/OrbitControls.js';
-import { RoundedBoxGeometry } from './vendor/addons/geometries/RoundedBoxGeometry.js';
+import { THREE } from './vendor/three.module.js?v=20261018-suitefix2';
+import { OrbitControls } from './vendor/addons/controls/OrbitControls.js?v=20261018-suitefix2';
+import { RoundedBoxGeometry } from './vendor/addons/geometries/RoundedBoxGeometry.js?v=20261018-suitefix2';
 
 /* PLACE / STUDIO · Independent suite-design study inspired by Hyatt Regency Shenzhen Airport.
    This is a visual interpretation, not an exact architectural survey or official hotel asset.
