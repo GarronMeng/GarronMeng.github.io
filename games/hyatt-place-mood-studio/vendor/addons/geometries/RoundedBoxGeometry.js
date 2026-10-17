@@ -1,4 +1,4 @@
-import { THREE } from 'three';
+import { THREE } from '../../three.module.js';
 const { BoxGeometry, Vector3 } = THREE;
 const _tempNormal = new Vector3();
 
