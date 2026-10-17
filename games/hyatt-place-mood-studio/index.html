@@ -70,7 +70,7 @@
         if (loading) loading.classList.add('is-done');
         if (overlay) overlay.hidden = false;
         const msg = document.getElementById('error-message');
-        if (msg) msg.textContent = 'Three.js 已改为本站本地加载。' + reason + ' 如果在应用内浏览器中打开，建议用 Safari 重试。';
+        if (msg) msg.textContent = '本地 3D 引擎初始化失败。' + reason + ' 如果是 WebGL 上下文错误，请在 Safari 中重试；如果是模块/资源错误，请检查页面是否已完整加载。';
         const button = document.getElementById('retry-button');
         if (button) {
           button.textContent = '重新加载场景';
@@ -85,17 +85,17 @@
         if (window.__roomReady) return;
         const source = e.filename ? ' [' + e.filename.split('/').pop() + ':' + e.lineno + ']' : '';
         const detail = e.message || (e.target?.src ? '资源加载失败: ' + e.target.src.split('/').pop() : '未知资源错误');
-        window.__showLoadError('错误详情：' + detail + source + '。');
+        const kind = /webgl|context|renderer/i.test(detail) ? 'WebGL 初始化错误：' : '本地模块/资源错误：';
+        window.__showLoadError(kind + detail + source + '。');
       }, true);
       window.addEventListener('unhandledrejection', function (e) {
-        if (!window.__roomReady) window.__showLoadError('错误详情：' + (e.reason?.message || String(e.reason || '加载或渲染异常')) + '。');
+        if (!window.__roomReady) { const detail = e.reason?.message || String(e.reason || '加载或渲染异常'); const kind = /webgl|context|renderer/i.test(detail) ? 'WebGL 初始化错误：' : '本地模块/资源错误：'; window.__showLoadError(kind + detail + '。'); }
       });
       window.setTimeout(function () {
         if (!window.__roomReady) window.__showLoadError('等待超过 30 秒，未完成场景加载。');
       }, 30000);
     }());
   </script>
-  <script src="./vendor/three.umd.js"></script>
 </head>
 <body>
 <div class="app" id="app">
@@ -179,6 +179,7 @@
   <div id="error-overlay" class="error-overlay" hidden><strong>3D 场景无法加载</strong><p id="error-message"></p><button id="retry-button">重试</button></div>
   <dialog id="about-dialog"><form method="dialog"><button class="close-dialog" aria-label="关闭">×</button></form><div class="small-eyebrow">ABOUT THIS EXPERIMENT</div><h2>PLACE / STUDIO</h2><p>灵感调整为深圳机场凯悦酒店（Hyatt Regency Shenzhen Airport）的行政套房体验：更完整的会客区、独立睡眠区、深木饰面、迷你吧与成熟的商务旅居气质。</p><p>这是使用 Three.js 程序化建模的独立交互演示，重点呈现套房空间关系与视觉气质；不是酒店官方产品，也不代表房型的精确尺寸或家具配置。</p><p>所有 3D 家具与材质均在运行时生成，不需要下载大型模型文件。需要网络加载 Three.js。</p><a href="https://www.hyatt.com/hyatt-regency/zh-CN/szxra-hyatt-regency-shenzhen-airport" target="_blank" rel="noopener">查看深圳机场凯悦酒店官方页面 ↗</a></dialog>
 </div>
+  <script src="./vendor/three.umd.js"></script>
 <script type="module">
 import { THREE } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
