@@ -1,5 +1,7 @@
 # P1 · Single-room diorama candidate
 
+Historical P1 record: after visual-direction approval, the current preview advances to guest-room-only P2. See `P2-handoff.md`; P1's single-room rollout restriction below no longer describes the current candidate.
+
 **Current revision:** the generic sage/oak prototype has been replaced by a photo-led Hyatt Place Shenzhen Dongmen King room. See `HYATT-PLACE-REFERENCES.md` for the actual viewed images, source provenance, feature mapping and dimensional adaptations.
 
 ## Scope and acceptance status

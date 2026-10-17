@@ -20,6 +20,7 @@ function createPalette(){const standard=(color:number,roughness=.8,kind?:MapKind
   brass:new T.MeshStandardMaterial({color:0xa88a55,metalness:.65,roughness:.48}),
   chrome:new T.MeshStandardMaterial({color:0xa6abad,metalness:.72,roughness:.36}),
   headboard:standard(0x756052,.9,'linen'),darkFrame:standard(0x2c3031,.6),olive:standard(0x76744e,.96,'linen'),
+  stone:standard(0xc6c0b3,.56,'plaster'),accentFabric:standard(0x79756b,.96,'linen'),
   floralRed:standard(0xa6502d,.92),floralGold:standard(0xc29c52,.92),
   glass:new T.MeshStandardMaterial({color:0xb2ccd0,roughness:.35,transparent:true,opacity:.23,depthWrite:false}),
   window:new T.MeshStandardMaterial({color:0xd9e4df,roughness:.7,emissive:0xb5c2b1,emissiveIntensity:.16}),
