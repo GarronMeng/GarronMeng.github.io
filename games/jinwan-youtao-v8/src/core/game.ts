@@ -115,4 +115,4 @@ function executeCommand(s:PreviewState,c:Command){const g=s.game;if(!g)return;if
  }updateUsage(s);
 }
 
-export function execute(s:PreviewState,c:Command){if(!s.game)return;const lock=commandLock(s,c);if(lock){s.game.notice=lock+'。当前目标见经营 checklist。';return;}const stock=s.game.stock;executeCommand(s,c);if(c.type==='stock'&&c.id!=='club'&&s.game.stock>stock&&s.game.onboarding)s.game.onboarding.breakfastPrepared=true;advanceOnboarding(s);}
+export function execute(s:PreviewState,c:Command){if(!s.game)return;if(s.game.reportOpen&&c.type!=='continue'){s.game.notice='本日账目已结算，请先开始下一天再进行经营操作。';return;}const lock=commandLock(s,c);if(lock){s.game.notice=lock+'。当前目标见经营 checklist。';return;}const stock=s.game.stock;executeCommand(s,c);if(c.type==='stock'&&c.id!=='club'&&s.game.stock>stock&&s.game.onboarding)s.game.onboarding.breakfastPrepared=true;advanceOnboarding(s);}
