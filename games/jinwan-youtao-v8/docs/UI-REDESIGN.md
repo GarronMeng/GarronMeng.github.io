@@ -70,3 +70,10 @@
 - 两者失败的 5 项用例名称完全相同，分别涉及 Spa 初始化、库存补货、主管带教、扩建竣工及房型配置。此次没有改动这些经营逻辑。
 - 已将全量存量问题保留为可见但非阻塞检查；UI 相关测试、类型检查及构建仍作为合并门槛。
 - **尚未通过 iPhone Safari 视觉/交互验收**。GitHub Pages 线上预览不随 PR 自动更新。
+
+## Merge readiness (2026-10-18)
+
+- PR #5 (economy invariants) merged to master first; UI CI now makes the **entire** `npm test` suite blocking, in addition to UI navigation tests and production build.
+- Removed the now-unnecessary branch-triggered preview workflow that could write to the published `master` website automatically. Existing isolated preview files remain accessible.
+- UI PR is not a modification of financial, inventory, save-schema or 3D engine rules. A successful PR check must validate the synthetic merged result on the latest `master` (including PR #5).
+- Manual Safari/iPhone touch and visual QA remains a separate post-merge acceptance item; CI alone does not prove on-device layout.
