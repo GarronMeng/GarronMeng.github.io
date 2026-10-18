@@ -1,0 +1,31 @@
+name: V8 UI checks
+on:
+  pull_request:
+    paths:
+      - 'games/jinwan-youtao-v8/**'
+      - '.github/workflows/v8-ui-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ui-and-build:
+    name: UI regression and production build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: games/jinwan-youtao-v8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: games/jinwan-youtao-v8/package-lock.json
+      - run: npm ci
+      - name: UI/navigation regression
+        run: node --import tsx --test tests/navigation-shell.test.ts tests/focus-screens.test.ts
+      - name: Typecheck and Vite build
+        run: npm run build
+      - name: Full simulation regression (must pass)
+        run: npm test
+

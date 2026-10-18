@@ -1,5 +1,5 @@
 import {openingGoal,viewLock,commandLock} from '../core/onboarding';
-import {MENU,menuFor,moduleLinks,PAGE_TITLES,ManagementNavigation} from './navigation';
+import {MENU,menuFor,moduleLinks,activeModule,PAGE_TITLES,ManagementNavigation} from './navigation';
 import {campaignGoal} from '../core/campaign';
 import {focusScreen} from './focusScreens';
 import {secondaryScreen} from './secondaryScreens';
@@ -15,6 +15,7 @@ import './hotelDesign.css';
 import './focusScreens.css';
 import './managementShell.css';
 import './hotelMood.css';
+import './interfaceV9.css';
 export function mountGameplay(root:HTMLElement,store:Store){
  const nav=new ManagementNavigation(),$=(q:string)=>root.querySelector<HTMLElement>(q)!;
  const dialog=root.querySelector<HTMLDialogElement>('dialog')!,content=$('#sheet-content'),eye=$('#sheet-eye');let focusFloor:(id:string)=>void=()=>{},previousFocus:HTMLElement|null=null;
@@ -29,18 +30,40 @@ export function mountGameplay(root:HTMLElement,store:Store){
  const checkpoint=()=>{nav.current.scroll=content.scrollTop;};
  const render=()=>{
   const {view,selection}=nav.current,s=store.getState();
-  eye.textContent=MENU.find(([id])=>id===menuFor(view))?.[1]+' / '+(PAGE_TITLES[view]??'酒店经营');back.hidden=!nav.canBack;
-  moduleNav.innerHTML=moduleLinks(view).map(([id,label])=>`<button data-open="${id}" aria-current="${view===id?'page':'false'}">${label}</button>`).join('');
+  const owner=MENU.find(([id])=>id===menuFor(view))?.[1]??'总览';
+  eye.textContent=view===menuFor(view)?owner:owner+' / '+(PAGE_TITLES[view]??'页面详情');back.hidden=!nav.canBack;
+  moduleNav.innerHTML=moduleLinks(view).map(([id,label])=>`<button data-open="${id}" aria-current="${activeModule(view)===id?'page':'false'}">${label}</button>`).join('');
   const lock=viewLock(s,view),lesson=openingGoal(s);if(view==='operations'&&lesson?.index===4)selection.department='house';if(view==='operations-data'&&lesson?.index===3)selection.archiveTab='stock';
   content.innerHTML=lock?frame('即将解锁',head('front',lock,'先完成当前主线，功能会逐步开放。已发生的住客诉求仍可正常处理。'),go('查看当前目标','tasks')):focusScreen(s,view,selection)??secondaryScreen(s,view,selection);
   content.querySelectorAll<HTMLButtonElement>('[data-action]').forEach(b=>{const reason=commandLock(s,{type:b.dataset.action as Command['type'],id:b.dataset.id,value:b.dataset.value});if(reason){b.disabled=true;b.title=reason;b.textContent='◇ '+b.textContent;}});
   if(lesson?.index===4)content.querySelectorAll<HTMLElement>('[data-focus-key="department"]').forEach(b=>{if(b.dataset.focusValue!=='house')b.remove();});
   if(lesson?.index===3)content.querySelectorAll<HTMLElement>('[data-focus-key="archiveTab"]').forEach(b=>{if(b.dataset.focusValue!=='stock')b.remove();});
   if(lesson&&view!=='tasks'&&view!=='teaching'&&!lock){content.insertAdjacentHTML('afterbegin',`<button class="guide-ribbon" data-open="tasks"><span>开业 ${lesson.index+1}/${lesson.total}</span><strong>${esc(lesson.title)}</strong><small>查看带教 ›</small></button>`);}
-  fixedActions.replaceChildren();const footer=content.querySelector('.focus-footer');if(footer)fixedActions.append(footer);
+  fixedActions.replaceChildren();
+  const footer=content.querySelector<HTMLElement>('.focus-footer');
+  if(footer){
+   // Decisions live in the stable bottom action area; page-to-page links live inside the page.
+   const buttons=Array.from(footer.querySelectorAll<HTMLButtonElement>('button'));
+   const decisions=buttons.filter(b=>b.hasAttribute('data-action'));
+   const keep=new Set(decisions);
+   if(!decisions.length&&buttons.length)keep.add(buttons[0]);
+   const related=buttons.filter(b=>!keep.has(b));
+   if(related.length){
+    const relatedNav=document.createElement('nav');
+    relatedNav.className='related-links';relatedNav.setAttribute('aria-label','相关页面');
+    const heading=document.createElement('strong');heading.textContent='相关页面';
+    relatedNav.append(heading,...related);
+    (content.querySelector('.focus-main')??content.querySelector('.focus-screen')??content).append(relatedNav);
+   }
+   if(footer.querySelector('button'))fixedActions.append(footer);else footer.remove();
+   const liveDecisions=decisions.filter(b=>!b.disabled);
+   const destructive=new Set(['reject','reset','release','decline']);
+   if(liveDecisions.length===1&&!destructive.has(liveDecisions[0].dataset.action??''))liveDecisions[0].classList.add('decision-primary');
+   if(!decisions.length)fixedActions.querySelector('button')?.classList.add('decision-primary');
+   decisions.filter(b=>destructive.has(b.dataset.action??'')).forEach(b=>b.classList.add('decision-danger'));
+   footer.classList.toggle('multi-decision',decisions.length>1);
+  }
   dialog.classList.add('focus-layout','management-shell');dialog.dataset.view=view;
-  // Main action is always in the same place; navigational links retain a secondary style.
-  const primary=fixedActions.querySelector<HTMLButtonElement>('[data-action]:not([disabled])');(primary??fixedActions.querySelector('button'))?.classList.add('decision-primary');
   if(!dialog.open){previousFocus=document.activeElement as HTMLElement;dialog.showModal();}
   content.scrollTop=nav.current.scroll;dialog.scrollTop=0;updateNav();
  };
