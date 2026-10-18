@@ -25,7 +25,7 @@ export function mountGameplay(root:HTMLElement,store:Store){
  const fixedActions=document.createElement('div');fixedActions.className='fixed-actions';content.after(fixedActions);
  const menuNav=document.createElement('nav');menuNav.className='sheet-navigation';menuNav.setAttribute('aria-label','切换管理部门');fixedActions.after(menuNav);
  const rewardToast=document.createElement('div');rewardToast.className='reward-toast';rewardToast.setAttribute('role','status');root.append(rewardToast);let lastReward=store.getState().game?.rewardBeat?.id;
- const tabs=()=>MENU.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-label="${label}" aria-pressed="${menuFor(nav.current.view)===id}">${menuIcon(id)}<span>${viewLock(store.getState(),id)?'◇ ':''}${label}</span></button>`).join('');
+ const tabs=()=>MENU.map(([id,label])=>`<button data-open="${id}" data-root-menu="true" aria-label="${label}" aria-pressed="${dialog.open&&menuFor(nav.current.view)===id}">${menuIcon(id)}<span>${viewLock(store.getState(),id)?'◇ ':''}${label}</span></button>`).join('');
  const updateNav=()=>{$('.main-nav').innerHTML=tabs();menuNav.innerHTML=`<div class="menu-tabs">${tabs()}</div>`;};
  const checkpoint=()=>{nav.current.scroll=content.scrollTop;};
  const render=()=>{
