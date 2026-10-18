@@ -26,7 +26,6 @@ jobs:
         run: node --import tsx --test tests/navigation-shell.test.ts tests/focus-screens.test.ts
       - name: Typecheck and Vite build
         run: npm run build
-      - name: Full suite (existing engine failures visible but nonblocking)
-        continue-on-error: true
+      - name: Full simulation regression (must pass)
         run: npm test
 
