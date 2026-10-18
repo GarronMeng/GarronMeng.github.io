@@ -109,3 +109,29 @@ test('日结时的现金变化与收入减成本一致，重复结算不重复�
  assert.equal(g.reports.length,reportCount);
  valid(s,'settled day');
 });
+
+test('日结冻结后禁止补货/升级/领奖，避免次日重置导致漏记收支',()=>{
+ const s=playable(),g=s.game!;
+ g.nextArrival=g.nextEvent=9999;
+ g.minute=1199;advanceGame(s,1);execute(s,{type:'evening-close'});
+ g.minute=1439;advanceGame(s,1);
+ assert.equal(g.reportOpen,true);
+ const cash=s.metrics.cash,revenue=g.revenue,expense=g.expense,stock=g.stock,reports=JSON.stringify(g.reports);
+ g.development!.counts.arrivals=20;
+ execute(s,{type:'stock',id:'breakfast'});
+ execute(s,{type:'claim-career',id:'arrivals-20'});
+ execute(s,{type:'hire',id:'house'});
+ assert.equal(s.metrics.cash,cash);
+ assert.equal(g.revenue,revenue);
+ assert.equal(g.expense,expense);
+ assert.equal(g.stock,stock);
+ assert.equal(JSON.stringify(g.reports),reports);
+ assert.match(g.notice,/已结算/);
+ execute(s,{type:'continue'});
+ assert.equal(g.reportOpen,false);
+ execute(s,{type:'brief-start'});
+ const before=s.metrics.cash,beforeRevenue=g.revenue;execute(s,{type:'stock',id:'breakfast'});
+ assert.equal(s.metrics.cash,before-300+(g.revenue-beforeRevenue));
+ assert.ok(g.stock>stock);
+ valid(s,'post-settlement command guard');
+});
