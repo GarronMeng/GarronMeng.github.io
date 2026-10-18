@@ -4,7 +4,7 @@ import {newGame,execute} from '../src/core/game';
 import {rooms} from '../src/state/selectors';
 import {workItems,workList,hubView} from '../src/ui/managementHub';
 test('看板就地清洁和补货后移除对应事项，保留其他待办',()=>{
- const s=newGame(),r=rooms(s).find(v=>v.status==='available')!;r.status='dirty';s.game!.stock=0;s.metrics.cash=10000;
+ const s=newGame({guided:false}),r=rooms(s).find(v=>v.status==='available')!;r.status='dirty';s.game!.stock=0;s.metrics.cash=10000;
  const before=workItems(s);assert.ok(before.find(v=>v.key===r.id));assert.ok(before.find(v=>v.key==='breakfast-stock'));
  execute(s,{type:'clean',id:r.id});assert.equal(r.status,'cleaning');assert.ok(!workItems(s).find(v=>v.key===r.id));assert.ok(workItems(s).find(v=>v.key==='breakfast-stock'));
  execute(s,{type:'stock',id:'breakfast'});assert.equal(s.game!.stock,50);assert.ok(!workItems(s).find(v=>v.key==='breakfast-stock'));assert.equal(s.metrics.cash,9610);
