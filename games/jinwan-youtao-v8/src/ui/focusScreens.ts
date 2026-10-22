@@ -6,6 +6,7 @@ import {roomRate,houseMinutes,engineeringMinutes} from '../core/economy';
 import {forecast} from '../core/operations';
 import {DAY_PLANS,nextDecision,planValue} from '../core/dayLoop';
 import {ACTIVITIES} from '../core/progression';
+import {facilityInsights} from '../core/facilityInsights';
 import {birthdayOptions} from '../core/hospitality';
 import {campaignGoal} from '../core/campaign';
 import {portrait} from './portraits';
@@ -69,8 +70,9 @@ export function focusScreen(s:Readonly<PreviewState>,view:string,u:FocusSelectio
   return frame('团队 · 原位授权',tabs(Object.entries(names).map(([id,n])=>choose(n,'department',id,id===d)).join(''))+head(d,names[d]+'主管',level?'已到岗 · Lv.'+level:'尚未聘任')+metrics([['投入',level>=3?'已满级':money(cost)],['每日工资',money(level*180)+' → '+money(Math.min(3,level+1)*180)]])+`<div class="focus-decision"><h3>你会得到什么？</h3><p>${note}</p><p class="focus-trade">工作量少时先手动处理也合理；授权会持续增加工资。</p></div>`,(level<3?btn(level?'培训升级':'聘任到岗',level?'train':'hire',d):'')+go('效果与财务明细','operations-data'));
  }
  if(view==='development'){
-  const fs=Object.values(s.entities).filter(e=>e.kind==='facility'),f=fs.find(e=>e.id===u.facility)??fs[0];if(!f)return null;const level=f.level??1;
-  return frame('设施 · 看清再投资',tabs(fs.map(e=>choose(e.name,'facility',e.id,e.id===f.id)).join(''))+`<div class="focus-space">${spaceIllustration(f.role,level)}<span>${f.name} · Lv.${level}</span></div>`+metrics([['使用 / 容量',f.usage+' / '+f.capacity],['升级后容量',String(f.capacity+4)],['费用',money(level*3500)]])+`<p class="focus-trade">${f.construction?'施工剩余 '+f.construction.remaining+' 分钟。':'升级需封闭施工；先补货或维护可解决眼前问题。'}</p>`,(f.construction?'':(level<5?btn('升级设施','invest',f.id):'')+(['breakfast','club'].includes(f.role)?btn('补货 · ¥300','stock',f.role):btn('维护 · ¥200','repair',f.id)))+go('营销、活动、更多','development-data'));
+  const fs=Object.values(s.entities).filter(e=>e.kind==='facility'),f=fs.find(e=>e.id===u.facility)??fs[0];if(!f)return null;const level=f.level??1,insight=facilityInsights(s,f);
+  const actions=f.construction?'':(level<5?btn('升级设施 · '+money(insight.upgradeCost),'invest',f.id):'')+(['breakfast','club'].includes(f.role)?btn('补货 · ¥300','stock',f.role):'')+(f.maintenance<100?btn('维护 · ¥200','repair',f.id):'');
+  return frame('设施 · 看清再投资',tabs(fs.map(e=>choose(e.name,'facility',e.id,e.id===f.id)).join(''))+`<div class="focus-space">${spaceIllustration(f.role,level)}<span>${esc(f.name)} · Lv.${level}</span></div>`+metrics([['当前使用',f.usage+' / '+f.capacity],['瞬时利用率',insight.utilization+'%'],['等待人数',String(insight.waiting)],['维护度',Math.round(f.maintenance)+'%']])+`<section class="facility-insight priority-${insight.priority}"><small>定位匹配 · ${esc(insight.fitLabel)}</small><p>${esc(insight.fitReason)}</p><h3>${esc(insight.recommendation)}</h3><p>${esc(insight.explanation)}</p><small>升级参数：容量 +${insight.capacityGain} · 品质 +${insight.qualityGain} · 施工 ${insight.constructionMinutes} 分钟</small></section>`+`<p class="focus-trade">${f.construction?'施工剩余 '+f.construction.remaining+' 游戏分钟。':'扩容会占用施工时间；优先解决真实需求、库存和维护问题。'}</p>`,actions+go('营销、活动、更多','development-data'));
  }
  if(view==='brief'&&featureLock(s,'strategy')){const f=forecast(s);return frame('08:00 · 第一次晨会',metrics([['预计入住',f.occupancy+'%'],['待到店',String(g.operations?.bookings.filter(b=>b.status==='confirmed').length??0)],['早餐需求',f.breakfast+' 人']])+head('front','今天先把一位客人接好','先沿用当前报价营业。学会接待、翻房和委派后，再解锁房价与留套决策。'),g.operations?.briefOpen?btn('开始今天 · 前往接待','brief-start'):go('继续当前带教','tasks'));}
  if(view==='brief'){
