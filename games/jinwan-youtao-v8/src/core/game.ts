@@ -42,7 +42,7 @@ function arrival(s:PreviewState,booking?:Booking){const g=s.game!,r=random(s),na
  attachProfile(s,q,booking);initGuest(s,q);q.goh=q.tier==='Globalist'&&random(s)<.12;q.sua=!!booking?.sua;cue(s,q,'arrival');s.guests.push(q);g.arrivals++;log(s,'入住',`${q.name} · ${q.tier} · ${q.source} 到店，计划 ${q.stayLength} 晚。`,'facility-lobby');
 }
 export const queue=(s:Readonly<PreviewState>)=>s.guests.filter(g=>!g.staff&&!g.roomId&&!g.departing);
-export function updateUsage(s:PreviewState){for(const e of Object.values(s.entities))if(e.kind==='facility'){e.usage=s.guests.filter(g=>!g.staff&&!g.departing&&g.floorId===e.floorId&&g.movement?.position.phase==='public'&&!g.movement.steps.length).length;e.staffing=s.guests.filter(g=>g.staff&&g.floorId===e.floorId).length;}}
+export function updateUsage(s:PreviewState){for(const e of Object.values(s.entities))if(e.kind==='facility'){e.usage=s.guests.filter(g=>!g.staff&&!g.departing&&!g.waitingFor&&g.movement?.destination===e.id&&g.movement.position.phase==='public'&&!g.movement.steps.length).length;e.staffing=s.guests.filter(g=>g.staff&&g.floorId===e.floorId).length;}}
 function home(s:PreviewState,g:Guest){if(g.roomId)travel(s,g,g.roomId);}
 function settle(s:PreviewState){const g=s.game!,rs=rooms(s);let revenue=0,nights=0;
  for(const guest of s.guests)if(guest.roomId){const amount=guest.rate??g.price;revenue+=amount;guest.spend=(guest.spend??0)+amount;if(guest.source==='平台'){const commission=Math.round(amount*.15);s.metrics.cash-=commission;g.expense+=commission;}nights++;}income(s,revenue);g.nights=nights;
