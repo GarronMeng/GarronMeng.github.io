@@ -1,0 +1,37 @@
+name: Diorama source QA
+
+on:
+  pull_request:
+    branches:
+      - visual-diorama-upgrade
+    paths:
+      - "games/jinwan-youtao-v8/**"
+      - ".github/workflows/diorama-3dcodeverse-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: TypeScript, gameplay tests, geometry and bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: games/jinwan-youtao-v8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: games/jinwan-youtao-v8/package-lock.json
+      - name: Install game dependencies only
+        run: npm ci
+      - name: Validate 40 Diorama variants
+        run: npm run diorama:audit
+      - name: Test gameplay and renderer regression
+        run: npm test
+      - name: Type-check and build maintained source
+        run: npm run build
