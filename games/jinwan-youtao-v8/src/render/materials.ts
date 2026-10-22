@@ -4,7 +4,8 @@ import {PLACE} from '../content/place';
 function texture(kind:'wood'|'stone'|'cloth') {
  const size=128,data=new Uint8Array(size*size*4);
  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
-  const n=(Math.sin(x*127.1+y*311.7)*43758.5453)%1;
+  const raw=(Math.sin(x*127.1+y*311.7)*43758.5453)%1;
+  const n=Math.abs(raw);
   const v=kind==='wood'?205+21*Math.sin(x*.5+Math.sin(y*.07)*2)+n*12:kind==='cloth'?231+(x%2?7:-7)+(y%2?4:-4):228+12*Math.sin(x*.12+y*.075+Math.sin(y*.08)*3)+n*8;
   const i=(y*size+x)*4;data[i]=data[i+1]=data[i+2]=Math.max(0,Math.min(255,v));data[i+3]=255;
  }
@@ -33,6 +34,17 @@ export const materials={
  skin:new T.MeshStandardMaterial({color:0xd5a17a,roughness:.9}),
  hair:new T.MeshStandardMaterial({color:0x252122,roughness:.9}),
  ao:new T.MeshBasicMaterial({color:0x1d1814,transparent:true,opacity:.12,depthWrite:false}),
+ // Regency-suite palette: warm oak, muted brass, oatmeal textiles and honed limestone.
+ suiteOak:new T.MeshStandardMaterial({color:0x8b7054,map:woodMap,roughness:.58}),
+ suiteWalnut:new T.MeshStandardMaterial({color:0x4b382a,map:woodMap,roughness:.5}),
+ suiteLinen:new T.MeshStandardMaterial({color:0xf1eadc,map:clothMap,roughness:.96}),
+ suiteHeadboard:new T.MeshStandardMaterial({color:0x8a7969,map:clothMap,roughness:.94}),
+ suiteTerracotta:new T.MeshStandardMaterial({color:0xa9664e,map:clothMap,roughness:.9}),
+ suiteCarpet:new T.MeshStandardMaterial({color:0xa79b8a,map:clothMap,roughness:1}),
+ suiteStone:new T.MeshStandardMaterial({color:0xd4cabb,map:stoneMap,roughness:.68}),
+ suiteBrass:new T.MeshStandardMaterial({color:0xb7a06e,metalness:.58,roughness:.42}),
+ suiteGlass:new T.MeshStandardMaterial({color:0xc6d9d9,metalness:.12,roughness:.24,transparent:true,opacity:.28,depthWrite:false}),
+ suiteDarkGlass:new T.MeshStandardMaterial({color:0x8eaaad,metalness:.18,roughness:.28,transparent:true,opacity:.22,depthWrite:false}),
 };
 const colors=new Map<number,T.MeshStandardMaterial>();
 export function colorMaterial(color:number){let m=colors.get(color);if(!m){m=new T.MeshStandardMaterial({color,roughness:.75});colors.set(color,m);}return m;}
