@@ -1,16 +1,47 @@
-import {reviewDayPlan} from './dayLoop';
-import type {PreviewState,EveningReview} from '../state/types';
-import {rooms} from '../state/selectors';
-export function captureEvening(s:PreviewState){const g=s.game!;if(g.minute<1200||g.evening?.day===g.day)return;
- const rs=rooms(s),guests=s.guests.filter(v=>!v.staff&&v.roomId&&!v.departing),occupied=guests.length,dirty=rs.filter(r=>r.status==='dirty'||r.status==='cleaning').length,pending=g.events.length+s.guests.filter(v=>!v.departing&&(v.late==='pending'||v.challenge&&!v.challenge.resolved||v.occasion&&!v.occasion.resolved&&v.roomId)).length;
- const roomRevenue=guests.reduce((n,v)=>n+(v.rate??g.price),0),commission=guests.filter(v=>v.source==='平台').reduce((n,v)=>n+Math.round((v.rate??g.price)*.15),0),fixed=380+rs.length*65+Object.values(g.managers).reduce((n,l)=>n+l*180,0);
- const notes:EveningReview['notes']=[];
- if(pending)notes.push({title:'先接住还未解决的诉求',text:`还有 ${pending} 项待办；夜班继续拖延可能产生差评。先确认晚退和特殊安排，再处理现场事件。`,target:'events'});
- if(g.operations?.lostBookings)notes.push({title:'减少无法兑现的预订',text:`今天 ${g.operations.lostBookings} 单预订需安置。明早先核对可售房和 SUA 锁房，满房时暂停新增推广。`,target:'bookings'});
- if(dirty)notes.push({title:'夜班先把房间交出来',text:`还有 ${dirty} 间脏房或正在清洁。核对客房人手，明早到店前留出翻房时间。`,target:'hotel'});
- if(g.stock<20||g.clubStock<20)notes.push({title:'补足餐饮库存',text:`早餐 ${g.stock} 份、酒廊 ${g.clubStock} 份。先补不足 20 份的餐台，再按明早预订量备餐。`,target:'operations'});
- const occupancy=Math.round(occupied/Math.max(1,rs.length)*100),expected=g.operations?.forecast?.occupancy;
- if(expected!==undefined&&occupancy<expected-15)notes.push({title:'入住低于晨会预估',text:`当前 ${occupancy}%，预估 ${expected}%。先核对待到店与房态，再在明早比较挂牌价；今晚还有临时客流，暂不把缺口全归因于价格。`,target:'bookings'});
- if(!notes.length)notes.push({title:'守住今天的服务节奏',text:'暂未发现待办积压、低库存或明显入住缺口。核对客史中的服务记录，明早按新预订量安排人手。',target:'history'});
- g.evening={plan:reviewDayPlan(s,g.revenue+roomRevenue-g.expense-commission-fixed,'evening'),day:g.day,minute:g.minute,open:true,occupancy,expected,arrivals:g.arrivals,revenue:g.revenue,expense:g.expense,roomRevenue,projectedNet:g.revenue+roomRevenue-g.expense-commission-fixed,pending,complaints:g.complaints,logs:g.logs.filter(l=>l.day===g.day&&l.category==='客诉').map(l=>({...l})),notes:notes.slice(0,4)};g.paused=true;
+export interface EveningDigest {
+  headline: string;
+  bottleneck: string;
+  nextDayAdvice: string;
+  canAdvanceDay: boolean;
+}
+
+export function buildEveningDigest(stats: {
+  day: number;
+  netCashDelta: number;
+  servedCount: number;
+  missedOrStockoutCount: number;
+  avgSatisfaction: number;
+  isSettled: boolean;
+}): EveningDigest {
+  const netLabel =
+    stats.netCashDelta >= 0
+      ? `净流入 +¥${stats.netCashDelta}`
+      : `净流出 -¥${Math.abs(stats.netCashDelta)}`;
+
+  const headline = `第 ${stats.day} 天结算：${netLabel}，成功履约 ${stats.servedCount} 单，平均满意度 ${Math.round(stats.avgSatisfaction)}%。`;
+
+  let bottleneck = '本日整体运转平稳，暂无明显阻塞。';
+  let nextDayAdvice =
+    '建议维持当前备货节奏，适度提升高客流时段的服务响应速度。';
+
+  if (stats.missedOrStockoutCount > 0) {
+    bottleneck = `存在 ${stats.missedOrStockoutCount} 次缺货或未及时履约记录，直接拉低了营收与口碑。`;
+    nextDayAdvice =
+      '明日开局优先提高安全库存与备餐余量，避免高峰期断供。';
+  } else if (stats.avgSatisfaction < 70) {
+    bottleneck = '住客等待或体验得分偏低，满意度处于预警区间。';
+    nextDayAdvice =
+      '明日优先疏导高等待住客，或针对性升级核心接待/客房设施。';
+  } else if (stats.netCashDelta < 0) {
+    bottleneck = '当日支出高于营收，现金流承压。';
+    nextDayAdvice =
+      '明日控制非必要采购与固定成本，优先保障高毛利履约订单。';
+  }
+
+  return {
+    headline,
+    bottleneck,
+    nextDayAdvice,
+    canAdvanceDay: stats.isSettled,
+  };
 }
