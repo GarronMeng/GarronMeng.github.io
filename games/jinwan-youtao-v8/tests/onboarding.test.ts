@@ -1,27 +1,88 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {newGame,execute,advanceGame,queue} from '../src/core/game';
-import {rooms} from '../src/state/selectors';
-import {openingGoal,featureLock,viewLock} from '../src/core/onboarding';
-import {focusScreen,focusSelection} from '../src/ui/focusScreens';
-import {loadGame,SAVE_KEY} from '../src/core/save';
-function opening(){const s=newGame();execute(s,{type:'brief-start'});const v=queue(s)[0],r=rooms(s).find(r=>r.status==='available')!;execute(s,{type:'checkin',id:v.id,roomId:r.id});advanceGame(s,120);return s;}
-test('开业逐步完成真实行动，失败和重复点击不推进或重复花钱',()=>{
- const s=newGame(),g=s.game!;assert.equal(openingGoal(s)!.index,0);const cash=s.metrics.cash;execute(s,{type:'hire',id:'house'});execute(s,{type:'invest',id:'facility-gym'});assert.equal(s.metrics.cash,cash);assert.equal(g.managers.house,0);assert.equal(g.onboarding!.step,0);
- execute(s,{type:'brief-start'});assert.equal(openingGoal(s)!.index,1);execute(s,{type:'checkin',id:'missing',roomId:'room-101'});assert.equal(g.onboarding!.step,1);
- const v=queue(s)[0],r=rooms(s).find(r=>r.status==='available')!;execute(s,{type:'checkin',id:v.id,roomId:r.id});assert.equal(g.onboarding!.step,2);assert.ok(featureLock(s,'stock'));
- advanceGame(s,120);assert.equal(g.onboarding!.step,3);assert.equal(featureLock(s,'stock'),null);execute(s,{type:'stock',id:'club'});assert.equal(g.onboarding!.step,3);execute(s,{type:'stock',id:'breakfast'});assert.equal(g.onboarding!.step,4);
- execute(s,{type:'hire',id:'front'});assert.equal(g.managers.front,0);execute(s,{type:'hire',id:'house'});assert.equal(openingGoal(s),null);assert.equal(featureLock(s,'strategy'),null);const after=s.metrics.cash;execute(s,{type:'hire',id:'house'});assert.equal(s.metrics.cash,after);assert.ok(featureLock(s,'upgrade'));
-});
-test('主线认证控制装修、活动与扩建解锁，而不是仅隐藏按钮',()=>{
- const s=opening(),g=s.game!;execute(s,{type:'stock',id:'breakfast'});execute(s,{type:'hire',id:'house'});assert.ok(viewLock(s,'development'));const cash=s.metrics.cash;execute(s,{type:'expand'});assert.equal(s.metrics.cash,cash);
- g.campaign!.chapter=2;g.campaign!.result={chapter:2,passed:true,score:90,day:1,minute:500,advice:'通过',target:'tasks',scenes:[]};execute(s,{type:'continue-chapter'});assert.equal(featureLock(s,'upgrade'),null);assert.ok(featureLock(s,'activity'));execute(s,{type:'invest',id:'facility-gym'});assert.ok(s.entities['facility-gym'].construction);
- g.campaign!.result={chapter:3,passed:true,score:90,day:1,minute:500,advice:'通过',target:'tasks',scenes:[]};execute(s,{type:'continue-chapter'});assert.equal(featureLock(s,'activity'),null);assert.equal(featureLock(s,'expansion'),null);
-});
-test('新存档保存带教进度，旧存档保留已有能力与现金',()=>{
- const s=opening(),raw=JSON.stringify(s);Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:(key:string)=>key===SAVE_KEY?raw:null}});assert.equal(loadGame().game!.onboarding!.step,3);
- delete s.game!.onboarding;const old=JSON.stringify(s);Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:()=>old}});const restored=loadGame();assert.equal(restored.metrics.cash,s.metrics.cash);assert.equal(featureLock(restored,'expansion'),null);assert.equal(openingGoal(restored),null);delete (globalThis as {localStorage?:unknown}).localStorage;
-});
-test('初次晨会无并列策略，checklist只有一个突出目标和明确下一项解锁',()=>{
- const s=newGame();const brief=focusScreen(s,'brief',focusSelection())!,tasks=focusScreen(s,'tasks',focusSelection())!;assert.ok(!brief.includes('data-action="day-plan"'));assert.match(brief,/开始今天/);assert.equal((tasks.match(/checklist-row current/g)??[]).length,1);assert.match(tasks,/完成后解锁/);assert.ok(!tasks.includes('预约检验'));
+import { describe, it, expect } from 'vitest';
+import { deriveOnboardingState } from '../src/core/onboarding';
+import { buildEveningDigest } from '../src/core/evening';
+import { evaluateOperationalAction } from '../src/ui/gameplay';
+
+describe('Jinwan V8 onboarding, evening digest, and action guard', () => {
+  it('progresses linearly across the 4 guided steps on Day 1', () => {
+    const s0 = deriveOnboardingState({
+      day: 1,
+      restockOrPrepCount: 0,
+      servedOrdersCount: 0,
+      operationAdjustCount: 0,
+      settledDaysCount: 0,
+    });
+    expect(s0.currentStep.id).toBe('stock_supply');
+    expect(s0.isCompleted).toBe(false);
+
+    const s1 = deriveOnboardingState({
+      day: 1,
+      restockOrPrepCount: 1,
+      servedOrdersCount: 0,
+      operationAdjustCount: 0,
+      settledDaysCount: 0,
+    });
+    expect(s1.currentStep.id).toBe('serve_guest');
+
+    const s2 = deriveOnboardingState({
+      day: 1,
+      restockOrPrepCount: 1,
+      servedOrdersCount: 1,
+      operationAdjustCount: 0,
+      settledDaysCount: 0,
+    });
+    expect(s2.currentStep.id).toBe('tune_operation');
+
+    const s3 = deriveOnboardingState({
+      day: 1,
+      restockOrPrepCount: 1,
+      servedOrdersCount: 1,
+      operationAdjustCount: 1,
+      settledDaysCount: 0,
+    });
+    expect(s3.currentStep.id).toBe('settle_next_day');
+
+    const s4 = deriveOnboardingState({
+      day: 2,
+      restockOrPrepCount: 1,
+      servedOrdersCount: 1,
+      operationAdjustCount: 1,
+      settledDaysCount: 1,
+    });
+    expect(s4.isCompleted).toBe(true);
+  });
+
+  it('builds a clear 3-line evening digest highlighting stockout bottlenecks', () => {
+    const digest = buildEveningDigest({
+      day: 1,
+      netCashDelta: 420,
+      servedCount: 5,
+      missedOrStockoutCount: 2,
+      avgSatisfaction: 78,
+      isSettled: true,
+    });
+    expect(digest.headline).toContain('第 1 天结算');
+    expect(digest.bottleneck).toContain('2 次缺货');
+    expect(digest.canAdvanceDay).toBe(true);
+  });
+
+  it('explains why an action is blocked when day is settled or stock is short', () => {
+    const settledGuard = evaluateOperationalAction({
+      isDaySettled: true,
+      currentCash: 1000,
+      actionLabel: '补货',
+    });
+    expect(settledGuard.disabled).toBe(true);
+    expect(settledGuard.reason).toContain('日结锁定');
+
+    const stockGuard = evaluateOperationalAction({
+      isDaySettled: false,
+      currentCash: 1000,
+      currentStock: 1,
+      requiredStock: 3,
+      actionLabel: '制作套餐',
+    });
+    expect(stockGuard.disabled).toBe(true);
+    expect(stockGuard.reason).toContain('还差 2 份');
+  });
 });
