@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>金湾悠桃酒店 · 新生版 V9</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <!-- Top HUD -->
+    <header class="hud-bar" aria-label="酒店核心状态">
+      <div class="hud-brand">
+        <span class="brand-badge">V9</span>
+        <div class="brand-meta">
+          <strong class="brand-title">金湾悠桃酒店</strong>
+          <span id="hud-day-phase" class="brand-sub">第 1 天 · 晨间筹备 08:00</span>
+        </div>
+      </div>
+
+      <div class="hud-metrics">
+        <div class="metric-pill" title="当前可用现金">
+          <span class="metric-icon">¥</span>
+          <strong id="hud-cash">1,200</strong>
+        </div>
+        <div class="metric-pill" title="餐食库存">
+          <span class="metric-icon">🍽</span>
+          <strong id="hud-stock">2</strong>
+        </div>
+        <div class="metric-pill" title="可用客房 / 总客房">
+          <span class="metric-icon">🛏</span>
+          <strong id="hud-rooms">2/2</strong>
+        </div>
+        <div class="metric-pill" title="住客平均满意度">
+          <span class="metric-icon">★</span>
+          <strong id="hud-sat">85%</strong>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-speed" class="icon-btn" type="button" title="切换倍速">1x</button>
+        <button id="btn-pause" class="icon-btn" type="button" title="暂停/继续">⏸</button>
+        <button id="btn-sound" class="icon-btn" type="button" title="音效开关">🔊</button>
+        <button id="btn-reset" class="icon-btn icon-btn--danger" type="button" title="重新开局">↺</button>
+      </div>
+    </header>
+
+    <!-- 4-Step Onboarding Guide Strip -->
+    <aside id="onboarding-banner" class="onboarding-banner" role="region" aria-label="新手引导">
+      <div class="onboarding-left">
+        <span id="ob-badge" class="ob-badge">新手引导 0/4</span>
+        <strong id="ob-title" class="ob-title">备齐首批餐食供给</strong>
+        <span id="ob-hint" class="ob-hint">点击下方「备货补餐」补充食材，确保住客点餐有货可出。</span>
+      </div>
+      <div class="onboarding-actions">
+        <button id="ob-go-btn" class="pill-btn pill-btn--gold" type="button">去完成</button>
+        <button id="ob-skip-btn" class="pill-btn pill-btn--ghost" type="button">跳过</button>
+      </div>
+    </aside>
+
+    <!-- Interactive 2.5D Hotel Stage -->
+    <main class="stage-wrap">
+      <canvas id="hotel-canvas" aria-label="金湾悠桃酒店互动场景"></canvas>
+
+      <!-- Live Event Toast -->
+      <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+
+      <!-- Contextual Quick Hint -->
+      <div id="stage-tip" class="stage-tip">
+        提示：直接点击场景中<strong>带气泡的住客</strong>或<strong>待清洁客房</strong>即可快速响应
+      </div>
+    </main>
+
+    <!-- Bottom Focused Action Dock -->
+    <nav class="action-dock" aria-label="核心经营操作">
+      <button id="dock-restock" class="dock-btn" type="button" data-panel="restock">
+        <span class="dock-icon">🥐</span>
+        <span class="dock-label">备货补餐</span>
+        <span id="dock-stock-badge" class="dock-tag">余 2</span>
+      </button>
+      <button id="dock-facilities" class="dock-btn" type="button" data-panel="facilities">
+        <span class="dock-icon">🏛</span>
+        <span class="dock-label">设施与扩建</span>
+        <span id="dock-fac-badge" class="dock-tag">Lv.1</span>
+      </button>
+      <button id="dock-staff" class="dock-btn" type="button" data-panel="staff">
+        <span class="dock-icon">🧑‍💼</span>
+        <span class="dock-label">员工排班</span>
+        <span id="dock-staff-badge" class="dock-tag">1 人</span>
+      </button>
+      <button id="dock-ledger" class="dock-btn" type="button" data-panel="ledger">
+        <span class="dock-icon">📊</span>
+        <span class="dock-label">今日账本</span>
+        <span id="dock-net-badge" class="dock-tag">+¥0</span>
+      </button>
+      <button id="dock-settle" class="dock-btn dock-btn--accent" type="button">
+        <span class="dock-icon">🌙</span>
+        <span class="dock-label">提前日结</span>
+        <span class="dock-tag">结算</span>
+      </button>
+    </nav>
+
+    <!-- Slide-up Management Drawer -->
+    <section id="drawer" class="drawer hidden" aria-hidden="true">
+      <div class="drawer-header">
+        <div>
+          <h2 id="drawer-title" class="drawer-title">经营面板</h2>
+          <p id="drawer-sub" class="drawer-sub">做出决策并即时在场景中看到变化</p>
+        </div>
+        <button id="drawer-close" class="icon-btn" type="button" aria-label="关闭面板">✕</button>
+      </div>
+      <div id="drawer-body" class="drawer-body"></div>
+    </section>
+
+    <!-- 3-Line Evening Settlement Modal -->
+    <div id="settlement-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settle-heading">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span class="modal-kicker">日终结算锁定 · 账本已核平</span>
+          <h2 id="settle-heading" class="modal-title">第 1 天经营复盘</h2>
+        </div>
+
+        <div id="settle-metrics" class="settle-grid"></div>
+
+        <div class="digest-box">
+          <h3 class="digest-title">今日三行复盘</h3>
+          <ul class="digest-list">
+            <li id="digest-headline" class="digest-item digest-item--headline"></li>
+            <li id="digest-bottleneck" class="digest-item digest-item--bottleneck"></li>
+            <li id="digest-advice" class="digest-item digest-item--advice"></li>
+          </ul>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btn-next-day" class="primary-cta" type="button">开启第 2 天经营 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./game.js"></script>
+</body>
+</html>
